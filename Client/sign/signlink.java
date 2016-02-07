@@ -142,22 +142,6 @@ public final class signlink implements Runnable {
             }
         return null;
     }
-	
-	public static String findSecondDir() {
-        String[] possibleFolders = {
-            "C:/", "D:", "E:",
-            "/tmp/", "/"
-        };
-        String subfolder = ".runecronic14/";
-        for(String folder : possibleFolders)
-            if(new File(folder).exists()) {
-                if(new File(folder + subfolder).exists()
-                || new File(folder + subfolder).mkdirs())
-                    return folder + subfolder;
-            }
-        return null;
-    }
-	
 
     private static int getuid(String s) {
         return 234523;
