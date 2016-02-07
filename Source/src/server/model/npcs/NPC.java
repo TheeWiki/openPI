@@ -255,6 +255,7 @@ public class NPC {
 		str.writeByteA(HP); 
 		str.writeByte(MaxHP); 	
 	}
+	public static int MAX_NPCS = Server.npcHandler.maxNPCs;
 	
 	public void handleHitMask(int damage) {
 		if (!hitUpdateRequired) {

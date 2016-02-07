@@ -23,6 +23,7 @@ import server.model.objects.Doors;
 import server.model.objects.DoubleDoors;
 import server.model.players.PlayerHandler;
 import server.net.PipelineFactory;
+import server.panel.ControlPanel;
 import server.util.log.Logger;
 import server.world.ClanChatHandler;
 import server.world.ItemHandler;
@@ -88,6 +89,7 @@ public class Server {
 	public static boolean shutdownServer = false;		
 	public static boolean shutdownClientHandler;	
 	
+	public static ControlPanel panel = new ControlPanel(true); // false if you want it off
 	
 	/**
 	 * Used to identify the server port.

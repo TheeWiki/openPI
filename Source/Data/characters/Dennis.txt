@@ -4,8 +4,8 @@ character-password = 12345
 
 [CHARACTER]
 character-height = 0
-character-posx = 3088
-character-posy = 3491
+character-posx = 3089
+character-posy = 3489
 character-rights = 3
 desert-treasure = 0
 dt-kill = 0
@@ -45,14 +45,14 @@ fightMode = 2
 void = 0	0	0	0	0
 
 [EQUIPMENT]
-character-equip = 0	4716	1	
+character-equip = 0	-1	0	
 character-equip = 1	-1	1	
-character-equip = 2	6585	1	
-character-equip = 3	4151	1	
-character-equip = 4	3140	1	
+character-equip = 2	-1	0	
+character-equip = 3	-1	0	
+character-equip = 4	-1	0	
 character-equip = 5	-1	1	
 character-equip = 6	-1	0	
-character-equip = 7	4087	1	
+character-equip = 7	-1	0	
 character-equip = 8	-1	0	
 character-equip = 9	-1	1	
 character-equip = 10	-1	1	
@@ -76,41 +76,35 @@ character-look = 11	0
 character-look = 12	0
 
 [SKILLS]
-character-skill = 0	99	13064536
-character-skill = 1	99	13034436
-character-skill = 2	99	13048336
-character-skill = 3	99	13049073
-character-skill = 4	1	0
-character-skill = 5	99	13034436
-character-skill = 6	1	0
-character-skill = 7	1	0
-character-skill = 8	1	0
-character-skill = 9	1	0
-character-skill = 10	1	0
-character-skill = 11	1	0
-character-skill = 12	1	0
-character-skill = 13	1	0
-character-skill = 14	1	0
-character-skill = 15	1	0
-character-skill = 16	1	0
-character-skill = 17	1	0
-character-skill = 18	1	0
-character-skill = 19	1	0
-character-skill = 20	1	0
+character-skill = 0	99	28064536
+character-skill = 1	99	28034436
+character-skill = 2	99	28048336
+character-skill = 3	99	13034436
+character-skill = 4	99	15000000
+character-skill = 5	99	28034436
+character-skill = 6	99	15000000
+character-skill = 7	99	15000000
+character-skill = 8	99	15000000
+character-skill = 9	99	15000000
+character-skill = 10	99	15000000
+character-skill = 11	99	15000000
+character-skill = 12	99	15000000
+character-skill = 13	99	15000000
+character-skill = 14	99	15000000
+character-skill = 15	99	15000000
+character-skill = 16	99	15000000
+character-skill = 17	99	15000000
+character-skill = 18	99	15000000
+character-skill = 19	99	15000000
+character-skill = 20	99	15000000
 character-skill = 21	1	0
 character-skill = 22	1	0
 character-skill = 23	1	0
 character-skill = 24	1	0
 
 [ITEMS]
-character-item = 0	1713	1
-character-item = 1	4723	1
-character-item = 2	4719	1
-character-item = 3	4721	1
-character-item = 4	869	490392
 
 [BANK]
-character-bank = 0	869	55052
 
 [FRIENDS]
 character-friend = 0	1020628

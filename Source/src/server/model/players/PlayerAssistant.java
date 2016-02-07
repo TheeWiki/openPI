@@ -1099,6 +1099,7 @@ public class PlayerAssistant{
 		c.stopMovement();
 		if(c.duelStatus <= 4) {
 			c.sendMessage("Oh dear you are dead!");
+			c.sendMessage(Constants.DEATH_MESSAGE);
 		} else if(c.duelStatus != 6) {
 			c.sendMessage("You have lost the duel!");
 		}

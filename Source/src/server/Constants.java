@@ -5,9 +5,9 @@ public class Constants {
 
 	public static final boolean SERVER_DEBUG = false;
 
-	public static final String SERVER_NAME = "Project Insanity.";
+	public static String SERVER_NAME = "Project Insanity.";
 
-	public static final String WELCOME_MESSAGE = "Welcome to Project Insanity.";
+	public static String WELCOME_MESSAGE = "Welcome to Project Insanity.";
 
 	public static final String FORUMS = "";
 
@@ -47,11 +47,11 @@ public class Constants {
 
 	public static final int[] FUN_WEAPONS	        =	{2460,2461,2462,2463,2464,2465,2466,2467,2468,2469,2470,2471,2471,2473,2474,2475,2476,2477};
 
-	public static final boolean ADMIN_CAN_TRADE = false; 
+	public static boolean ADMIN_CAN_TRADE = false; 
 
-	public static final boolean ADMIN_CAN_SELL_ITEMS = false; 
+	public static boolean ADMIN_CAN_SELL_ITEMS = false; 
 
-	public static final boolean ADMIN_DROP_ITEMS = false; 
+	public static boolean ADMIN_DROP_ITEMS = false; 
 
 	public static final int START_LOCATION_X = 3087;
 	public static final int START_LOCATION_Y = 3502;
@@ -237,4 +237,12 @@ public class Constants {
 	public static final int FLETCHING_EXPERIENCE = 40;
 
 	public static final int DROP_RATE = 1;
+	
+	public static int MAX_NPCS = Server.npcHandler.maxNPCs;
+
+	public static boolean LOCK_EXPERIENCE = false;
+	public static boolean MINI_GAMES = true;
+	public static String LOGOUT_MESSAGE = "Click here to logout!";
+	public static String DEATH_MESSAGE = "Oh dear you are dead!";
+	public static boolean DOUBLE_EXP = true;
 }

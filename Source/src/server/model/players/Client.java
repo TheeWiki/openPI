@@ -15,6 +15,7 @@ import server.event.CycleEventContainer;
 import server.event.CycleEventHandler;
 import server.model.EmoteHandler;
 import server.model.items.ItemAssistant;
+import server.model.npcs.NPC;
 import server.model.players.combat.CombatAssistant;
 import server.model.players.combat.Experience;
 import server.model.players.combat.PlayerKilling;
@@ -145,6 +146,7 @@ public class Client extends Player {
 	public void destruct() {
 		if (session == null)
 			return;
+		Server.panel.removeEntity(playerName);
 		// PlayerSaving.getSingleton().requestSave(playerId);
 		getPA().removeFromCW();
 		if (inPits)
@@ -185,6 +187,7 @@ public class Client extends Player {
 
 	public void initialize() {
 		// synchronized (this) {
+		Server.panel.addEntity(playerName);
 		outStream.createFrame(249);
 		outStream.writeByteA(1); // 1 for members, zero for free
 		outStream.writeWordBigEndianA(playerId);
@@ -655,7 +658,53 @@ public class Client extends Player {
 		}
 		return true;
 	}
-
+	public Client getClient(String name) {
+		name = name.toLowerCase();
+		for(int i = 0; i < Constants.MAX_PLAYERS; i++) {
+			if(validClient(i)) {
+				Client client = getClient(i);
+				if(client.playerName.toLowerCase().equalsIgnoreCase(name)) {
+					return client;
+				}
+			}
+		}
+		return null;
+	}
+	public Client getClient(int id) {
+		return (Client) Server.playerHandler.players[id];
+	}
+	public boolean validClient(int id) {
+		if (id < 0 || id > Constants.MAX_PLAYERS) {
+			return false;
+		}
+		return validClient(getClient(id));
+	}
+	public boolean validClient(String name) {
+		return validClient(getClient(name));
+	}
+	public boolean validClient(Client client) {
+		return (client != null && !client.disconnected);
+	}
+	public boolean validNpc(int index) {
+		if (index < 0 || index >= Constants.MAX_NPCS) {
+			return false;
+		}
+		NPC n = getNpc(index);
+		if (n != null) {
+			return true;
+		}
+		return false;
+	}
+	public NPC getNpc(int index) {
+		return ((NPC) Server.npcHandler.npcs[index]);
+	}
+	public void yell(String s) {
+		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
+			if (validClient(i)) {
+				getClient(i).sendMessage(s);
+			}
+		}
+	}
 	public void correctCoordinates() {
 		if (inPcGame()) {
 			getPA().movePlayer(2657, 2639, 0);
