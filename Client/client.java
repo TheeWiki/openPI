@@ -5604,7 +5604,7 @@ public class client extends RSApplet {
 			if(friendsNodeIDs[j] == 0)
 				class9.message = "@red@Offline";
 			else if(friendsNodeIDs[j] == nodeID)
-				class9.message = "@gre@Online"/* + (friendsNodeIDs[j] - 9)*/;
+				class9.message = "@gre@World 1/* + (friendsNodeIDs[j] - 9)*/;
 			else
 				class9.message = "@red@Offline"/* + (friendsNodeIDs[j] - 9)*/;
 			class9.atActionType = 1;
