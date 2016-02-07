@@ -2,7 +2,7 @@ import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
 
-public class RSApplet extends Applet implements Runnable, MouseListener, MouseMotionListener, KeyListener, FocusListener, WindowListener {
+public class RSApplet extends Applet implements Runnable, MouseListener, MouseMotionListener, KeyListener, FocusListener, WindowListener, MouseWheelListener {
 
 	final void createClientFrame(int i, int j) {
 		myWidth = j;
@@ -20,13 +20,81 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseMo
 		fullGameScreen = new RSImageProducer(myWidth, myHeight, getGameComponent());
 		startRunnable(this, 1);
 	}
-
+	public void mouseWheelMoved(MouseWheelEvent event) {
+		int rotation = event.getWheelRotation();
+		handleInterfaceScrolling(event);
+		if(mouseX > 0 && mouseX < 512 && mouseY > 503 - 165 && mouseY < 503 - 25) {
+			int scrollPos = client.anInt1089;
+			scrollPos -= rotation * 30;		
+			if(scrollPos < 0)
+				scrollPos = 0;
+			if(scrollPos > client.anInt1211 - 110)
+				scrollPos = client.anInt1211 - 110;
+			if(client.anInt1089 != scrollPos) {
+				client.anInt1089 = scrollPos;
+				client.inputTaken = true;
+			}
+		}
+	}
+	
+	public void handleInterfaceScrolling(MouseWheelEvent event) {
+		int rotation = event.getWheelRotation();
+		int positionX = 0;
+		int positionY = 0;
+		int width = 0;
+		int height = 0;
+		int offsetX = 0;
+		int offsetY = 0;
+		int childID = 0;
+		/* Tab interface scrolling */
+		int tabInterfaceID = client.tabInterfaceIDs[client.tabID];
+		if (tabInterfaceID != -1) {
+			RSInterface tab = RSInterface.interfaceCache[tabInterfaceID];
+			offsetX = 765 - 218;
+			offsetY = 503 - 298;
+			for (int index = 0; index < tab.children.length; index++) {
+				if (RSInterface.interfaceCache[tab.children[index]].scrollMax > 0) {
+					childID = index;
+					positionX = tab.childX[index];
+					positionY = tab.childY[index];
+					width = RSInterface.interfaceCache[tab.children[index]].width;
+					height = RSInterface.interfaceCache[tab.children[index]].height;
+					break;
+				}
+			}
+			if (mouseX > offsetX + positionX && mouseY > offsetY + positionY && mouseX < offsetX + positionX + width && mouseY < offsetY + positionY + height) {
+				RSInterface.interfaceCache[tab.children[childID]].scrollPosition += rotation * 30;
+				client.tabAreaAltered = true;
+				client.needDrawTabArea = true;
+			}
+		}
+		/* Main interface scrolling */
+		if (client.openInterfaceID != -1) {
+			RSInterface rsi = RSInterface.interfaceCache[client.openInterfaceID];
+			offsetX = 4;
+			offsetY = 4;
+			for (int index = 0; index < rsi.children.length; index++) {
+				if (RSInterface.interfaceCache[rsi.children[index]].scrollMax > 0) {
+					childID = index;
+					positionX = rsi.childX[index];
+					positionY = rsi.childY[index];
+					width = RSInterface.interfaceCache[rsi.children[index]].width;
+					height = RSInterface.interfaceCache[rsi.children[index]].height;
+					break;
+				}
+			}
+			if (mouseX > offsetX + positionX && mouseY > offsetY + positionY && mouseX < offsetX + positionX + width && mouseY < offsetY + positionY + height) {
+				RSInterface.interfaceCache[rsi.children[childID]].scrollPosition += rotation * 30;
+			}
+		}
+	}
 	public void run()
 	{
 		getGameComponent().addMouseListener(this);
 		getGameComponent().addMouseMotionListener(this);
 		getGameComponent().addKeyListener(this);
 		getGameComponent().addFocusListener(this);
+		getGameComponent().addMouseWheelListener(this);
 		if(gameFrame != null)
 			gameFrame.addWindowListener(this);
 		drawLoadingText(0, "Loading...");

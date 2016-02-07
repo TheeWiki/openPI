@@ -12327,7 +12327,7 @@ public class client extends RSApplet {
 	private int[] anIntArray853;
 	private static int anInt854;
 	private int anInt855;
-	private int openInterfaceID;
+	static int openInterfaceID;
 	private int xCameraPos;
 	private int zCameraPos;
 	private int yCameraPos;
@@ -12558,7 +12558,7 @@ public class client extends RSApplet {
 	private int anInt1100;
 	private int anInt1101;
 	private int anInt1102;
-	private static boolean tabAreaAltered;
+	static boolean tabAreaAltered;
 	private int anInt1104;
 	private RSImageProducer aRSImageProducer_1107;
 	private RSImageProducer aRSImageProducer_1108;
@@ -12580,7 +12580,7 @@ public class client extends RSApplet {
 	private final String[] atPlayerActions;
 	private final boolean[] atPlayerArray;
 	private final int[][][] anIntArrayArrayArray1129;
-	private final int[] tabInterfaceIDs = {
+	final static int[] tabInterfaceIDs = {
 		-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
 		-1, -1, -1, -1, -1
 	};
@@ -12600,7 +12600,7 @@ public class client extends RSApplet {
 	private Sprite[] crosses;
 	private boolean musicEnabled;
 	private Background[] aBackgroundArray1152s;
-	private static boolean needDrawTabArea;
+	static boolean needDrawTabArea;
 	private int unreadMessages;
 	private static int anInt1155;
 	private static boolean fpsOn;
@@ -12661,7 +12661,7 @@ public class client extends RSApplet {
 	private int anInt1208;
 	private int minimapInt2;
 	private int anInt1210;
-	private int anInt1211;
+	static int anInt1211;
 	private String promptInput;
 	private int anInt1213;
 	private int[][][] intGroundArray;
@@ -12669,7 +12669,7 @@ public class client extends RSApplet {
 	private int loginScreenCursorPos;
 	private final Background[] modIcons;
 	private long aLong1220;
-	private static int tabID;
+	static int tabID;
 	private int anInt1222;
 	public static boolean inputTaken;
 	private int inputDialogState;
