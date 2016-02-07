@@ -2412,6 +2412,5 @@ public class ItemAssistant {
 	public boolean isHilt(int i) {
 		return i >= 11702 && i <= 11708 && i%2 == 0;
 	}
-	
 
 }

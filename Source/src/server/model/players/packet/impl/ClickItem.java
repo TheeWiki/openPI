@@ -30,6 +30,7 @@ public class ClickItem implements PacketType {
 			c.getPA().fillPouch(pouch);
 			return;
 		}
+		
 		//ScriptManager.callFunc("itemClick_"+itemId, c, itemId, itemSlot);
 		if (c.getPotions().isPotion(itemId))
 			c.getPotions().handlePotion(itemId,itemSlot);
