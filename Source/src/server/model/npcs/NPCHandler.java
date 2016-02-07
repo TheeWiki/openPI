@@ -2053,18 +2053,7 @@ public class NPCHandler {
 	}
 	
 	public boolean goodDistance(int objectX, int objectY, int playerX, int playerY, int distance) {
-		for (int i = 0; i <= distance; i++) {
-		  for (int j = 0; j <= distance; j++) {
-			if ((objectX + i) == playerX && ((objectY + j) == playerY || (objectY - j) == playerY || objectY == playerY)) {
-				return true;
-			} else if ((objectX - i) == playerX && ((objectY + j) == playerY || (objectY - j) == playerY || objectY == playerY)) {
-				return true;
-			} else if (objectX == playerX && ((objectY + j) == playerY || (objectY - j) == playerY || objectY == playerY)) {
-				return true;
-			}
-		  }
-		}
-		return false;
+		return ((objectX-playerX <= distance && objectX-playerX >= -distance) && (objectY-playerY <= distance && objectY-playerY >= -distance));
 	}
 	
       
