@@ -414,11 +414,11 @@ public class client extends RSApplet {
 			return new Socket(InetAddress.getByName(server), port);
 	}
 
-	private void processMenuClick() {
+	private boolean processMenuClick() { 
 		if(activeInterfaceType != 0)
-			return;
+			return false;
 		int j = super.clickMode3;
-		if(spellSelected == 1 && super.saveClickX >= 516 && super.saveClickY >= 160 && super.saveClickX <= 765 && super.saveClickY <= 205)
+		if(spellSelected == 1 && super.saveClickX >= 503 && super.saveClickY >= 160 && super.saveClickX <= 765 && super.saveClickY <= 205)
 			j = 0;
 		if(menuOpen) {
 			if(j != 1) {
@@ -429,15 +429,15 @@ public class client extends RSApplet {
 					j1 -= 4;
 				}
 				if(menuScreenArea == 1) {
-					k -= 519;
+					k -= 516;
 					j1 -= 168;
 				}
 				if(menuScreenArea == 2) {
-					k -= 17;
+					k -= 5;
 					j1 -= 338;
 				}
 				if(menuScreenArea == 3) {
-					k -= 519;
+					k -= 516;
 					j1 -= 0;
 				}
 				if(k < menuOffsetX - 10 || k > menuOffsetX + menuWidth + 10 || j1 < menuOffsetY - 10 || j1 > menuOffsetY + menuHeight + 10) {
@@ -459,15 +459,15 @@ public class client extends RSApplet {
 					l2 -= 4;
 				}
 				if(menuScreenArea == 1) {
-					k2 -= 519;
+					k2 -= 516;//519
 					l2 -= 168;
 				}
 				if(menuScreenArea == 2) {
-					k2 -= 17;
+					k2 -= 5;//17
 					l2 -= 338;
 				}
 				if(menuScreenArea == 3) {
-					k2 -= 519;
+					k2 -= 516;//519
 					l2 -= 0;
 				}
 				int i3 = -1;
@@ -486,6 +486,7 @@ public class client extends RSApplet {
 					inputTaken = true;
 				}
 			}
+			return true;
 		} else {
 			if(j == 1 && menuActionRow > 0) {
 				int i1 = menuActionID[menuActionRow - 1];
@@ -505,7 +506,7 @@ public class client extends RSApplet {
 							activeInterfaceType = 1;
 						if(RSInterface.interfaceCache[j2].parentID == backDialogID)
 							activeInterfaceType = 3;
-						return;
+						return true;
 					}
 				}
 			}
@@ -515,7 +516,9 @@ public class client extends RSApplet {
 				doAction(menuActionRow - 1);
 			if(j == 2 && menuActionRow > 0)
 				determineMenuSize();
+			return false;
 		}
+		
 	}
 
 
@@ -3198,10 +3201,11 @@ public class client extends RSApplet {
 			inputTaken = true;
 			super.clickMode3 = 0;
 		}
-		processMenuClick();
-		processMainScreenClick();
-		processTabClick();
-		processChatModeClick();
+		if(!processMenuClick()) {
+			processMainScreenClick();
+			processTabClick();
+			processChatModeClick();
+		}
 		if(super.clickMode2 == 1 || super.clickMode3 == 1)
 			anInt1213++;
 		if (anInt1500 != 0 || anInt1044 != 0 || anInt1129 != 0) {
