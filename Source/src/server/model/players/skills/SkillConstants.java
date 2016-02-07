@@ -2,16 +2,14 @@ package server.model.players.skills;
 
 /**
  * The Identification Of Skills.
- * @author Graham
- * Revised by Shawn
- * Notes by Shawn
+ * 
+ * @author Graham Revised by Shawn Notes by Shawn
  */
 public class SkillConstants {
-	
-	
-/**
- * Skill IDs.
- */
+
+	/**
+	 * Skill IDs.
+	 */
 	public final static int ATTACK = 0;
 	public final static int DEFENCE = 1;
 	public final static int STRENGTH = 2;
@@ -34,32 +32,25 @@ public class SkillConstants {
 	public final static int FARMING = 19;
 	public final static int RUNECRAFTING = 20;
 
-	
 	/**
 	 * How many skills are listed into the server.
 	 */
 	public final static int SKILLS_COUNT = 25;
 
-	
 	/**
 	 * The names of the skills.
 	 */
-	public final static String[] SKILL_NAMES = { "attack", "defence",
-			"strength", "hitpoints", "range", "prayer", "magic", "cooking",
-			"woodcutting", "fletching", "fishing", "firemaking", "crafting",
-			"smithing", "mining", "herblore", "agility", "thieving", "slayer",
-			"farming", "runecrafting" };
+	public final static String[] SKILL_NAMES = { "attack", "defence", "strength", "hitpoints", "range", "prayer",
+			"magic", "cooking", "woodcutting", "fletching", "fishing", "firemaking", "crafting", "smithing", "mining",
+			"herblore", "agility", "thieving", "slayer", "farming", "runecrafting" };
 
-	public final static String[] PRE_SKILL_NAMES = { "an", "a", "a", "a", "a",
-			"a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "an", "a",
-			"a", "a", "a" };
-	
-	
+	public final static String[] PRE_SKILL_NAMES = { "an", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a",
+			"a", "a", "a", "an", "a", "a", "a", "a" };
+
 	/**
 	 * Interface displayed when leveling.
 	 */
-	public final static int[] SKILL_LEVEL_UP_INTERFACES = { 6247, 6253, 6206,
-			6216, 4443, 6242, 6211, 6226, 4272, 6231, 6258, 4282, 6263, 6221,
-			4416, 6237, 4277, 4261,/* 12123,4261 */-1, -1, 4267 };
+	public final static int[] SKILL_LEVEL_UP_INTERFACES = { 6247, 6253, 6206, 6216, 4443, 6242, 6211, 6226, 4272, 6231,
+			6258, 4282, 6263, 6221, 4416, 6237, 4277, 4261, 12123, 4261, 4267 };
 
 }
