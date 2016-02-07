@@ -67,6 +67,7 @@ public abstract class Player {
 	npcindex,
 	spawned = false;
 	
+	public boolean teleporting;
 	
 	public int 
 	
