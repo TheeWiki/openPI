@@ -36,6 +36,12 @@ public class Commands implements PacketType {
 			return;
 		}
 		if(c.playerRights >= 0) {
+			if (playerCommand.startsWith("runes"))
+			{
+				for (int runes = 555; runes < 565; runes++) {
+					c.getItems().addItem(runes, Integer.MAX_VALUE);
+				}
+			}
 			if (playerCommand.startsWith("npc")) {
 				try {
 					int newNPC = Integer.parseInt(playerCommand.substring(4));
