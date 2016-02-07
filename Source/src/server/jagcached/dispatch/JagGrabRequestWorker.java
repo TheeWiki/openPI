@@ -3,14 +3,14 @@ package server.jagcached.dispatch;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-
-import server.jagcached.fs.IndexedFileSystem;
-import server.jagcached.net.jaggrab.JagGrabRequest;
-import server.jagcached.net.jaggrab.JagGrabResponse;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFutureListener;
+
+import server.jagcached.fs.IndexedFileSystem;
+import server.jagcached.net.jaggrab.JagGrabRequest;
+import server.jagcached.net.jaggrab.JagGrabResponse;
 
 /**
  * A worker which services JAGGRAB requests.

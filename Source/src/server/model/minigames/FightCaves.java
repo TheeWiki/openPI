@@ -1,7 +1,7 @@
 package server.model.minigames;
 
-import server.model.players.Client;
 import server.Server;
+import server.model.players.Client;
 
 /**
  * @author Sanity

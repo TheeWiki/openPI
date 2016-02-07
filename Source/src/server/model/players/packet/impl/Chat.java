@@ -1,8 +1,8 @@
 package server.model.players.packet.impl;
 
+import server.Connection;
 import server.model.players.Client;
 import server.model.players.packet.PacketType;
-import server.Connection;
 
 /**
  * Chat

@@ -1,14 +1,11 @@
 package server.world;
 
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
 import server.model.players.Client;
-import server.model.players.Player;
 
 /**
  * Player manager

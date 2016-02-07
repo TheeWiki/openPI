@@ -1,13 +1,12 @@
 package server.model.players.packet.impl;
 
-import server.Constants;
 import server.Connection;
+import server.Constants;
 import server.Server;
 import server.model.players.Client;
 import server.model.players.PlayerHandler;
 import server.model.players.packet.PacketType;
 import server.util.Misc;
-import server.world.WorldMap;
 
 
 /**

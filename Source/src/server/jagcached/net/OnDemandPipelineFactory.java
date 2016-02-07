@@ -1,15 +1,16 @@
 package server.jagcached.net;
 
 
-import server.jagcached.net.ondemand.OnDemandRequestDecoder;
-import server.jagcached.net.ondemand.OnDemandResponseEncoder;
-import server.jagcached.net.service.ServiceRequestDecoder;
-import server.jagcached.net.service.ServiceResponseEncoder;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.Channels;
 import org.jboss.netty.handler.timeout.IdleStateHandler;
 import org.jboss.netty.util.Timer;
+
+import server.jagcached.net.ondemand.OnDemandRequestDecoder;
+import server.jagcached.net.ondemand.OnDemandResponseEncoder;
+import server.jagcached.net.service.ServiceRequestDecoder;
+import server.jagcached.net.service.ServiceResponseEncoder;
 
 /**
  * A {@link ChannelPipelineFactory} for the 'on-demand' protocol.

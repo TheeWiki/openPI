@@ -1,12 +1,13 @@
 package server.jagcached.net.ondemand;
 
 
-import server.jagcached.fs.FileDescriptor;
-import server.jagcached.net.ondemand.OnDemandRequest.Priority;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.frame.FrameDecoder;
+
+import server.jagcached.fs.FileDescriptor;
+import server.jagcached.net.ondemand.OnDemandRequest.Priority;
 
 /**
  * A {@link FrameDecoder} for the 'on-demand' protocol.

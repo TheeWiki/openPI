@@ -2,9 +2,9 @@ package server.jagcached.dispatch;
 
 import java.io.IOException;
 
+import org.jboss.netty.channel.Channel;
 
 import server.jagcached.fs.IndexedFileSystem;
-import org.jboss.netty.channel.Channel;
 
 /**
  * The base class for request workers.

@@ -3,14 +3,14 @@ package server.jagcached.dispatch;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBuffers;
+import org.jboss.netty.channel.Channel;
 
 import server.jagcached.fs.FileDescriptor;
 import server.jagcached.fs.IndexedFileSystem;
 import server.jagcached.net.ondemand.OnDemandRequest;
 import server.jagcached.net.ondemand.OnDemandResponse;
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.Channel;
 
 /**
  * A worker which services 'on-demand' requests.

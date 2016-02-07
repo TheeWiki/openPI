@@ -9,8 +9,8 @@ import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.frame.FrameDecoder;
 
-import server.Constants;
 import server.Connection;
+import server.Constants;
 import server.Server;
 import server.model.players.Client;
 import server.model.players.PlayerHandler;

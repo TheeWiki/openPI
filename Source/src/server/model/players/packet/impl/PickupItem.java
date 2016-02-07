@@ -1,11 +1,11 @@
 package server.model.players.packet.impl;
 
 import server.Server;
-import server.model.players.Client;
-import server.model.players.packet.PacketType;
 import server.event.CycleEvent;
 import server.event.CycleEventContainer;
 import server.event.CycleEventHandler;
+import server.model.players.Client;
+import server.model.players.packet.PacketType;
 
 /**
  * Pickup Item

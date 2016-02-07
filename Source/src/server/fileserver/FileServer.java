@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import org.apache.mina.common.IoAcceptor;
 import org.apache.mina.transport.socket.nio.SocketAcceptor;
+
 import server.fileserver.UpdateSession.Type;
 
 /**
@@ -59,6 +60,14 @@ public class FileServer {
 	public FileServer bind() throws IOException {
 		jaggrabAcceptor.bind(new InetSocketAddress(JAGGRAB_PORT), new ConnectionHandler(Type.JAGGRAB));
 		return this;
+	}
+
+	public static Logger getLogger() {
+		return logger;
+	}
+
+	public IoAcceptor getHttpAcceptor() {
+		return httpAcceptor;
 	}
 
 }

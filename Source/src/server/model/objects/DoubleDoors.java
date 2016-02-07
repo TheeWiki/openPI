@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import server.Server;
-import server.world.ObjectHandler;
 
 /**
  * 

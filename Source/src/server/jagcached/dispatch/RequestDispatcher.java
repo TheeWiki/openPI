@@ -4,11 +4,11 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import org.jboss.netty.channel.Channel;
+import org.jboss.netty.handler.codec.http.HttpRequest;
 
 import server.jagcached.net.jaggrab.JagGrabRequest;
 import server.jagcached.net.ondemand.OnDemandRequest;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.handler.codec.http.HttpRequest;
 
 /**
  * A class which dispatches requests to worker threads.

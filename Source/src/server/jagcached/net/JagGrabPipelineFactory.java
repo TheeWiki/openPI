@@ -2,9 +2,6 @@ package server.jagcached.net;
 
 import java.nio.charset.Charset;
 
-
-import server.jagcached.net.jaggrab.JagGrabRequestDecoder;
-import server.jagcached.net.jaggrab.JagGrabResponseEncoder;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.ChannelPipeline;
@@ -14,6 +11,9 @@ import org.jboss.netty.handler.codec.frame.DelimiterBasedFrameDecoder;
 import org.jboss.netty.handler.codec.string.StringDecoder;
 import org.jboss.netty.handler.timeout.IdleStateHandler;
 import org.jboss.netty.util.Timer;
+
+import server.jagcached.net.jaggrab.JagGrabRequestDecoder;
+import server.jagcached.net.jaggrab.JagGrabResponseEncoder;
 
 /**
  * A {@link ChannelPipelineFactory} for the JAGGRAB protocol.

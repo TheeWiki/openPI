@@ -1,12 +1,12 @@
 package server.model.players.packet.impl;
 
-import server.model.players.Client;
-import server.model.players.packet.PacketType;
-import server.util.Misc;
 import server.event.CycleEvent;
 import server.event.CycleEventContainer;
 import server.event.CycleEventHandler;
 import server.model.objects.Doors;
+import server.model.players.Client;
+import server.model.players.packet.PacketType;
+import server.util.Misc;
 /**
  * Click Object
  */

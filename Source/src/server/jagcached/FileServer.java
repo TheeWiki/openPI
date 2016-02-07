@@ -4,21 +4,18 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-import server.jagcached.dispatch.RequestWorkerPool;
-import server.jagcached.net.FileServerHandler;
-import server.jagcached.net.HttpPipelineFactory;
-import server.jagcached.net.JagGrabPipelineFactory;
-import server.jagcached.net.NetworkConstants;
-import server.jagcached.net.OnDemandPipelineFactory;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.jboss.netty.util.HashedWheelTimer;
 import org.jboss.netty.util.Timer;
+
+import server.jagcached.dispatch.RequestWorkerPool;
+import server.jagcached.net.FileServerHandler;
+import server.jagcached.net.NetworkConstants;
+import server.jagcached.net.OnDemandPipelineFactory;
 
 /**
  * The core class of the file server.
@@ -72,6 +69,10 @@ public final class FileServer {
 		bootstrap.setFactory(new NioServerSocketChannelFactory(service, service));
 		bootstrap.setPipelineFactory(pipelineFactory);
 		bootstrap.bind(address);
+	}
+
+	public static Logger getLogger() {
+		return logger;
 	}
 
 }

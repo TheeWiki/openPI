@@ -5,9 +5,6 @@ package server.model.players;
 import server.Constants;
 import server.Server;
 import server.model.npcs.NPCHandler;
-import server.model.players.Client;
-import server.model.players.Player;
-import server.model.players.PlayerSave;
 import server.util.Misc;
 import server.util.Stream;
 

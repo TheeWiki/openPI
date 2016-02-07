@@ -1,5 +1,7 @@
 package server;
 
+import server.model.npcs.NPCHandler;
+
 public class Constants {
 
 
@@ -238,7 +240,7 @@ public class Constants {
 
 	public static final int DROP_RATE = 1;
 	
-	public static int MAX_NPCS = Server.npcHandler.maxNPCs;
+	public static int MAX_NPCS = NPCHandler.maxNPCs;
 
 	public static boolean LOCK_EXPERIENCE = false;
 	public static boolean MINI_GAMES = true;

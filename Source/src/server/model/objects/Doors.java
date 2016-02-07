@@ -1,12 +1,13 @@
 package server.model.objects;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.*;
 import java.util.Scanner;
 
 import server.Server;
-import server.world.ObjectHandler;
 
 /**
  * 

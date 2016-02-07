@@ -8,7 +8,6 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel.MapMode;
 import java.util.zip.CRC32;
 
-import server.Server;
 import server.jagcached.fs.IndexedFileSystem;
 
 /**

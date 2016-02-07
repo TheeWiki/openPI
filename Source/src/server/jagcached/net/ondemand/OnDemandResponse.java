@@ -1,8 +1,9 @@
 package server.jagcached.net.ondemand;
 
 
-import server.jagcached.fs.FileDescriptor;
 import org.jboss.netty.buffer.ChannelBuffer;
+
+import server.jagcached.fs.FileDescriptor;
 
 /**
  * Represents a single 'on-demand' response.

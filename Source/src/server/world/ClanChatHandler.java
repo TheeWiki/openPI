@@ -1,10 +1,7 @@
 package server.world;
 
-import server.model.players.Client;
-import server.util.Misc;
 import server.Server;
-
-import java.util.ArrayList;
+import server.model.players.Client;
 
 /**
  * @author Sanity

@@ -1,16 +1,17 @@
 package server.panel;
 
+import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+
 import server.Connection;
-import server.Server;
 import server.Constants;
+import server.Server;
+import server.model.npcs.NPC;
+import server.model.npcs.NPCHandler;
 import server.model.players.Client;
 import server.model.players.PlayerHandler;
 import server.world.ShopHandler;
-import server.model.npcs.NPC;
-import server.model.npcs.NPCHandler;
-
-import javax.swing.*;
-import java.util.ArrayList;
 
 public class PanelSettings {
 

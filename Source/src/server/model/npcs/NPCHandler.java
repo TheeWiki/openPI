@@ -15,7 +15,6 @@ import server.model.items.WeaponAnimations;
 import server.model.npcs.drops.Drop;
 import server.model.npcs.drops.NPCDrops;
 import server.model.players.Client;
-import server.model.players.Player;
 import server.model.players.PlayerHandler;
 import server.util.Misc;
 

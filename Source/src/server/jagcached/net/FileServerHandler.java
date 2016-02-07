@@ -1,8 +1,13 @@
 package server.jagcached.net;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ExceptionEvent;
+import org.jboss.netty.channel.MessageEvent;
+import org.jboss.netty.handler.codec.http.HttpRequest;
+import org.jboss.netty.handler.timeout.IdleStateAwareChannelUpstreamHandler;
+import org.jboss.netty.handler.timeout.IdleStateEvent;
 
 import server.jagcached.FileServer;
 import server.jagcached.dispatch.RequestDispatcher;
@@ -10,12 +15,6 @@ import server.jagcached.net.jaggrab.JagGrabRequest;
 import server.jagcached.net.ondemand.OnDemandRequest;
 import server.jagcached.net.service.ServiceRequest;
 import server.jagcached.net.service.ServiceResponse;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.handler.codec.http.HttpRequest;
-import org.jboss.netty.handler.timeout.IdleStateAwareChannelUpstreamHandler;
-import org.jboss.netty.handler.timeout.IdleStateEvent;
 
 /**
  * An {@link IdleStateAwareChannelUpstreamHandler} for the {@link FileServer}.
@@ -57,6 +56,10 @@ public final class FileServerHandler extends IdleStateAwareChannelUpstreamHandle
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
 		e.getChannel().close();
+	}
+
+	public static Logger getLogger() {
+		return logger;
 	}
 
 }

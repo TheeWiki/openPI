@@ -2,7 +2,6 @@ package server.model.items;
 
 import server.model.players.Client;
 import server.util.Misc;
-import server.Constants;
 
 /**
  * @author Sanity

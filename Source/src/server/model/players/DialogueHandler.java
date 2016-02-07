@@ -1,8 +1,5 @@
 package server.model.players;
 
-import server.Constants;
-import server.Server;
-
 public class DialogueHandler {
 
 	private Client c;
