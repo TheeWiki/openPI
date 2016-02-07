@@ -4,8 +4,8 @@ character-password = 12345
 
 [CHARACTER]
 character-height = 0
-character-posx = 3245
-character-posy = 3226
+character-posx = 3088
+character-posy = 3491
 character-rights = 3
 desert-treasure = 0
 dt-kill = 0
@@ -38,17 +38,17 @@ taskAmount = 0
 magePoints = 0
 autoRet = 0
 barrowskillcount = 0
-flagged = true
+flagged = false
 wave = 0
 gwkc = 0
 fightMode = 2
 void = 0	0	0	0	0
 
 [EQUIPMENT]
-character-equip = 0	-1	1	
+character-equip = 0	4716	1	
 character-equip = 1	-1	1	
 character-equip = 2	6585	1	
-character-equip = 3	-1	0	
+character-equip = 3	4151	1	
 character-equip = 4	3140	1	
 character-equip = 5	-1	1	
 character-equip = 6	-1	0	
@@ -78,8 +78,8 @@ character-look = 12	0
 [SKILLS]
 character-skill = 0	99	13064536
 character-skill = 1	99	13034436
-character-skill = 2	99	13036736
-character-skill = 3	99	13045214
+character-skill = 2	99	13048336
+character-skill = 3	99	13049073
 character-skill = 4	1	0
 character-skill = 5	99	13034436
 character-skill = 6	1	0
@@ -103,20 +103,17 @@ character-skill = 23	1	0
 character-skill = 24	1	0
 
 [ITEMS]
-character-item = 0	556	2147483647
-character-item = 1	557	2147483647
-character-item = 2	558	2147483647
-character-item = 3	559	2147483647
-character-item = 4	560	2147483647
-character-item = 5	561	2147483647
-character-item = 6	562	2147483647
-character-item = 7	563	2147483647
-character-item = 9	565	2147483647
-character-item = 19	564	2147483647
+character-item = 0	1713	1
+character-item = 1	4723	1
+character-item = 2	4719	1
+character-item = 3	4721	1
+character-item = 4	869	490392
 
 [BANK]
+character-bank = 0	869	55052
 
 [FRIENDS]
+character-friend = 0	1020628
 
 [EOF]
 
