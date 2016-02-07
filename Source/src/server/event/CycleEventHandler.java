@@ -8,17 +8,17 @@ import java.util.List;
  * 
  * @author Stuart <RogueX>
  * @author Null++
- * Revised by Shawn
+ * 
  */
 public class CycleEventHandler {
 
 	/**
-	 * The instance of this class.
+	 * The instance of this class
 	 */
 	private static CycleEventHandler instance;
 
 	/**
-	 * Returns the instance of this class.
+	 * Returns the instance of this class
 	 * 
 	 * @return
 	 */
@@ -30,12 +30,12 @@ public class CycleEventHandler {
 	}
 
 	/**
-	 * Holds all of our events currently being ran.
+	 * Holds all of our events currently being ran
 	 */
 	private List<CycleEventContainer> events;
 
 	/**
-	 * Creates a new instance of this class.
+	 * Creates a new instance of this class
 	 */
 	public CycleEventHandler() {
 		this.events = new ArrayList<CycleEventContainer>();
@@ -54,7 +54,7 @@ public class CycleEventHandler {
 	}
 	
 	/**
-	 * Add an event to the list.
+	 * Add an event to the list
 	 * 
 	 * @param owner
 	 * @param event
@@ -65,7 +65,7 @@ public class CycleEventHandler {
 	}
 
 	/**
-	 * Execute and remove events.
+	 * Execute and remove events
 	 */
 	public void process() {
 		List<CycleEventContainer> eventsCopy = new ArrayList<CycleEventContainer>(events);
@@ -85,7 +85,7 @@ public class CycleEventHandler {
 	}
 	
 	/**
-	 * Returns the amount of events currently running.
+	 * Returns the amount of events currently running
 	 *
 	 * @return amount
 	 */
@@ -94,7 +94,7 @@ public class CycleEventHandler {
 	}
 	
 	/**
-	 * Stops all events for a specific owner and ID.
+	 * Stops all events for a specific owner and id
 	 *
 	 * @param owner
 	 */
@@ -107,7 +107,7 @@ public class CycleEventHandler {
 	}
 	
 	/**
-	 * Stops all events for a specific owner and ID.
+	 * Stops all events for a specific owner and id
 	 *
 	 * @param owner
 	 * @param id
@@ -121,7 +121,7 @@ public class CycleEventHandler {
 	}
 	
 	/**
-	 * Stops all events for a specific owner and ID.
+	 * Stops all events for a specific owner and id
 	 *
 	 * @param id
 	 */

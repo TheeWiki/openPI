@@ -1,53 +1,54 @@
 package server.event;
 
 /**
- * The Wrapper Of The Event.
+ * The wrapper for our event
+ * 
  * @author Stuart <RogueX>
  * @author Null++
- * Revised by Shawn.
+ * 
  */
 
 public class CycleEventContainer {
 
 	/**
-	 * Event owner.
+	 * Event owner
 	 */
 	private Object owner;
 	
 	/**
-	 * Is the event running or not.
+	 * Is the event running or not
 	 */
 	private boolean isRunning;
 	
 	/**
-	 * The amount of cycles per event execution.
+	 * The amount of cycles per event execution
 	 */	
 	private int tick;
 	
 	/**
-	 * The actual event.
+	 * The actual event
 	 */
 	private CycleEvent event;
 	
 	/**
-	 * The current amount of cycles passed.
+	 * The current amount of cycles passed
 	 */
 	private int cyclesPassed;
 	
 	/**
-	 * The event ID.
+	 * The event ID
 	 */
 	private int eventID;
 
 	/**
-	 * Sets the event containers details.
+	 * Sets the event containers details
 	 * 
 	 * @param owner
-	 *            , the owner of the event.
+	 *            , the owner of the event
 	 * @param event
-	 *            , the actual event to run.
+	 *            , the actual event to run
 	 * @param tick
-	 *            , the cycles between execution of the event.
+	 *            , the cycles between execution of the event
 	 */
 	public CycleEventContainer(int id, Object owner, CycleEvent event, int tick) {
 		this.eventID = id;
@@ -59,14 +60,14 @@ public class CycleEventContainer {
 	}
 
 	/**
-	 * Execute the contents of the event.
+	 * Execute the contents of the event
 	 */
 	public void execute() {
 		event.execute(this);
 	}
 
 	/**
-	 * Stop the event from running.
+	 * Stop the event from running
 	 */
 	public void stop() {
 		isRunning = false;
@@ -76,8 +77,7 @@ public class CycleEventContainer {
 	/**
 	 * Does the event need to be ran?
 	 * 
-	 * @return true yes 
-	 * @return false no
+	 * @return true yes false no
 	 */
 	public boolean needsExecution() {
 		if (!this.isRunning()) {
@@ -91,7 +91,7 @@ public class CycleEventContainer {
 	}
 
 	/**
-	 * Returns the owner of the event.
+	 * Returns the owner of the event
 	 * 
 	 * @return
 	 */
@@ -100,17 +100,16 @@ public class CycleEventContainer {
 	}
 
 	/**
-	 * Is the event running?.
+	 * Is the event running?
 	 * 
-	 * @return true yes 
-	 * @return false no
+	 * @return true yes false no
 	 */
 	public boolean isRunning() {
 		return isRunning;
 	}
 	
 	/**
-	 * Returns the event id.
+	 * Returns the event id
 	 *
 	 * @return id
 	 */
@@ -119,7 +118,7 @@ public class CycleEventContainer {
 	}
 
 	/**
-	 * Set the amount of cycles between the execution.
+	 * Set the amount of cycles between the execution
 	 * 
 	 * @param tick
 	 */
