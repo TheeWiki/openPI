@@ -230,8 +230,7 @@ public class NPCHandler {
 		newNPC.maxHit = maxHit;
 		newNPC.attack = attack;
 		newNPC.defence = defence;
-		newNPC.spawnedBy = c.getId();
-		newNPC.dagColor = getDagColor(npcType);
+		newNPC.spawnedBy = c.getId(); 
 		if(headIcon) 
 			c.getPA().drawHeadicon(1, slot, 0, 0);
 		if(attackPlayer) {
@@ -251,96 +250,6 @@ public class NPCHandler {
 		}
 		npcs[slot] = newNPC;
 	}
-	
-	public String getDagColor(int npcType) {
-		int dags[] = {
-			1351, 1352, 1356, 1353, 1354, 1355
-		};
-		String colors[] = {
-			"white", "blue", "brown", "red", "orange", "green"
-		};
-		for(int i = 0; i < dags.length; i++) {
-			if(npcType == dags[i]) {
-				return colors[i];
-			}
-		}
-		return "";
-	}
-	
-	public void getDtLastKill(int i) {
-		int dtNpcs[] = {
-			1975, 1914, 1977, 1913
-		};
-		for(int dtNpc : dtNpcs) {
-			if(npcs[i].npcType == dtNpc) {
-				Client p = (Client) Server.playerHandler.players[npcs[i].killedBy];
-				if(p != null) {
-					p.lastDtKill = dtNpc;
-				}
-			}
-		}
-	}
-	
-	public void checkDt(int i) {
-		if(npcs[i] != null) {
-			
-		}
-	}
-	
-	public void checkHfd(int i) {
-		int dags[] = {
-			1351, 1352, 1356,
-			1353, 1354, 1355
-		};
-		for(int j = 0; j < dags.length; j++) {
-			if(npcs[i].npcType == dags[j]) {
-				Client c = (Client) Server.playerHandler.players[npcs[i].killedBy];
-				if(c != null) {
-					c.horrorFromDeep = 2;
-					c.sendMessage("You have completed Horror from the Deep.");
-					c.getAA2().HFTD();
-					if(c.questPoints == 3) {
-						//c.getShops().addQuestCape();
-					}
-					c.getPA().loadQuests();
-				}
-				if(npcs[i] != null) {
-					npcs[i].absX = 0;
-					npcs[i].absY = 0;
-					npcs[i] = null;
-					break;
-				}
-			}
-		}
-	}
-	
-	public void checkRfd(int i) {
-		if(npcs[i] != null) {
-			int playerId = npcs[i].killedBy;
-			if(Server.playerHandler.players[playerId] != null) {
-				Client c = (Client) Server.playerHandler.players[playerId];
-				if(c.roundNpc == 2 && !c.spawned) {
-					spawnNpc(c, 3494, 1899, 5354, c.heightLevel, 1, 210, 24, 70, 60, true, true);
-					c.spawned = true;
-				} else if(c.roundNpc == 3 && !c.spawned) {
-					spawnNpc(c, 3495, 1899, 5354, c.heightLevel, 1, 240, 15, 70, 60, true, true);
-					c.spawned = true;
-				} else if(c.roundNpc == 4 && !c.spawned) {
-					spawnNpc(c, 3496, 1899, 5354, c.heightLevel, 1, 140, 19, 70, 60, true, true);
-					c.spawned = true;
-				} else if(c.roundNpc == 5) {
-					c.getPA().movePlayer(3218, 9621, 0);
-					c.getDH().sendDialogues(30, 608);
-					c.roundNpc = 0;
-					c.questPoints++;
-					if(c.questPoints == 3) {
-						//c.getShops().addQuestCape();
-					}
-					c.getPA().loadQuests();
-				}
-			}
-		}
-	}	
 	
 	public void spawnNpc2(int npcType, int x, int y, int heightLevel, int WalkingType, int HP, int maxHit, int attack, int defence) {
 		// first, search for a free slot
@@ -1152,8 +1061,7 @@ public class NPCHandler {
 						killedBarrow(i);
 						npcs[i].actionTimer = 4; // delete time
 						resetPlayersInCombat(i);
-						npcs[i].dagColor = "";
-						getDtLastKill(i);
+						npcs[i].dagColor = ""; 
 					} else if (npcs[i].actionTimer == 0 && npcs[i].applyDead == true &&  npcs[i].needRespawn == false) {						
 						npcs[i].needRespawn = true;
 						npcs[i].actionTimer = getRespawnTime(i); // respawn time
@@ -1176,9 +1084,7 @@ public class NPCHandler {
 					} else if (npcs[i].actionTimer == 0 && npcs[i].needRespawn == true) {					
 						Client player = (Client) Server.playerHandler.players[npcs[i].spawnedBy];
 						if(player != null) {
-							checkDt(i);
-							checkHfd(i);
-							checkRfd(i);
+ 
 							npcs[i] = null;
 						} else {
 							int old1 = npcs[i].npcType;

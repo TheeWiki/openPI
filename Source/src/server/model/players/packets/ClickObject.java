@@ -39,11 +39,6 @@ public class ClickObject implements PacketType {
 				c.resetWalkingQueue();
 				break;
 			}
-			for (int i = 0; i < c.getRunecrafting().altarID.length; i++) {
-				if (c.objectId == c.getRunecrafting().altarID[i]) {
-					c.getRunecrafting().craftRunes(c.objectId);
-				}
-			}
 			switch(c.objectId) {
 			case 9398://deposit
 				c.getPA().sendFrame126("The Bank of RuneScape - Deposit Box", 7421);

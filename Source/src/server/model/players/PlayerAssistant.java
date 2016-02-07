@@ -170,8 +170,7 @@ public class PlayerAssistant{
 	/**
 	* Quest tab information
 	**/
-	public void loadQuests() {		
-		c.getAA2().sendQuestTab();
+	public void loadQuests() {
 		c.getPA().sendFrame126("Free", 663);
 		//c.getPA().sendFrame126("", 7332);
 		//c.getPA().sendFrame126("", 7333);
@@ -540,7 +539,6 @@ public class PlayerAssistant{
 	public void removeAllWindows() {
 		//synchronized(c) {
 			if(c.getOutStream() != null && c != null) {
-				c.getPA().resetVariables();
 				c.getOutStream().createFrame(219);
 				c.flushOutStream();
 			}
@@ -2164,11 +2162,6 @@ public class PlayerAssistant{
 	public void handleGlory(int gloryId) {
 		c.getDH().sendOption4("Edgeville", "Al Kharid", "Karamja", "Mage Bank");
 		c.usingGlory = true;
-	}
-	
-	public void resetVariables() {
-		c.getCrafting().resetCrafting();
-		c.usingGlory = false;
 	}
 	
 	public boolean inPitsWait() {

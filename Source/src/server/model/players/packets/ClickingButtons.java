@@ -25,135 +25,6 @@ public class ClickingButtons implements PacketType {
 		if(c.playerRights == 3)	
 			Misc.println(c.playerName+ " - actionbutton: "+actionButtonId);
 		switch (actionButtonId){
-		//quests
-			
-			case 33206: // attack
-				c.getSI().attackComplex(1);
-				c.getSI().selected = 0;
-				break;
-			case 33209: // strength
-				c.getSI().strengthComplex(1);
-				c.getSI().selected = 1;
-				break;
-			case 33212: // Defence
-				c.getSI().defenceComplex(1);
-				c.getSI().selected = 2;
-				break;
-			case 33215: // range
-				c.getSI().rangedComplex(1);
-				c.getSI().selected = 3;
-				break;
-			case 33218: // prayer
-				c.getSI().prayerComplex(1);
-				c.getSI().selected = 4;
-				break;
-			case 33221: // mage
-				c.getSI().magicComplex(1);
-				c.getSI().selected = 5;
-				break;
-			case 33224: // runecrafting
-				c.getSI().runecraftingComplex(1);
-				c.getSI().selected = 6;
-				break;
-			case 33207: // hp
-				c.getSI().hitpointsComplex(1);
-				c.getSI().selected = 7;
-				break;
-			case 33210: // agility
-				c.getSI().agilityComplex(1);
-				c.getSI().selected = 8;
-				break;
-			case 33213: // herblore
-				c.getSI().herbloreComplex(1);
-				c.getSI().selected = 9;
-				break;
-			case 33216: // theiving
-				c.getSI().thievingComplex(1);
-				c.getSI().selected = 10;
-				break;
-			case 33219: // crafting
-				c.getSI().craftingComplex(1);
-				c.getSI().selected = 11;
-				break;
-			case 33222: // fletching
-				c.getSI().fletchingComplex(1);
-				c.getSI().selected = 12;
-				break;
-			case 47130:// slayer
-				c.getSI().slayerComplex(1);
-				c.getSI().selected = 13;
-				break;
-			case 33214: // fishing
-				c.getSI().fishingComplex(1);
-				c.getSI().selected = 16;
-				break;
-			case 33217: // cooking
-				c.getSI().cookingComplex(1);
-				c.getSI().selected = 17;
-				break;
-			case 33220: // firemaking
-				c.getSI().firemakingComplex(1);
-				c.getSI().selected = 18;
-				break;
-			case 33223: // woodcut
-				c.getSI().woodcuttingComplex(1);
-				c.getSI().selected = 19;
-				break;
-			case 54104: // farming
-				c.getSI().farmingComplex(1);
-				c.getSI().selected = 20;
-				break;
-
-			case 34142: // tab 1
-				c.getSI().menuCompilation(1);
-				break;
-
-			case 34119: // tab 2
-				c.getSI().menuCompilation(2);
-				break;
-
-			case 34120: // tab 3
-				c.getSI().menuCompilation(3);
-				break;
-
-			case 34123: // tab 4
-				c.getSI().menuCompilation(4);
-				break;
-
-			case 34133: // tab 5
-				c.getSI().menuCompilation(5);
-				break;
-
-			case 34136: // tab 6
-				c.getSI().menuCompilation(6);
-				break;
-
-			case 34139: // tab 7
-				c.getSI().menuCompilation(7);
-				break;
-
-			case 34155: // tab 8
-				c.getSI().menuCompilation(8);
-				break;
-
-			case 34158: // tab 9
-				c.getSI().menuCompilation(9);
-				break;
-
-			case 34161: // tab 10
-				c.getSI().menuCompilation(10);
-				break;
-
-			case 59199: // tab 11
-				c.getSI().menuCompilation(11);
-				break;
-
-			case 59202: // tab 12
-				c.getSI().menuCompilation(12);
-				break;
-			case 59203: // tab 13
-				c.getSI().menuCompilation(13);
-				break;
 			
 			case 150:
 				if (c.autoRet == 0)
@@ -271,15 +142,7 @@ public class ClickingButtons implements PacketType {
 				if (c.dialogueAction == 10) {
 					c.getPA().spellTeleport(2660, 4839, 0);
 					c.dialogueAction = -1;
-				} else if (c.dialogueAction == 11) {
-					//c.getPA().spellTeleport(2527, 4833, 0); astrals here
-					c.getRunecrafting().craftRunes(2489);
-					c.dialogueAction = -1;
-				} else if (c.dialogueAction == 12) {
-					//c.getPA().spellTeleport(2464, 4834, 0); bloods here
-					c.getRunecrafting().craftRunes(2489);
-					c.dialogueAction = -1;
-				}
+				} 
 				break;
 			//5th tele option
 			case 9194:
@@ -318,13 +181,6 @@ public class ClickingButtons implements PacketType {
 						c.sendMessage("Only the owner of the clan has the power to do that.");
 				}	
 			break;
-			case 34185: case 34184: case 34183: case 34182: case 34189: case 34188: case 34187: case 34186: case 34193: case 34192: case 34191: case 34190:
-				if (c.craftingLeather)
-					c.getCrafting().handleCraftingClick(actionButtonId);
-				if (c.getFletching().fletching)
-					c.getFletching().handleFletchingClick(actionButtonId);
-			break;
-			
 
 			case 58253:
 			//c.getPA().showInterface(15106);

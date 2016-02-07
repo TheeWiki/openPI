@@ -82,9 +82,6 @@ public class ObjectManager {
 				c.getPA().object(o.objectId, o.objectX, o.objectY, o.face, o.type);
 		}
 		loadCustomSpawns(c);
-		if (c.distanceToPoint(2813, 3463) <= 60) {
-			c.getFarming().updateHerbPatch();
-		}
 	}
 	
 	private int[][] customObjects = {{}};

@@ -31,12 +31,6 @@ public class ClickItem implements PacketType {
 			c.getPA().fillPouch(pouch);
 			return;
 		}
-		if (c.getHerblore().isUnidHerb(itemId))
-			c.getHerblore().handleHerbClick(itemId);
-		if (c.getFood().isFood(itemId))
-			c.getFood().eat(itemId,itemSlot);
-		if (c.getPrayer().IsABone(itemId))
-			c.getPrayer().buryBone(itemId);
 		//ScriptManager.callFunc("itemClick_"+itemId, c, itemId, itemSlot);
 		if (c.getPotions().isPotion(itemId))
 			c.getPotions().handlePotion(itemId,itemSlot);

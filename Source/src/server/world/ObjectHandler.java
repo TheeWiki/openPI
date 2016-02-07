@@ -66,9 +66,6 @@ public class ObjectHandler {
 				}		
 			}
 		}
-		if (c.distanceToPoint(2813, 3463) <= 60) {
-			c.getFarming().updateHerbPatch();
-		}
 		if (c.distanceToPoint(2961, 3389) <= 60) {
 			c.getPA().object(6552, 2961, 3389, -1, 10);		
 		}

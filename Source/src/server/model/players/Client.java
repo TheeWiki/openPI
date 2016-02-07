@@ -38,24 +38,7 @@ public class Client extends Player {
 	private PotionMixing potionMixing = new PotionMixing(this);
 	private Food food = new Food(this);
 	private ActionAssistant2 actionAssistant2 = new ActionAssistant2(this);
-	
-	private SkillInterfaces skillInterfaces = new SkillInterfaces(this);
-	
-	
-	/**
-	 * Skill instances
-	 */
-	private Slayer slayer = new Slayer(this);
-	private Runecrafting runecrafting = new Runecrafting(this);
-	private Agility agility = new Agility(this);
-	private Cooking cooking = new Cooking(this);
-	private Crafting crafting = new Crafting(this);
-	private Fletching fletching = new Fletching(this);
-	private Farming farming = new Farming(this);
-	private Prayer prayer = new Prayer(this);
-	private Thieving thieving = new Thieving(this);
-	private Firemaking firemaking = new Firemaking(this);
-	private Herblore herblore = new Herblore(this);
+ 
 	
 	private int somejunk;
 	public int lowMemoryVersion = 0;
@@ -612,68 +595,6 @@ public class Client extends Player {
 	
 	public PlayerAssistant getPlayerAssistant() {
 		return playerAssistant;
-	}
-	
-	public ActionAssistant2 getAA2() {
-		return actionAssistant2;
-	}
-	
-	
-	
-	public SkillInterfaces getSI() {
-		return skillInterfaces;
-	}
-	
-	/**
-	 * Skill Constructors
-	 */
-	public Slayer getSlayer() {
-		return slayer;
-	}
-	
-	public Runecrafting getRunecrafting() {
-		return runecrafting;
-	}
-	
-	
-
-	public Cooking getCooking() {
-		return cooking;
-	}
-	
-	public Agility getAgility() {
-		return agility;
-	}
-	
-
-	public Crafting getCrafting() {
-		return crafting;
-	}
-	
-
-	public Farming getFarming() {
-		return farming;
-	}
-	
-	public Thieving getThieving() {
-		return thieving;
-	}
-	
-	public Herblore getHerblore() {
-		return herblore;
-	}
-	
-	public Firemaking getFiremaking() {
-		return firemaking;
-	}
-
-	
-	public Fletching getFletching() { 
-		return fletching;
-	}
-	
-	public Prayer getPrayer() { 
-		return prayer;
 	}
 	
 	/**
