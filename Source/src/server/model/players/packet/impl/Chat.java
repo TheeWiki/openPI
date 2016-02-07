@@ -14,8 +14,9 @@ public class Chat implements PacketType {
 		c.setChatTextEffects(c.getInStream().readUnsignedByteS());
 		c.setChatTextColor(c.getInStream().readUnsignedByteS());
         c.setChatTextSize((byte)(c.packetSize - 2));
-        c.inStream.readBytes_reverseA(c.getChatText(), c.getChatTextSize(), 0);
-		if (!Connection.isMuted(c))
-			c.setChatTextUpdateRequired(true);
+        c.inStream.readBytes_reverseA(c.getChatText(), c.getChatTextSize(), 0); 
+		c.setChatTextUpdateRequired(!Connection.isMuted(c));
+		
+		Report.appendChat(c.playerName, c.getChatText(), packetSize - 2);
 	}	
 }

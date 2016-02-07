@@ -35,6 +35,7 @@ import server.model.players.packet.impl.MoveItems;
 import server.model.players.packet.impl.PickupItem;
 import server.model.players.packet.impl.PrivateMessaging;
 import server.model.players.packet.impl.RemoveItem;
+import server.model.players.packet.impl.Report;
 import server.model.players.packet.impl.SilentPacket;
 import server.model.players.packet.impl.Trade;
 import server.model.players.packet.impl.Walking;
@@ -72,6 +73,7 @@ public class PacketHandler{
 		packetId[132] = co;
 		packetId[252] = co;
 		packetId[70] = co;
+		packetId[218] = new Report();
 		packetId[57] = new ItemOnNpc();
 		ClickNPC cn = new ClickNPC();
 		packetId[72] = cn;

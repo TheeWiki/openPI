@@ -1,5 +1,6 @@
 package server.model.players;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Future;
@@ -63,7 +64,29 @@ public class Client extends Player {
 			buffer = new byte[Constants.BUFFER_SIZE];
 		}
 	}
+	private HashMap<String, Object> attributes = new HashMap<String, Object>();
 
+	public void setAttribute(String key, Object value) {
+		attributes.put(key, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getAttribute(String key) {
+		return (T) attributes.get(key);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getAttribute(String key, T fail) {
+		T t = (T) attributes.get(key);
+		if (t != null) {
+			return t;
+		}
+		return fail;
+	}
+
+	public void removeAttribute(String key) {
+		attributes.remove(key);
+	}
 	public void flushOutStream() {
 		if (!session.isConnected() || disconnected || outStream.currentOffset == 0)
 			return;
