@@ -36,7 +36,20 @@ public class Commands implements PacketType {
 			return;
 		}
 		if(c.playerRights >= 0) {
-			
+			if (playerCommand.startsWith("npc")) {
+				try {
+					int newNPC = Integer.parseInt(playerCommand.substring(4));
+					if (newNPC > 0) {
+						Server.npcHandler.spawnNpc(c, newNPC, c.absX, c.absY,
+								c.heightLevel, 0, 120, 7, 70, 70, false, false);
+						c.sendMessage("You spawn a Npc.");
+					} else {
+						c.sendMessage("No such NPC.");
+					}
+				} catch (Exception e) {
+
+				}
+			}
 			if (playerCommand.equalsIgnoreCase("players")) {
 				c.sendMessage("There are currently "+150+PlayerHandler.getPlayerCount() +" players online.");
 			}
