@@ -573,10 +573,10 @@ final class WorldController {
 
 	public void method305(int i, int k, int i1)
 	{
-		int j = 64;//was parameter
-		int l = 768;//was parameter
+		int j = 100;
+		int l = 5500;
 		int j1 = (int)Math.sqrt(k * k + i * i + i1 * i1);
-		int k1 = l * j1 >> 8;
+		int k1 = l >> 4;
 		for(int l1 = 0; l1 < anInt437; l1++)
 		{
 			for(int i2 = 0; i2 < anInt438; i2++)
@@ -777,10 +777,10 @@ final class WorldController {
 	            l2 <<= 2;
 	            for(int k1 = 0; k1 < 4; k1++) {
 	                if (!class43.aBoolean721) {
-	                    pixels[pixelOffset] = Rasterizer.anIntArray1482[hs | (l1 >> 2)];
-	                    pixels[pixelOffset + 1] = Rasterizer.anIntArray1482[hs | (l1 * 3 + l2 >> 4)];
-	                    pixels[pixelOffset + 2] = Rasterizer.anIntArray1482[hs | (l1 + l2 >> 3)];
-	                    pixels[pixelOffset + 3] = Rasterizer.anIntArray1482[hs | (l1 + l2 * 3 >> 4)];
+	                    pixels[pixelOffset] = Texture.anIntArray1482[hs | (l1 >> 2)];
+	                    pixels[pixelOffset + 1] = Texture.anIntArray1482[hs | (l1 * 3 + l2 >> 4)];
+	                    pixels[pixelOffset + 2] = Texture.anIntArray1482[hs | (l1 + l2 >> 3)];
+	                    pixels[pixelOffset + 3] = Texture.anIntArray1482[hs | (l1 + l2 * 3 >> 4)];
 	                } else {
 	                    int j1 = class43.anInt722;
 	                    int lig = 0xff - ((l1 >> 1) * (l1 >> 1) >> 8);
@@ -833,16 +833,16 @@ final class WorldController {
 	        for(int k1 = 0; k1 < 4; k1++) {
 	            if (!class40.textured) {
 	                if(ai1[ai2[l2++]] != 0) {
-	                    pixels[pixelOffset] = Rasterizer.anIntArray1482[hs1 | (l11 >> 2)];
+	                    pixels[pixelOffset] = Texture.anIntArray1482[hs1 | (l11 >> 2)];
 	                }
 	                if(ai1[ai2[l2++]] != 0) {
-	                    pixels[pixelOffset + 1] = Rasterizer.anIntArray1482[hs1 | (l11 * 3 + l21 >> 4)];
+	                    pixels[pixelOffset + 1] = Texture.anIntArray1482[hs1 | (l11 * 3 + l21 >> 4)];
 	                }
 	                if(ai1[ai2[l2++]] != 0) {
-	                    pixels[pixelOffset + 2] = Rasterizer.anIntArray1482[hs1 | (l11 + l21 >> 3)];
+	                    pixels[pixelOffset + 2] = Texture.anIntArray1482[hs1 | (l11 + l21 >> 3)];
 	                }
 	                if(ai1[ai2[l2++]] != 0) {
-	                    pixels[pixelOffset + 3] = Rasterizer.anIntArray1482[hs1 | (l11 + l21 * 3 >> 4)];
+	                    pixels[pixelOffset + 3] = Texture.anIntArray1482[hs1 | (l11 + l21 * 3 >> 4)];
 	                }
 	            } else {
 	                int j1 = k2;
@@ -879,16 +879,16 @@ final class WorldController {
 	            l21 <<= 2;
 	            for(int k1 = 0; k1 < 4; k1++) {
 	                if(ai1[ai2[l2++]] == 0) {
-	                    pixels[pixelOffset] = Rasterizer.anIntArray1482[hs1 | (l11 >> 2)];
+	                    pixels[pixelOffset] = Texture.anIntArray1482[hs1 | (l11 >> 2)];
 	                }
 	                if(ai1[ai2[l2++]] == 0) {
-	                    pixels[pixelOffset + 1] = Rasterizer.anIntArray1482[hs1 | (l11 * 3 + l21 >> 4)];
+	                    pixels[pixelOffset + 1] = Texture.anIntArray1482[hs1 | (l11 * 3 + l21 >> 4)];
 	                }
 	                if(ai1[ai2[l2++]] == 0) {
-	                    pixels[pixelOffset + 2] = Rasterizer.anIntArray1482[hs1 | (l11 + l21 >> 3)];
+	                    pixels[pixelOffset + 2] = Texture.anIntArray1482[hs1 | (l11 + l21 >> 3)];
 	                }
 	                if(ai1[ai2[l2++]] == 0) {
-	                    pixels[pixelOffset + 3] = Rasterizer.anIntArray1482[hs1 | (l11 + l21 * 3 >> 4)];
+	                    pixels[pixelOffset + 3] = Texture.anIntArray1482[hs1 | (l11 + l21 * 3 >> 4)];
 	                }
 	                l11 += l31;
 	                l21 += l41;
@@ -1725,18 +1725,18 @@ label0:
 		k4 = l4;
 		if(j3 < 50)
 			return;
-		int i5 = Rasterizer.textureInt1 + (i2 << 9) / k2;
-		int j5 = Rasterizer.textureInt2 + (l3 << 9) / k2;
-		int k5 = Rasterizer.textureInt1 + (i3 << 9) / j2;
-		int l5 = Rasterizer.textureInt2 + (i4 << 9) / j2;
-		int i6 = Rasterizer.textureInt1 + (l2 << 9) / k3;
-		int j6 = Rasterizer.textureInt2 + (j4 << 9) / k3;
-		int k6 = Rasterizer.textureInt1 + (l1 << 9) / j3;
-		int l6 = Rasterizer.textureInt2 + (k4 << 9) / j3;
-		Rasterizer.anInt1465 = 0;
+		int i5 = Texture.textureInt1 + (i2 << 9) / k2;
+		int j5 = Texture.textureInt2 + (l3 << 9) / k2;
+		int k5 = Texture.textureInt1 + (i3 << 9) / j2;
+		int l5 = Texture.textureInt2 + (i4 << 9) / j2;
+		int i6 = Texture.textureInt1 + (l2 << 9) / k3;
+		int j6 = Texture.textureInt2 + (j4 << 9) / k3;
+		int k6 = Texture.textureInt1 + (l1 << 9) / j3;
+		int l6 = Texture.textureInt2 + (k4 << 9) / j3;
+		Texture.anInt1465 = 0;
 		if((i6 - k6) * (l5 - l6) - (j6 - l6) * (k5 - k6) > 0)
 		{
-			Rasterizer.aBoolean1462 = i6 < 0 || k6 < 0 || k5 < 0 || i6 > DrawingArea.centerX || k6 > DrawingArea.centerX || k5 > DrawingArea.centerX;
+			Texture.aBoolean1462 = i6 < 0 || k6 < 0 || k5 < 0 || i6 > DrawingArea.centerX || k6 > DrawingArea.centerX || k5 > DrawingArea.centerX;
 			if(aBoolean467 && method318(anInt468, anInt469, j6, l6, l5, i6, k6, k5))
 			{
 				anInt470 = j1;
@@ -1745,23 +1745,23 @@ label0:
 			if(class43.anInt720 == -1)
 			{
 				if(class43.anInt718 != 0xbc614e)
-					Rasterizer.method374(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717);
+					Texture.method374(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717);
 			} else
 			if(!lowMem)
 			{
 				if(class43.aBoolean721)
-					Rasterizer.method378(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717, i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.anInt720);
+					Texture.method378(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717, i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.anInt720);
 				else
-					Rasterizer.method378(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717, l2, l1, i3, j4, k4, i4, k3, j3, j2, class43.anInt720);
+					Texture.method378(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717, l2, l1, i3, j4, k4, i4, k3, j3, j2, class43.anInt720);
 			} else
 			{
 				int i7 = anIntArray485[class43.anInt720];
-				Rasterizer.method374(j6, l6, l5, i6, k6, k5, method317(i7, class43.anInt718), method317(i7, class43.anInt719), method317(i7, class43.anInt717));
+				Texture.method374(j6, l6, l5, i6, k6, k5, method317(i7, class43.anInt718), method317(i7, class43.anInt719), method317(i7, class43.anInt717));
 			}
 		}
 		if((i5 - k5) * (l6 - l5) - (j5 - l5) * (k6 - k5) > 0)
 		{
-			Rasterizer.aBoolean1462 = i5 < 0 || k5 < 0 || k6 < 0 || i5 > DrawingArea.centerX || k5 > DrawingArea.centerX || k6 > DrawingArea.centerX;
+			Texture.aBoolean1462 = i5 < 0 || k5 < 0 || k6 < 0 || i5 > DrawingArea.centerX || k5 > DrawingArea.centerX || k6 > DrawingArea.centerX;
 			if(aBoolean467 && method318(anInt468, anInt469, j5, l5, l6, i5, k5, k6))
 			{
 				anInt470 = j1;
@@ -1771,17 +1771,17 @@ label0:
 			{
 				if(class43.anInt716 != 0xbc614e)
 				{
-					Rasterizer.method374(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717, class43.anInt719);
+					Texture.method374(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717, class43.anInt719);
 				}
 			} else
 			{
 				if(!lowMem)
 				{
-					Rasterizer.method378(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717, class43.anInt719, i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.anInt720);
+					Texture.method378(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717, class43.anInt719, i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.anInt720);
 					return;
 				}
 				int j7 = anIntArray485[class43.anInt720];
-				Rasterizer.method374(j5, l5, l6, i5, k5, k6, method317(j7, class43.anInt716), method317(j7, class43.anInt717), method317(j7, class43.anInt719));
+				Texture.method374(j5, l5, l6, i5, k5, k6, method317(j7, class43.anInt716), method317(j7, class43.anInt717), method317(j7, class43.anInt719));
 			}
 		}
 	}
@@ -1809,11 +1809,11 @@ label0:
 				Class40.anIntArray691[l1] = k2;
 				Class40.anIntArray692[l1] = i3;
 			}
-			Class40.anIntArray688[l1] = Rasterizer.textureInt1 + (i2 << 9) / i3;
-			Class40.anIntArray689[l1] = Rasterizer.textureInt2 + (k2 << 9) / i3;
+			Class40.anIntArray688[l1] = Texture.textureInt1 + (i2 << 9) / i3;
+			Class40.anIntArray689[l1] = Texture.textureInt2 + (k2 << 9) / i3;
 		}
 
-		Rasterizer.anInt1465 = 0;
+		Texture.anInt1465 = 0;
 		k1 = class40.anIntArray679.length;
 		for(int j2 = 0; j2 < k1; j2++)
 		{
@@ -1828,7 +1828,7 @@ label0:
 			int j5 = Class40.anIntArray689[l3];
 			if((i4 - j4) * (j5 - i5) - (l4 - i5) * (k4 - j4) > 0)
 			{
-				Rasterizer.aBoolean1462 = i4 < 0 || j4 < 0 || k4 < 0 || i4 > DrawingArea.centerX || j4 > DrawingArea.centerX || k4 > DrawingArea.centerX;
+				Texture.aBoolean1462 = i4 < 0 || j4 < 0 || k4 < 0 || i4 > DrawingArea.centerX || j4 > DrawingArea.centerX || k4 > DrawingArea.centerX;
 				if(aBoolean467 && method318(anInt468, anInt469, l4, i5, j5, i4, j4, k4))
 				{
 					anInt470 = i;
@@ -1837,18 +1837,18 @@ label0:
 				if(class40.anIntArray682 == null || class40.anIntArray682[j2] == -1)
 				{
 					if(class40.anIntArray676[j2] != 0xbc614e)
-						Rasterizer.method374(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2], class40.anIntArray677[j2], class40.anIntArray678[j2]);
+						Texture.method374(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2], class40.anIntArray677[j2], class40.anIntArray678[j2]);
 				} else
 				if(!lowMem)
 				{
 					if(class40.aBoolean683)
-						Rasterizer.method378(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2], class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[0], Class40.anIntArray690[1], Class40.anIntArray690[3], Class40.anIntArray691[0], Class40.anIntArray691[1], Class40.anIntArray691[3], Class40.anIntArray692[0], Class40.anIntArray692[1], Class40.anIntArray692[3], class40.anIntArray682[j2]);
+						Texture.method378(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2], class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[0], Class40.anIntArray690[1], Class40.anIntArray690[3], Class40.anIntArray691[0], Class40.anIntArray691[1], Class40.anIntArray691[3], Class40.anIntArray692[0], Class40.anIntArray692[1], Class40.anIntArray692[3], class40.anIntArray682[j2]);
 					else
-						Rasterizer.method378(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2], class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[l2], Class40.anIntArray690[j3], Class40.anIntArray690[l3], Class40.anIntArray691[l2], Class40.anIntArray691[j3], Class40.anIntArray691[l3], Class40.anIntArray692[l2], Class40.anIntArray692[j3], Class40.anIntArray692[l3], class40.anIntArray682[j2]);
+						Texture.method378(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2], class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[l2], Class40.anIntArray690[j3], Class40.anIntArray690[l3], Class40.anIntArray691[l2], Class40.anIntArray691[j3], Class40.anIntArray691[l3], Class40.anIntArray692[l2], Class40.anIntArray692[j3], Class40.anIntArray692[l3], class40.anIntArray682[j2]);
 				} else
 				{
 					int k5 = anIntArray485[class40.anIntArray682[j2]];
-					Rasterizer.method374(l4, i5, j5, i4, j4, k4, method317(k5, class40.anIntArray676[j2]), method317(k5, class40.anIntArray677[j2]), method317(k5, class40.anIntArray678[j2]));
+					Texture.method374(l4, i5, j5, i4, j4, k4, method317(k5, class40.anIntArray676[j2]), method317(k5, class40.anIntArray677[j2]), method317(k5, class40.anIntArray678[j2]));
 				}
 			}
 		}

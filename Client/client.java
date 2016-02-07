@@ -189,7 +189,7 @@ public class client extends RSApplet {
 
 	private void drawChatArea() {
 		aRSImageProducer_1166.initDrawingArea();
-		Rasterizer.anIntArray1472 = anIntArray1180;
+		Texture.anIntArray1472 = anIntArray1180;
 		chatArea.drawSprite(-5, -2);
 		drawChannelButtons();
 		TextDrawingArea textDrawingArea = aTextDrawingArea_1271;
@@ -389,7 +389,7 @@ public class client extends RSApplet {
 		}
 		aRSImageProducer_1166.drawGraphics(338, super.graphics, 0);
 		aRSImageProducer_1165.initDrawingArea();
-		Rasterizer.anIntArray1472 = anIntArray1182;
+		Texture.anIntArray1472 = anIntArray1182;
 	}
 
 	public void init() {
@@ -556,7 +556,7 @@ public class client extends RSApplet {
 			anInt985 = -1;
 			aClass19_1056.removeAll();
 			aClass19_1013.removeAll();
-			Rasterizer.method366();
+			Texture.method366();
 			unlinkMRUNodes();
 			worldController.initToNull();
 			System.gc();
@@ -743,7 +743,7 @@ public class client extends RSApplet {
 
 		}
 		System.gc();
-		Rasterizer.method367();
+		Texture.method367();
 		onDemandFetcher.method566();
 		int k = (anInt1069 - 6) / 8 - 1;
 		int j1 = (anInt1069 + 6) / 8 + 1;
@@ -1454,13 +1454,13 @@ public class client extends RSApplet {
 		if(j == 1)
 		{
 			if(k == 1)
-				Rasterizer.method372(0.90000000000000002D);
+				Texture.method372(0.90000000000000002D);
 			if(k == 2)
-				Rasterizer.method372(0.80000000000000004D);
+				Texture.method372(0.80000000000000004D);
 			if(k == 3)
-				Rasterizer.method372(0.69999999999999996D);
+				Texture.method372(0.69999999999999996D);
 			if(k == 4)
-				Rasterizer.method372(0.59999999999999998D);
+				Texture.method372(0.59999999999999998D);
 			ItemDef.mruNodes1.unlinkAll();
 			welcomeScreenRaised = true;
 		}
@@ -1882,7 +1882,7 @@ public class client extends RSApplet {
 
 	private void drawTabArea() {
 		aRSImageProducer_1163.initDrawingArea();
-		Rasterizer.anIntArray1472 = anIntArray1181;
+		Texture.anIntArray1472 = anIntArray1181;
 		tabArea.drawSprite(-8, -10);
 		if(invOverlayInterfaceID == -1) {
 			drawRedStones();
@@ -1896,13 +1896,13 @@ public class client extends RSApplet {
 			drawMenu();
 		aRSImageProducer_1163.drawGraphics(168, super.graphics, 519);
 		aRSImageProducer_1165.initDrawingArea();
-		Rasterizer.anIntArray1472 = anIntArray1182;
+		Texture.anIntArray1472 = anIntArray1182;
 	}
 
 	private void method37(int j) {
 		if(!lowMem) {
-			if(Rasterizer.anIntArray1480[17] >= j) {
-				Background background = Rasterizer.aBackgroundArray1474s[17];
+			if(Texture.anIntArray1480[17] >= j) {
+				Background background = Texture.aBackgroundArray1474s[17];
 				int k = background.anInt1452 * background.anInt1453 - 1;
 				//fire cape apparently?
 				int j1 = background.anInt1452 * anInt945 * 2;
@@ -1913,7 +1913,7 @@ public class client extends RSApplet {
 
 				background.aByteArray1450 = abyte3;
 				aByteArray912 = abyte0;
-				Rasterizer.method370(17);
+				Texture.method370(17);
 				anInt854++;
 				if(anInt854 > 1235) {
 					anInt854 = 0;
@@ -1934,8 +1934,8 @@ public class client extends RSApplet {
 					stream.writeBytes(stream.currentOffset - l2);
 				}
 			}
-			if(Rasterizer.anIntArray1480[24] >= j) {
-				Background background_1 = Rasterizer.aBackgroundArray1474s[24];
+			if(Texture.anIntArray1480[24] >= j) {
+				Background background_1 = Texture.aBackgroundArray1474s[24];
 				int l = background_1.anInt1452 * background_1.anInt1453 - 1;
 				int k1 = background_1.anInt1452 * anInt945 * 2;
 				byte abyte1[] = background_1.aByteArray1450;
@@ -1945,10 +1945,10 @@ public class client extends RSApplet {
 
 				background_1.aByteArray1450 = abyte4;
 				aByteArray912 = abyte1;
-				Rasterizer.method370(24);
+				Texture.method370(24);
 			}
-			if(Rasterizer.anIntArray1480[34] >= j) {
-				Background background_2 = Rasterizer.aBackgroundArray1474s[34];
+			if(Texture.anIntArray1480[34] >= j) {
+				Background background_2 = Texture.aBackgroundArray1474s[34];
 				int i1 = background_2.anInt1452 * background_2.anInt1453 - 1;
 				int l1 = background_2.anInt1452 * anInt945 * 2;
 				byte abyte2[] = background_2.aByteArray1450;
@@ -1958,11 +1958,11 @@ public class client extends RSApplet {
 
 				background_2.aByteArray1450 = abyte5;
 				aByteArray912 = abyte2;
-				Rasterizer.method370(34);
+				Texture.method370(34);
 			}
-			if(Rasterizer.anIntArray1480[40] >= j)
+			if(Texture.anIntArray1480[40] >= j)
             {
-				Background background_2 = Rasterizer.aBackgroundArray1474s[40];
+				Background background_2 = Texture.aBackgroundArray1474s[40];
 				int i1 = background_2.anInt1452 * background_2.anInt1453 - 1;
 				int l1 = background_2.anInt1452 * anInt945 * 2;
 				byte abyte2[] = background_2.aByteArray1450;
@@ -1972,7 +1972,7 @@ public class client extends RSApplet {
 
 				background_2.aByteArray1450 = abyte5;
 				aByteArray912 = abyte2;
-				Rasterizer.method370(40);
+				Texture.method370(40);
             }
 		}
 	}
@@ -2625,7 +2625,7 @@ public class client extends RSApplet {
 
 	private static void setHighMem() {
 		WorldController.lowMem = false;
-		Rasterizer.lowMem = false;
+		Texture.lowMem = false;
 		lowMem = false;
 		ObjectManager.lowMem = false;
 		ObjectDef.lowMem = false;
@@ -4984,7 +4984,7 @@ public class client extends RSApplet {
 		Varp.cache = null;
 		super.fullGameScreen = null;
 		Player.mruNodes = null;
-		Rasterizer.nullLoader();
+		Texture.nullLoader();
 		WorldController.nullLoader();
 		Model.nullLoader();
 		Class36.nullLoader();
@@ -7545,9 +7545,9 @@ public class client extends RSApplet {
 			}
 
 			drawLoadingText(83, "Unpacking textures");
-			Rasterizer.method368(streamLoader_3);
-			Rasterizer.method372(0.80000000000000004D);
-			Rasterizer.method367();
+			Texture.method368(streamLoader_3);
+			Texture.method372(0.80000000000000004D);
+			Texture.method367();
 			drawLoadingText(86, "Unpacking config");
 			Animation.unpackConfig(streamLoader);
 			ObjectDef.unpackConfig(streamLoader);
@@ -7616,20 +7616,20 @@ public class client extends RSApplet {
 				anIntArray1229[l6 - 5] = l7 - j7;
 			}
 
-			Rasterizer.method365(765, 503);
-			fullScreenTextureArray = Rasterizer.anIntArray1472;
-			Rasterizer.method365(519, 165);
-			anIntArray1180 = Rasterizer.anIntArray1472;
-			Rasterizer.method365(246, 335);
-			anIntArray1181 = Rasterizer.anIntArray1472;
-			Rasterizer.method365(512, 334);
-			anIntArray1182 = Rasterizer.anIntArray1472;
+			Texture.method365(765, 503);
+			fullScreenTextureArray = Texture.anIntArray1472;
+			Texture.method365(519, 165);
+			anIntArray1180 = Texture.anIntArray1472;
+			Texture.method365(246, 335);
+			anIntArray1181 = Texture.anIntArray1472;
+			Texture.method365(512, 334);
+			anIntArray1182 = Texture.anIntArray1472;
 			int ai[] = new int[9];
 			for(int i8 = 0; i8 < 9; i8++)
 			{
 				int k8 = 128 + i8 * 32 + 15;
 				int l8 = 600 + k8 * 3;
-				int i9 = Rasterizer.anIntArray1470[k8];
+				int i9 = Texture.anIntArray1470[k8];
 				ai[i8] = l8 * i9 >> 16;
 			}
 
@@ -7690,8 +7690,8 @@ public class client extends RSApplet {
 				i -= 73;
 				j -= 75;
 				int k = minimapInt1 + minimapInt2 & 0x7ff;
-				int i1 = Rasterizer.anIntArray1470[k];
-				int j1 = Rasterizer.anIntArray1471[k];
+				int i1 = Texture.anIntArray1470[k];
+				int j1 = Texture.anIntArray1471[k];
 				i1 = i1 * (minimapInt3 + 256) >> 8;
 				j1 = j1 * (minimapInt3 + 256) >> 8;
 				int k1 = j * i1 + i * j1 >> 11;
@@ -8144,7 +8144,7 @@ public class client extends RSApplet {
 				anInt945 = 0;
 				resetAllImageProducers();
 				super.fullGameScreen.initDrawingArea();
-				Rasterizer.anIntArray1472 = fullScreenTextureArray;
+				Texture.anIntArray1472 = fullScreenTextureArray;
 				DrawingArea.setAllPixelsToZero();
 				welcomeScreenRaised = true;
 				if (openInterfaceID != -1) {
@@ -8602,12 +8602,12 @@ public class client extends RSApplet {
                     if(sprite != null)
                         sprite.drawSprite(k2, l2);
 				} else if(class9_1.type == 6) {
-					int k3 = Rasterizer.textureInt1;
-					int j4 = Rasterizer.textureInt2;
-					Rasterizer.textureInt1 = k2 + class9_1.width / 2;
-					Rasterizer.textureInt2 = l2 + class9_1.height / 2;
-					int i5 = Rasterizer.anIntArray1470[class9_1.modelRotation1] * class9_1.modelZoom >> 16;
-					int l5 = Rasterizer.anIntArray1471[class9_1.modelRotation1] * class9_1.modelZoom >> 16;
+					int k3 = Texture.textureInt1;
+					int j4 = Texture.textureInt2;
+					Texture.textureInt1 = k2 + class9_1.width / 2;
+					Texture.textureInt2 = l2 + class9_1.height / 2;
+					int i5 = Texture.anIntArray1470[class9_1.modelRotation1] * class9_1.modelZoom >> 16;
+					int l5 = Texture.anIntArray1471[class9_1.modelRotation1] * class9_1.modelZoom >> 16;
 					boolean flag2 = interfaceIsSelected(class9_1);
 					int i7;
 					if(flag2)
@@ -8623,8 +8623,8 @@ public class client extends RSApplet {
 					}
 					if(model != null)
 						model.method482(class9_1.modelRotation2, 0, class9_1.modelRotation1, 0, i5, l5);
-					Rasterizer.textureInt1 = k3;
-					Rasterizer.textureInt2 = j4;
+					Texture.textureInt1 = k3;
+					Texture.textureInt2 = j4;
 				} else if(class9_1.type == 7) {
 					TextDrawingArea textDrawingArea_1 = class9_1.textDrawingAreas;
 					int k4 = 0;
@@ -9789,8 +9789,8 @@ public class client extends RSApplet {
 		l = i1 * j1 + l * k1 >> 16;
 		i1 = j2;
 		if(l >= 50) {
-			spriteDrawX = Rasterizer.textureInt1 + (i << 9) / l;
-			spriteDrawY = Rasterizer.textureInt2 + (i1 << 9) / l;
+			spriteDrawX = Texture.textureInt1 + (i << 9) / l;
+			spriteDrawY = Texture.textureInt2 + (i1 << 9) / l;
 		} else {
 			spriteDrawX = -1;
 			spriteDrawY = -1;
@@ -10517,7 +10517,7 @@ public class client extends RSApplet {
 	private static void setLowMem()
 	{
 		WorldController.lowMem = true;
-		Rasterizer.lowMem = true;
+		Texture.lowMem = true;
 		lowMem = true;
 		ObjectManager.lowMem = true;
 		ObjectDef.lowMem = true;
@@ -12072,7 +12072,7 @@ public class client extends RSApplet {
 						yCameraCurve = 383;
 				}
 			}
-		int k2 = Rasterizer.anInt1481;
+		int k2 = Texture.anInt1481;
 		Model.aBoolean1684 = true;
 		Model.anInt1687 = 0;
 		Model.anInt1685 = super.mouseX - 4;
