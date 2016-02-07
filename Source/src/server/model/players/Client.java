@@ -37,9 +37,7 @@ public class Client extends Player {
 	private Potions potions = new Potions(this);
 	private PotionMixing potionMixing = new PotionMixing(this);
 	private Food food = new Food(this);
- 
-	
-	private int somejunk;
+  
 	public int lowMemoryVersion = 0;
 	public int timeOutCounter = 0;		
 	public int returnCode = 2; 

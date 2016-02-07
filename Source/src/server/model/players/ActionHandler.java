@@ -10,6 +10,7 @@ import server.content.skill.*;
 import server.event.*;
 import server.model.minigames.*;
 import server.model.players.packets.*;
+import server.model.players.skills.SkillIndex;
 
 public class ActionHandler {
 	
