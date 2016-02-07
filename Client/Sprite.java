@@ -667,7 +667,29 @@ public final class Sprite extends DrawingArea {
 				int l4 = k3 - l2 * i4;
 				for(k1 = -ai[j1]; k1 < 0; k1++)
 				{
-					DrawingArea.pixels[j4++] = myPixels[(k4 >> 16) + (l4 >> 16) * myWidth];
+					int x1 = k4 >> 16;
+				int y1 = l4 >> 16;
+				int x2 = x1 + 1;
+				int y2 = y1 + 1;
+				int c1 = myPixels[x1 + y1 * myWidth];
+				int c2 = myPixels[x2 + y1 * myWidth];
+				int c3 = myPixels[x1 + y2 * myWidth];
+				int c4 = myPixels[x2 + y2 * myWidth];
+				int u1 = (k4 >> 8) - (x1 << 8);
+				int v1 = (l4 >> 8) - (y1 << 8);
+				int u2 = (x2 << 8) - (k4 >> 8);
+				int v2 = (y2 << 8) - (l4 >> 8);
+				int a1 = u2 * v2;
+				int a2 = u1 * v2;
+				int a3 = u2 * v1;
+				int a4 = u1 * v1;
+				int r = (c1 >> 16 & 0xff) * a1 + (c2 >> 16 & 0xff) * a2 +
+					(c3 >> 16 & 0xff) * a3 + (c4 >> 16 & 0xff) * a4 & 0xff0000;
+				int g = (c1 >> 8 & 0xff) * a1 + (c2 >> 8 & 0xff) * a2 +
+					(c3 >> 8 & 0xff) * a3 + (c4 >> 8 & 0xff) * a4 >> 8 & 0xff00;
+				int b = (c1 & 0xff) * a1 + (c2 & 0xff) * a2 +
+					(c3 & 0xff) * a3 + (c4 & 0xff) * a4 >> 16;
+				DrawingArea.pixels[j4++] = r | g | b;
 					k4 += i3;
 					l4 -= l2;
 				}
