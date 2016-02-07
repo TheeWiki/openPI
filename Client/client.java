@@ -964,6 +964,7 @@ public class client extends RSApplet {
 		for(int i = 1; i < results.length; i++)
 			if(width <= chatTextDrawingArea.getTextWidth(results[i]) + 6)
  				width = chatTextDrawingArea.getTextWidth(results[i]) + 6;
+		
 		DrawingArea.drawPixels(height, yPos, xPos, 0xFFFFA0, width);
 		DrawingArea.fillPixels(xPos, width, height, 0, yPos);
 		yPos += 14;
