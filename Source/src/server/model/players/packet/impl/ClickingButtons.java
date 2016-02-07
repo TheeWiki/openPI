@@ -710,82 +710,90 @@ if (c.doricOption2) {
 			break;
 			
 			
-			case 26018:	
-			Client o = (Client) Server.playerHandler.players[c.duelingWith];
-			if(o == null) {
-				c.getTradeAndDuel().declineDuel();
+			/* Accepting Duel Interface Fixed by: Ardi
+			* Remember to click thanks button & karma (reputation) for Ardi, if you're using this.
+			*/
+			case 26018:
+			if (c.duelStatus == 5) {
+				//c.sendMessage("This glitch has been fixed by Ardi, sorry sir.");
 				return;
 			}
-			
-			if(c.duelRule[2] && c.duelRule[3] && c.duelRule[4]) {
-				c.sendMessage("You won't be able to attack the player with the rules you have set.");
-				break;
-			}
-			c.duelStatus = 2;
-			if(c.duelStatus == 2) {
-				c.getPA().sendFrame126("Waiting for other player...", 6684);
-				o.getPA().sendFrame126("Other player has accepted.", 6684);
-			}
-			if(o.duelStatus == 2) {
-				o.getPA().sendFrame126("Waiting for other player...", 6684);
-				c.getPA().sendFrame126("Other player has accepted.", 6684);
-			}
-			
-			if(c.duelStatus == 2 && o.duelStatus == 2) {
-				c.canOffer = false;
-				o.canOffer = false;
-				c.duelStatus = 3;
-				o.duelStatus = 3;
-				c.getTradeAndDuel().confirmDuel();
-				o.getTradeAndDuel().confirmDuel();
-			}
-			break;
-			
-			case 25120:
-			if(c.duelStatus == 5) {
-				break;
-			}
-			Client o1 = (Client) Server.playerHandler.players[c.duelingWith];
-			if(o1 == null) {
-				c.getTradeAndDuel().declineDuel();
-				return;
-			}
-
-			c.duelStatus = 4;
-			if(o1.duelStatus == 4 && c.duelStatus == 4) {				
-				c.getTradeAndDuel().startDuel();
-				o1.getTradeAndDuel().startDuel();
-				o1.duelCount = 4;
-				c.duelCount = 4;
-				CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
-					@Override
-					public void execute(CycleEventContainer container) {
-						if(System.currentTimeMillis() - c.duelDelay > 800 && c.duelCount > 0) {
-							if(c.duelCount != 1) {
-								c.forcedChat(""+(--c.duelCount));
-								c.duelDelay = System.currentTimeMillis();
-							} else {
-								c.damageTaken = new int[Constants.MAX_PLAYERS];
-								c.forcedChat("FIGHT!");
-								c.duelCount = 0;
-							}
-						}
-						if (c.duelCount == 0) {
-							container.stop();
-						}
-					}
-					@Override
-					public void stop() {
-					}
-				}, 1);
-				c.duelDelay = System.currentTimeMillis();
-				o1.duelDelay = System.currentTimeMillis();
+			if(c.inDuelArena()) {
+				Client o = (Client) Server.playerHandler.players[c.duelingWith];
+				if(o == null) {
+					c.getTradeAndDuel().declineDuel();
+					o.getTradeAndDuel().declineDuel();
+					return;
+				}
+					
+				
+				if(c.duelRule[2] && c.duelRule[3] && c.duelRule[4]) {
+					c.sendMessage("You won't be able to attack the player with the rules you have set.");
+					break;
+				}
+				c.duelStatus = 2;
+				if(c.duelStatus == 2) {
+					c.getPA().sendFrame126("Waiting for other player...", 6684);
+					o.getPA().sendFrame126("Other player has accepted.", 6684);
+				}
+				if(o.duelStatus == 2) {
+					o.getPA().sendFrame126("Waiting for other player...", 6684);
+					c.getPA().sendFrame126("Other player has accepted.", 6684);
+				}
+				
+				if(c.duelStatus == 2 && o.duelStatus == 2) {
+					c.canOffer = false;
+					o.canOffer = false;
+					c.duelStatus = 3;
+					o.duelStatus = 3;
+					c.getTradeAndDuel().confirmDuel();
+					o.getTradeAndDuel().confirmDuel();
+				}
 			} else {
-				c.getPA().sendFrame126("Waiting for other player...", 6571);
-				o1.getPA().sendFrame126("Other player has accepted", 6571);
+					Client o = (Client) Server.playerHandler.players[c.duelingWith];
+					c.getTradeAndDuel().declineDuel();
+					o.getTradeAndDuel().declineDuel();
+					c.sendMessage("You can't stake out of Duel Arena.");
 			}
 			break;
-	
+			
+			/* Accepting Duel Interface Fixed by: Ardi
+			* Remember to click thanks button & karma (reputation) for Ardi, if you're using this.
+			*/
+			case 25120:
+			if (c.duelStatus == 5) {
+				//c.sendMessage("This glitch has been fixed by Ardi, sorry sir.");
+				return;
+			}
+			if(c.inDuelArena()) {	
+				if(c.duelStatus == 5) {
+					break;
+				}
+				Client o1 = (Client) Server.playerHandler.players[c.duelingWith];
+				if(o1 == null) {
+					c.getTradeAndDuel().declineDuel();
+					return;
+				}
+
+				c.duelStatus = 4;
+				if(o1.duelStatus == 4 && c.duelStatus == 4) {				
+					c.getTradeAndDuel().startDuel();
+					o1.getTradeAndDuel().startDuel();
+					o1.duelCount = 4;
+					c.duelCount = 4;
+					c.duelDelay = System.currentTimeMillis();
+					o1.duelDelay = System.currentTimeMillis();
+				} else {
+					c.getPA().sendFrame126("Waiting for other player...", 6571);
+					o1.getPA().sendFrame126("Other player has accepted", 6571);
+				}
+			} else {
+					Client o = (Client) Server.playerHandler.players[c.duelingWith];
+					c.getTradeAndDuel().declineDuel();
+					o.getTradeAndDuel().declineDuel();
+					c.sendMessage("You can't stake out of Duel Arena.");
+			}
+			break;
 			
 			case 4169: // god spell charge
 			c.usingMagic = true;
