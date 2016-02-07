@@ -37,7 +37,6 @@ public class Client extends Player {
 	private Potions potions = new Potions(this);
 	private PotionMixing potionMixing = new PotionMixing(this);
 	private Food food = new Food(this);
-	private ActionAssistant2 actionAssistant2 = new ActionAssistant2(this);
  
 	
 	private int somejunk;
