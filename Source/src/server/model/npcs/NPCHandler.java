@@ -6,11 +6,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import server.Config;
+import server.Constants;
 import server.Server;
 import server.model.Animation;
+import server.model.items.GameItem;
+import server.model.items.Item;
 import server.model.items.WeaponAnimations;
+import server.model.npcs.drops.Drop;
+import server.model.npcs.drops.NPCDrops;
 import server.model.players.Client;
+import server.model.players.Player;
+import server.model.players.PlayerHandler;
 import server.util.Misc;
 
 public class NPCHandler {
@@ -961,7 +967,7 @@ public class NPCHandler {
 					npcs[i].facePlayer(0);
 					npcs[i].killerId = 0;	
 					if(npcs[i].spawnedBy == 0) {
-						if((npcs[i].absX > npcs[i].makeX + Config.NPC_RANDOM_WALK_DISTANCE) || (npcs[i].absX < npcs[i].makeX - Config.NPC_RANDOM_WALK_DISTANCE) || (npcs[i].absY > npcs[i].makeY + Config.NPC_RANDOM_WALK_DISTANCE) || (npcs[i].absY < npcs[i].makeY - Config.NPC_RANDOM_WALK_DISTANCE)) {
+						if((npcs[i].absX > npcs[i].makeX + Constants.NPC_RANDOM_WALK_DISTANCE) || (npcs[i].absX < npcs[i].makeX - Constants.NPC_RANDOM_WALK_DISTANCE) || (npcs[i].absY > npcs[i].makeY + Constants.NPC_RANDOM_WALK_DISTANCE) || (npcs[i].absY < npcs[i].makeY - Constants.NPC_RANDOM_WALK_DISTANCE)) {
 							npcs[i].walkingHome = true;
 						}
 					}
@@ -1141,7 +1147,7 @@ public class NPCHandler {
 		int oldDamage = 0;
 		int count = 0;
 		int killerId = 0;
-		for (int p = 1; p < Config.MAX_PLAYERS; p++)  {	
+		for (int p = 1; p < Constants.MAX_PLAYERS; p++)  {	
 			if (Server.playerHandler.players[p] != null) {
 				if(Server.playerHandler.players[p].lastNpcAttacked == npcId) {
 					if(Server.playerHandler.players[p].totalDamageDealt > oldDamage) {
@@ -1193,33 +1199,42 @@ public class NPCHandler {
 	}
 	
 	
-	/**
-	* Dropping Items!
-	**/
-	
+	public void sendDrop(Client player, Drop drop, int i) {
+		/* Since I dumped drops from rswiki it contains items that your server might not support.*/
+		/* This is to stop those items from dropping, If you load higher revision items, I suggest you modify this.*/
+		if(drop.getItemId() >= Constants.ITEM_LIMIT){
+			return;
+		}
+		if(Item.getItemName(drop.getItemId()) == null){
+			return;
+		}
+		GameItem item = new GameItem(drop.getItemId(), 1).stackable ? new GameItem( drop.getItemId(), (drop.getMinAmount() * Constants.DROP_RATE)
+		+ Misc.random(drop.getExtraAmount() * Constants.DROP_RATE)) : new GameItem(drop.getItemId(), drop.getMinAmount() + Misc.random(drop.getExtraAmount()));
+		Server.itemHandler.createGroundItem(player, item.id, npcs[i].absX, npcs[i].absY, item.amount, player.playerId); 
+	}
 
 	public void dropItems(int i) {
-		int npc = 0;
-		Client c = (Client)Server.playerHandler.players[npcs[i].killedBy];
-		if(c != null) {
-			for(int o = 0; o < c.barrowsNpcs.length; o++){
-				if(npcs[i].npcType == c.barrowsNpcs[o][0]) {
-					c.barrowsNpcs[o][1] = 2; // 2 for dead
-					c.barrowsKillCount++;
-				}
-			}
-			if (npcs[i].npcType == 912 || npcs[i].npcType == 913 || npcs[i].npcType == 914)
+		Client killer = (Client)PlayerHandler.players[npcs[i].killedBy];
+		Drop[] drops = NPCDrops.getDrops(npcs[i].npcType);
+		if (drops == null)
+			return;
+		Client c = (Client) PlayerHandler.players[npcs[i].killedBy];
+		if (c != null) {
+			if (npcs[i].npcType == 912 || npcs[i].npcType == 913
+					|| npcs[i].npcType == 914)
 				c.magePoints += 1;
-
-			for(npc = 0; npc < Config.NPC_DROPS.length; npc++){
-				if(npcs[i].npcType == Config.NPC_DROPS[npc][0]) {
-					if(Misc.random(Config.NPC_DROPS[npc][3]) == 0) {
-						if (c.clanId >= 0)
-							Server.clanChat.handleLootShare(c, Config.NPC_DROPS[npc][1], Config.NPC_DROPS[npc][2]);
-						Server.itemHandler.createGroundItem(c, Config.NPC_DROPS[npc][1], npcs[i].absX, npcs[i].absY, Config.NPC_DROPS[npc][2], c.playerId);
-					}
+			Drop[] possibleDrops = new Drop[drops.length];
+			int possibleDropsCount = 0;
+			for (Drop drop : drops) {
+				if (drop.getRate() == 100)
+					sendDrop(killer, drop, i);
+				else {
+					if ((Misc.random(99) + 1) <= drop.getRate() * 1.0)
+						possibleDrops[possibleDropsCount++] = drop;
 				}
 			}
+			if (possibleDropsCount > 0)
+				sendDrop(killer, possibleDrops[Misc.random(possibleDropsCount - 1)], i); 
 		}
 	}
 	
@@ -1391,9 +1406,9 @@ public class NPCHandler {
 		if(c != null) {
 			if (c.slayerTask == npcs[i].npcType){
 				c.taskAmount--;
-				c.getPA().addSkillXP(npcs[i].MaxHP * Config.SLAYER_EXPERIENCE, 18);
+				c.getPA().addSkillXP(npcs[i].MaxHP * Constants.SLAYER_EXPERIENCE, 18);
 				if (c.taskAmount <= 0) {
-					c.getPA().addSkillXP((npcs[i].MaxHP * 8) * Config.SLAYER_EXPERIENCE, 18);
+					c.getPA().addSkillXP((npcs[i].MaxHP * 8) * Constants.SLAYER_EXPERIENCE, 18);
 					c.slayerTask = -1;
 					c.sendMessage("You completed your slayer task. Please see a slayer master to get a new one.");
 				}
@@ -1473,7 +1488,7 @@ public class NPCHandler {
 		npcs[i].randomWalk = false;
 		if (goodDistance(npcs[i].getX(), npcs[i].getY(), playerX, playerY, distanceRequired(i)))
 			return;
-		if((npcs[i].spawnedBy > 0) || ((npcs[i].absX < npcs[i].makeX + Config.NPC_FOLLOW_DISTANCE) && (npcs[i].absX > npcs[i].makeX - Config.NPC_FOLLOW_DISTANCE) && (npcs[i].absY < npcs[i].makeY + Config.NPC_FOLLOW_DISTANCE) && (npcs[i].absY > npcs[i].makeY - Config.NPC_FOLLOW_DISTANCE))) {
+		if((npcs[i].spawnedBy > 0) || ((npcs[i].absX < npcs[i].makeX + Constants.NPC_FOLLOW_DISTANCE) && (npcs[i].absX > npcs[i].makeX - Constants.NPC_FOLLOW_DISTANCE) && (npcs[i].absY < npcs[i].makeY + Constants.NPC_FOLLOW_DISTANCE) && (npcs[i].absY > npcs[i].makeY - Constants.NPC_FOLLOW_DISTANCE))) {
 			if(npcs[i].heightLevel == Server.playerHandler.players[playerId].heightLevel) {
 				if(Server.playerHandler.players[playerId] != null && npcs[i] != null) {
 					if(playerY < npcs[i].absY) {

@@ -9,7 +9,7 @@ import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.frame.FrameDecoder;
 
-import server.Config;
+import server.Constants;
 import server.Connection;
 import server.Server;
 import server.model.players.Client;
@@ -122,7 +122,7 @@ public class RS2LoginProtocol extends FrameDecoder {
 		if (PlayerHandler.isPlayerOn(name)) {
 			returnCode = 5;
 		}
-		if (PlayerHandler.getPlayerCount() >= Config.MAX_PLAYERS) {
+		if (PlayerHandler.getPlayerCount() >= Constants.MAX_PLAYERS) {
 			returnCode = 7;
 		}
 		if (Server.UpdateServer) {

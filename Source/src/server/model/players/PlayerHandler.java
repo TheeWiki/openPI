@@ -2,7 +2,7 @@ package server.model.players;
 
 
 
-import server.Config;
+import server.Constants;
 import server.Server;
 import server.model.npcs.NPCHandler;
 import server.model.players.Client;
@@ -14,7 +14,7 @@ import server.util.Stream;
 public class PlayerHandler {
 
 	public static Object lock = new Object();
-	public static Player players[] = new Player[Config.MAX_PLAYERS];
+	public static Player players[] = new Player[Constants.MAX_PLAYERS];
 	public static String messageToAll = "";
 	
 	public static boolean updateAnnounced;
@@ -24,13 +24,13 @@ public class PlayerHandler {
 	private boolean kickAllPlayers = false;
 
 	static {
-		for (int i = 0; i < Config.MAX_PLAYERS; i++)
+		for (int i = 0; i < Constants.MAX_PLAYERS; i++)
 			players[i] = null;
 	}
 
 	public boolean newPlayerClient(Client client1) {
 		int slot = -1;
-		for (int i = 1; i < Config.MAX_PLAYERS; i++) {
+		for (int i = 1; i < Constants.MAX_PLAYERS; i++) {
 			if ((players[i] == null) || players[i].disconnected) {
 				slot = i;
 				break;
@@ -42,13 +42,13 @@ public class PlayerHandler {
 		client1.playerId = slot;
 		players[slot] = client1;
 		players[slot].isActive = true;
-		if (Config.SERVER_DEBUG)
+		if (Constants.SERVER_DEBUG)
 			Misc.println("Player Slot " + slot + " slot 0 " + players[0] + " Player Hit " + players[slot]);
 		return true;
 	}
 
 	public void destruct() {
-		for (int i = 0; i < Config.MAX_PLAYERS; i++) {
+		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 			if (players[i] == null)
 				continue;
 			players[i].destruct();
@@ -58,7 +58,7 @@ public class PlayerHandler {
 
 	public static int getPlayerCount() {
                 int count = 0;
-		for(int i = 0; i < Config.MAX_PLAYERS; i++) {
+		for(int i = 0; i < Constants.MAX_PLAYERS; i++) {
                     if(players[i] != null) {
                         count++;
                     }
@@ -69,7 +69,7 @@ public class PlayerHandler {
 	
 	public static boolean isPlayerOn(String playerName) {
 		// synchronized (PlayerHandler.players) {
-		for (int i = 0; i < Config.MAX_PLAYERS; i++) {
+		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 			if (players[i] != null) {
 				if (players[i].playerName.equalsIgnoreCase(playerName)) {
 					return true;
@@ -83,7 +83,7 @@ public class PlayerHandler {
 	public void process() {
 		synchronized (lock) {
 			if (kickAllPlayers) {
-				for (int i = 1; i < Config.MAX_PLAYERS; i++) {
+				for (int i = 1; i < Constants.MAX_PLAYERS; i++) {
 					if (players[i] != null) {
 						players[i].disconnected = true;
 					}
@@ -99,7 +99,7 @@ public class PlayerHandler {
 			 * }
 			 * }
 			 */
-			for (int i = 0; i < Config.MAX_PLAYERS; i++) {
+			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 				if (players[i] == null || !players[i].isActive || !players[i].initialized)
 					continue;
 				try {
@@ -141,7 +141,7 @@ public class PlayerHandler {
 					e.printStackTrace();
 				}
 			}
-			for (int i = 0; i < Config.MAX_PLAYERS; i++) {
+			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 				if (players[i] == null || !players[i].isActive || !players[i].initialized)
 					continue;
 				try {
@@ -150,7 +150,7 @@ public class PlayerHandler {
 					e.printStackTrace();
 				}
 			}
-			for (int i = 0; i < Config.MAX_PLAYERS; i++) {
+			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 				if (players[i] == null || !players[i].isActive || !players[i].initialized)
 					continue;
 				try {
@@ -218,7 +218,7 @@ public class PlayerHandler {
 		// }
 	}
 
-	private Stream updateBlock = new Stream(new byte[Config.BUFFER_SIZE]);
+	private Stream updateBlock = new Stream(new byte[Constants.BUFFER_SIZE]);
 
 	public void updatePlayer(Player plr, Stream str) {
 		// synchronized(plr) {
@@ -250,7 +250,7 @@ public class PlayerHandler {
 			}
 		}
 
-		for (int i = 0; i < Config.MAX_PLAYERS; i++) {
+		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 			if (players[i] == null || !players[i].isActive || players[i] == plr)
 				continue;
 			int id = players[i].playerId;
@@ -274,7 +274,7 @@ public class PlayerHandler {
 
 	private void removePlayer(Player plr) {
 		if (plr.privateChat != 2) {
-			for (int i = 1; i < Config.MAX_PLAYERS; i++) {
+			for (int i = 1; i < Constants.MAX_PLAYERS; i++) {
 				if (players[i] == null || players[i].isActive == false)
 					continue;
 				Client o = (Client) PlayerHandler.players[i];

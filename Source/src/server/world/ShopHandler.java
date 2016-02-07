@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import server.Config;
+import server.Constants;
 import server.Server;
 import server.util.Misc;
 
@@ -73,7 +73,7 @@ public class ShopHandler {
 				}
 			}
 			if (DidUpdate == true) {
-				for (int k = 1; k < Config.MAX_PLAYERS; k++) {
+				for (int k = 1; k < Constants.MAX_PLAYERS; k++) {
 					if (Server.playerHandler.players[k] != null) {
 						if (Server.playerHandler.players[k].isShopping == true && Server.playerHandler.players[k].myShopId == i) {
 							Server.playerHandler.players[k].updateShop = true;

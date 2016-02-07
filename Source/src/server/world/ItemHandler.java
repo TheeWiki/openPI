@@ -1,20 +1,22 @@
 package server.world;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.File;
-import java.util.Scanner;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
-import server.Config;
+import server.Constants;
 import server.Server;
 import server.model.items.GroundItem;
+import server.model.items.Item;
 import server.model.items.ItemList;
 import server.model.players.Client;
 import server.model.players.Player;
+import server.model.players.PlayerHandler;
 import server.util.Misc;
 
 /**
@@ -27,7 +29,7 @@ public class ItemHandler {
 	public static final int HIDE_TICKS = 100;
 	
 	public ItemHandler() {			
-		for(int i = 0; i < Config.ITEM_LIMIT; i++) {
+		for(int i = 0; i < Constants.ITEM_LIMIT; i++) {
 			ItemList[i] = null;
 		}
 		loadItemList("item.cfg");
@@ -156,7 +158,6 @@ public class ItemHandler {
 	public void createGroundItem(Client c, int itemId, int itemX, int itemY, int itemAmount, int playerId) {
 		if(itemId > 0) {
 			if (itemId >= 2412 && itemId <= 2414) {
-				c.sendMessage("The cape vanishes as it touches the ground.");
 				return;
 			}
 			if (itemId > 4705 && itemId < 4760) {
@@ -167,15 +168,15 @@ public class ItemHandler {
 					}
 				}
 			}
-			if (!server.model.items.Item.itemStackable[itemId] && itemAmount > 0) {
+			if (!Item.itemStackable[itemId] && itemAmount > 0) {
 				for (int j = 0; j < itemAmount; j++) {
 					c.getItems().createGroundItem(itemId, itemX, itemY, 1);
-					GroundItem item = new GroundItem(itemId, itemX, itemY, 1, c.playerId, HIDE_TICKS, Server.playerHandler.players[playerId].playerName);
+					GroundItem item = new GroundItem(itemId, itemX, itemY, 1, c.playerId, HIDE_TICKS, PlayerHandler.players[playerId].playerName);
 					addItem(item);
 				}	
 			} else {
 				c.getItems().createGroundItem(itemId, itemX, itemY, itemAmount);
-				GroundItem item = new GroundItem(itemId, itemX, itemY, itemAmount, c.playerId, HIDE_TICKS, Server.playerHandler.players[playerId].playerName);
+				GroundItem item = new GroundItem(itemId, itemX, itemY, itemAmount, c.playerId,  HIDE_TICKS, PlayerHandler.players[playerId].playerName);
 				addItem(item);
 			}
 		}
@@ -275,7 +276,7 @@ public class ItemHandler {
 	*Item List
 	**/
 	
-	public ItemList ItemList[] = new ItemList[Config.ITEM_LIMIT];
+	public ItemList ItemList[] = new ItemList[Constants.ITEM_LIMIT];
 	
 
 	public void newItemList(int ItemId, String ItemName, String ItemDescription, double ShopValue, double LowAlch, double HighAlch, int Bonuses[]) {

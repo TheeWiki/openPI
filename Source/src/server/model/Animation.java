@@ -6,39 +6,6 @@ import java.util.Map;
 public class Animation {
 
 	/**
-	 * Different animation constants.
-	 */
-	public static final Animation BURY_EMOTE = create(827);
-	public final static Animation YES_EMOTE = create(855);
-	public final static Animation NO_EMOTE = create(856);
-	public final static Animation THINKING = create(857);
-	public final static Animation BOW = create(858);
-	public final static Animation ANGRY = create(859);
-	public final static Animation CRY = create(860);
-	public final static Animation LAUGH = create(861);
-	public final static Animation CHEER = create(862);
-	public final static Animation WAVE = create(863);
-	public final static Animation BECKON = create(864);
-	public final static Animation CLAP = create(865);
-	public final static Animation DANCE = create(866);
-	public final static Animation PANIC = create(2105);
-	public final static Animation JIG = create(2106);
-	public final static Animation SPIN = create(2107);
-	public final static Animation HEADBANG = create(2108);
-	public final static Animation JOYJUMP = create(2109);
-	public final static Animation RASPBERRY = create(2110);
-	public final static Animation YAWN = create(2111);
-	public final static Animation SALUTE = create(2112);
-	public final static Animation SHRUG = create(2113);
-	public final static Animation BLOW_KISS = create(1368);
-	public final static Animation GLASS_WALL = create(1128);
-	public final static Animation LEAN = create(1129);
-	public final static Animation CLIMB_ROPE = create(1130);
-	public final static Animation GLASS_BOX = create(1131);
-	public final static Animation GOBLIN_BOW = create(2127);
-	public final static Animation GOBLIN_DANCE = create(2128);
-
-	/**
 	 * Creates an animation with no delay.
 	 * 
 	 * @param id
@@ -103,125 +70,6 @@ public class Animation {
 		return delay;
 	}
 
-	public enum Emote {
-
-		YES(2, Animation.create(855), null),
-
-		NO(3, Animation.create(856), null),
-
-		BOW(4, Animation.create(858), null),
-
-		ANGRY(5, Animation.create(859), null),
-
-		THINK(6, Animation.create(857), null),
-
-		WAVE(7, Animation.create(863), null),
-
-		SHRUG(8, Animation.create(2113), null),
-
-		CHEER(9, Animation.create(862), null),
-
-		BECKON(10, Animation.create(864), null),
-
-		LAUGH(11, Animation.create(861), null),
-
-		JUMP_FOR_JOY(12, Animation.create(2109), null),
-
-		YAWN(13, Animation.create(2111), null),
-
-		DANCE(14, Animation.create(866), null),
-
-		JIG(15, Animation.create(2106), null),
-
-		SPIN(16, Animation.create(2107), null),
-
-		HEADBANG(17, Animation.create(2108), null),
-
-		CRY(18, Animation.create(860), null),
-
-		BLOW_KISS(19, Animation.create(1368), Graphic.create(574)),
-
-		PANIC(20, Animation.create(2105), null),
-
-		RASPBERRY(21, Animation.create(2110), null),
-
-		CLAP(22, Animation.create(865), null),
-
-		SALUTE(23, Animation.create(2112), null),
-
-		GOBLIN_BOW(24, Animation.create(2127), null),
-
-		GOBLIN_SALUTE(25, Animation.create(2128), null),
-
-		GLASS_BOX(26, Animation.create(1131), null),
-
-		CLIMB_ROPE(27, Animation.create(1130), null),
-
-		LEAN(28, Animation.create(1129), null),
-
-		GLASS_WALL(29, Animation.create(1128), null),
-
-		SLAP_HEAD(30, Animation.create(4275), null),
-
-		STOMP(31, Animation.create(4278), null),
-
-		FLAP(32, Animation.create(4280), null),
-
-		IDEA(33, Animation.create(4276), Graphic.create(712)),
-
-		ZOMBIE_WALK(34, Animation.create(3544), null),
-
-		ZOMBIE_DANCE(35, Animation.create(3543), null),
-
-		ZOMBIE_HAND(36, Animation.create(7272), Graphic.create(1244)),
-
-		SCARED(37, Animation.create(2836), null),
-
-		BUNNY_HOP(38, Animation.create(6111), null);
-
-		private int button;
-
-		private Animation animation;
-
-		private Graphic graphic;
-
-		public static Emote forId(int button) {
-			for (Emote emote : Emote.values()) {
-				if (emote.getButton() == button) {
-					return emote;
-				}
-			}
-			return null;
-		}
-
-		private Emote(int button, Animation animation, Graphic graphic) {
-			this.button = button;
-			this.animation = animation;
-			this.graphic = graphic;
-		}
-
-		/**
-		 * @return the button
-		 */
-		public int getButton() {
-			return button;
-		}
-
-		/**
-		 * @return the animation
-		 */
-		public Animation getAnimation() {
-			return animation;
-		}
-
-		/**
-		 * @return the graphic
-		 */
-		public Graphic getGraphic() {
-			return graphic;
-		}
-	}
-
 	public enum FacialAnimation {
 		/**
 		 * Dialogue animations.
@@ -284,8 +132,7 @@ public class Animation {
 		 */
 		static {
 			for (FacialAnimation facialAnimation : FacialAnimation.values()) {
-				facialAnimations
-						.put(facialAnimation.animation, facialAnimation);
+				facialAnimations.put(facialAnimation.animation, facialAnimation);
 			}
 		}
 

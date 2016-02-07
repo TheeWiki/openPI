@@ -1,6 +1,6 @@
 package server.model.players.combat;
 
-import server.Config;
+import server.Constants;
 import server.model.Graphic;
 import server.model.npcs.NPCHandler;
 import server.model.players.Client;
@@ -92,7 +92,7 @@ public class Experience {
 		if (style == 2) {
 			c.getDamage()[2] = Misc.random(MagicFormula.magicMaxHit(c));
 			if (c.getCombat().godSpells()) {
-				if (System.currentTimeMillis() - c.godSpellDelay < Config.GOD_SPELL_CHARGE) {
+				if (System.currentTimeMillis() - c.godSpellDelay < Constants.GOD_SPELL_CHARGE) {
 					c.getDamage()[2] += Misc.random(10);
 				}
 			}
@@ -279,7 +279,7 @@ public class Experience {
 		if (style == 2) {
 			client.getDamage()[2] = Misc.random(MagicFormula.magicMaxHit(client));
 			if (client.getCombat().godSpells()) {
-				if (System.currentTimeMillis() - client.godSpellDelay < Config.GOD_SPELL_CHARGE) {
+				if (System.currentTimeMillis() - client.godSpellDelay < Constants.GOD_SPELL_CHARGE) {
 					client.getDamage()[2] += 10;
 				}
 			}
@@ -405,39 +405,39 @@ public class Experience {
 	public static void addExperience(Client client, int damage, int style) {
 		if (style == 0) {
 			if (client.fightMode == 3) {
-				client.getPA().addSkillXP((damage * Config.MELEE_EXP_RATE / 3), 0);
-				client.getPA().addSkillXP((damage * Config.MELEE_EXP_RATE / 3), 1);
-				client.getPA().addSkillXP((damage * Config.MELEE_EXP_RATE / 3), 2);
-				client.getPA().addSkillXP((damage * Config.MELEE_EXP_RATE / 3), 3);
+				client.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE / 3), 0);
+				client.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE / 3), 1);
+				client.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE / 3), 2);
+				client.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE / 3), 3);
 				client.getPA().refreshSkill(0);
 				client.getPA().refreshSkill(1);
 				client.getPA().refreshSkill(2);
 				client.getPA().refreshSkill(3);
 			} else {
-				client.getPA().addSkillXP((damage * Config.MELEE_EXP_RATE), client.fightMode);
-				client.getPA().addSkillXP((damage * Config.MELEE_EXP_RATE / 3), 3);
+				client.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE), client.fightMode);
+				client.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE / 3), 3);
 				client.getPA().refreshSkill(client.fightMode);
 				client.getPA().refreshSkill(3);
 			}
 		}
 		if (style == 1) {
 			if (client.fightMode == 3) {
-				client.getPA().addSkillXP((damage * Config.RANGE_EXP_RATE / 3), 4);
-				client.getPA().addSkillXP((damage * Config.RANGE_EXP_RATE / 3), 1);
-				client.getPA().addSkillXP((damage * Config.RANGE_EXP_RATE / 3), 3);
+				client.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 4);
+				client.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 1);
+				client.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 3);
 				client.getPA().refreshSkill(1);
 				client.getPA().refreshSkill(3);
 				client.getPA().refreshSkill(4);
 			} else {
-				client.getPA().addSkillXP((damage * Config.RANGE_EXP_RATE), 4);
-				client.getPA().addSkillXP((damage * Config.RANGE_EXP_RATE / 3), 3);
+				client.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE), 4);
+				client.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 3);
 				client.getPA().refreshSkill(3);
 				client.getPA().refreshSkill(4);
 			}
 		}
 		if (style == 2) {
-			client.getPA().addSkillXP((client.MAGIC_SPELLS[client.spellId][7] + damage * Config.MAGIC_EXP_RATE), 6);
-			client.getPA().addSkillXP((client.MAGIC_SPELLS[client.spellId][7] + damage * Config.MAGIC_EXP_RATE / 3), 3);
+			client.getPA().addSkillXP((client.MAGIC_SPELLS[client.spellId][7] + damage * Constants.MAGIC_EXP_RATE), 6);
+			client.getPA().addSkillXP((client.MAGIC_SPELLS[client.spellId][7] + damage * Constants.MAGIC_EXP_RATE / 3), 3);
 			client.getPA().refreshSkill(3);
 			client.getPA().refreshSkill(6);
 		}

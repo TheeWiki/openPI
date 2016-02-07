@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import server.Config;
+import server.Constants;
 import server.Server;
 
 
@@ -212,19 +212,19 @@ public class Item {
 	/**
 	 * Checks if the item is stackable.
 	 */
-	public static boolean[] itemStackable = new boolean[Config.ITEM_LIMIT];
+	public static boolean[] itemStackable = new boolean[Constants.ITEM_LIMIT];
 	
 	
 	/**
 	 * Checks if the item can be made into a note.
 	 */
-	public static boolean[] itemIsNote = new boolean[Config.ITEM_LIMIT];
+	public static boolean[] itemIsNote = new boolean[Constants.ITEM_LIMIT];
 	
 	
 	/**
 	 * Checks if the item can wield into a slot.
 	 */
-	public static int[] targetSlots = new int[Config.ITEM_LIMIT];
+	public static int[] targetSlots = new int[Constants.ITEM_LIMIT];
 	static {
 		int counter = 0;
 		int c;

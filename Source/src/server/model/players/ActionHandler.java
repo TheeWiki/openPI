@@ -1,16 +1,9 @@
 package server.model.players;
 
-import server.Config;
 import server.Server;
 import server.model.objects.Object;
 import server.util.Misc;
 import server.util.ScriptManager;
-import server.model.npcs.NPC;
-import server.content.skill.*;
-import server.event.*;
-import server.model.minigames.*;
-import server.model.players.packets.*;
-import server.model.players.skills.SkillIndex;
 
 public class ActionHandler {
 	

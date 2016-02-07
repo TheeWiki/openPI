@@ -9,26 +9,28 @@ import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.jboss.netty.util.HashedWheelTimer;
 
-import server.net.PipelineFactory;
-
-import server.util.log.Logger;
-
 import server.event.CycleEventHandler;
 import server.event.Task;
 import server.event.TaskScheduler;
-import server.world.StillGraphicsManager;
-import server.world.PlayerManager;
 import server.jagcached.FileServer;
-import server.model.objects.DoubleDoors;
+import server.model.minigames.CastleWars;
+import server.model.minigames.FightCaves;
+import server.model.minigames.FightPits;
+import server.model.minigames.PestControl;
 import server.model.npcs.NPCHandler;
-import server.model.players.PlayerHandler;
+import server.model.npcs.drops.NPCDrops;
 import server.model.objects.Doors;
-import server.model.minigames.*;
+import server.model.objects.DoubleDoors;
+import server.model.players.PlayerHandler;
+import server.net.PipelineFactory;
+import server.util.log.Logger;
+import server.world.ClanChatHandler;
 import server.world.ItemHandler;
 import server.world.ObjectHandler;
 import server.world.ObjectManager;
+import server.world.PlayerManager;
 import server.world.ShopHandler;
-import server.world.ClanChatHandler;
+import server.world.StillGraphicsManager;
 
 /**
  */
@@ -69,12 +71,14 @@ public class Server {
 	/**
 	 * Calls the usage of CycledEvents. 
 	 */
+	@SuppressWarnings("unused")
 	private static long cycleTime, cycles, totalCycleTime, sleepTime;
 	
 	
 	/**
 	 * Used for debugging the server.
 	 */
+	@SuppressWarnings("unused")
 	private static DecimalFormat debugPercentFormat;
 	
 	
@@ -166,7 +170,7 @@ public class Server {
 	}
 	
 	static {
-		if(!Config.SERVER_DEBUG) {
+		if(!Constants.SERVER_DEBUG) {
 			serverlistenerPort = 43594;
 		} else {
 			serverlistenerPort = 43594;
@@ -196,7 +200,7 @@ public class Server {
 			e.printStackTrace();
 		}
 		
-	
+		NPCDrops.init();
 		bind();
                 
                 

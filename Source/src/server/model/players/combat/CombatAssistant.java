@@ -1,6 +1,6 @@
 package server.model.players.combat;
 
-import server.Config;
+import server.Constants;
 import server.Server;
 import server.event.CycleEvent;
 import server.event.CycleEventContainer;
@@ -138,7 +138,7 @@ public class CombatAssistant {
 					c.npcIndex = 0;
 					return;
 				}
-				if (!usingCorrectArrows() && Config.CORRECT_ARROWS && c.usingBow && !usingCrystalBow()
+				if (!usingCorrectArrows() && Constants.CORRECT_ARROWS && c.usingBow && !usingCrystalBow()
 						&& c.getEquipment()[c.playerWeapon] != 9185) {
 					c.sendMessage("You can't use "
 							+ c.getItems().getItemName(c.getEquipment()[c.playerArrows]).toLowerCase() + "s with a "
@@ -272,7 +272,7 @@ public class CombatAssistant {
 						c.npcIndex = 0;
 				}
 
-				if (c.usingBow && Config.CRYSTAL_BOW_DEGRADES) { // crystal bow
+				if (c.usingBow && Constants.CRYSTAL_BOW_DEGRADES) { // crystal bow
 																	// degrading
 					if (c.getEquipment()[c.playerWeapon] == 4212) { // new
 																	// crystal
@@ -364,15 +364,15 @@ public class CombatAssistant {
 					damage2 = 0;
 				}
 				if (c.fightMode == 3) {
-					c.getPA().addSkillXP((damage * Config.RANGE_EXP_RATE / 3), 4);
-					c.getPA().addSkillXP((damage * Config.RANGE_EXP_RATE / 3), 1);
-					c.getPA().addSkillXP((damage * Config.RANGE_EXP_RATE / 3), 3);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 4);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 1);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 3);
 					c.getPA().refreshSkill(1);
 					c.getPA().refreshSkill(3);
 					c.getPA().refreshSkill(4);
 				} else {
-					c.getPA().addSkillXP((damage * Config.RANGE_EXP_RATE), 4);
-					c.getPA().addSkillXP((damage * Config.RANGE_EXP_RATE / 3), 3);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE), 4);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 3);
 					c.getPA().refreshSkill(3);
 					c.getPA().refreshSkill(4);
 				}
@@ -413,7 +413,7 @@ public class CombatAssistant {
 			} else if (c.projectileStage > 0) { // magic hit damage
 				int damage = Misc.random(c.MAGIC_SPELLS[c.oldSpellId][6]);
 				if (godSpells()) {
-					if (System.currentTimeMillis() - c.godSpellDelay < Config.GOD_SPELL_CHARGE) {
+					if (System.currentTimeMillis() - c.godSpellDelay < Constants.GOD_SPELL_CHARGE) {
 						damage += Misc.random(10);
 					}
 				}
@@ -432,8 +432,8 @@ public class CombatAssistant {
 					damage = NPCHandler.npcs[i].HP;
 				}
 
-				c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Config.MAGIC_EXP_RATE), 6);
-				c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Config.MAGIC_EXP_RATE / 3), 3);
+				c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Constants.MAGIC_EXP_RATE), 6);
+				c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Constants.MAGIC_EXP_RATE / 3), 3);
 				c.getPA().refreshSkill(3);
 				c.getPA().refreshSkill(6);
 				if (damage > 0) {
@@ -679,7 +679,7 @@ public class CombatAssistant {
 
 				if (c.duelRule[9]) {
 					boolean canUseWeapon = false;
-					for (int funWeapon : Config.FUN_WEAPONS) {
+					for (int funWeapon : Constants.FUN_WEAPONS) {
 						if (c.getEquipment()[c.playerWeapon] == funWeapon) {
 							canUseWeapon = true;
 						}
@@ -731,7 +731,7 @@ public class CombatAssistant {
 					resetPlayerAttack();
 					return;
 				}
-				if (!usingCorrectArrows() && Config.CORRECT_ARROWS && c.usingBow && !usingCrystalBow()
+				if (!usingCorrectArrows() && Constants.CORRECT_ARROWS && c.usingBow && !usingCrystalBow()
 						&& !c.usingMagic) {
 					c.sendMessage("You can't use "
 							+ c.getItems().getItemName(c.getEquipment()[c.playerArrows]).toLowerCase() + "s with a "
@@ -752,7 +752,7 @@ public class CombatAssistant {
 						&& !PlayerHandler.players[c.playerIndex].attackedPlayers.contains(c.playerId)) {
 					c.attackedPlayers.add(c.playerIndex);
 					c.isSkulled = true;
-					c.skullTimer = Config.SKULL_TIMER;
+					c.skullTimer = Constants.SKULL_TIMER;
 					c.headIconPk = 0;
 					c.getPA().requestUpdates();
 				}
@@ -928,7 +928,7 @@ public class CombatAssistant {
 						c.playerIndex = 0;
 				}
 
-				if (c.usingBow && Config.CRYSTAL_BOW_DEGRADES) { // crystal bow
+				if (c.usingBow && Constants.CRYSTAL_BOW_DEGRADES) { // crystal bow
 																	// degrading
 					if (c.getEquipment()[c.playerWeapon] == 4212) { // new
 																	// crystal
@@ -1120,15 +1120,15 @@ public class CombatAssistant {
 				if (damage2 > 0)
 					applyRecoil(damage2, i);
 				if (c.fightMode == 3) {
-					c.getPA().addSkillXP((damage * Config.RANGE_EXP_RATE / 3), 4);
-					c.getPA().addSkillXP((damage * Config.RANGE_EXP_RATE / 3), 1);
-					c.getPA().addSkillXP((damage * Config.RANGE_EXP_RATE / 3), 3);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 4);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 1);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 3);
 					c.getPA().refreshSkill(1);
 					c.getPA().refreshSkill(3);
 					c.getPA().refreshSkill(4);
 				} else {
-					c.getPA().addSkillXP((damage * Config.RANGE_EXP_RATE), 4);
-					c.getPA().addSkillXP((damage * Config.RANGE_EXP_RATE / 3), 3);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE), 4);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 3);
 					c.getPA().refreshSkill(3);
 					c.getPA().refreshSkill(4);
 				}
@@ -1172,7 +1172,7 @@ public class CombatAssistant {
 			} else if (c.projectileStage > 0) { // magic hit damage
 				int damage = Misc.random(MagicFormula.magicMaxHit(c));
 				if (godSpells()) {
-					if (System.currentTimeMillis() - c.godSpellDelay < Config.GOD_SPELL_CHARGE) {
+					if (System.currentTimeMillis() - c.godSpellDelay < Constants.GOD_SPELL_CHARGE) {
 						damage += 10;
 					}
 				}
@@ -1192,8 +1192,8 @@ public class CombatAssistant {
 					appendVengeance(i, damage);
 				if (damage > 0)
 					applyRecoil(damage, i);
-				c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Config.MAGIC_EXP_RATE), 6);
-				c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Config.MAGIC_EXP_RATE / 3), 3);
+				c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Constants.MAGIC_EXP_RATE), 6);
+				c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Constants.MAGIC_EXP_RATE / 3), 3);
 				c.getPA().refreshSkill(3);
 				c.getPA().refreshSkill(6);
 				if (!c.magicFailed) {
@@ -1380,8 +1380,8 @@ public class CombatAssistant {
 					if (c2.getLevel()[3] - damage < 0) {
 						damage = c2.getLevel()[3];
 					}
-					c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Config.MAGIC_EXP_RATE), 6);
-					c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Config.MAGIC_EXP_RATE / 3), 3);
+					c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Constants.MAGIC_EXP_RATE), 6);
+					c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Constants.MAGIC_EXP_RATE / 3), 3);
 					// Server.playerHandler.players[playerId].setHitDiff(damage);
 					// Server.playerHandler.players[playerId].setHitUpdateRequired(true);
 					PlayerHandler.players[playerId].handleHitMask(damage);
@@ -1693,9 +1693,9 @@ public class CombatAssistant {
 		int[] rangePray = { 3, 11, 19 };
 		int[] magePray = { 4, 12, 20 };
 
-		if (c.getLevel()[5] > 0 || !Config.PRAYER_POINTS_REQUIRED) {
+		if (c.getLevel()[5] > 0 || !Constants.PRAYER_POINTS_REQUIRED) {
 			if (c.getPA().getLevelForXP(c.getExperience()[5]) >= c.PRAYER_LEVEL_REQUIRED[i]
-					|| !Config.PRAYER_LEVEL_REQUIRED) {
+					|| !Constants.PRAYER_LEVEL_REQUIRED) {
 				boolean headIcon = false;
 				switch (i) {
 				case 0:
@@ -2373,7 +2373,7 @@ public class CombatAssistant {
 	public int getKillerId(int playerId) {
 		int oldDamage = 0;
 		int killerId = 0;
-		for (int i = 1; i < Config.MAX_PLAYERS; i++) {
+		for (int i = 1; i < Constants.MAX_PLAYERS; i++) {
 			if (PlayerHandler.players[i] != null) {
 				if (PlayerHandler.players[i].killedBy == playerId) {
 					if (PlayerHandler.players[i].withinDistance(PlayerHandler.players[playerId])) {
@@ -2528,7 +2528,7 @@ public class CombatAssistant {
 		if (!PlayerHandler.players[i].inWild()) {
 			return false;
 		}
-		if (Config.COMBAT_LEVEL_DIFFERENCE) {
+		if (Constants.COMBAT_LEVEL_DIFFERENCE) {
 			int combatDif1 = c.getCombat().getCombatDifference(c.combatLevel, PlayerHandler.players[i].combatLevel);
 			if (combatDif1 > c.wildLevel || combatDif1 > PlayerHandler.players[i].wildLevel) {
 				c.sendMessage("Your combat level difference is too great to attack that player here.");
@@ -2536,7 +2536,7 @@ public class CombatAssistant {
 			}
 		}
 
-		if (Config.SINGLE_AND_MULTI_ZONES) {
+		if (Constants.SINGLE_AND_MULTI_ZONES) {
 			if (!PlayerHandler.players[i].inMulti()) { // single combat
 														// zones
 				if (PlayerHandler.players[i].underAttackBy != c.playerId
@@ -3343,7 +3343,7 @@ public class CombatAssistant {
 	}
 
 	public boolean checkMagicReqs(int spell) {
-		if (c.usingMagic && Config.RUNES_REQUIRED) { // check for runes
+		if (c.usingMagic && Constants.RUNES_REQUIRED) { // check for runes
 			if ((!c.getItems().playerHasItem(c.MAGIC_SPELLS[spell][8], c.MAGIC_SPELLS[spell][9])
 					&& !wearingStaff(c.MAGIC_SPELLS[spell][8]))
 					|| (!c.getItems().playerHasItem(c.MAGIC_SPELLS[spell][10], c.MAGIC_SPELLS[spell][11])
@@ -3385,7 +3385,7 @@ public class CombatAssistant {
 		}
 
 		int staffRequired = getStaffNeeded();
-		if (c.usingMagic && staffRequired > 0 && Config.RUNES_REQUIRED) { // staff
+		if (c.usingMagic && staffRequired > 0 && Constants.RUNES_REQUIRED) { // staff
 																			// required
 			if (c.getEquipment()[c.playerWeapon] != staffRequired) {
 				c.sendMessage(
@@ -3394,13 +3394,13 @@ public class CombatAssistant {
 			}
 		}
 
-		if (c.usingMagic && Config.MAGIC_LEVEL_REQUIRED) { // check magic level
+		if (c.usingMagic && Constants.MAGIC_LEVEL_REQUIRED) { // check magic level
 			if (c.getLevel()[6] < c.MAGIC_SPELLS[spell][1]) {
 				c.sendMessage("You need to have a magic level of " + c.MAGIC_SPELLS[spell][1] + " to cast this spell.");
 				return false;
 			}
 		}
-		if (c.usingMagic && Config.RUNES_REQUIRED) {
+		if (c.usingMagic && Constants.RUNES_REQUIRED) {
 			if (c.MAGIC_SPELLS[spell][8] > 0) { // deleting runes
 				if (!wearingStaff(c.MAGIC_SPELLS[spell][8]))
 					c.getItems().deleteItem(c.MAGIC_SPELLS[spell][8],

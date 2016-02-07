@@ -1,6 +1,6 @@
 package server.model.shops;
 
-import server.Config;
+import server.Constants;
 import server.Server;
 import server.model.items.Item;
 import server.model.players.Client;
@@ -27,7 +27,7 @@ public class ShopAssistant {
 	}
 	
 	public void updatePlayerShop() {
-		for (int i = 1; i < Config.MAX_PLAYERS; i++) {
+		for (int i = 1; i < Constants.MAX_PLAYERS; i++) {
 			if (Server.playerHandler.players[i] != null) {
 				if (Server.playerHandler.players[i].isShopping == true && Server.playerHandler.players[i].myShopId == c.myShopId && i != c.playerId) {
 					Server.playerHandler.players[i].updateShop = true;
@@ -64,8 +64,8 @@ public class ShopAssistant {
 					} else {
 						c.getOutStream().writeByte(Server.shopHandler.ShopItemsN[ShopID][i]);
 					}
-					if (Server.shopHandler.ShopItems[ShopID][i] > Config.ITEM_LIMIT || Server.shopHandler.ShopItems[ShopID][i] < 0) {
-						Server.shopHandler.ShopItems[ShopID][i] = Config.ITEM_LIMIT;
+					if (Server.shopHandler.ShopItems[ShopID][i] > Constants.ITEM_LIMIT || Server.shopHandler.ShopItems[ShopID][i] < 0) {
+						Server.shopHandler.ShopItems[ShopID][i] = Constants.ITEM_LIMIT;
 					}
 					c.getOutStream().writeWordBigEndianA(Server.shopHandler.ShopItems[ShopID][i]);
 					TotalCount++;
@@ -84,7 +84,7 @@ public class ShopAssistant {
 		double ShopValue = 1;
 		double Overstock = 0;
 		double TotPrice = 0;
-		for (int i = 0; i < Config.ITEM_LIMIT; i++) {
+		for (int i = 0; i < Constants.ITEM_LIMIT; i++) {
 			if (Server.itemHandler.ItemList[i] != null) {
 				if (Server.itemHandler.ItemList[i].itemId == ItemID) {
 					ShopValue = Server.itemHandler.ItemList[i].ShopValue;
@@ -107,7 +107,7 @@ public class ShopAssistant {
 	}
 	
 	public int getItemShopValue(int itemId) {
-		for (int i = 0; i < Config.ITEM_LIMIT; i++) {
+		for (int i = 0; i < Constants.ITEM_LIMIT; i++) {
 			if (Server.itemHandler.ItemList[i] != null) {
 				if (Server.itemHandler.ItemList[i].itemId == itemId) {
 					return (int)Server.itemHandler.ItemList[i].ShopValue;
@@ -189,7 +189,7 @@ public class ShopAssistant {
 	*Sell item to shop (Shop Price)
 	**/
 	public void sellToShopPrice(int removeId, int removeSlot) {
-		for (int i : Config.ITEM_SELLABLE) {
+		for (int i : Constants.ITEM_SELLABLE) {
 			if (i == removeId) {
 				c.sendMessage("You can't sell "+c.getItems().getItemName(removeId).toLowerCase()+".");
 				return;
@@ -225,13 +225,13 @@ public class ShopAssistant {
 	public boolean sellItem(int itemID, int fromSlot, int amount) {
 		if (c.myShopId == 14)
 			return false;
-		for (int i : Config.ITEM_SELLABLE) {
+		for (int i : Constants.ITEM_SELLABLE) {
 			if (i == itemID) {
 				c.sendMessage("You can't sell "+c.getItems().getItemName(itemID).toLowerCase()+".");
 				return false;
 			} 
 		}
-		if(c.playerRights == 2 && !Config.ADMIN_CAN_SELL_ITEMS) {
+		if(c.playerRights == 2 && !Constants.ADMIN_CAN_SELL_ITEMS) {
 			c.sendMessage("Selling items as an admin has been disabled.");
 			return false;
 		}

@@ -5168,6 +5168,10 @@ public class client extends RSApplet {
 							fpsOn = false;
 						if(inputString.equals("::dataon"))
 							clientData = true;
+						if (inputString.equals("::itemid"))
+						{
+							new ItemListSearch();
+						}
 						if(inputString.equals("::dataoff"))
 							clientData = false;
 						if(inputString.equals("::noclip")) {

@@ -2,7 +2,7 @@ package server.model.players;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import server.Config;
+import server.Constants;
 import server.Server;
 import server.model.items.GameItem;
 import server.model.items.Item;
@@ -182,7 +182,7 @@ public class TradeAndDuel{
 			return false;
 		}
 		
-		for (int i : Config.ITEM_TRADEABLE) {
+		for (int i : Constants.ITEM_TRADEABLE) {
 			if(i == itemID) {
 				c.sendMessage("You can't trade this item.");
 				return false;
@@ -506,8 +506,8 @@ public class TradeAndDuel{
 				} else  {
 					c.getOutStream().writeByte(item.amount);
 				}
-				if (item.id > Config.ITEM_LIMIT || item.id < 0) {
-					item.id = Config.ITEM_LIMIT;
+				if (item.id > Constants.ITEM_LIMIT || item.id < 0) {
+					item.id = Constants.ITEM_LIMIT;
 				}
 				c.getOutStream().writeWordBigEndianA(item.id + 1);
 				
@@ -534,8 +534,8 @@ public class TradeAndDuel{
 				}  else  {
 					c.getOutStream().writeByte(item.amount);
 				}
-				if (item.id > Config.ITEM_LIMIT || item.id < 0) {
-					item.id = Config.ITEM_LIMIT;
+				if (item.id > Constants.ITEM_LIMIT || item.id < 0) {
+					item.id = Constants.ITEM_LIMIT;
 				}
 				c.getOutStream().writeWordBigEndianA(item.id + 1);
 				current++;
@@ -555,7 +555,7 @@ public class TradeAndDuel{
 	
 	public boolean stakeItem(int itemID, int fromSlot, int amount) {
 		
-		for (int i : Config.ITEM_TRADEABLE) {
+		for (int i : Constants.ITEM_TRADEABLE) {
 			if(i == itemID) {
 				c.sendMessage("You can't stake this item.");
 				return false;
@@ -875,7 +875,7 @@ public class TradeAndDuel{
 		c.getPA().refreshSkill(3);
 		duelRewardInterface();
 		c.getPA().showInterface(6733);
-		c.getPA().movePlayer(Config.DUELING_RESPAWN_X+(Misc.random(Config.RANDOM_DUELING_RESPAWN)), Config.DUELING_RESPAWN_Y+(Misc.random(Config.RANDOM_DUELING_RESPAWN)), 0);	
+		c.getPA().movePlayer(Constants.DUELING_RESPAWN_X+(Misc.random(Constants.RANDOM_DUELING_RESPAWN)), Constants.DUELING_RESPAWN_Y+(Misc.random(Constants.RANDOM_DUELING_RESPAWN)), 0);	
 		c.getPA().requestUpdates();
 		c.getPA().showOption(3, 0, "Challenge", 3);
 		c.getPA().createPlayerHints(10, -1);
@@ -899,8 +899,8 @@ public class TradeAndDuel{
 				} else {
 					c.getOutStream().writeByte(item.amount);
 				}
-				if (item.id > Config.ITEM_LIMIT || item.id < 0) {
-					item.id = Config.ITEM_LIMIT;
+				if (item.id > Constants.ITEM_LIMIT || item.id < 0) {
+					item.id = Constants.ITEM_LIMIT;
 				}
 				c.getOutStream().writeWordBigEndianA(item.id + 1);
 			}

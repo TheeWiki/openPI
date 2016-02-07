@@ -1,7 +1,7 @@
 package server.model.players;
 import java.util.ArrayList;
 
-import server.Config;
+import server.Constants;
 import server.Server;
 import server.model.Animation;
 import server.model.Graphic;
@@ -549,8 +549,8 @@ public abstract class Player {
 	public PlayerHandler handler = null;
 	public int playerItems[] = new int[28];
 	public int playerItemsN[] = new int[28];
-	public int bankItems[] = new int[Config.BANK_SIZE];
-	public int bankItemsN[] = new int[Config.BANK_SIZE];
+	public int bankItems[] = new int[Constants.BANK_SIZE];
+	public int bankItemsN[] = new int[Constants.BANK_SIZE];
 	public boolean bankNotes = false;
 	
 	public int playerStandIndex = 0x328;
@@ -730,11 +730,11 @@ public abstract class Player {
 				playerXP[i] = 0;
 			}
 		}
-		for (int i=0; i < Config.BANK_SIZE; i++) {
+		for (int i=0; i < Constants.BANK_SIZE; i++) {
 			bankItems[i] = 0;
 		}
 
-		for (int i=0; i < Config.BANK_SIZE; i++) {
+		for (int i=0; i < Constants.BANK_SIZE; i++) {
 			bankItemsN[i] = 0;
 		}
 		
@@ -769,8 +769,8 @@ public abstract class Player {
 		
 		heightLevel = 0;
 		
-		teleportToX = Config.START_LOCATION_X;
-		teleportToY = Config.START_LOCATION_Y;
+		teleportToX = Constants.START_LOCATION_X;
+		teleportToY = Constants.START_LOCATION_Y;
 
 		
 		absX = absY = -1;
@@ -790,12 +790,12 @@ public abstract class Player {
 	}
 
 
-	public static final int maxPlayerListSize = Config.MAX_PLAYERS;
+	public static final int maxPlayerListSize = Constants.MAX_PLAYERS;
 	public Player playerList[] = new Player[maxPlayerListSize];
 	public int playerListSize = 0;
 	
 	
-	public byte playerInListBitmap[] = new byte[(Config.MAX_PLAYERS+7) >> 3];
+	public byte playerInListBitmap[] = new byte[(Constants.MAX_PLAYERS+7) >> 3];
 	
 	
 	public static final int maxNPCListSize = NPCHandler.maxNPCs;
@@ -1077,7 +1077,7 @@ public abstract class Player {
 	}
 
 	
-	public byte cachedPropertiesBitmap[] = new byte[(Config.MAX_PLAYERS+7) >> 3];
+	public byte cachedPropertiesBitmap[] = new byte[(Constants.MAX_PLAYERS+7) >> 3];
 
 	public void addNewNPC(NPC npc, Stream str, Stream updateBlock) {
 		//synchronized(this) {
@@ -1843,7 +1843,7 @@ public abstract class Player {
 	
 	}
 	
-	public int[] damageTaken = new int[Config.MAX_PLAYERS];
+	public int[] damageTaken = new int[Constants.MAX_PLAYERS];
 	
 	public void handleHitMask(int damage) {
 		if (!hitUpdateRequired) {

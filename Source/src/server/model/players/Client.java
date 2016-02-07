@@ -7,14 +7,20 @@ import java.util.concurrent.Future;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 
-import server.Config;
+import server.Constants;
 import server.Server;
 import server.event.CycleEvent;
 import server.event.CycleEventContainer;
 import server.event.CycleEventHandler;
+import server.model.EmoteHandler;
 import server.model.items.ItemAssistant;
 import server.model.players.combat.CombatAssistant;
 import server.model.players.combat.Experience;
+import server.model.players.combat.PlayerKilling;
+import server.model.players.packet.PacketHandler;
+import server.model.players.skills.cooking.Food;
+import server.model.players.skills.herblore.PotionMixing;
+import server.model.players.skills.herblore.Potions;
 import server.model.shops.ShopAssistant;
 import server.net.Packet;
 import server.net.Packet.Type;
@@ -49,12 +55,12 @@ public class Client extends Player {
 		super(_playerId);
 		this.session = s;
 		synchronized (this) {
-			outStream = new Stream(new byte[Config.BUFFER_SIZE]);
+			outStream = new Stream(new byte[Constants.BUFFER_SIZE]);
 			outStream.currentOffset = 0;
 
-			inStream = new Stream(new byte[Config.BUFFER_SIZE]);
+			inStream = new Stream(new byte[Constants.BUFFER_SIZE]);
 			inStream.currentOffset = 0;
-			buffer = new byte[Config.BUFFER_SIZE];
+			buffer = new byte[Constants.BUFFER_SIZE];
 		}
 	}
 
@@ -200,7 +206,7 @@ public class Client extends Player {
 		setSidebarInterface(12, 147); // run tab
 		setSidebarInterface(13, -1);
 		setSidebarInterface(0, 2423);
-		sendMessage("Welcome to " + Config.SERVER_NAME);
+		sendMessage("Welcome to " + Constants.SERVER_NAME);
 		getPA().showOption(4, 0, "Trade With", 3);
 		getPA().showOption(5, 0, "Follow", 4);
 		getItems().resetItems(3214);
@@ -222,7 +228,7 @@ public class Client extends Player {
 		getItems().sendWeapon(getEquipment()[playerWeapon], getItems().getItemName(getEquipment()[playerWeapon]));
 		getPA().logIntoPM();
 		getItems().addSpecialBar(playerEquipment[playerWeapon]);
-		saveTimer = Config.SAVE_TIMER;
+		saveTimer = Constants.SAVE_TIMER;
 		saveCharacter = true;
 		Misc.println("[REGISTERED]: " + playerName + "");
 		handler.updatePlayer(this, outStream);
@@ -262,7 +268,7 @@ public class Client extends Player {
 
 	public void process() {
 
-		if (System.currentTimeMillis() - specDelay > Config.INCREASE_SPECIAL_AMOUNT) {
+		if (System.currentTimeMillis() - specDelay > Constants.INCREASE_SPECIAL_AMOUNT) {
 			specDelay = System.currentTimeMillis();
 			if (specAmount < 10) {
 				specAmount += .5;
@@ -306,7 +312,7 @@ public class Client extends Player {
 			int modY = absY > 6400 ? absY - 6400 : absY;
 			wildLevel = (((modY - 3520) / 8) + 1);
 			getPA().walkableInterface(197);
-			if (Config.SINGLE_AND_MULTI_ZONES) {
+			if (Constants.SINGLE_AND_MULTI_ZONES) {
 				if (inMulti()) {
 					getPA().sendFrame126("@yel@Level: " + wildLevel, 199);
 				} else {
@@ -576,11 +582,15 @@ public class Client extends Player {
 	}
 
 	private boolean canWalk = true;
+	public int emotesPerformed = 0;
 
 	public boolean canWalk() {
 		return canWalk;
 	}
-
+	private EmoteHandler emoteHandler = new EmoteHandler(this); 
+	public EmoteHandler getEmoteHandler() { 
+		return emoteHandler;
+	}
 	public void setCanWalk(boolean canWalk) {
 		this.canWalk = canWalk;
 	}

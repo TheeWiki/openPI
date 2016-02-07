@@ -1,6 +1,6 @@
 package server.util;
 
-import server.Config;
+import server.Constants;
 
 public class Stream {
 
@@ -378,9 +378,9 @@ public class Stream {
 	}
 
 	public void reset() {
-		if (!(currentOffset > Config.BUFFER_SIZE)) {
+		if (!(currentOffset > Constants.BUFFER_SIZE)) {
 			byte[] oldBuffer = buffer;
-			buffer = new byte[Config.BUFFER_SIZE];
+			buffer = new byte[Constants.BUFFER_SIZE];
 			for (int i = 0; i < currentOffset; i++) {
 				buffer[i] = oldBuffer[i];
 			}

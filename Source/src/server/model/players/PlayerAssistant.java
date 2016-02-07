@@ -1,6 +1,6 @@
 package server.model.players;
 
-import server.Config;
+import server.Constants;
 import server.Server;
 import server.event.CycleEvent;
 import server.event.CycleEventContainer;
@@ -525,7 +525,7 @@ public class PlayerAssistant{
 			if(c.getOutStream() != null && c != null) {
 				if(world != 0) {
 		            world += 9;
-				} else if(!Config.WORLD_LIST_FIX) {
+				} else if(!Constants.WORLD_LIST_FIX) {
 					world += 1;
 				}	
 				c.getOutStream().createFrame(50);
@@ -607,7 +607,7 @@ public class PlayerAssistant{
 
 	public void frame1() {
 		//synchronized(c) {
-			for(int i = 0; i < Config.MAX_PLAYERS; i++) {
+			for(int i = 0; i < Constants.MAX_PLAYERS; i++) {
 				if(Server.playerHandler.players[i] != null) {
 					Client person = (Client)Server.playerHandler.players[i];
 					if(person != null) {
@@ -700,7 +700,7 @@ public class PlayerAssistant{
 	public void createPlayersProjectile(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving,
 			int startHeight, int endHeight, int lockon, int time, int slope) {
 		// synchronized(c) {
-		for (int i = 0; i < Config.MAX_PLAYERS; i++) {
+		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 			Player p = PlayerHandler.players[i];
 			if (p != null) {
 				Client person = (Client) p;
@@ -721,7 +721,7 @@ public class PlayerAssistant{
 	public void createPlayersProjectile(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving,
 			int startHeight, int endHeight, int lockon, int time) {
 		// synchronized(c) {
-		for (int i = 0; i < Config.MAX_PLAYERS; i++) {
+		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 			Player p = PlayerHandler.players[i];
 			if (p != null) {
 				Client person = (Client) p;
@@ -741,7 +741,7 @@ public class PlayerAssistant{
 	public void createPlayersProjectile2(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving,
 			int startHeight, int endHeight, int lockon, int time, int slope) {
 		// synchronized(c) {
-		for (int i = 0; i < Config.MAX_PLAYERS; i++) {
+		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 			Player p = PlayerHandler.players[i];
 			if (p != null) {
 				Client person = (Client) p;
@@ -779,7 +779,7 @@ public class PlayerAssistant{
 	//creates gfx for everyone
 	public void createPlayersStillGfx(int id, int x, int y, int height, int time) {
 		//synchronized(c) {
-			for(int i = 0; i < Config.MAX_PLAYERS; i++) {
+			for(int i = 0; i < Constants.MAX_PLAYERS; i++) {
 				Player p = Server.playerHandler.players[i];
 				if(p != null) {
 					Client person = (Client)p;
@@ -886,7 +886,7 @@ public class PlayerAssistant{
 	**/	
 	public void logIntoPM() {
 		setPrivateMessaging(2);
-		for(int i1 = 0; i1 < Config.MAX_PLAYERS; i1++) {
+		for(int i1 = 0; i1 < Constants.MAX_PLAYERS; i1++) {
 			Player p = Server.playerHandler.players[i1];
 			if(p != null && p.isActive) {
 				Client o = (Client)p;
@@ -899,7 +899,7 @@ public class PlayerAssistant{
 
 		for(int i = 0; i < c.friends.length; i++) {
 			if(c.friends[i] != 0)  {
-				for(int i2 = 1; i2 < Config.MAX_PLAYERS; i2++) {
+				for(int i2 = 1; i2 < Constants.MAX_PLAYERS; i2++) {
 					Player p = Server.playerHandler.players[i2];
 					if (p != null && p.isActive && Misc.playerNameToInt64(p.playerName) == c.friends[i])  {
 						Client o = (Client)p;
@@ -917,7 +917,7 @@ public class PlayerAssistant{
 				}
 				pmLoaded = false;
 			}
-			for(int i1 = 1; i1 < Config.MAX_PLAYERS; i1++) {
+			for(int i1 = 1; i1 < Constants.MAX_PLAYERS; i1++) {
 				Player p = Server.playerHandler.players[i1];
     			if(p != null && p.isActive) {
 					Client o = (Client)p;
@@ -1042,7 +1042,7 @@ public class PlayerAssistant{
 				c.gfx100(c.MAGIC_SPELLS[49][3]);
 				c.alchDelay = System.currentTimeMillis();
 				sendFrame106(6);
-				addSkillXP(c.MAGIC_SPELLS[49][7] * Config.MAGIC_EXP_RATE, 6);
+				addSkillXP(c.MAGIC_SPELLS[49][7] * Constants.MAGIC_EXP_RATE, 6);
 				refreshSkill(6);
 			}
 			break;
@@ -1062,7 +1062,7 @@ public class PlayerAssistant{
 				c.gfx100(c.MAGIC_SPELLS[50][3]);
 				c.alchDelay = System.currentTimeMillis();
 				sendFrame106(6);
-				addSkillXP(c.MAGIC_SPELLS[50][7] * Config.MAGIC_EXP_RATE, 6);
+				addSkillXP(c.MAGIC_SPELLS[50][7] * Constants.MAGIC_EXP_RATE, 6);
 				refreshSkill(6);
 			}
 			break;
@@ -1169,7 +1169,7 @@ public class PlayerAssistant{
 		if(c.duelStatus <= 4 && !c.getPA().inPitsWait()) { // if we are not in a duel we must be in wildy so remove items
 			if (!c.inPits && !c.inFightCaves()) {
 					c.getItems().resetKeepItems();
-				if((c.playerRights == 2 && Config.ADMIN_DROP_ITEMS) || c.playerRights != 2) {
+				if((c.playerRights == 2 && Constants.ADMIN_DROP_ITEMS) || c.playerRights != 2) {
 					if(!c.isSkulled) {	// what items to keep
 						c.getItems().keepItem(0, true);
 						c.getItems().keepItem(1, true);	
@@ -1208,7 +1208,7 @@ public class PlayerAssistant{
 		if (c.pitsStatus == 1) {
 			movePlayer(2399, 5173, 0);
 		} else if(c.duelStatus <= 4) { // if we are not in a duel repawn to wildy
-			movePlayer(Config.RESPAWN_X, Config.RESPAWN_Y, 0);
+			movePlayer(Constants.RESPAWN_X, Constants.RESPAWN_Y, 0);
 			c.isSkulled = false;
 			c.skullTimer = 0;
 			c.attackedPlayers.clear();
@@ -1222,8 +1222,8 @@ public class PlayerAssistant{
 					o.getTradeAndDuel().duelVictory();
 				}
 			}
-			c.getPA().movePlayer(Config.DUELING_RESPAWN_X+(Misc.random(Config.RANDOM_DUELING_RESPAWN)), Config.DUELING_RESPAWN_Y+(Misc.random(Config.RANDOM_DUELING_RESPAWN)), 0);
-			o.getPA().movePlayer(Config.DUELING_RESPAWN_X+(Misc.random(Config.RANDOM_DUELING_RESPAWN)), Config.DUELING_RESPAWN_Y+(Misc.random(Config.RANDOM_DUELING_RESPAWN)), 0);
+			c.getPA().movePlayer(Constants.DUELING_RESPAWN_X+(Misc.random(Constants.RANDOM_DUELING_RESPAWN)), Constants.DUELING_RESPAWN_Y+(Misc.random(Constants.RANDOM_DUELING_RESPAWN)), 0);
+			o.getPA().movePlayer(Constants.DUELING_RESPAWN_X+(Misc.random(Constants.RANDOM_DUELING_RESPAWN)), Constants.DUELING_RESPAWN_Y+(Misc.random(Constants.RANDOM_DUELING_RESPAWN)), 0);
 			if(c.duelStatus != 6) { // if we have won but have died, don't reset the duel status.
 				c.getTradeAndDuel().resetDuel();
 			}
@@ -1239,7 +1239,7 @@ public class PlayerAssistant{
 		c.attackedPlayers.clear();
 		c.headIconPk = -1;
 		c.skullTimer = -1;
-		c.damageTaken = new int[Config.MAX_PLAYERS];
+		c.damageTaken = new int[Constants.MAX_PLAYERS];
 		c.getPA().requestUpdates();
 	}
 		
@@ -1290,8 +1290,8 @@ public class PlayerAssistant{
 			c.sendMessage("You can't teleport during a duel!");
 			return;
 		}
-		if(c.inWild() && c.wildLevel > Config.NO_TELEPORT_WILD_LEVEL) {
-			c.sendMessage("You can't teleport above level "+Config.NO_TELEPORT_WILD_LEVEL+" in the wilderness.");
+		if(c.inWild() && c.wildLevel > Constants.NO_TELEPORT_WILD_LEVEL) {
+			c.sendMessage("You can't teleport above level "+Constants.NO_TELEPORT_WILD_LEVEL+" in the wilderness.");
 			return;
 		}
 		if(System.currentTimeMillis() - c.teleBlockDelay < c.teleBlockLength) {
@@ -2108,7 +2108,7 @@ public class PlayerAssistant{
 			}
 			return false;
 		}
-		amount *= Config.SERVER_EXP_BONUS;
+		amount *= Constants.SERVER_EXP_BONUS;
 		int oldLevel = getLevelForXP(c.playerXP[skill]);
 		c.playerXP[skill] += amount;
 		if (oldLevel < getLevelForXP(c.playerXP[skill])) {
@@ -2307,7 +2307,7 @@ public class PlayerAssistant{
 	public int findKiller() {
 		int killer = c.playerId;
 		int damage = 0;
-		for (int j = 0; j < Config.MAX_PLAYERS; j++) {
+		for (int j = 0; j < Constants.MAX_PLAYERS; j++) {
 			if (PlayerHandler.players[j] == null)
 				continue;
 			if (j == c.playerId)
