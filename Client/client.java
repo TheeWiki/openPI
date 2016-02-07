@@ -2226,7 +2226,7 @@ public class client extends RSApplet {
 
 	private void method46(int i, Stream stream) {
 		while(stream.bitPosition + 21 < i * 8) {
-			int k = stream.readBits(Constants.NPC_BITS);
+			int k = stream.readBits(14);
 			if(k == 16383)
 				break;
 			if(npcArray[k] == null)
@@ -2241,7 +2241,7 @@ public class client extends RSApplet {
 			if(i1 > 15)
 				i1 -= 32;
 			int j1 = stream.readBits(1);
-			npc.desc = EntityDef.forID(stream.readBits(Constants.NPC_BITS));
+			npc.desc = EntityDef.forID(stream.readBits(12));
 			int k1 = stream.readBits(1);
 			if(k1 == 1)
 				anIntArray894[anInt893++] = k;
@@ -2256,12 +2256,7 @@ public class client extends RSApplet {
 		}
 		stream.finishBitAccess();
 	}
-	void mouseWheelDragged(int i, int j) {
-		if (!mouseWheelDown)
-			return;
-		this.anInt1186 += i * 3;
-		this.anInt1187 += (j << 1);
-	}
+
 	public void processGameLoop() {
 		if(rsAlreadyLoaded || loadingError || genericLoadingError)
 			return;
@@ -6482,7 +6477,7 @@ public class client extends RSApplet {
 			}
 			if(k == 6)
 			{
-				loginMessage1 = Constants.CLIENT_NAME+ " has been updated!";
+				loginMessage1 =  Constants.CLIENT_NAME+ " has been updated!";
 				loginMessage2 = "Please reload this page.";
 				return;
 			}
