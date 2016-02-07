@@ -5129,6 +5129,7 @@ public class client extends RSApplet {
 					inputString = inputString.substring(0, inputString.length() - 1);
 					inputTaken = true;
 				}
+				if (j == 9) tabToReplyPm();
 				if((j == 13 || j == 10) && inputString.length() > 0) {
 					if(myPrivilege == 2 || server.equals("127.0.0.1") || 1 == 1/*to remove*/) {
 						if(inputString.startsWith("//setspecto")) {
@@ -12279,7 +12280,50 @@ public class client extends RSApplet {
 		bigY = new int[4000];
 		anInt1289 = -1;
 	}
+	public void tabToReplyPm() {
+        String name = null;
+        for (int k = 0; k < 100; k++) {
+            if (chatMessages[k] == null) {
+                continue;
+            }
+            int l = chatTypes[k];
+            if (l == 3 || l == 7) {
+                name = chatNames[k];
+                break;
+            }
+        }
 
+        if (name == null) {
+            pushMessage("You haven't received any messages to which you can reply.", 0, "");
+            return;
+        }
+
+        if (name.startsWith("@cr")) {
+            name = name.substring(5);
+        }
+
+        long nameAsLong = TextClass.longForName(name.trim());
+        int k3 = -1;
+        for (int i4 = 0; i4 < friendsCount; i4++) {
+            if (friendsListAsLongs[i4] != nameAsLong) continue;
+            k3 = i4;
+            break;
+        }
+
+        if (k3 != -1) {
+            if (friendsNodeIDs[k3] > 0) {
+                inputTaken = true;
+                inputDialogState = 0;
+                messagePromptRaised = true;
+                promptInput = "";
+                friendsListAction = 3;
+                aLong953 = friendsListAsLongs[k3];
+                aString1121 = "Enter message to send to " + friendsList[k3];
+            } else {
+                pushMessage("That player is currently offline.", 0, "");
+            }
+        }
+    }
 	public int rights;
 	public String name;
 	public String message;

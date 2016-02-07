@@ -38,6 +38,7 @@ public class Jframe extends client implements ActionListener {
 			JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 			frame = new JFrame(Constants.CLIENT_NAME);
 			frame.setLayout(new BorderLayout());
+			setFocusTraversalKeysEnabled(false);
 			frame.setResizable(false);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			JPanel gamePanel = new JPanel();
