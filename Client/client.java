@@ -2188,7 +2188,7 @@ public class client extends RSApplet {
 		else
 			return j / 0xf4240 + "M";
 	}
-
+	private String mySavedUsername = "";
 	private void resetLogout() {
 		try {
 			if(socketStream != null)
@@ -2198,8 +2198,8 @@ public class client extends RSApplet {
 		socketStream = null;
 		loggedIn = false;
 		loginScreenState = 0;
- //	   myUsername = "";
- //	   myPassword = "";
+ 	   myUsername = mySavedUsername;
+// 	   myPassword = "";
 		unlinkMRUNodes();
 		worldController.initToNull();
 		for(int i = 0; i < 4; i++)
@@ -6375,7 +6375,7 @@ public class client extends RSApplet {
 				menuActionRow = 0;
 				menuOpen = false;
 				super.idleTime = 0;
-				for(int j1 = 0; j1 < 100; j1++)
+				for(int j1 = 0; j1 < 500; j1++)
 					chatMessages[j1] = null;
 
 				itemSelected = 0;
@@ -10669,6 +10669,7 @@ public class client extends RSApplet {
 							myUsername += (char)l1;
 						if(myUsername.length() > 12)
 							myUsername = myUsername.substring(0, 12);
+						mySavedUsername = myUsername;
 					} else
 					if(loginScreenCursorPos == 1)
 					{
