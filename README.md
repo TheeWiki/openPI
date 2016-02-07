@@ -7,8 +7,11 @@ An open source Project Insanity server. Using this framework is not recommended,
 
 # Goals
 > Offer improved combat
+
 > All skills added (standard)
+
 > Minigames
+
 > Stability (duh)
 
 # Q & A
