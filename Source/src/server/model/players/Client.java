@@ -18,6 +18,7 @@ import server.model.items.ItemAssistant;
 import server.model.players.combat.CombatAssistant;
 import server.model.players.combat.Experience;
 import server.model.players.combat.PlayerKilling;
+import server.model.players.combat.Specials;
 import server.model.players.packet.PacketHandler;
 import server.model.players.skills.cooking.Food;
 import server.model.players.skills.herblore.PotionMixing;
@@ -83,7 +84,10 @@ public class Client extends Player {
 		}
 		return fail;
 	}
-
+	public Specials getSA() { 
+		return specials;
+	}
+	private Specials specials = new Specials(this);
 	public void removeAttribute(String key) {
 		attributes.remove(key);
 	}
