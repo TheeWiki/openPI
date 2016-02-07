@@ -34,6 +34,8 @@ public class Constants
 	 */
 	public static boolean CAMERA_GLIDE = true;
 	
+	public static boolean SMOOTH_SHADING = true;
+	
 	/**
 	 * Will the entities hit x10 damage display on each other in combat?
 	 * Everything becomes x10, including the hp/hp orb
