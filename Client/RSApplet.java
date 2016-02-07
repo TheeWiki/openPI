@@ -189,9 +189,11 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseMo
 		shouldClearScreen = true;
 		raiseWelcomeScreen();
 	}
-
+	public boolean mouseWheelDown;
+	
 	public final void mousePressed(MouseEvent mouseevent)
 	{
+		int type = mouseevent.getButton();
 		int i = mouseevent.getX();
 		int j = mouseevent.getY();
 		if(gameFrame != null)
@@ -203,6 +205,13 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseMo
 		clickX = i;
 		clickY = j;
 		clickTime = System.currentTimeMillis();
+		if (type == 2) {
+			mouseWheelDown = true;
+			mouseWheelX = i;
+			mouseWheelY = j;
+			return;
+		}
+		
 		if(mouseevent.isMetaDown())
 		{
 			clickMode1 = 2;
@@ -234,19 +243,30 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseMo
 		mouseX = -1;
 		mouseY = -1;
 	}
+	void mouseWheelDragged(int param1, int param2) {
 
-	public final void mouseDragged(MouseEvent mouseevent)
-	{
-		int i = mouseevent.getX();
-		int j = mouseevent.getY();
-		if(gameFrame != null)
-		{
-			i -= 4;
-			j -= 22;
+	}
+	public int mouseWheelX;
+	public int mouseWheelY;
+	public final void mouseDragged(MouseEvent e) {
+		int x = e.getX();
+		int y = e.getY();
+		if(gameFrame != null) {
+			Insets insets = gameFrame.getInsets();
+			x -= insets.left;//4
+			y -= insets.top;//22
+		}
+		if (mouseWheelDown) {
+			y = mouseWheelX - e.getX();
+			int k = mouseWheelY - e.getY();
+			mouseWheelDragged(y, -k);
+			mouseWheelX = e.getX();
+			mouseWheelY = e.getY();
+			return;
 		}
 		idleTime = 0;
-		mouseX = i;
-		mouseY = j;
+		mouseX = x;
+		mouseY = y; 
 	}
 
 	public final void mouseMoved(MouseEvent mouseevent)
