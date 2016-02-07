@@ -1,5 +1,7 @@
 package server.model.players.skills;
 
+import java.util.HashMap;
+
 public enum SkillIndex 
 {
 	ATTACK(0),
