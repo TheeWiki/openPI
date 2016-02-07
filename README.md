@@ -4,3 +4,9 @@ An open source Project Insanity server. Using this framework is not recommended,
 # Credits
 - Sanity -> Project Insanity framework
 - Galkon -> Client Mitb #317
+
+# Q & A
+If you have any questions please call us the PI Helpline at
+...
+:telephone_receiver: 905-idk-code
+...
