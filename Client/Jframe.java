@@ -35,27 +35,9 @@ public class Jframe extends client implements ActionListener {
 			gamePanel.setLayout(new BorderLayout());
 			gamePanel.add(this);
 			gamePanel.setPreferredSize(new Dimension(765, 503));
-
-			JMenu fileMenu = new JMenu("Project Insanity");
-
-			String[] mainButtons = new String[] { "Remember to vote!", "-", "Exit" };
-
-			for (String name : mainButtons) {
-				JMenuItem menuItem = new JMenuItem(name);
-				if (name.equalsIgnoreCase("-")) {
-					fileMenu.addSeparator();
-				} else {
-					menuItem.addActionListener(this);
-					fileMenu.add(menuItem);
-				}
-			}
-
-			JMenuBar menuBar = new JMenuBar();
+			
 			JMenuBar jmenubar = new JMenuBar();
-
 			frame.add(jmenubar);
-			menuBar.add(fileMenu);
-			frame.getContentPane().add(menuBar, BorderLayout.NORTH);
 			frame.getContentPane().add(gamePanel, BorderLayout.CENTER);
 			frame.pack();
 
