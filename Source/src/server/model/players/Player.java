@@ -3,6 +3,8 @@ import java.util.ArrayList;
 
 import server.Config;
 import server.Server;
+import server.model.Animation;
+import server.model.Graphic;
 import server.model.items.Item;
 import server.model.npcs.NPC;
 import server.model.npcs.NPCHandler;
@@ -333,7 +335,24 @@ public abstract class Player {
 			return "Select Spell";
 		}
 	}
-	
+	public int[] playerEquipment = new int[14];
+
+	public int[] getEquipment() {
+		return this.playerEquipment;
+	}
+
+	public int[] playerEquipmentN = new int[14];
+	public int[] playerLevel = new int[25];
+
+	public int[] getLevel() {
+		return this.playerLevel;
+	}
+
+	public int[] playerXP = new int[25];
+
+	public int[] getExperience() {
+		return this.playerXP;
+	}
 	public boolean fullVoidRange() {
 		return playerEquipment[playerHat] == 11664 && playerEquipment[playerLegs] == 8840 && playerEquipment[playerChest] == 8839 && playerEquipment[playerHands] == 8842;
 	}
@@ -575,11 +594,19 @@ public abstract class Player {
 	public int playerSlayer = 18;
 	public int playerFarming = 19;
 	public int playerRunecrafting = 20;
-	
-    public int[] playerEquipment = new int[14];
-	public int[] playerEquipmentN = new int[14];
-	public int[] playerLevel = new int[25];
-	public int[] playerXP = new int[25];
+	 
+	private int[] hits = new int[100];
+
+	public int[] getHits() {
+		return hits;
+	}
+
+	public int[] damage = new int[3];
+
+	public int[] getDamage() {
+		return this.damage;
+	}
+	public int combatStyle = 0;
 	
 	public void updateshop(int i){
 		Client p = (Client) Server.playerHandler.players[playerId];
@@ -592,6 +619,91 @@ public abstract class Player {
 	public void println(String str) {
 		System.out.println("[player-"+playerId+"]: "+str);
 	}
+	/**
+	 * Animations
+	 **/
+	public void playAnimation(Animation animation) {
+		animationRequest = animation.getId();
+		animationWaitCycles = animation.getDelay();
+		updateRequired = true;
+	}
+ 
+	public void playGraphic(Graphic graphic) {
+		mask100var1 = graphic.getId();
+		mask100var2 = graphic.getDelay() + (65536 * graphic.getHeight());
+		mask100update = true;
+		updateRequired = true;
+	}
+	public int getFace() {
+		return this.playerId + '\u8000';
+	}
+	public long attackableTimer;
+	public boolean inSafeZone() {
+		if (this.inDuelArena()) {
+			return true;
+		}
+		if (this.absX <= 3098
+				&& this.absY <= 3499
+				&& this.absX >= 3091
+				&& this.absY >= 3488
+				|| this.absX <= 3226
+				&& this.absY <= 3228
+				&& this.absX >= 3201
+				&& this.absY >= 3209
+				|| this.absX >= 3227
+				&& this.absY <= 3219
+				&& this.absX <= 3229
+				&& this.absY >= 3217
+				|| this.absX >= 3201
+				&& this.absY >= 3229
+				&& this.absX <= 3226
+				&& this.absY <= 3236
+				|| this.absX >= 3201
+				&& this.absY >= 3201
+				&& this.absX <= 3226
+				&& this.absY <= 3208
+				|| this.absX <= 2547
+				&& this.absY >= 4708
+				&& this.absX >= 2529
+				&& this.absY <= 4725
+				|| this.absX <= 2949
+				&& this.absY <= 3369
+				&& this.absX >= 2943
+				&& this.absY >= 3368
+				|| this.absX <= 2947
+				&& this.absY >= 3369
+				&& this.absX >= 2943
+				&& this.absY <= 3373
+				|| this.absX <= 2102
+				&& this.absY <= 4475
+				&& this.absX >= 2074
+				&& this.absY >= 4455
+				|| (absX >= 2800 && absX <= 2950 && absY >= 5200 && absY <= 5400)) {
+			return true;
+		}
+		return false;
+	}
+	public long stofdDelay;
+
+	public int dbowIndex, dbowIndex1, dbowTimer;
+	public boolean withinRange(Client otherPlayer) {
+		int highRange = otherPlayer.combatLevel + calculatePVPLevel();
+		int lowRange = otherPlayer.combatLevel - calculatePVPLevel();
+		if (combatLevel >= lowRange && combatLevel <= highRange) {
+			return true;
+		}
+		return false;
+	}
+
+	public int calculatePVPLevel() {
+		return (int) (0.1 * this.combatLevel) + 5 + this.wildLevel;
+	}
+	private int[] combatBonus = new int[12];
+
+	public int[] getCombatBonus() {
+		return this.combatBonus;
+	}
+	public boolean armadylSpecial = false; 
 	public Player(int _playerId) {
 		playerId = _playerId;
 		playerRights = 0;

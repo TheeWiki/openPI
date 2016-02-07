@@ -624,93 +624,138 @@ public class PlayerAssistant{
 		}
 	}
 	
+
 	/**
-	* Creating projectile
-	**/
-	public void createProjectile(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving, int startHeight, int endHeight, int lockon, int time) {      
-		//synchronized(c) {
-			if(c.getOutStream() != null && c != null) {
-				c.getOutStream().createFrame(85);
-		        c.getOutStream().writeByteC((y - (c.getMapRegionY() * 8)) - 2);
-		        c.getOutStream().writeByteC((x - (c.getMapRegionX() * 8)) - 3);
-		        c.getOutStream().createFrame(117);
-		        c.getOutStream().writeByte(angle);
-		        c.getOutStream().writeByte(offY);
-		        c.getOutStream().writeByte(offX);
-		        c.getOutStream().writeWord(lockon);
-		        c.getOutStream().writeWord(gfxMoving);
-		        c.getOutStream().writeByte(startHeight);
-		        c.getOutStream().writeByte(endHeight);
-		        c.getOutStream().writeWord(time);
-			    c.getOutStream().writeWord(speed);
-				c.getOutStream().writeByte(16);
-				c.getOutStream().writeByte(64);
-				c.flushOutStream();
-			
-		}
-    }
-	
-	public void createProjectile2(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving, int startHeight, int endHeight, int lockon, int time, int slope) {      
-		//synchronized(c) {
-			if(c.getOutStream() != null && c != null) {
-				c.getOutStream().createFrame(85);
-		        c.getOutStream().writeByteC((y - (c.getMapRegionY() * 8)) - 2);
-		        c.getOutStream().writeByteC((x - (c.getMapRegionX() * 8)) - 3);
-		        c.getOutStream().createFrame(117);
-		        c.getOutStream().writeByte(angle);
-		        c.getOutStream().writeByte(offY);
-		        c.getOutStream().writeByte(offX);
-		        c.getOutStream().writeWord(lockon);
-		        c.getOutStream().writeWord(gfxMoving);
-		        c.getOutStream().writeByte(startHeight);
-		        c.getOutStream().writeByte(endHeight);
-		        c.getOutStream().writeWord(time);
-			    c.getOutStream().writeWord(speed);
-				c.getOutStream().writeByte(slope);
-				c.getOutStream().writeByte(64);
-				c.flushOutStream();
-			}
-		
-    }
-	
-	// projectiles for everyone within 25 squares
-	public void createPlayersProjectile(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving, int startHeight, int endHeight, int lockon, int time) {
-		//synchronized(c) {
-			for(int i = 0; i < Config.MAX_PLAYERS; i++) {
-				Player p = Server.playerHandler.players[i];
-				if(p != null) {
-					Client person = (Client)p;
-					if(person != null) {
-						if(person.getOutStream() != null) {
-							if(person.distanceToPoint(x, y) <= 25){
-								if (p.heightLevel == c.heightLevel)
-									person.getPA().createProjectile(x, y, offX, offY, angle, speed, gfxMoving, startHeight, endHeight, lockon, time);
-							}
-						}
-					}	
-				
-			}
+	 * Creating projectile
+	 **/
+	public void createProjectile(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving, int startHeight,
+			int endHeight, int lockon, int time) {
+		// synchronized(c) {
+		if (c.getOutStream() != null && c != null) {
+			c.getOutStream().createFrame(85);
+			c.getOutStream().writeByteC((y - (c.getMapRegionY() * 8)) - 2);
+			c.getOutStream().writeByteC((x - (c.getMapRegionX() * 8)) - 3);
+			c.getOutStream().createFrame(117);
+			c.getOutStream().writeByte(angle);
+			c.getOutStream().writeByte(offY);
+			c.getOutStream().writeByte(offX);
+			c.getOutStream().writeWord(lockon);
+			c.getOutStream().writeWord(gfxMoving);
+			c.getOutStream().writeByte(startHeight);
+			c.getOutStream().writeByte(endHeight);
+			c.getOutStream().writeWord(time);
+			c.getOutStream().writeWord(speed);
+			c.getOutStream().writeByte(16);
+			c.getOutStream().writeByte(64);
+			c.flushOutStream();
 		}
 	}
-	
-	public void createPlayersProjectile2(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving, int startHeight, int endHeight, int lockon, int time, int slope) {
-		//synchronized(c) {
-			for(int i = 0; i < Config.MAX_PLAYERS; i++) {
-				Player p = Server.playerHandler.players[i];
-				if(p != null) {
-					Client person = (Client)p;
-					if(person != null) {
-						if(person.getOutStream() != null) {
-							if(person.distanceToPoint(x, y) <= 25){	
-								person.getPA().createProjectile2(x, y, offX, offY, angle, speed, gfxMoving, startHeight, endHeight, lockon, time, slope);	
-							}
+
+	public void createProjectile2(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving,
+			int startHeight, int endHeight, int lockon, int time, int slope) {
+		// synchronized(c) {
+		if (c.getOutStream() != null && c != null) {
+			c.getOutStream().createFrame(85);
+			c.getOutStream().writeByteC((y - (c.getMapRegionY() * 8)) - 2);
+			c.getOutStream().writeByteC((x - (c.getMapRegionX() * 8)) - 3);
+			c.getOutStream().createFrame(117);
+			c.getOutStream().writeByte(angle);
+			c.getOutStream().writeByte(offY);
+			c.getOutStream().writeByte(offX);
+			c.getOutStream().writeWord(lockon);
+			c.getOutStream().writeWord(gfxMoving);
+			c.getOutStream().writeByte(startHeight);
+			c.getOutStream().writeByte(endHeight);
+			c.getOutStream().writeWord(time);
+			c.getOutStream().writeWord(speed);
+			c.getOutStream().writeByte(slope);
+			c.getOutStream().writeByte(64);
+			c.flushOutStream();
+		}
+	}
+
+	public void createProjectile(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving, int startHeight,
+			int endHeight, int lockon, int time, int slope) {
+		// synchronized(c) {
+		if (c.getOutStream() != null && c != null) {
+			c.getOutStream().createFrame(85);
+			c.getOutStream().writeByteC((y - (c.getMapRegionY() * 8)) - 2);
+			c.getOutStream().writeByteC((x - (c.getMapRegionX() * 8)) - 3);
+			c.getOutStream().createFrame(117);
+			c.getOutStream().writeByte(angle);
+			c.getOutStream().writeByte(offY);
+			c.getOutStream().writeByte(offX);
+			c.getOutStream().writeWord(lockon);
+			c.getOutStream().writeWord(gfxMoving);
+			c.getOutStream().writeByte(startHeight);
+			c.getOutStream().writeByte(endHeight);
+			c.getOutStream().writeWord(time);
+			c.getOutStream().writeWord(speed);
+			c.getOutStream().writeByte(slope);
+			c.getOutStream().writeByte(64);
+			c.flushOutStream();
+		}
+	}
+
+	public void createPlayersProjectile(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving,
+			int startHeight, int endHeight, int lockon, int time, int slope) {
+		// synchronized(c) {
+		for (int i = 0; i < Config.MAX_PLAYERS; i++) {
+			Player p = PlayerHandler.players[i];
+			if (p != null) {
+				Client person = (Client) p;
+				if (person != null) {
+					if (person.getOutStream() != null) {
+						if (person.distanceToPoint(x, y) <= 25) {
+							if (p.heightLevel == c.heightLevel)
+								person.getPA().createProjectile(x, y, offX, offY, angle, speed, gfxMoving, startHeight,
+										endHeight, lockon, time, slope);
 						}
-					}	
+					}
 				}
-			
+			}
 		}
 	}
-	
+
+	// projectiles for everyone within 25 squares
+	public void createPlayersProjectile(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving,
+			int startHeight, int endHeight, int lockon, int time) {
+		// synchronized(c) {
+		for (int i = 0; i < Config.MAX_PLAYERS; i++) {
+			Player p = PlayerHandler.players[i];
+			if (p != null) {
+				Client person = (Client) p;
+				if (person != null) {
+					if (person.getOutStream() != null) {
+						if (person.distanceToPoint(x, y) <= 25) {
+							if (p.heightLevel == c.heightLevel)
+								person.getPA().createProjectile(x, y, offX, offY, angle, speed, gfxMoving, startHeight,
+										endHeight, lockon, time);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public void createPlayersProjectile2(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving,
+			int startHeight, int endHeight, int lockon, int time, int slope) {
+		// synchronized(c) {
+		for (int i = 0; i < Config.MAX_PLAYERS; i++) {
+			Player p = PlayerHandler.players[i];
+			if (p != null) {
+				Client person = (Client) p;
+				if (person != null) {
+					if (person.getOutStream() != null) {
+						if (person.distanceToPoint(x, y) <= 25) {
+							person.getPA().createProjectile2(x, y, offX, offY, angle, speed, gfxMoving, startHeight,
+									endHeight, lockon, time, slope);
+						}
+					}
+				}
+			}
+		}
+	}
 
 	/**
 	** GFX
@@ -1701,7 +1746,7 @@ public class PlayerAssistant{
 	* reseting animation
 	**/
 	public void resetAnimation() {
-		c.getCombat().getPlayerAnimIndex(c.getItems().getItemName(c.playerEquipment[c.playerWeapon]).toLowerCase());
+		c.getCombat().getPlayerAnimIndex();
 		c.startAnimation(c.playerStandIndex);
 		requestUpdates();
 	}

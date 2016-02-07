@@ -1,12 +1,12 @@
 [ACCOUNT]
-character-username = Dennis
+character-username = Test
 character-password = 12345
 
 [CHARACTER]
 character-height = 0
-character-posx = 3262
-character-posy = 3232
-character-rights = 3
+character-posx = 3089
+character-posy = 3514
+character-rights = 0
 desert-treasure = 0
 dt-kill = 0
 horror-from-deep = 0
@@ -20,7 +20,7 @@ boneSearchfalse
 captainRovfalse
 trailborn false
 crystal-bow-shots = 0
-skull-timer = -1
+skull-timer = 0
 magic-book = 0
 brother-info = 0	0
 brother-info = 1	0
@@ -41,7 +41,7 @@ barrowskillcount = 0
 flagged = false
 wave = 0
 gwkc = 0
-fightMode = 0
+fightMode = 2
 void = 0	0	0	0	0
 
 [EQUIPMENT]
@@ -76,10 +76,10 @@ character-look = 11	0
 character-look = 12	0
 
 [SKILLS]
-character-skill = 0	70	737632
-character-skill = 1	2	100
-character-skill = 2	6	600
-character-skill = 3	12	1663
+character-skill = 0	2	100
+character-skill = 1	1	0
+character-skill = 2	9	1000
+character-skill = 3	9	1663
 character-skill = 4	1	0
 character-skill = 5	1	0
 character-skill = 6	1	0
@@ -103,7 +103,8 @@ character-skill = 23	1	0
 character-skill = 24	1	0
 
 [ITEMS]
-character-item = 0	4152	1
+character-item = 0	996	100000
+character-item = 1	527	1
 
 [BANK]
 

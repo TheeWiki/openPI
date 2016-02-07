@@ -5,11 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import server.event.CycleEvent;
-import server.event.CycleEventContainer;
-import server.event.CycleEventHandler;
+
 import server.Config;
 import server.Server;
+import server.model.Animation;
+import server.model.WeaponAnimations;
 import server.model.players.Client;
 import server.util.Misc;
 
@@ -1934,7 +1934,8 @@ public class NPCHandler {
 				if (c.autoRet == 1)
 					c.npcIndex = i;
 			if(c.attackTimer <= 3 || c.attackTimer == 0 && c.npcIndex == 0 && c.oldNpcIndex == 0) {
-				c.startAnimation(c.getCombat().getBlockEmote());
+				c.playAnimation(Animation.create(WeaponAnimations
+						.blockAnimation(c)));
 			}
 			if(c.respawnTimer <= 0) {	
 				int damage = 0;

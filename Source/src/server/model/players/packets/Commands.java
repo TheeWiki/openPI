@@ -54,7 +54,7 @@ public class Commands implements PacketType {
 			
 			
 			
-			/*if (playerCommand.startsWith("setlevel")) {
+			if (playerCommand.startsWith("setlevel")) {
 				if (c.inWild())
 					return;
 				for (int j = 0; j < c.playerEquipment.length; j++) {
@@ -97,7 +97,7 @@ public class Commands implements PacketType {
 			if (playerCommand.equalsIgnoreCase("mypos")) {
 				c.sendMessage("X: "+c.absX);
 				c.sendMessage("Y: "+c.absY);
-			}*/
+			}
 			if (playerCommand.startsWith("tele")) {
 				String[] arg = playerCommand.split(" ");
 				if (arg.length > 3)

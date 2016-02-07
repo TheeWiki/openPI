@@ -83,8 +83,16 @@ public class ClickNPC implements PacketType {
 				c.sendMessage("You have run out of arrows!");
 				break;
 			} 
-			if(c.getCombat().correctBowAndArrows() < c.playerEquipment[c.playerArrows] && Config.CORRECT_ARROWS && usingBow && !c.getCombat().usingCrystalBow() && c.playerEquipment[c.playerWeapon] != 9185) {
-				c.sendMessage("You can't use "+c.getItems().getItemName(c.playerEquipment[c.playerArrows]).toLowerCase()+"s with a "+c.getItems().getItemName(c.playerEquipment[c.playerWeapon]).toLowerCase()+".");
+			if (!c.getCombat().usingCorrectArrows() && Config.CORRECT_ARROWS
+					&& c.usingBow && !c.getCombat().usingCrystalBow()) {
+				c.sendMessage("You can't use "
+						+ c.getItems()
+								.getItemName(c.getEquipment()[c.playerArrows])
+								.toLowerCase()
+						+ "s with a "
+						+ c.getItems()
+								.getItemName(c.getEquipment()[c.playerWeapon])
+								.toLowerCase() + ".");
 				c.stopMovement();
 				c.getCombat().resetPlayerAttack();
 				return;
