@@ -4,6 +4,7 @@ import server.Server;
 import server.model.objects.Object;
 import server.util.Misc;
 import server.util.ScriptManager;
+import server.world.cities.CityController;
 
 public class ActionHandler {
 	
@@ -20,6 +21,7 @@ public class ActionHandler {
 			return;
 		}
 		c.actionTimer = 4;
+		CityController.sendFirstClickObject(c, objectType);
 		switch(objectType) {
  
  	/**
@@ -489,6 +491,7 @@ public class ActionHandler {
 	
 	public void secondClickObject(int objectType, int obX, int obY) {
 		c.clickObjectType = 0;
+		CityController.sendSecondClickObject(c, objectType);
 		switch(objectType) {
 			
 			
@@ -508,6 +511,7 @@ public class ActionHandler {
 	public void thirdClickObject(int objectType, int obX, int obY) {
 		c.clickObjectType = 0;
 		c.sendMessage("Object type: " + objectType);
+		CityController.sendThirdClickObject(c, objectType);
 		switch(objectType) {
 		default:
 			ScriptManager.callFunc("objectClick3_"+objectType, c, objectType, obX, obY);
@@ -518,6 +522,7 @@ public class ActionHandler {
 	public void firstClickNpc(int npcType) {
 		c.clickNpcType = 0;
 		c.npcClickIndex = 0;
+		CityController.sendFirstClickNpc(c, npcType);
 		switch (npcType) {
 		
 		
@@ -528,21 +533,13 @@ public class ActionHandler {
 			c.getShops().openSkillCape();
 		break;
 		
-		
-		/**
-		 * Make over mage.
-		 */
-		case 599:
-			c.getPA().showInterface(3559);
-			c.canChangeAppearance = true;
-		break;
-		
 		}
 	}
 
 	public void secondClickNpc(int npcType) {
 		c.clickNpcType = 0;
 		c.npcClickIndex = 0;
+		CityController.sendSecondClickNpc(c, npcType);
 		switch(npcType) {
 		
 			
@@ -552,11 +549,9 @@ public class ActionHandler {
 	public void thirdClickNpc(int npcType) {
 		c.clickNpcType = 0;
 		c.npcClickIndex = 0;
+		CityController.sendThirdClickNpc(c, npcType);
 		switch(npcType) {
-		
 
 		}
 	}
-	
-
 }
