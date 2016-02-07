@@ -2226,7 +2226,7 @@ public class client extends RSApplet {
 
 	private void method46(int i, Stream stream) {
 		while(stream.bitPosition + 21 < i * 8) {
-			int k = stream.readBits(14);
+			int k = stream.readBits(Constants.NPC_BITS);
 			if(k == 16383)
 				break;
 			if(npcArray[k] == null)
@@ -2241,7 +2241,7 @@ public class client extends RSApplet {
 			if(i1 > 15)
 				i1 -= 32;
 			int j1 = stream.readBits(1);
-			npc.desc = EntityDef.forID(stream.readBits(12));
+			npc.desc = EntityDef.forID(stream.readBits(Constants.NPC_BITS));
 			int k1 = stream.readBits(1);
 			if(k1 == 1)
 				anIntArray894[anInt893++] = k;
@@ -2256,7 +2256,12 @@ public class client extends RSApplet {
 		}
 		stream.finishBitAccess();
 	}
-
+	void mouseWheelDragged(int i, int j) {
+		if (!mouseWheelDown)
+			return;
+		this.anInt1186 += i * 3;
+		this.anInt1187 += (j << 1);
+	}
 	public void processGameLoop() {
 		if(rsAlreadyLoaded || loadingError || genericLoadingError)
 			return;
@@ -3369,7 +3374,7 @@ public class client extends RSApplet {
 		char c = '\u0168';
 		char c1 = '\310';
 		byte byte1 = 20;
-		chatTextDrawingArea.drawText(0xffffff, "RuneScape is loading - please wait...", c1 / 2 - 26 - byte1, c / 2);
+		chatTextDrawingArea.drawText(0xffffff, Constants.CLIENT_NAME+ " is loading - please wait...", c1 / 2 - 26 - byte1, c / 2);
 		int j = c1 / 2 - 18 - byte1;
 		DrawingArea.fillPixels(c / 2 - 152, 304, 34, 0x8c1111, j);
 		DrawingArea.fillPixels(c / 2 - 151, 302, 32, 0, j + 1);
@@ -6287,7 +6292,7 @@ public class client extends RSApplet {
 				loginMessage2 = "Connecting to server...";
 				drawLoginScreen(true);
 			}
-			socketStream = new RSSocket(this, openSocket(43594 + portOff));
+			socketStream = new RSSocket(this, openSocket(Constants.CLIENT_PORT + portOff));
 			long l = TextClass.longForName(s);
 			int i = (int)(l >> 16 & 31L);
 			stream.currentOffset = 0;
@@ -6477,7 +6482,7 @@ public class client extends RSApplet {
 			}
 			if(k == 6)
 			{
-				loginMessage1 = "RuneScape has been updated!";
+				loginMessage1 = Constants.CLIENT_NAME+ " has been updated!";
 				loginMessage2 = "Please reload this page.";
 				return;
 			}
@@ -7760,7 +7765,7 @@ public class client extends RSApplet {
 			g.setFont(new Font("Helvetica", 1, 16));
 			g.setColor(Color.yellow);
 			int k = 35;
-			g.drawString("Sorry, an error has occured whilst loading RuneScape", 30, k);
+			g.drawString("Sorry, an error has occured whilst loading " + Constants.CLIENT_NAME, 30, k);
 			k += 50;
 			g.setColor(Color.white);
 			g.drawString("To fix this try the following (in order):", 30, k);
@@ -7783,7 +7788,7 @@ public class client extends RSApplet {
 			g.setFont(new Font("Helvetica", 1, 20));
 			g.setColor(Color.white);
 			g.drawString("Error - unable to load game!", 50, 50);
-			g.drawString("To play RuneScape make sure you play from", 50, 100);
+			g.drawString("To play " + Constants.CLIENT_NAME + " make sure you play from", 50, 100);
 			g.drawString("http://www.websitehere.com", 50, 150);
 		}
 		if(rsAlreadyLoaded)
@@ -7791,7 +7796,7 @@ public class client extends RSApplet {
 			aBoolean831 = false;
 			g.setColor(Color.yellow);
 			int l = 35;
-			g.drawString("Error a copy of RuneScape already appears to be loaded", 30, l);
+			g.drawString("Error a copy of " + Constants.CLIENT_NAME+ " already appears to be loaded", 30, l);
 			l += 50;
 			g.setColor(Color.white);
 			g.drawString("To fix this try the following (in order):", 30, l);
@@ -10108,7 +10113,7 @@ public class client extends RSApplet {
 			int i = c1 / 2 + 80;
 			smallText.method382(0x75a9a9, c / 2, onDemandFetcher.statusString, i, true);
 			i = c1 / 2 - 20;
-			chatTextDrawingArea.method382(0xffff00, c / 2, "Welcome to RuneScape", i, true);
+			chatTextDrawingArea.method382(0xffff00, c / 2, "Welcome to " + Constants.CLIENT_NAME, i, true);
 			i += 30;
 			int l = c / 2 - 80;
 			int k1 = c1 / 2 + 20;
@@ -10152,7 +10157,7 @@ public class client extends RSApplet {
 			int k = c1 / 2 - 35;
 			chatTextDrawingArea.method382(0xffffff, c / 2, "To create a new account you need to", k, true);
 			k += 15;
-			chatTextDrawingArea.method382(0xffffff, c / 2, "go back to the main RuneScape webpage", k, true);
+			chatTextDrawingArea.method382(0xffffff, c / 2, "go back to the main " + Constants.CLIENT_NAME +" webpage", k, true);
 			k += 15;
 			chatTextDrawingArea.method382(0xffffff, c / 2, "and choose the red 'create account'", k, true);
 			k += 15;
@@ -12121,7 +12126,7 @@ public class client extends RSApplet {
 		cButtonHPos = -1;
 		cButtonHCPos = -1;
 		cButtonCPos = 0;
-		server = "127.0.0.1";
+		server = Constants.CLIENT_IP;
 		anIntArrayArray825 = new int[104][104];
 		friendsNodeIDs = new int[200];
 		groundArray = new NodeList[4][104][104];
