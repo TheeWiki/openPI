@@ -1,15 +1,25 @@
-import sign.signlink;
-import java.net.*;
-import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
+import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import javax.swing.*;
-import javax.swing.plaf.metal.MetalLookAndFeel;
+import java.awt.event.ActionListener;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.URL;
+
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.UIManager;
 
 
 public class Jframe extends client implements ActionListener {
 
-    private static JMenuItem menuItem;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8173720640262523513L;
 	private JFrame frame;
 
 	public Jframe(String args[]) {
@@ -26,7 +36,7 @@ public class Jframe extends client implements ActionListener {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			JPopupMenu.setDefaultLightWeightPopupEnabled(false);
-			frame = new JFrame("Project Insanity");
+			frame = new JFrame(Constants.CLIENT_NAME);
 			frame.setLayout(new BorderLayout());
 			frame.setResizable(false);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
