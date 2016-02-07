@@ -7,7 +7,7 @@ import server.event.CycleEventContainer;
 import server.event.CycleEventHandler;
 import server.model.Animation;
 import server.model.Graphic;
-import server.model.WeaponAnimations;
+import server.model.items.WeaponAnimations;
 import server.model.npcs.NPCHandler;
 import server.model.players.Client;
 import server.model.players.Player;

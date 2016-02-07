@@ -1,4 +1,4 @@
-package server.model;
+package server.model.items;
 
 import server.model.players.Client;
 import server.util.ItemDef;

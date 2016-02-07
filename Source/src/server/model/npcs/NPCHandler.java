@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import server.Config;
 import server.Server;
 import server.model.Animation;
-import server.model.WeaponAnimations;
+import server.model.items.WeaponAnimations;
 import server.model.players.Client;
 import server.util.Misc;
 
