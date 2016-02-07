@@ -42,4 +42,6 @@ public class Constants
 	 * TODO: if false let the user click around, currently does nothing now
 	 */
 	public static boolean ALLOW_MOUSEWHEEL_MOVEMENT = true;
+	
+	public static boolean isOneClick = true;
 }

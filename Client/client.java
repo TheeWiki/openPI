@@ -7003,8 +7003,10 @@ public class client extends RSApplet {
 					if(entityDef.actions[i1] != null && entityDef.actions[i1].equalsIgnoreCase("attack"))
 					{
 						char c = '\0';
-						if(entityDef.combatLevel > myPlayer.combatLevel)
-							c = '\u07D0';
+						if (!Constants.isOneClick) {
+							if (entityDef.combatLevel > myPlayer.combatLevel)
+								c = '\u07D0';
+						}
 						menuActionName[menuActionRow] = entityDef.actions[i1] + " @yel@" + s;
 						if(i1 == 0)
 							menuActionID[menuActionRow] = 20 + c;
@@ -7073,8 +7075,10 @@ public class client extends RSApplet {
 					char c = '\0';
 					if(atPlayerActions[l].equalsIgnoreCase("attack"))
 					{
-						if(player.combatLevel > myPlayer.combatLevel)
-							c = '\u07D0';
+						if (!Constants.isOneClick) {
+							if (player.combatLevel > myPlayer.combatLevel)
+								c = '\u07D0';
+						}
 						if(myPlayer.team != 0 && player.team != 0)
 							if(myPlayer.team == player.team)
 								c = '\u07D0';
