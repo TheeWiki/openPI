@@ -1,6 +1,7 @@
 package server.world.cities.impl;
 
 import server.model.players.Client;
+import server.world.Location;
 
 public class Home {
 	
@@ -23,7 +24,7 @@ public class Home {
 		switch (npc) {
 		case 599: 
 			c.getPA().showInterface(3559); 
-			c.canChangeAppearance = true; 
+			c.canChangeAppearance = true;
 		break;
 		}
 	}
