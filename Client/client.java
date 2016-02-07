@@ -3125,7 +3125,7 @@ public class client extends RSApplet {
 				if(activeInterfaceType == 3)
 					inputTaken = true;
 				activeInterfaceType = 0;
-				if(aBoolean1242 && anInt989 >= 5)
+				if(aBoolean1242 && anInt989 >= 10)
 				{
 					lastActiveInvInterface = -1;
 					processRightClick();
@@ -8429,7 +8429,7 @@ public class client extends RSApplet {
 												k6 = 0;
 											if(j7 < 5 && j7 > -5)
 												j7 = 0;
-											if(anInt989 < 5) {
+											if(anInt989 < 10) {
 												k6 = 0;
 												j7 = 0;
 											}
