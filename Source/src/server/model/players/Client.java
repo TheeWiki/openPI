@@ -65,6 +65,8 @@ public class Client extends Player {
 			buffer = new byte[Constants.BUFFER_SIZE];
 		}
 	}
+	public boolean updateItems = false;
+	
 	private HashMap<String, Object> attributes = new HashMap<String, Object>();
 
 	public void setAttribute(String key, Object value) {
@@ -295,6 +297,8 @@ public class Client extends Player {
 
 	public void process() {
 
+		if (this.updateItems)
+			this.getItems().resetItems(3214);
 		if (System.currentTimeMillis() - specDelay > Constants.INCREASE_SPECIAL_AMOUNT) {
 			specDelay = System.currentTimeMillis();
 			if (specAmount < 10) {

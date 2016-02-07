@@ -1194,7 +1194,7 @@ public class ItemAssistant {
 							c.playerEquipmentN[targetSlot] = toEquipN;	
 						}
 					}
-					resetItems(3214);
+					c.updateItems = true;
 				}
 				if(targetSlot == 3) {
 					c.usingSpecial = false;
