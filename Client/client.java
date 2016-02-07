@@ -12786,7 +12786,7 @@ public class client extends RSApplet {
 	private static int anInt1288;
 	private int anInt1289;
 	public static int anInt1290;
-	public static String server = "";
+	public static String server = ""; 
 	public int drawCount;
 	public int fullscreenInterfaceID;
 	public int anInt1044;//377

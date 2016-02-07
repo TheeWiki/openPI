@@ -23,6 +23,7 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseMo
 	public void mouseWheelMoved(MouseWheelEvent event) {
 		int rotation = event.getWheelRotation();
 		handleInterfaceScrolling(event);
+		
 		if(mouseX > 0 && mouseX < 512 && mouseY > 503 - 165 && mouseY < 503 - 25) {
 			int scrollPos = client.anInt1089;
 			scrollPos -= rotation * 30;		
