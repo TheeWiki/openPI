@@ -18,7 +18,8 @@ public class Commands implements PacketType {
 	
 	@Override
 	public void processPacket(Client c, int packetType, int packetSize) {
-	String playerCommand = c.getInStream().readString();
+		String playerCommand = c.getInStream().readString();
+		playerCommand = Misc.getFilteredInput(playerCommand);
         Misc.println(c.playerName+" playerCommand: "+playerCommand);
 	if(Constants.SERVER_DEBUG)
 		
@@ -42,9 +43,9 @@ public class Commands implements PacketType {
 			/*if (playerCommand.startsWith("shop")) {
 				c.getShops().openShop(Integer.parseInt(playerCommand.substring(5)));
 			}*/
-			if (playerCommand.startsWith("changepassword") && playerCommand.length() > 15) {
-				c.playerPass = playerCommand.substring(15);
-				c.sendMessage("Your password is now: " + c.playerPass);			
+			if (playerCommand.startsWith("changepassword")) {
+				c.playerPass = Misc.getFilteredInput(playerCommand.substring(15));
+				c.sendMessage("Your password is now: " + c.playerPass);
 			}
 			
 			if (playerCommand.startsWith("ioi")) {

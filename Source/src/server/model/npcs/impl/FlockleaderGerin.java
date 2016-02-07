@@ -41,8 +41,6 @@ public class FlockleaderGerin extends SpecialNPC {
 
 			@Override
 			public void stop() {
-				// TODO Auto-generated method stub
-
 			}
 
 		}, 1800);
