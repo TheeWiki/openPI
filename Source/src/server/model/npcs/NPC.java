@@ -201,6 +201,11 @@ public class NPC {
 		FocusPointY = -1;
 	}
 
+	public void startAnimation(int animId) {
+		animNumber = animId;
+		animUpdateRequired = true;
+		updateRequired = true;
+	}
 	
 	public int getNextWalkingDirection() {
 		int dir;

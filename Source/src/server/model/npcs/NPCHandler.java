@@ -1875,6 +1875,10 @@ public class NPCHandler {
 						npcs[i].oldIndex = c.playerId;
 						return;
 					}
+					if (SpecialNPC.forId(npcs[i].npcType) != null) {
+						SpecialNPC.executeAttack(c, i);
+						return;
+					}
 					if(npcs[i].projectileId > 0) {
 						int nX = Server.npcHandler.npcs[i].getX() + offset(i);
 						int nY = Server.npcHandler.npcs[i].getY() + offset(i);
