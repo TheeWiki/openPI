@@ -133,7 +133,7 @@ public final class signlink implements Runnable {
             "C:/", "D:", "E:",
             "/tmp/", "/"
         };
-        String subfolder = "runecronic14/";
+        String subfolder = "openPI_cache/";
         for(String folder : possibleFolders)
             if(new File(folder).exists()) {
                 if(new File(folder + subfolder).exists()

@@ -10,7 +10,7 @@
 	<classpathentry kind="lib" path="deps/slf4j.jar"/>
 	<classpathentry kind="lib" path="deps/xstream.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/juliusschuckinkkool/Desktop/hit/Soulsplit/Eclipse/Source/deps/mina.jar"/>
-	<classpathentry kind="lib" path="/Users/juliusschuckinkkool/Desktop/hit/Soulsplit/Eclipse/Source/deps/netty.jar"/>
+	<classpathentry kind="lib" path="deps/mina.jar"/>
+	<classpathentry kind="lib" path="deps/netty.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
