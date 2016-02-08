@@ -37,7 +37,45 @@ public class PlayerAssistant{
 		for (int j = 18144; j < 18244; j++)
 			c.getPA().sendFrame126("", j);
 	}
-	
+	public void sendItemOnInterface(int id, int zoom, int model) {
+		/*
+		 * StreamBuffer.OutBuffer out = StreamBuffer.newOutBuffer(7);
+		 * out.writeHeader(player.getEncryptor(), 246); out.writeShort(id == 0 ?
+		 * -1 : id, StreamBuffer.ByteOrder.LITTLE); out.writeShort(zoom);
+		 * out.writeShort(model); player.send(out.getBuffer());
+		 */
+		if (c.getOutStream() != null && c != null) {
+			c.getOutStream().createFrame(246);
+			c.getOutStream().writeWordBigEndian(id == 0 ? -1 : id);
+			c.getOutStream().writeWord(zoom);
+			c.getOutStream().writeWord(model);
+			c.flushOutStream();
+		}
+	}
+    /**
+     * Sends some information to the client about screen fading. 
+     * @param text        the text that will be displayed in the center of the screen
+     * @param state        the state should be either 0, -1, or 1. 
+     * @param seconds    the amount of time in seconds it takes for the fade
+     * to transition.
+     * <p>
+     * If the state is -1 then the screen fades from black to transparent.
+     * When the state is +1 the screen fades from transparent to black. If 
+     * the state is 0 all drawing is stopped.
+     */
+    public void sendScreenFade(String text, int state, int seconds) {
+        if (c == null || c.getOutStream() == null) {
+            return;
+        }
+        if (seconds < 1) {
+            throw new IllegalArgumentException("The amount of seconds cannot be less than one.");
+        }
+        c.getOutStream().createFrameVarSize(9);
+        c.getOutStream().writeString(text);
+        c.getOutStream().writeByte(state);
+        c.getOutStream().writeByte(seconds);
+        c.getOutStream().endFrameVarSize();
+    }
 	public void resetAutocast() {
 		c.autocastId = 0;
 		c.autocasting = false;
