@@ -18,7 +18,7 @@ Overview of what this repository contains
 
 # Credits
 - Sanity -> Project Insanity framework
-- Galkon -> Client Mitb #317
+- Galkon -> Client MITB #317
 - Graham -> Update Server
 
 # Goals
