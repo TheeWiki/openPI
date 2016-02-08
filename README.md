@@ -1,7 +1,13 @@
 ![myimage-alt-tag](http://i.imgur.com/8KOhuYR.png)
 
-# openPI
-An open source Project Insanity server. Using this framework is not recommended, however this is just developed for the luls, and I would personally recommend any other framework other than this.
+# Overview
+Hello, and welcome to the official repository of openPI! openPI is a completely open source java project (for the most part).
+| Files     | Language |
+| ---      | ---       |
+| openPI Client | Java         |
+| openPI Server     | \Java        |
+| openPI Launcher     | \Visual Basic        |
+| openPI Client Updater     | \Java        |
 
 # Credits
 - Sanity -> Project Insanity framework
