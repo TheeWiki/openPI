@@ -24,6 +24,7 @@ import server.model.players.packet.PacketHandler;
 import server.model.players.skills.cooking.Food;
 import server.model.players.skills.herblore.PotionMixing;
 import server.model.players.skills.herblore.Potions;
+import server.model.players.skills.prayer.BuryBones;
 import server.model.shops.ShopAssistant;
 import server.net.Packet;
 import server.net.Packet.Type;
@@ -569,6 +570,20 @@ public class Client extends Player {
 		return food;
 	}
 
+	private BuryBones buryBones = new BuryBones(this);
+
+	public BuryBones getBones() {
+		return buryBones;
+	}
+	private boolean onCurses;
+	
+	public boolean isOnCurses() {
+		return onCurses;
+	}
+	
+	public void setCurses(boolean curses) {
+		onCurses = curses;
+	}
 	private boolean isBusy = false;
 	private boolean isBusyHP = false;
 	public boolean isBusyFollow = false;
