@@ -1,0 +1,10 @@
+C:\Users\Dennis\Documents\GitHub\openPI\Launcher\openPI Launcher\openPI Launcher\bin\Debug\openPI Launcher.exe.config
+C:\Users\Dennis\Documents\GitHub\openPI\Launcher\openPI Launcher\openPI Launcher\bin\Debug\openPI Launcher.exe
+C:\Users\Dennis\Documents\GitHub\openPI\Launcher\openPI Launcher\openPI Launcher\bin\Debug\openPI Launcher.pdb
+C:\Users\Dennis\Documents\GitHub\openPI\Launcher\openPI Launcher\openPI Launcher\bin\Debug\openPI Launcher.xml
+C:\Users\Dennis\Documents\GitHub\openPI\Launcher\openPI Launcher\openPI Launcher\obj\Debug\openPI_Launcher.Form1.resources
+C:\Users\Dennis\Documents\GitHub\openPI\Launcher\openPI Launcher\openPI Launcher\obj\Debug\openPI_Launcher.Resources.resources
+C:\Users\Dennis\Documents\GitHub\openPI\Launcher\openPI Launcher\openPI Launcher\obj\Debug\openPI Launcher.vbproj.GenerateResource.Cache
+C:\Users\Dennis\Documents\GitHub\openPI\Launcher\openPI Launcher\openPI Launcher\obj\Debug\openPI Launcher.exe
+C:\Users\Dennis\Documents\GitHub\openPI\Launcher\openPI Launcher\openPI Launcher\obj\Debug\openPI Launcher.xml
+C:\Users\Dennis\Documents\GitHub\openPI\Launcher\openPI Launcher\openPI Launcher\obj\Debug\openPI Launcher.pdb
