@@ -13,6 +13,7 @@ public class BuryBones {
 	public BuryBones(Client c) {
 		this.c = c;
 	}
+	
 	enum BonesData {
 
 		/* Starter Bones */
@@ -55,9 +56,11 @@ public class BuryBones {
 		Curvedb(10977, 500, "Curved bone"),
 		Longb(10976, 500, "Long bone");
 		
-		static HashMap<Integer, BonesData> BoneInfo = new HashMap<Integer, BonesData>();
+		private static HashMap<Integer, BonesData> BoneInfo = new HashMap<Integer, BonesData>();
+		
 		int boneID, boneXP;
 		String boneName;
+
 		static {
 			for (final BonesData bones : BoneInfo.values())
 				BonesData.BoneInfo.put(bones.boneXP, bones);
@@ -81,6 +84,7 @@ public class BuryBones {
 			return boneName;
 		}
 	}
+
 	public boolean readBone(int boneID) {
 		for (final BonesData bones : BonesData.values()) {
 			if (c.getItems().playerHasItem(bones.getboneID(), 1))
