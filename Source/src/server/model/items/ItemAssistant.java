@@ -62,7 +62,7 @@ public class ItemAssistant {
 	 * Empties all of (a) player's items.
 	 */
 	public void resetItems(int WriteFrame) {
-		synchronized(c) {
+//		synchronized(c) {
 			if(c.getOutStream() != null && c != null) {
 				c.getOutStream().createFrameVarSizeWord(53);
 				c.getOutStream().writeWord(WriteFrame);
@@ -79,7 +79,7 @@ public class ItemAssistant {
 				c.getOutStream().endFrameVarSizeWord();
 				c.flushOutStream();
 			}
-		}
+//			}
 	}
 	
 	
@@ -152,7 +152,7 @@ public class ItemAssistant {
 	 * Send the items kept on death.
 	 */
 	public void sendItemsKept() {
-		synchronized(c) {
+//		synchronized(c) {
 			if(c.getOutStream() != null && c != null ) {
 				c.getOutStream().createFrameVarSizeWord(53);
 				c.getOutStream().writeWord(6963);
@@ -172,8 +172,7 @@ public class ItemAssistant {
 				}
 				c.getOutStream().endFrameVarSizeWord();   
 				c.flushOutStream();
-			}
-		}
+			}//		}
     }
 	
 	
@@ -252,6 +251,7 @@ public class ItemAssistant {
 	/**
 	* Drops all items for a killer.
 	**/
+	@SuppressWarnings("static-access")
 	public void dropAllItems() {
 		Client o = (Client) Server.playerHandler.players[c.killerId];
 		
@@ -364,7 +364,7 @@ public class ItemAssistant {
 	*Adds an item to a player's inventory.
 	**/
 	public boolean addItem(int item, int amount) {
-		synchronized(c) {
+//		synchronized(c) {
 			if (amount < 1) {
 				amount = 1;
 			}
@@ -422,8 +422,7 @@ public class ItemAssistant {
 				resetItems(3214);
 				c.sendMessage("Not enough space in your inventory.");
 				return false;
-			}
-		}
+			}//		}
 	}
 	
 	
@@ -997,7 +996,7 @@ public class ItemAssistant {
 	*Wielding items.
 	**/
 	public boolean wearItem(int wearID, int slot) {
-		synchronized(c) {
+//		synchronized(c) {
 			int targetSlot=0;
 			boolean canWearItem = true;
 			if(c.playerItems[slot] == (wearID+1)) {				
@@ -1145,6 +1144,7 @@ public class ItemAssistant {
 						c.playerEquipmentN[targetSlot] = toEquipN;
 					} else if (targetSlot == 5) {
 						boolean wearing2h = is2handed(getItemName(c.playerEquipment[c.playerWeapon]).toLowerCase(), c.playerEquipment[c.playerWeapon]);
+						@SuppressWarnings("unused")
 						boolean wearingShield = c.playerEquipment[c.playerShield] > 0;
 						if (wearing2h) {
 							toRemove = c.playerEquipment[c.playerWeapon];
@@ -1226,8 +1226,7 @@ public class ItemAssistant {
 			} else {
 				return false;
 			}
-		}
-	}
+		}//		}
 	
 	
 	/**
@@ -1237,7 +1236,7 @@ public class ItemAssistant {
 	 * @param targetSlot
 	 */
 	public void wearItem(int wearID, int wearAmount, int targetSlot) {	
-		synchronized(c) {
+//		synchronized(c) {
 			if(c.getOutStream() != null && c != null ) {
 				c.getOutStream().createFrameVarSizeWord(34);
 				c.getOutStream().writeWord(1688);
@@ -1262,8 +1261,7 @@ public class ItemAssistant {
 				c.getCombat().getPlayerAnimIndex();
 				c.updateRequired = true; 
 				c.setAppearanceUpdateRequired(true);
-			}
-		}
+			}//		}
 	}
 	
 	
@@ -1272,7 +1270,7 @@ public class ItemAssistant {
 	 * @param slot
 	 */
 	public void updateSlot(int slot) {
-		synchronized(c) {
+//		synchronized(c) {
 			if(c.getOutStream() != null && c != null ) {
 				c.getOutStream().createFrameVarSizeWord(34);
 				c.getOutStream().writeWord(1688);
@@ -1286,9 +1284,7 @@ public class ItemAssistant {
 				}
 				c.getOutStream().endFrameVarSizeWord();
 				c.flushOutStream();
-			}			
-		}
-	
+			}		//		}
 	}
 
 	
@@ -1296,7 +1292,7 @@ public class ItemAssistant {
 	*Removes a wielded item.
 	**/
 	public void removeItem(int wearID, int slot) {
-		synchronized(c) {
+//		synchronized(c) {
 			if(c.getOutStream() != null && c != null) {
 				if(c.playerEquipment[slot] > -1){
 					if(addItem(c.playerEquipment[slot], c.playerEquipmentN[slot])) {
@@ -1318,8 +1314,7 @@ public class ItemAssistant {
 						c.setAppearanceUpdateRequired(true);
 					}
 				}
-			}
-		}
+			}//		}
 	}
 
 	
@@ -1374,7 +1369,7 @@ public class ItemAssistant {
 	 * @param amount
 	 */
 	public void itemOnInterface(int id, int amount) {
-		synchronized(c) {
+//		synchronized(c) {
 			c.getOutStream().createFrameVarSizeWord(53);
 			c.getOutStream().writeWord(2274);
 			c.getOutStream().writeWord(1);
@@ -1386,8 +1381,7 @@ public class ItemAssistant {
 			}
 			c.getOutStream().writeWordBigEndianA(id); 
 			c.getOutStream().endFrameVarSizeWord();
-			c.flushOutStream();
-		}
+			c.flushOutStream();//		}
 	}
 	
 	
@@ -1395,7 +1389,7 @@ public class ItemAssistant {
 	 * Reseting your bank.
 	 */
 	public void resetBank(){
-		synchronized(c) {
+//		synchronized(c) {
 			c.getOutStream().createFrameVarSizeWord(53);
 			c.getOutStream().writeWord(5382); // Bank
 			c.getOutStream().writeWord(Constants.BANK_SIZE);
@@ -1415,8 +1409,7 @@ public class ItemAssistant {
 				c.getOutStream().writeWordBigEndianA(c.bankItems[i]); 
 			}
 			c.getOutStream().endFrameVarSizeWord();
-			c.flushOutStream();
-		}
+			c.flushOutStream();//		}
 	}
 	
 	
@@ -1425,7 +1418,7 @@ public class ItemAssistant {
 	 * Used in minigames, etc
 	 */
 	public void resetTempItems(){
-		synchronized(c) {
+//		synchronized(c) {
 			int itemCount = 0;
 			for (int i = 0; i < c.playerItems.length; i++) {
 				if (c.playerItems[i] > -1) {
@@ -1449,8 +1442,7 @@ public class ItemAssistant {
 			}
 			        c.getOutStream().endFrameVarSizeWord();	
 			        c.flushOutStream();
-		}
-	}
+		}//		}
 	
 	
 	/**
@@ -1861,7 +1853,7 @@ public class ItemAssistant {
 	*Updates the equipment tab.
 	**/
 	public void setEquipment(int wearID, int amount, int targetSlot) {
-		synchronized(c) {
+//		synchronized(c) {
 			c.getOutStream().createFrameVarSizeWord(34);
 			c.getOutStream().writeWord(1688);
 			c.getOutStream().writeByte(targetSlot);
@@ -1878,9 +1870,7 @@ public class ItemAssistant {
 			c.playerEquipmentN[targetSlot]=amount;
 			c.updateRequired = true; 
 			c.setAppearanceUpdateRequired(true);
-		}
-	}
-	
+		}//		}
 	
 	/**
 	*Moving Items in your bag.
@@ -1936,8 +1926,9 @@ public class ItemAssistant {
 	/**
 	*Delete item equipment.
 	**/
+	@SuppressWarnings("static-access")
 	public void deleteEquipment(int i, int j) {
-		synchronized(c) {
+//		synchronized(c) {
 			if(Server.playerHandler.players[c.playerId] == null) {
 				return;
 			}
@@ -1962,8 +1953,7 @@ public class ItemAssistant {
 			writeBonus();
 			c.updateRequired = true; 
 			c.setAppearanceUpdateRequired(true);		
-		}			
-   	}
+		}			//		}
 	
 	
 	/**
@@ -2026,7 +2016,7 @@ public class ItemAssistant {
 	* Delete arrows.
 	**/
 	public void deleteArrow() {
-		synchronized(c) {
+//		synchronized(c) {
 			if (c.playerEquipment[c.playerCape] == 10499 && Misc.random(5) != 1 && c.playerEquipment[c.playerArrows] != 4740)
 				return;
 			if(c.playerEquipmentN[c.playerArrows] == 1) {
@@ -2049,12 +2039,10 @@ public class ItemAssistant {
 			}  
 			c.updateRequired = true; 
 			c.setAppearanceUpdateRequired(true);
-		}
-	}
-	
+		}//		}
 	
 	public void deleteEquipment() {
-		synchronized(c) {
+//		synchronized(c) {
 			if(c.playerEquipmentN[c.playerWeapon] == 1) {
 				c.getItems().deleteEquipment(c.playerEquipment[c.playerWeapon], c.playerWeapon);
 			}
@@ -2075,13 +2063,13 @@ public class ItemAssistant {
 			}  
 			c.updateRequired = true; 
 			c.setAppearanceUpdateRequired(true);
-		}
-	}
+		}//		}
 	
 	
 	/**
 	* Dropping arrows
 	**/
+	@SuppressWarnings("static-access")
 	public void dropArrowNpc() {
 		if (c.playerEquipment[c.playerCape] == 10499)
 			return;
@@ -2102,6 +2090,7 @@ public class ItemAssistant {
 	/**
 	 * Ranging arrows.
 	 */
+	@SuppressWarnings("static-access")
 	public void dropArrowPlayer() {
 		int enemyX = Server.playerHandler.players[c.oldPlayerIndex].getX();
 		int enemyY = Server.playerHandler.players[c.oldPlayerIndex].getY();
@@ -2322,7 +2311,7 @@ public class ItemAssistant {
 	*Dropping items
 	**/
 	public void createGroundItem(int itemID, int itemX, int itemY, int itemAmount) {
-		synchronized(c) {
+//		synchronized(c) {
 			c.getOutStream().createFrame(85);
 			c.getOutStream().writeByteC((itemY - 8 * c.mapRegionY));
 			c.getOutStream().writeByteC((itemX - 8 * c.mapRegionX));
@@ -2331,7 +2320,7 @@ public class ItemAssistant {
 			c.getOutStream().writeWord(itemAmount);
 			c.getOutStream().writeByte(0);	
 			c.flushOutStream();
-		}
+//		}
 	}
 	
 	
@@ -2339,7 +2328,7 @@ public class ItemAssistant {
 	*Pickup items from the ground.
 	**/
 	public void removeGroundItem(int itemID, int itemX, int itemY, int Amount) {
-		synchronized(c) {
+//		synchronized(c) {
 			c.getOutStream().createFrame(85);
 			c.getOutStream().writeByteC((itemY - 8 * c.mapRegionY));
 			c.getOutStream().writeByteC((itemX - 8 * c.mapRegionX));
@@ -2347,7 +2336,7 @@ public class ItemAssistant {
 			c.getOutStream().writeByteS(0);
 			c.getOutStream().writeWord(itemID);
 			c.flushOutStream();
-		}
+//			}
 	}
 	
 	
@@ -2366,51 +2355,4 @@ public class ItemAssistant {
 			return true;
 		return false;	
 	}
-	
-	
-	/**
-	 * Checks if the player has all the shards.
-	 * @return
-	 */
-	public boolean hasAllShards() { 
-		return playerHasItem(11712,1) && playerHasItem(11712,1) && playerHasItem(11714,1);
-	}
-	
-	
-	/**
-	 * Makes the godsword blade.
-	 */
-	public void makeBlade() {
-		deleteItem(11710,1);
-		deleteItem(11712,1);
-		deleteItem(11714,1);
-		addItem(11690,1);
-		c.sendMessage("You combine the shards to make a blade.");
-	}
-	
-	
-	/**
-	 * Makes the godsword.
-	 * @param i
-	 */
-	public void makeGodsword(int i) {
-		int godsword = i - 8;
-		if (playerHasItem(11690) && playerHasItem(i)) {
-			deleteItem(11690,1);
-			deleteItem(i,1);
-			addItem(i - 8, 1);
-			c.sendMessage("You combine the hilt and the blade to make a godsword.");
-		}	
-	}
-	
-	
-	/**
-	 * Checks if the item is a godsword hilt.
-	 * @param i
-	 * @return
-	 */
-	public boolean isHilt(int i) {
-		return i >= 11702 && i <= 11708 && i%2 == 0;
-	}
-
 }

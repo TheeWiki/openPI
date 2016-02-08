@@ -1,6 +1,9 @@
 package server.model.players;
 
 import server.Server;
+import server.event.CycleEvent;
+import server.event.CycleEventContainer;
+import server.event.CycleEventHandler;
 import server.model.objects.Object;
 import server.util.Misc;
 import server.util.ScriptManager;
@@ -479,7 +482,21 @@ public class ActionHandler {
 				c.getItems().addItem(c.getPA().randomRunes(), Misc.random(150) + 100);
 				if (Misc.random(2) == 1)
 					c.getItems().addItem(c.getPA().randomBarrows(), 1);
-				c.getPA().startTeleport(3564, 3288, 0, "modern");
+				c.shakeScreen(3, 2, 3, 2);
+				CycleEventHandler.getSingleton().addEvent(this, new CycleEvent() {
+					@Override
+					public void execute(CycleEventContainer container) {
+						c.getPA().createPlayersProjectile(c.absX, c.absY, c.absX, c.absY, 60, 60, 60, 43, 31, - c.playerId - 1, 0);
+						c.handleHitMask(5);
+						container.stop();
+					}
+
+					@Override
+					public void stop() {
+
+					}
+				}, 10_000);
+//				c.getPA().startTeleport(3564, 3288, 0, "modern");
 			} else if(c.barrowsKillCount > 5 && c.getItems().freeSlots() <= 1) {
 				c.sendMessage("You need at least 2 inventory slot opened.");
 			}

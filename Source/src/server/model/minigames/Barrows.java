@@ -30,7 +30,7 @@ public class Barrows {
 		return Misc.random(COFFIN_AND_BROTHERS.length-1);
 	}
 	
-	
+	public static boolean wrongPuzzle = false;
 	/**
 	* Selects the coffin and shows the interface if coffin ID matches random coffin.
 	**/

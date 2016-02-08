@@ -80,6 +80,7 @@ public class Location {
 						player.gfx0(getTeleportEndGfx(player));*/
 					player.startAnimation(getTeleportEndAnimation(player));
 				}
+				player.resetShaking();
 				if (timer == 0)
 					container.stop();
 			}
