@@ -2,6 +2,9 @@
 
 # Overview
 Hello, and welcome to the official repository of openPI! openPI is a completely open source java project (for the most part).
+openPI is developed currently by myself, in the spirits to gain more and more knowledge on java 101 basics to advanced java & Visual basic developmental skills. Any and all negativity will be immediately ignored. If you feel the need to show me and other users to improve code within the repository please post it, with documentation so that everyone can learn the improvements every step of the way. Credits are given below as to whom I built this base off of, etc..
+
+Overview of what this repository contains
 
 | Files     | Language |
 | ---      | ---       |
@@ -13,6 +16,7 @@ Hello, and welcome to the official repository of openPI! openPI is a completely 
 # Credits
 - Sanity -> Project Insanity framework
 - Galkon -> Client Mitb #317
+- Graham -> Update Server
 
 # Goals
 > Offer improved combat
