@@ -6,9 +6,9 @@ Hello, and welcome to the official repository of openPI! openPI is a completely 
 | Files     | Language |
 | ---      | ---       |
 | openPI Client | Java         |
-| openPI Server     | \Java        |
-| openPI Launcher     | \Visual Basic        |
-| openPI Client Updater     | \Java        |
+| openPI Server     | Java        |
+| openPI Launcher     | Visual Basic        |
+| openPI Client Updater     | Java        |
 
 # Credits
 - Sanity -> Project Insanity framework
