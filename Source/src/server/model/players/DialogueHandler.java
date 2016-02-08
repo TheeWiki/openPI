@@ -176,4 +176,9 @@ public class DialogueHandler {
 		c.getPA().sendFrame185(987);
 		c.getPA().sendFrame164(986);
 	}
+	public void sendStatementTwo(String s) {
+		c.getPA().sendFrame126(s, 357);
+		c.getPA().sendFrame126("Click here to continue", 358);
+		c.getPA().sendFrame164(356);
+	}
 }
