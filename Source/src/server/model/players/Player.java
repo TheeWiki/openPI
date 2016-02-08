@@ -402,6 +402,9 @@ public abstract class Player {
 												
 	public boolean[] prayerActive = 			{false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};
 	
+	public int Bonetype, Boneamount;
+	public boolean isPraying;
+	
 	public int duelTimer, duelTeleX, duelTeleY, duelSlot, duelSpaceReq, duelOption, duelingWith, duelStatus;
 	public int headIconPk = -1, headIconHints;
 	public boolean duelRequested;

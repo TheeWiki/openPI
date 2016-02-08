@@ -247,4 +247,10 @@ public class Constants {
 	public static String LOGOUT_MESSAGE = "Click here to logout!";
 	public static String DEATH_MESSAGE = "Oh dear you are dead!";
 	public static boolean DOUBLE_EXP = true;
+	
+	public static final boolean PRAYER_ENABLED = true;
+
+	public static final int PRAYER = 5;
+
+	public static final long BONE_BURY_TIME = 1500;
 }

@@ -2,6 +2,7 @@ package server.model.players.packet.impl;
 
 import server.model.players.Client;
 import server.model.players.packet.PacketType;
+import server.model.players.skills.prayer.BuryBones;
 
 /**
  * Clicking an item, bury bone, eat food etc
@@ -30,7 +31,7 @@ public class ClickItem implements PacketType {
 			c.getPA().fillPouch(pouch);
 			return;
 		}
-		
+		c.getBones().boneOnGround(itemId);
 		//ScriptManager.callFunc("itemClick_"+itemId, c, itemId, itemSlot);
 		if (c.getPotions().isPotion(itemId))
 			c.getPotions().handlePotion(itemId,itemSlot);
