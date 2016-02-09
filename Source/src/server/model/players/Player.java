@@ -47,21 +47,6 @@ public abstract class Player {
 	addStarter = false,
 	accountFlagged = false,
 	msbSpec = false,
-	
-	dtOption = false,
-	dtOption2 = false,
-	doricOption = false,
-	doricOption2 = false,
-	caOption2 = false,
-	caOption2a = false,
-	caOption4a = false,
-	caOption4b = false,
-	caOption4c = false,
-	caPlayerTalk1 = false,
-	horrorOption = false,
-	rfdOption = false,
-	inDt = false,
-	inHfd = false,
 	disableAttEvt = false,
 	AttackEventRunning = false,
 	npcindex,
@@ -168,24 +153,6 @@ public abstract class Player {
 	public boolean isDead = false;
 	public boolean randomEvent = false;
 	public boolean FirstClickRunning = false;
-	/*
-	 * Demon Slayer
-	 */
-	public int demonSlayer = 0;
-	public int Incantation = 0;
-	public boolean DSOption = false;
-	public boolean DSOption2 = false;
-	public boolean DSOption3 = false;
-	public boolean DSOption4 = false;
-	public boolean DSOption5 = false;
-	public boolean DSOption6 = false;
-	public boolean DSOption7 = false;
-	public boolean DSOption8 = false;
-	public boolean incantationOption = false;
-	public boolean boneSearch = false;
-	public boolean captainRovin = false;
-	public boolean prysin = false;
-	public boolean trailborn = false;
 	/*
 	 *End*
 	 */

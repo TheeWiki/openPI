@@ -227,14 +227,6 @@ public class ClickingButtons implements PacketType {
 				c.getPA().spellTeleport(3565, 3314, 0);
 			}
 
-			if (c.caOption4a) {
-				c.getDH().sendDialogues(102, c.npcType);
-				c.caOption4a = false;
-			}
-			if (c.caOption4c) {
-				c.getDH().sendDialogues(118, c.npcType);
-				c.caOption4c = false;
-			}
 			break;
 
 		case 9179:
@@ -253,14 +245,7 @@ public class ClickingButtons implements PacketType {
 				// assault
 				c.getPA().spellTeleport(2605, 3153, 0);
 			}
-			if (c.caOption4c) {
-				c.getDH().sendDialogues(120, c.npcType);
-				c.caOption4c = false;
-			}
-			if (c.caPlayerTalk1) {
-				c.getDH().sendDialogues(125, c.npcType);
-				c.caPlayerTalk1 = false;
-			}
+
 			break;
 
 		case 9180:
@@ -279,14 +264,7 @@ public class ClickingButtons implements PacketType {
 				// duel arena
 				c.getPA().spellTeleport(3366, 3266, 0);
 			}
-			if (c.caOption4c) {
-				c.getDH().sendDialogues(122, c.npcType);
-				c.caOption4c = false;
-			}
-			if (c.caPlayerTalk1) {
-				c.getDH().sendDialogues(127, c.npcType);
-				c.caPlayerTalk1 = false;
-			}
+
 			break;
 
 		case 9181:
@@ -308,14 +286,7 @@ public class ClickingButtons implements PacketType {
 				// c.killCount = 0;
 				c.sendMessage("This will be added shortly");
 			}
-			if (c.caOption4c) {
-				c.getDH().sendDialogues(124, c.npcType);
-				c.caOption4c = false;
-			}
-			if (c.caPlayerTalk1) {
-				c.getDH().sendDialogues(130, c.npcType);
-				c.caPlayerTalk1 = false;
-			}
+
 			break;
 
 		case 1093:
@@ -341,168 +312,24 @@ public class ClickingButtons implements PacketType {
 			break;
 
 		case 9157:
-			if (c.DSOption8) {
-				c.getDH().sendDialogues(408, 883);
-				c.DSOption8 = false;
-			}
-			if (c.DSOption2) {
-				if (c.getItems().playerHasItem(995, 1)) {
-					c.getDH().sendDialogues(335, 882);
-					c.DSOption2 = false;
-				} else {
-					c.getDH().sendDialogues(334, 882);
-					c.DSOption2 = false;
-				}
-			}
-
-			if (c.doricOption2) {
-				c.getDH().sendDialogues(310, 284);
-				c.doricOption2 = false;
-			}
-			if (c.rfdOption) {
-				c.getDH().sendDialogues(26, -1);
-				c.rfdOption = false;
-			}
-			if (c.horrorOption) {
-				c.getDH().sendDialogues(35, -1);
-				c.horrorOption = false;
-			}
-			if (c.dtOption) {
-				c.getDH().sendDialogues(44, -1);
-				c.dtOption = false;
-			}
-			if (c.dtOption2) {
-				if (c.lastDtKill == 0) {
-					c.getDH().sendDialogues(65, -1);
-				} else {
-					c.getDH().sendDialogues(49, -1);
-				}
-				c.dtOption2 = false;
-			}
-
-			if (c.caOption2) {
-				c.getDH().sendDialogues(106, c.npcType);
-				c.caOption2 = false;
-			}
-			if (c.caOption2a) {
-				c.getDH().sendDialogues(102, c.npcType);
-				c.caOption2a = false;
-			}
-
 			if (c.dialogueAction == 1) {
 				c.getDH().sendDialogues(38, -1);
 			}
 			break;
 
 		case 9167:
-			if (c.DSOption7) {
-				c.getDH().sendDialogues(393, 883);
-				c.DSOption7 = false;
-			}
-			if (c.DSOption6) {
-				c.getDH().sendDialogues(387, 882);
-				c.DSOption6 = false;
-			}
-			if (c.DSOption5) {
-				c.getDH().sendDialogues(376, 882);
-				c.DSOption5 = false;
-			}
-			if (c.DSOption4) {
-				c.getDH().sendDialogues(374, 882);
-				c.DSOption4 = false;
-			}
-			if (c.DSOption3) {
-				c.getDH().sendDialogues(351, 882);
-				c.DSOption3 = false;
-			}
-			if (c.DSOption) {
-				if (c.getItems().playerHasItem(995, 1)) {
-					c.getDH().sendDialogues(335, 882);
-					c.DSOption = false;
-				} else {
-					c.getDH().sendDialogues(334, 882);
-					c.DSOption = false;
-				}
-			}
-			if (c.doricOption) {
-				c.getDH().sendDialogues(306, 284);
-				c.doricOption = false;
-			}
+			
 			break;
 		case 9168:
-			if (c.DSOption7) {
-				c.getDH().sendDialogues(395, 883);
-				c.DSOption7 = false;
-			}
-			if (c.DSOption6) {
-				c.getDH().sendDialogues(388, 882);
-				c.DSOption6 = false;
-			}
-			if (c.DSOption5) {
-				c.getDH().sendDialogues(379, 882);
-				c.DSOption5 = false;
-			}
-			if (c.DSOption4) {
-				c.getDH().sendDialogues(368, 882);
-				c.DSOption4 = false;
-			}
-			if (c.DSOption3) {
-				c.getDH().sendDialogues(372, 882);
-				c.DSOption3 = false;
-			}
-			if (c.DSOption) {
-				c.getDH().sendDialogues(330, 882);
-				c.DSOption = false;
-			}
-			if (c.doricOption) {
-				c.getDH().sendDialogues(303, 284);
-				c.doricOption = false;
-			}
+
 
 			break;
 		case 9169:
-			if (c.DSOption7) {
-				c.getDH().sendDialogues(397, 883);
-				c.DSOption7 = false;
-			}
-			if (c.DSOption6) {
-				c.getDH().sendDialogues(390, 882);
-				c.DSOption6 = false;
-			}
-			if (c.DSOption5) {
-				c.getDH().sendDialogues(380, 882);
-				c.DSOption5 = false;
-			}
-			if (c.DSOption4) {
-				c.getDH().sendDialogues(355, 882);
-				c.DSOption4 = false;
-			}
-			if (c.DSOption3) {
-				c.getDH().sendDialogues(371, 882);
-				c.DSOption3 = false;
-			}
-			if (c.DSOption) {
-				c.getDH().sendDialogues(331, 882);
-				c.DSOption = false;
-			}
-			if (c.doricOption) {
-				c.getDH().sendDialogues(299, 284);
-			}
+
 			break;
 
 		case 9158:
-			if (c.DSOption8) {
-				c.getDH().sendDialogues(411, 883);
-				c.DSOption8 = false;
-			}
-			if (c.DSOption2) {
-				c.getDH().sendDialogues(330, 882);
-				c.DSOption2 = false;
-			}
-			if (c.doricOption2) {
-				c.getDH().sendDialogues(309, 284);
-				c.doricOption2 = false;
-			}
+
 			if (c.dialogueAction == 8) {
 				c.getPA().fixAllBarrows();
 			} else {
@@ -512,10 +339,7 @@ public class ClickingButtons implements PacketType {
 			if (c.dialogueAction == 27) {
 				c.getPA().removeAllWindows();
 			}
-			if (c.caOption2a) {
-				c.getDH().sendDialogues(136, c.npcType);
-				c.caOption2a = false;
-			}
+
 			break;
 
 		/** Specials **/
