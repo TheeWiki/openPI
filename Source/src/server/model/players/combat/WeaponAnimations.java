@@ -1,4 +1,4 @@
-package server.model.items;
+package server.model.players.combat;
 
 import server.model.players.Client;
 import server.util.ItemDef;
