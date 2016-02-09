@@ -12,8 +12,9 @@ import server.util.Misc;
 
 /**
  * TODO: Add better saving (Json prefered)
+ * scf = server character file
+ * 
  * @author Dennis
- *
  */
 public class PlayerSave {
 

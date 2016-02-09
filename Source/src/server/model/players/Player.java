@@ -120,7 +120,7 @@ public abstract class Player {
 	public int[] pouches = new int[4];
 	public final int[] POUCH_SIZE = {3,6,9,12};
 	public boolean[] invSlot = new boolean[28], equipSlot = new boolean[14];
-	public long friends[] = new long[200];
+	public long ignores[], friends[] = new long[200];
 	public double specAmount = 0;
 	public double specAccuracy = 1;
 	public int recoilHits = 0;
