@@ -124,7 +124,7 @@ public class ShopAssistant {
 	**/
 	
 	public void buyFromShopPrice(int removeId, int removeSlot){
-		int ShopValue = (int)Math.floor(getItemShopValue(removeId, 0, removeSlot));
+		int ShopValue = (int) Math.floor(getItemShopValue(removeId, 1, removeSlot) * 0.90);
 		ShopValue *= 1.15;
 		String ShopAdd = "";
 		if (c.myShopId >= 17) {
@@ -261,7 +261,7 @@ public class ShopAssistant {
 			int TotPrice2 = 0;
 			//int Overstock;
 			for (int i = amount; i > 0; i--) {
-				TotPrice2 = (int)Math.floor(getItemShopValue(itemID, 1, fromSlot));
+				TotPrice2 = (int) Math.floor(getItemShopValue(itemID, 1, fromSlot) * 0.90);
 				if (c.getItems().freeSlots() > 0 || c.getItems().playerHasItem(995)) {
 					if (Item.itemIsNote[itemID] == false) {
 						c.getItems().deleteItem(itemID, c.getItems().getItemSlot(itemID), 1);
