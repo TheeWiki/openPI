@@ -219,6 +219,14 @@ public class NPCHandler {
 				break;
 			}
 		}
+		for (int i = 1; i < npcs.length; i++) {
+		    if (npcs[i] == null) {
+			slot = i;
+	                if (i > npcLoopCount)
+	                      npcLoopCount = i;
+	                break;
+		    }
+		}
 		if(slot == -1) {
 			//Misc.println("No Free Slot");
 			return;		// no free slot found
@@ -264,6 +272,14 @@ public class NPCHandler {
 				slot = i;
 				break;
 			}
+		}
+		for (int i = 1; i < npcs.length; i++) {
+		    if (npcs[i] == null) {
+			slot = i;
+	                if (i > npcLoopCount)
+	                      npcLoopCount = i;
+	                break;
+		    }
 		}
 		if(slot == -1) {
 			//Misc.println("No Free Slot");
@@ -824,6 +840,14 @@ public class NPCHandler {
 				slot = i;
 				break;
 			}
+		}
+		for (int i = 1; i < npcs.length; i++) {
+		    if (npcs[i] == null) {
+		    	slot = i;
+	                if (i > npcLoopCount)
+	                      npcLoopCount = i;
+	                break;
+		    }
 		}
 
 		if(slot == -1) return;		// no free slot found
@@ -1848,7 +1872,7 @@ public class NPCHandler {
 			return 85;
 		}
 	}
-	
+	public static int npcLoopCount;
 	/**
 	*NPC Attacking Player
 	**/
