@@ -1,13 +1,13 @@
-package server.world.cities;
+package server.world.locations;
 
 import server.model.players.Client;
-import server.world.cities.impl.Home;
 
-public final class CityController {
+public final class LocationController {
 
 	public static void sendFirstClickObject(Client c, int object)
 	{
-
+		Locations.getHome().sendFirstClickObject(c, object);
+		Locations.getBarrows().sendFirstClickObject(c, object);
 	}
 	public static void sendSecondClickObject(Client c, int object)
 	{
@@ -19,7 +19,7 @@ public final class CityController {
 	}
 	public static void sendFirstClickNpc(Client c, int npc)
 	{
-		Home.sendFirstClickNpc(c, npc);
+
 	}
 	public static void sendSecondClickNpc(Client c, int npc)
 	{

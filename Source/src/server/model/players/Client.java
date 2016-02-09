@@ -700,7 +700,7 @@ public class Client extends Player {
 		}
 		return true;
 	}
-
+	
 	public Client getClient(String name) {
 		name = name.toLowerCase();
 		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
