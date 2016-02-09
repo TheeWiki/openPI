@@ -1,11 +1,6 @@
 package server.model.players.skills;
 
-/**
- * The Identification Of Skills.
- * 
- * @author Graham Revised by Shawn Notes by Shawn
- */
-public class SkillConstants {
+public class Skill {
 
 	/**
 	 * Skill IDs.
@@ -50,8 +45,7 @@ public class SkillConstants {
 	/**
 	 * Interface displayed when leveling.
 	 */
-	public final static int[] SKILL_LEVEL_UP_INTERFACES = { 
-			6247, 6253, 6206, 6216, 4443, 6242, 6211, 6226, 4272, 6231,
+	public final static int[] SKILL_LEVEL_UP_INTERFACES = { 6247, 6253, 6206, 6216, 4443, 6242, 6211, 6226, 4272, 6231,
 			6258, 4282, 6263, 6221, 4416, 6237, 4277, 4261, 12123, 4261, 4267 };
 
 }
