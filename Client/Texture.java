@@ -733,131 +733,108 @@ final class Texture extends DrawingArea {
 	@SuppressWarnings("unused")
 	private static void drawLDGouraudScanline(int ai[], int i, int l, int i1, int j1, int k1)
 	{
-		int j;//was parameter
-		int k;//was parameter
-		if(false && aBoolean1464)
-		{
-			int l1;
-			if(aBoolean1462)
-			{
-				if(i1 - l > 3)
-					l1 = (k1 - j1) / (i1 - l);
-				else
-					l1 = 0;
-				if(i1 > DrawingArea.centerX)
-					i1 = DrawingArea.centerX;
-				if(l < 0)
-				{
-					j1 -= l * l1;
-					l = 0;
-				}
-				if(l >= i1)
-					return;
-				i += l;
+		int j;
+		int k;
+		int l1 = 0;
+		if (aBoolean1462) {
+			if (i1 > DrawingArea.centerX)
+				i1 = DrawingArea.centerX;
+			if (l < 0) {
+				j1 -= l * l1;
+				l = 0;
+			}
+		}
+		if (l < i1) {
+			i += l;
+			j1 += l1 * l;
+			if (aBoolean1464) {
 				k = i1 - l >> 2;
-				l1 <<= 2;
-			} else
-			{
-				if(l >= i1)
-					return;
-				i += l;
-				k = i1 - l >> 2;
-				if(k > 0)
+				if (k > 0)
 					l1 = (k1 - j1) * anIntArray1468[k] >> 15;
 				else
 					l1 = 0;
-			}
-			if(anInt1465 == 0)
-			{
-				while(--k >= 0) 
-				{
-					j = anIntArray1482[j1 >> 8];
-					j1 += l1;
-					ai[i++] = j;
-					ai[i++] = j;
-					ai[i++] = j;
-					ai[i++] = j;
-				}
-				k = i1 - l & 3;
-				if(k > 0)
-				{
-					j = anIntArray1482[j1 >> 8];
-					do
-						ai[i++] = j;
-					while(--k > 0);
-					return;
-				}
-			} else
-			{
-				int j2 = anInt1465;
-				int l2 = 256 - anInt1465;
-				while(--k >= 0) 
-				{
-					j = anIntArray1482[j1 >> 8];
-					j1 += l1;
-					j = ((j & 0xff00ff) * l2 >> 8 & 0xff00ff) + ((j & 0xff00) * l2 >> 8 & 0xff00);
-					ai[i++] = j + ((ai[i] & 0xff00ff) * j2 >> 8 & 0xff00ff) + ((ai[i] & 0xff00) * j2 >> 8 & 0xff00);
-					ai[i++] = j + ((ai[i] & 0xff00ff) * j2 >> 8 & 0xff00ff) + ((ai[i] & 0xff00) * j2 >> 8 & 0xff00);
-					ai[i++] = j + ((ai[i] & 0xff00ff) * j2 >> 8 & 0xff00ff) + ((ai[i] & 0xff00) * j2 >> 8 & 0xff00);
-					ai[i++] = j + ((ai[i] & 0xff00ff) * j2 >> 8 & 0xff00ff) + ((ai[i] & 0xff00) * j2 >> 8 & 0xff00);
-				}
-				k = i1 - l & 3;
-				if(k > 0)
-				{
-					j = anIntArray1482[j1 >> 8];
-					j = ((j & 0xff00ff) * l2 >> 8 & 0xff00ff) + ((j & 0xff00) * l2 >> 8 & 0xff00);
-					do
-						ai[i++] = j + ((ai[i] & 0xff00ff) * j2 >> 8 & 0xff00ff) + ((ai[i] & 0xff00) * j2 >> 8 & 0xff00);
-					while(--k > 0);
-				}
-			}
-			return;
-		}
-		if(l >= i1)
-			return;
-		int i2 = (k1 - j1) / (i1 - l);
-		if(aBoolean1462)
-		{
-			if(i1 > DrawingArea.centerX)
-				i1 = DrawingArea.centerX;
-			if(l < 0)
-			{
-				j1 -= l * i2;
-				l = 0;
-			}
-			if(l >= i1)
-				return;
-		}
-		i += l;
-		k = i1 - l;
-		if(anInt1465 == 0)
-		{
-			do
-			{
-				final int idx = j1 >> 8;
-				if (smoothShading && idx != 0xffff && (j1 & 0xff) != 0) {
-					final int rgb1 = anIntArray1482[idx];
-					final int rgb2 = anIntArray1482[idx + 1];
-					final int a2 = j1 & 0xff;
-					final int a1 = 256 - a2;
-					ai[i++] = ((rgb1 & 0xff00ff) * a1 + (rgb2 & 0xff00ff) * a2 & 0xff00ff00) +
-							((rgb1 & 0xff00) * a1 + (rgb2 & 0xff00) * a2 & 0xff0000) >> 8;
+				if (anInt1465 == 0) {
+					if (k > 0) {
+						do {
+							j = anIntArray1482[j1 >> 8];
+							j1 += l1;
+							ai[i++] = j;
+							ai[i++] = j;
+							ai[i++] = j;
+							ai[i++] = j;
+						} while (--k > 0);
+					}
+					k = i1 - l & 0x3;
+					if (k > 0) {
+						j = anIntArray1482[j1 >> 8];
+						do
+							ai[i++] = j;
+						while (--k > 0);
+					}
 				} else {
-					ai[i++] = anIntArray1482[idx];
+					int j2 = anInt1465;
+					int l2 = 256 - anInt1465;
+					if (k > 0) {
+						do {
+							j = anIntArray1482[j1 >> 8];
+							j1 += l1;
+							j = (((j & 0xff00ff) * l2 >> 8 & 0xff00ff) + ((j & 0xff00)
+									* l2 >> 8 & 0xff00));
+							int h = ai[i];
+							ai[i++] = (j
+									+ ((h & 0xff00ff) * j2 >> 8 & 0xff00ff) + ((h & 0xff00)
+									* j2 >> 8 & 0xff00));
+							h = ai[i];
+							ai[i++] = (j
+									+ ((h & 0xff00ff) * j2 >> 8 & 0xff00ff) + ((h & 0xff00)
+									* j2 >> 8 & 0xff00));
+							h = ai[i];
+							ai[i++] = (j
+									+ ((h & 0xff00ff) * j2 >> 8 & 0xff00ff) + ((h & 0xff00)
+									* j2 >> 8 & 0xff00));
+							h = ai[i];
+							ai[i++] = (j
+									+ ((h & 0xff00ff) * j2 >> 8 & 0xff00ff) + ((h & 0xff00)
+									* j2 >> 8 & 0xff00));
+						} while (--k > 0);
+					}
+					k = i1 - l & 0x3;
+					if (k > 0) {
+						j = anIntArray1482[j1 >> 8];
+						j = (((j & 0xff00ff) * l2 >> 8 & 0xff00ff) + ((j & 0xff00)
+								* l2 >> 8 & 0xff00));
+						do {
+							int i_61_ = ai[i];
+							ai[i++] = (j
+									+ ((i_61_ & 0xff00ff) * j2 >> 8 & 0xff00ff) + ((i_61_ & 0xff00)
+									* j2 >> 8 & 0xff00));
+						} while (--k > 0);
+					}
 				}
-				j1 += i2;
-			} while(--k > 0);
-			return;
+			} else {
+				int i2 = (k1 - j1) / (i1 - l);
+				k = i1 - l;
+				if (anInt1465 == 0) {
+					do {
+						ai[i++] = anIntArray1482[j1 >> 8];
+						j1 += i2;
+					} while (--k > 0);
+				} else {
+					int i_62_ = anInt1465;
+					int i_63_ = 256 - anInt1465;
+					do {
+						j = anIntArray1482[j1 >> 8];
+						j1 += i2;
+						j = (((j & 0xff00ff) * i_63_ >> 8 & 0xff00ff) + ((j & 0xff00)
+								* i_63_ >> 8 & 0xff00));
+						int i_64_ = ai[i];
+						ai[i++] = (j
+								+ ((i_64_ & 0xff00ff) * i_62_ >> 8 & 0xff00ff) + ((i_64_ & 0xff00)
+								* i_62_ >> 8 & 0xff00));
+					} while (--k > 0);
+				}
+			}
 		}
-		int k2 = anInt1465;
-		int i3 = 256 - anInt1465;
-		do
-		{
-			j = anIntArray1482[j1 >> 8];
-			j1 += i2;
-			j = ((j & 0xff00ff) * i3 >> 8 & 0xff00ff) + ((j & 0xff00) * i3 >> 8 & 0xff00);
-			ai[i++] = j + ((ai[i] & 0xff00ff) * k2 >> 8 & 0xff00ff) + ((ai[i] & 0xff00) * k2 >> 8 & 0xff00);
-		} while(--k > 0);
 	}
 
 	public static void drawHDGouraudTriangle(int y1, int y2, int y3, int x1, int x2, int x3, int hsl1, int hsl2, int hsl3) {
