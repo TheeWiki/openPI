@@ -67,28 +67,36 @@ public class Client extends Player {
 			buffer = new byte[Constants.BUFFER_SIZE];
 		}
 	}
+
 	/**
-     * Shakes the player's screen.
-     * Parameters 1, 0, 0, 0 to reset.
-     * @param verticleAmount How far the up and down shaking goes (1-4).
-     * @param verticleSpeed How fast the up and down shaking is.
-     * @param horizontalAmount How far the left-right tilting goes.
-     * @param horizontalSpeed How fast the right-left tiling goes..
-     */
-    public void shakeScreen(int verticleAmount, int verticleSpeed, int horizontalAmount, int horizontalSpeed) {
-            outStream.createFrame(35); // Creates frame 35.
-            outStream.writeByte(verticleAmount);
-            outStream.writeByte(verticleSpeed);
-            outStream.writeByte(horizontalAmount);
-            outStream.writeByte(horizontalSpeed);
-    }
-    /* Resets the shaking of the player's screen.
-    */
-   public void resetShaking() {
-           shakeScreen(1, 0, 0, 0);
-   }
+	 * Shakes the player's screen. Parameters 1, 0, 0, 0 to reset.
+	 * 
+	 * @param verticleAmount
+	 *            How far the up and down shaking goes (1-4).
+	 * @param verticleSpeed
+	 *            How fast the up and down shaking is.
+	 * @param horizontalAmount
+	 *            How far the left-right tilting goes.
+	 * @param horizontalSpeed
+	 *            How fast the right-left tiling goes..
+	 */
+	public void shakeScreen(int verticleAmount, int verticleSpeed, int horizontalAmount, int horizontalSpeed) {
+		outStream.createFrame(35); // Creates frame 35.
+		outStream.writeByte(verticleAmount);
+		outStream.writeByte(verticleSpeed);
+		outStream.writeByte(horizontalAmount);
+		outStream.writeByte(horizontalSpeed);
+	}
+
+	/*
+	 * Resets the shaking of the player's screen.
+	 */
+	public void resetShaking() {
+		shakeScreen(1, 0, 0, 0);
+	}
+
 	public boolean updateItems = false;
-	
+
 	private HashMap<String, Object> attributes = new HashMap<String, Object>();
 
 	public void setAttribute(String key, Object value) {
@@ -108,13 +116,17 @@ public class Client extends Player {
 		}
 		return fail;
 	}
-	public Specials getSA() { 
+
+	public Specials getSA() {
 		return specials;
 	}
+
 	private Specials specials = new Specials(this);
+
 	public void removeAttribute(String key) {
 		attributes.remove(key);
 	}
+
 	public void flushOutStream() {
 		if (!session.isConnected() || disconnected || outStream.currentOffset == 0)
 			return;
@@ -595,6 +607,7 @@ public class Client extends Player {
 	public BuryBones getBones() {
 		return buryBones;
 	}
+
 	private boolean isBusy = false;
 	private boolean isBusyHP = false;
 	public boolean isBusyFollow = false;
@@ -647,10 +660,13 @@ public class Client extends Player {
 	public boolean canWalk() {
 		return canWalk;
 	}
-	private EmoteHandler emoteHandler = new EmoteHandler(this); 
-	public EmoteHandler getEmoteHandler() { 
+
+	private EmoteHandler emoteHandler = new EmoteHandler(this);
+
+	public EmoteHandler getEmoteHandler() {
 		return emoteHandler;
 	}
+
 	public void setCanWalk(boolean canWalk) {
 		this.canWalk = canWalk;
 	}
@@ -684,33 +700,39 @@ public class Client extends Player {
 		}
 		return true;
 	}
+
 	public Client getClient(String name) {
 		name = name.toLowerCase();
-		for(int i = 0; i < Constants.MAX_PLAYERS; i++) {
-			if(validClient(i)) {
+		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
+			if (validClient(i)) {
 				Client client = getClient(i);
-				if(client.playerName.toLowerCase().equalsIgnoreCase(name)) {
+				if (client.playerName.toLowerCase().equalsIgnoreCase(name)) {
 					return client;
 				}
 			}
 		}
 		return null;
 	}
+
 	public Client getClient(int id) {
 		return (Client) Server.playerHandler.players[id];
 	}
+
 	public boolean validClient(int id) {
 		if (id < 0 || id > Constants.MAX_PLAYERS) {
 			return false;
 		}
 		return validClient(getClient(id));
 	}
+
 	public boolean validClient(String name) {
 		return validClient(getClient(name));
 	}
+
 	public boolean validClient(Client client) {
 		return (client != null && !client.disconnected);
 	}
+
 	public boolean validNpc(int index) {
 		if (index < 0 || index >= Constants.MAX_NPCS) {
 			return false;
@@ -721,9 +743,11 @@ public class Client extends Player {
 		}
 		return false;
 	}
+
 	public NPC getNpc(int index) {
 		return ((NPC) Server.npcHandler.npcs[index]);
 	}
+
 	public void yell(String s) {
 		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 			if (validClient(i)) {
@@ -731,20 +755,22 @@ public class Client extends Player {
 			}
 		}
 	}
-	public void puzzleBarrow(Client c){
-    	getPA().sendFrame246(4545, 250, 6833);
-    	getPA().sendFrame126("1.", 4553);
-    	getPA().sendFrame246(4546, 250, 6832);
-    	getPA().sendFrame126("2.", 4554);
-    	getPA().sendFrame246(4547, 250, 6830);
-    	getPA().sendFrame126("3.", 4555);
-    	getPA().sendFrame246(4548, 250, 6829);
-    	getPA().sendFrame126("4.", 4556);
-    	getPA().sendFrame246(4550, 250, 3454);
-    	getPA().sendFrame246(4551, 250, 8746);
-    	getPA().sendFrame246(4552, 250, 6830);
-    	getPA().showInterface(4543);
-    }
+
+	public void puzzleBarrow(Client c) {
+		getPA().sendFrame246(4545, 250, 6833);
+		getPA().sendFrame126("1.", 4553);
+		getPA().sendFrame246(4546, 250, 6832);
+		getPA().sendFrame126("2.", 4554);
+		getPA().sendFrame246(4547, 250, 6830);
+		getPA().sendFrame126("3.", 4555);
+		getPA().sendFrame246(4548, 250, 6829);
+		getPA().sendFrame126("4.", 4556);
+		getPA().sendFrame246(4550, 250, 3454);
+		getPA().sendFrame246(4551, 250, 8746);
+		getPA().sendFrame246(4552, 250, 6830);
+		getPA().showInterface(4543);
+	}
+
 	public void correctCoordinates() {
 		if (inPcGame()) {
 			getPA().movePlayer(2657, 2639, 0);
@@ -768,5 +794,15 @@ public class Client extends Player {
 		}
 
 	}
+
+	public void setIsSkilling(boolean isSkilling) {
+		this.isSkilling = isSkilling;
+	}
+
+	public boolean getIsSkilling() {
+		return isSkilling;
+	}
+
+	private boolean isSkilling;
 
 }
