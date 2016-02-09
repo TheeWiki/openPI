@@ -54,7 +54,7 @@ public class Food {
 			return food.get(id);
 		}
 		
-		static {
+	static {
 		for (FoodToEat f : FoodToEat.values())
 			food.put(f.getId(), f);
 		}

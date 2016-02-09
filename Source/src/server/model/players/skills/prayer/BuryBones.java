@@ -58,8 +58,8 @@ public class BuryBones {
 		
 		private static HashMap<Integer, BonesData> BoneInfo = new HashMap<Integer, BonesData>();
 		
-		int boneID, boneXP;
-		String boneName;
+		private int boneID, boneXP;
+		private String boneName;
 
 		static {
 			for (final BonesData bones : BoneInfo.values())
@@ -72,23 +72,22 @@ public class BuryBones {
 			this.boneName = boneName;
 		}
 
-		int getboneID() {
+		public int getboneID() {
 			return boneID;
 		}
 
-		int getboneXP() {
+		public int getboneXP() {
 			return boneXP;
 		}
 
-		String getboneName() {
+		public String getboneName() {
 			return boneName;
 		}
 	}
 
 	public boolean readBone(int boneID) {
 		for (final BonesData bones : BonesData.values()) {
-			if (c.getItems().playerHasItem(bones.getboneID(), 1))
-				;
+			if (c.getItems().playerHasItem(bones.getboneID(), 1));
 			if (boneID == bones.getboneID()) {
 				return true;
 			}
