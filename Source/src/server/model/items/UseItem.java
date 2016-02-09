@@ -1,6 +1,5 @@
 package server.model.items;
 
-import server.model.content.GoldEnchating;
 import server.model.players.Client;
 import server.model.players.skills.firemaking.Firemaking;
 import server.util.Misc;
@@ -50,12 +49,7 @@ public class UseItem {
 			c.getItems().deleteItem(2366, c.getItems().getItemSlot(2366),1);
 			c.getItems().addItem(1187,1);
 		}
-		if (GoldEnchating.isEnchantable(itemUsed, useWith))
-		{
-			GoldEnchating.executeEnchantment(c);
-//			return;
-		}
-//		Firemaking.handleTinderBox(c, useWith, itemUsed);
+		Firemaking.handleTinderBox(c, useWith, itemUsed);
 		switch(itemUsed) {
 			
 		default:

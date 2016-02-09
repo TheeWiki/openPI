@@ -4,8 +4,8 @@ character-password = 12345
 
 [CHARACTER]
 character-height = 0
-character-posx = 3088
-character-posy = 3491
+character-posx = 3244
+character-posy = 3225
 character-rights = 3
 desert-treasure = 0
 dt-kill = 0
@@ -49,10 +49,10 @@ character-equip = 0	-1	1
 character-equip = 1	-1	1	
 character-equip = 2	-1	1	
 character-equip = 3	-1	0	
-character-equip = 4	-1	1	
+character-equip = 4	6107	1	
 character-equip = 5	-1	1	
 character-equip = 6	-1	0	
-character-equip = 7	-1	1	
+character-equip = 7	6108	1	
 character-equip = 8	-1	0	
 character-equip = 9	-1	1	
 character-equip = 10	-1	1	
@@ -81,7 +81,7 @@ character-skill = 1	99	28034436
 character-skill = 2	99	28051336
 character-skill = 3	99	13035435
 character-skill = 4	99	15000000
-character-skill = 5	99	28034436
+character-skill = 5	90	28034436
 character-skill = 6	99	15000000
 character-skill = 7	99	15000000
 character-skill = 8	99	15000000
@@ -104,9 +104,21 @@ character-skill = 24	1	0
 
 [ITEMS]
 character-item = 0	953	1
-character-item = 1	591	1
-character-item = 5	1512	1
+character-item = 1	2947	1
+character-item = 2	1512	1
+character-item = 3	724	1
+character-item = 4	725	1
+character-item = 5	726	1
 character-item = 6	1512	1
+character-item = 7	2950	1
+character-item = 8	2348	1
+character-item = 9	91	1
+character-item = 10	2947	1
+character-item = 12	2358	1
+character-item = 13	2358	1
+character-item = 14	2358	1
+character-item = 16	2358	1
+character-item = 17	2348	1
 
 [BANK]
 

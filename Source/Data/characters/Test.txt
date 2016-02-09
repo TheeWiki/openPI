@@ -79,7 +79,7 @@ character-look = 12	0
 character-skill = 0	2	100
 character-skill = 1	1	0
 character-skill = 2	9	1000
-character-skill = 3	11	1663
+character-skill = 3	12	1663
 character-skill = 4	1	0
 character-skill = 5	1	0
 character-skill = 6	1	0
@@ -105,6 +105,10 @@ character-skill = 24	1	0
 [ITEMS]
 character-item = 0	996	100000
 character-item = 1	527	1
+character-item = 2	2950	1
+character-item = 3	2947	1
+character-item = 4	2947	1
+character-item = 5	2950	1
 
 [BANK]
 
