@@ -1,7 +1,5 @@
 package server.model.players;
 
-
-
 import server.Constants;
 import server.Server;
 import server.model.npcs.NPCHandler;
@@ -13,7 +11,7 @@ public class PlayerHandler {
 	public static Object lock = new Object();
 	public static Player players[] = new Player[Constants.MAX_PLAYERS];
 	public static String messageToAll = "";
-	
+
 	public static boolean updateAnnounced;
 	public static boolean updateRunning;
 	public static int updateSeconds;
@@ -33,6 +31,7 @@ public class PlayerHandler {
 				break;
 			}
 		}
+		
 		if (slot == -1)
 			return false;
 		client1.handler = this;
@@ -54,16 +53,15 @@ public class PlayerHandler {
 	}
 
 	public static int getPlayerCount() {
-                int count = 0;
-		for(int i = 0; i < Constants.MAX_PLAYERS; i++) {
-                    if(players[i] != null) {
-                        count++;
-                    }
-                }
-                return count;
+		int count = 0;
+		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
+			if (players[i] != null) {
+				count++;
+			}
+		}
+		return count;
 	}
 
-	
 	public static boolean isPlayerOn(String playerName) {
 		// synchronized (PlayerHandler.players) {
 		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
@@ -87,21 +85,17 @@ public class PlayerHandler {
 				}
 			}
 			/*
-			 * for (int i = 0; i < Config.MAX_PLAYERS; i++) {
-			 * if (players[i] == null || !players[i].isActive)
-			 * continue;
-			 * if (!players[i].initialized) {
-			 * players[i].initialize();
-			 * players[i].initialized = true;
-			 * }
-			 * }
+			 * for (int i = 0; i < Config.MAX_PLAYERS; i++) { if (players[i] ==
+			 * null || !players[i].isActive) continue; if
+			 * (!players[i].initialized) { players[i].initialize();
+			 * players[i].initialized = true; } }
 			 */
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 				if (players[i] == null || !players[i].isActive || !players[i].initialized)
 					continue;
 				try {
-					if (players[i].disconnected
-							&& (System.currentTimeMillis() - players[i].logoutDelay > 10000 || players[i].properLogout || kickAllPlayers)) {
+					if (players[i].disconnected && (System.currentTimeMillis() - players[i].logoutDelay > 10000
+							|| players[i].properLogout || kickAllPlayers)) {
 						if (players[i].inTrade) {
 							Client o = (Client) PlayerHandler.players[players[i].tradeWith];
 							if (o != null) {
@@ -189,7 +183,7 @@ public class PlayerHandler {
 			}
 		}
 
-		for(int i = 0; i < NPCHandler.npcLoopCount; i++) {
+		for (int i = 0; i < NPCHandler.npcLoopCount; i++) {
 			if (NPCHandler.npcs[i] != null) {
 				int id = NPCHandler.npcs[i].npcId;
 				if (plr.RebuildNPCList == false && (plr.npcInListBitmap[id >> 3] & (1 << (id & 7))) != 0) {
