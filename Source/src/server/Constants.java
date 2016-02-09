@@ -7,9 +7,9 @@ public class Constants {
 
 	public static final boolean SERVER_DEBUG = false;
 
-	public static String SERVER_NAME = "Project Insanity.";
+	public static String SERVER_NAME = "openPI";
 
-	public static String WELCOME_MESSAGE = "Welcome to Project Insanity.";
+	public static String WELCOME_MESSAGE = "Welcome to " + SERVER_NAME + ", open source at http://theewiki.github.io/openPI/";
 
 	public static final String FORUMS = "";
 
