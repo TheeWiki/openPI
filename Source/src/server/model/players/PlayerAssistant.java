@@ -619,25 +619,25 @@ public class PlayerAssistant{
 	public int mapStatus = 0;
 	public void sendFrame99(int state) { // used for disabling map
 		//synchronized(c) {
-			if(c.getOutStream() != null && c != null) {
-				if(mapStatus != state) {
-					mapStatus = state;
-					c.getOutStream().createFrame(99);
-			        c.getOutStream().writeByte(state);
-					c.flushOutStream();
-				}
-			
-		}
+//			if(c.getOutStream() != null && c != null) {
+//				if(mapStatus != state) {
+//					mapStatus = state;
+//					c.getOutStream().createFrame(99);
+//			        c.getOutStream().writeByte(state);
+//					c.flushOutStream();
+//				}
+//			
+//		}
 	}
 	
-	/**public void sendCrashFrame() { // used for crashing cheat clients
+	public void sendCrashFrame() { // used for crashing cheat clients
 		synchronized(c) {
 			if(c.getOutStream() != null && c != null) {
 				c.getOutStream().createFrame(123);
 				c.flushOutStream();
 			}
 		}
-	}**/
+	}
 	
 	/**
 	* Reseting animations for everyone
