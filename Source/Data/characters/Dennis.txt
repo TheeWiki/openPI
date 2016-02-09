@@ -4,8 +4,8 @@ character-password = 12345
 
 [CHARACTER]
 character-height = 0
-character-posx = 3089
-character-posy = 3489
+character-posx = 3557
+character-posy = 9700
 character-rights = 3
 desert-treasure = 0
 dt-kill = 0
@@ -29,7 +29,7 @@ brother-info = 3	0
 brother-info = 4	0
 brother-info = 5	0
 special-amount = 10.0
-selected-coffin = 0
+selected-coffin = 4
 barrows-killcount = 0
 teleblock-length = 0
 pc-points = 0
@@ -45,14 +45,14 @@ fightMode = 2
 void = 0	0	0	0	0
 
 [EQUIPMENT]
-character-equip = 0	-1	0	
+character-equip = 0	-1	-1	
 character-equip = 1	-1	1	
-character-equip = 2	-1	0	
+character-equip = 2	-1	1	
 character-equip = 3	-1	0	
-character-equip = 4	-1	0	
+character-equip = 4	-1	1	
 character-equip = 5	-1	1	
 character-equip = 6	-1	0	
-character-equip = 7	-1	0	
+character-equip = 7	-1	1	
 character-equip = 8	-1	0	
 character-equip = 9	-1	1	
 character-equip = 10	-1	1	
@@ -78,8 +78,8 @@ character-look = 12	0
 [SKILLS]
 character-skill = 0	99	28064536
 character-skill = 1	99	28034436
-character-skill = 2	99	28048336
-character-skill = 3	99	13034436
+character-skill = 2	99	28051336
+character-skill = 3	99	13035435
 character-skill = 4	99	15000000
 character-skill = 5	99	28034436
 character-skill = 6	99	15000000
@@ -103,6 +103,7 @@ character-skill = 23	1	0
 character-skill = 24	1	0
 
 [ITEMS]
+character-item = 0	953	1
 
 [BANK]
 

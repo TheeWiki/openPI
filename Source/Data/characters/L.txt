@@ -1,11 +1,11 @@
 [ACCOUNT]
-character-username = 1
-character-password = 1
+character-username = L
+character-password = l
 
 [CHARACTER]
 character-height = 0
-character-posx = 3089
-character-posy = 3492
+character-posx = 3087
+character-posy = 3502
 character-rights = 0
 desert-treasure = 0
 dt-kill = 0
@@ -28,7 +28,7 @@ brother-info = 2	0
 brother-info = 3	0
 brother-info = 4	0
 brother-info = 5	0
-special-amount = 10.0
+special-amount = 0.0
 selected-coffin = 0
 barrows-killcount = 0
 teleblock-length = 0
@@ -36,12 +36,12 @@ pc-points = 0
 slayerTask = 0
 taskAmount = 0
 magePoints = 0
-autoRet = 1
+autoRet = 0
 barrowskillcount = 0
 flagged = false
 wave = 0
 gwkc = 0
-fightMode = 1
+fightMode = 0
 void = 0	0	0	0	0
 
 [EQUIPMENT]
@@ -62,17 +62,17 @@ character-equip = 13	-1	0
 
 [LOOK]
 character-look = 0	0
-character-look = 1	0
-character-look = 2	18
-character-look = 3	26
-character-look = 4	33
-character-look = 5	36
-character-look = 6	42
-character-look = 7	10
-character-look = 8	0
-character-look = 9	0
-character-look = 10	0
-character-look = 11	0
+character-look = 1	7
+character-look = 2	25
+character-look = 3	29
+character-look = 4	35
+character-look = 5	39
+character-look = 6	44
+character-look = 7	14
+character-look = 8	7
+character-look = 9	8
+character-look = 10	9
+character-look = 11	5
 character-look = 12	0
 
 [SKILLS]
