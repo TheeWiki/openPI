@@ -63,6 +63,7 @@ public class RS2LoginProtocol extends FrameDecoder {
 			
 			buffer.readByte();
 			
+			@SuppressWarnings("unused")
 			int clientVersion = buffer.readShort();
 			/*if (clientVersion != 317) {
 				System.out.println("Invalid client version: " + clientVersion);
