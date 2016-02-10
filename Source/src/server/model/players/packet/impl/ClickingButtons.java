@@ -9,6 +9,7 @@ import server.model.items.GameItem;
 import server.model.players.Client;
 import server.model.players.packet.PacketType;
 import server.util.Misc;
+import server.world.Location;
 
 /**
  * Clicking most buttons
@@ -659,9 +660,7 @@ public class ClickingButtons implements PacketType {
 		// home teleports
 		case 4171:
 		case 50056:
-			@SuppressWarnings("unused")
-			String type = c.playerMagicBook == 0 ? "modern" : "ancient";
-			c.getPA().startTeleport(Constants.LUMBY_X, Constants.LUMBY_Y, 0, "modern");
+			new Location(c, Constants.START_LOCATION_X, Constants.START_LOCATION_Y, 0);
 			break;
 
 		case 50235:
