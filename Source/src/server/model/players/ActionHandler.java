@@ -19,7 +19,7 @@ public class ActionHandler {
 		/**
 		 * Opening the bank when clicking on bank booths, etc.
 		 */
-		case 2213:
+//		case 2213:
 		case 14367:
 		case 11758:
 		case 3193:
