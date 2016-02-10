@@ -43,6 +43,7 @@ public class ClanChatHandler {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public void updateClanChat(int clanId) {
 		for (int j = 0; j < clans[clanId].members.length; j++) {
 			if (clans[clanId].members[j] <= 0)
@@ -84,6 +85,7 @@ public class ClanChatHandler {
 		return true;
 	}
 	
+	@SuppressWarnings({ "static-access", "unused" })
 	public void addToClan(int playerId, int clanId) {
 		if (clans[clanId] != null) {
 			for (int j = 0; j < clans[clanId].members.length; j++) {
@@ -100,6 +102,7 @@ public class ClanChatHandler {
 		}	
 	}
 	
+	@SuppressWarnings("static-access")
 	public void leaveClan(int playerId, int clanId) {
 		if (clanId < 0) {
 			Client c = (Client)Server.playerHandler.players[playerId];
@@ -131,6 +134,7 @@ public class ClanChatHandler {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public void destructClan(int clanId) {
 		if (clanId < 0)
 			return;
@@ -150,6 +154,7 @@ public class ClanChatHandler {
 		clans[clanId].name = "";
 	}
 	
+	@SuppressWarnings("static-access")
 	public void messageToClan(String message, int clanId) {
 		if (clanId < 0)
 			return;
@@ -163,6 +168,7 @@ public class ClanChatHandler {
 		}	
 	}
 	
+	@SuppressWarnings("static-access")
 	public void playerMessageToClan(int playerId, String message, int clanId) {
 		if (clanId < 0)
 			return;
@@ -178,6 +184,7 @@ public class ClanChatHandler {
 		}	
 	}
 	
+	@SuppressWarnings("static-access")
 	public void sendLootShareMessage(int clanId, String message) {
 		if (clanId >= 0) {
 			for (int j = 0; j < clans[clanId].members.length; j++) {

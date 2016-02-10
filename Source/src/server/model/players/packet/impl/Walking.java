@@ -10,6 +10,7 @@ import server.model.players.packet.PacketType;
  **/
 public class Walking implements PacketType {
 
+	@SuppressWarnings("static-access")
 	@Override
 	public void processPacket(Client c, int packetType, int packetSize) {	
 		c.walkingToItem = false;

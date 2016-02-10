@@ -2,7 +2,6 @@ package server.model.players.packet.impl;
 
 import server.model.players.Client;
 import server.model.players.packet.PacketType;
-import server.model.players.skills.prayer.BuryBones;
 
 /**
  * Clicking an item, bury bone, eat food etc
@@ -11,6 +10,7 @@ public class ClickItem implements PacketType {
 
 	@Override
 	public void processPacket(Client c, int packetType, int packetSize) {
+		@SuppressWarnings("unused")
 		int junk = c.getInStream().readSignedWordBigEndianA();
 		int itemSlot = c.getInStream().readUnsignedWordA();
 		int itemId = c.getInStream().readUnsignedWordBigEndian();

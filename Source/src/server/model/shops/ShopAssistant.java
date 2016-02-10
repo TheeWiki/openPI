@@ -17,6 +17,7 @@ public class ShopAssistant {
 	*Shops
 	**/
 	
+	@SuppressWarnings("static-access")
 	public void openShop(int ShopID){		
 		c.getItems().resetItems(3823);
 		resetShop(ShopID);
@@ -26,6 +27,7 @@ public class ShopAssistant {
 		c.getPA().sendFrame126(Server.shopHandler.ShopName[ShopID], 3901);
 	}
 	
+	@SuppressWarnings("static-access")
 	public void updatePlayerShop() {
 		for (int i = 1; i < Constants.MAX_PLAYERS; i++) {
 			if (Server.playerHandler.players[i] != null) {
@@ -41,6 +43,7 @@ public class ShopAssistant {
 		resetShop(i);
 	}
 	
+	@SuppressWarnings("static-access")
 	public void resetShop(int ShopID) {
 		synchronized(c) {
 			int TotalItems = 0;
@@ -80,6 +83,7 @@ public class ShopAssistant {
 	}
 	
 	
+	@SuppressWarnings({ "unused", "static-access" })
 	public double getItemShopValue(int ItemID, int Type, int fromSlot) {
 		double ShopValue = 1;
 		double Overstock = 0;
@@ -188,6 +192,7 @@ public class ShopAssistant {
 	/**
 	*Sell item to shop (Shop Price)
 	**/
+	@SuppressWarnings("static-access")
 	public void sellToShopPrice(int removeId, int removeSlot) {
 		for (int i : Constants.ITEM_SELLABLE) {
 			if (i == removeId) {
@@ -222,6 +227,7 @@ public class ShopAssistant {
 	
 	
 	
+	@SuppressWarnings("static-access")
 	public boolean sellItem(int itemID, int fromSlot, int amount) {
 		if (c.myShopId == 14)
 			return false;
@@ -283,6 +289,7 @@ public class ShopAssistant {
 		return true;
 	}
 	
+	@SuppressWarnings("static-access")
 	public boolean addShopItem(int itemID, int amount) {
 		boolean Added = false;
 		if (amount <= 0) {
@@ -310,6 +317,7 @@ public class ShopAssistant {
 		return true;
 	}
 	
+	@SuppressWarnings("static-access")
 	public boolean buyItem(int itemID, int fromSlot, int amount) {
 		if (c.myShopId == 14) {
 			skillBuy(itemID);
@@ -328,6 +336,7 @@ public class ShopAssistant {
 			//int Overstock;
 			int Slot = 0;
 			int Slot1 = 0;//Tokkul
+			@SuppressWarnings("unused")
 			int Slot2 = 0;//Pking Points
 			if (c.myShopId >= 17) {
 				handleOtherShop(itemID);
@@ -466,6 +475,7 @@ public class ShopAssistant {
 			return count;
 		}
 		
+		@SuppressWarnings("static-access")
 		public void setupSkillCapes(int capes, int capes2) {
 			synchronized(c) {
 				c.getItems().resetItems(3823);
@@ -482,6 +492,7 @@ public class ShopAssistant {
 				c.getOutStream().createFrameVarSizeWord(53);
 				c.getOutStream().writeWord(3900);
 				c.getOutStream().writeWord(TotalItems);
+				@SuppressWarnings("unused")
 				int TotalCount = 0;
 				for (int i = 0; i < 21; i++) {
 					if (c.getLevelForXP(c.playerXP[i]) < 99)

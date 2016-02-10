@@ -223,6 +223,7 @@ public class Buffer {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void writeString(String s) {
 		s.getBytes(0, s.length(), data, currentOffset);
 		currentOffset += s.length();

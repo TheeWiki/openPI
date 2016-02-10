@@ -218,6 +218,7 @@ public class Client extends Player {
 
 	}
 
+	@SuppressWarnings("static-access")
 	public void initialize() {
 		// synchronized (this) {
 		Server.panel.addEntity(playerName);
@@ -331,6 +332,7 @@ public class Client extends Player {
 
 	public int packetSize = 0, packetType = -1;
 
+	@SuppressWarnings("static-access")
 	public void process() {
 
 		if (this.updateItems)
@@ -714,6 +716,7 @@ public class Client extends Player {
 		return null;
 	}
 
+	@SuppressWarnings("static-access")
 	public Client getClient(int id) {
 		return (Client) Server.playerHandler.players[id];
 	}
@@ -744,6 +747,7 @@ public class Client extends Player {
 		return false;
 	}
 
+	@SuppressWarnings("static-access")
 	public NPC getNpc(int index) {
 		return ((NPC) Server.npcHandler.npcs[index]);
 	}
@@ -779,6 +783,7 @@ public class Client extends Player {
 			getPA().movePlayer(absX, absY, playerId * 4);
 			sendMessage("Your wave will start in 10 seconds.");
 			CycleEventHandler.getSingleton().addEvent(this, new CycleEvent() {
+				@SuppressWarnings("static-access")
 				@Override
 				public void execute(CycleEventContainer container) {
 					Server.fightCaves.spawnNextWave((Client) Server.playerHandler.players[playerId]);

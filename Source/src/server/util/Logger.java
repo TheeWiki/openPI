@@ -1,4 +1,4 @@
-package server.util.log;
+package server.util;
 
 import java.io.PrintStream;
 import java.text.DateFormat;

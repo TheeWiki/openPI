@@ -15,6 +15,7 @@ public class WearItem implements PacketType {
 		c.wearSlot = c.getInStream().readUnsignedWordA();
 		c.interfaceId = c.getInStream().readUnsignedWordA();
 		
+		@SuppressWarnings("unused")
 		int oldCombatTimer = c.attackTimer;
 		if (c.playerIndex > 0 || c.npcIndex > 0)
 			c.getCombat().resetPlayerAttack();

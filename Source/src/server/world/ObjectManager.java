@@ -37,6 +37,7 @@ public class ObjectManager {
 		toRemove.clear();
 	}
 	
+	@SuppressWarnings("static-access")
 	public void removeObject(int x, int y) {
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null) {
@@ -46,6 +47,7 @@ public class ObjectManager {
 		}	
 	}
 	
+	@SuppressWarnings("static-access")
 	public void updateObject(Object o) {
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null) {
@@ -55,6 +57,7 @@ public class ObjectManager {
 		}	
 	}
 	
+	@SuppressWarnings("static-access")
 	public void placeObject(Object o) {
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null) {
@@ -83,7 +86,6 @@ public class ObjectManager {
 		loadCustomSpawns(c);
 	}
 	
-	private int[][] customObjects = {{}};
 	public void loadCustomSpawns(Client c) {
 		c.getPA().checkObjectSpawn(-1, 2950, 3450, 0, 10);
 		c.getPA().checkObjectSpawn(1596, 3008, 3850, 1, 0);
@@ -137,6 +139,7 @@ public class ObjectManager {
 		return -1;
 	}
 	
+	@SuppressWarnings("static-access")
 	public void teleportObelisk(int port) {
 		int random = Misc.random(5);
 		while (random == port) {

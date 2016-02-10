@@ -13,6 +13,7 @@ public class MagicOnItems implements PacketType {
 	public void processPacket(Client c, int packetType, int packetSize) {
 		int slot = c.getInStream().readSignedWord();
 		int itemId = c.getInStream().readSignedWordA();
+		@SuppressWarnings("unused")
 		int junk = c.getInStream().readSignedWord();
 		int spellId = c.getInStream().readSignedWordA();
 		

@@ -13,7 +13,10 @@ import server.model.players.packet.PacketType;
  * Click NPC
  */
 public class ClickNPC implements PacketType {
+	
 	public static final int ATTACK_NPC = 72, MAGE_NPC = 131, FIRST_CLICK = 155, SECOND_CLICK = 17, THIRD_CLICK = 21;
+	
+	@SuppressWarnings("static-access")
 	@Override
 	public void processPacket(final Client c, int packetType, int packetSize) {
 		c.npcIndex = 0;

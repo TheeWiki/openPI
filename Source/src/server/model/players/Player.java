@@ -254,6 +254,7 @@ public abstract class Player {
 	public void assignAutocast(int button) {
 		for (int j = 0; j < autocastIds.length; j++) {
 			if (autocastIds[j] == button) {
+				@SuppressWarnings("static-access")
 				Client c = (Client) Server.playerHandler.players[this.playerId];
 				autocasting = true;
 				autocastId = autocastIds[j+1];
@@ -582,6 +583,7 @@ public abstract class Player {
 	}
 	public int combatStyle = 0;
 	
+	@SuppressWarnings("static-access")
 	public void updateshop(int i){
 		Client p = (Client) Server.playerHandler.players[playerId];
 		p.getShops().resetShop(i);
@@ -923,7 +925,9 @@ public abstract class Player {
 				if(isRunning) {
 					dir2 = getNextWalkingDirection();
 				}
-				Client c = (Client)this;
+				@SuppressWarnings("unused")
+				Client c = (Client)
+					this;
 				//c.sendMessage("Cycle Ended");	
 				int deltaX = 0, deltaY = 0;
 				if(currentX < 2*8) {
@@ -1775,6 +1779,7 @@ public abstract class Player {
 		return newWalkCmdIsRunning;
 	}
 
+	@SuppressWarnings("unused")
 	private ISAACCipher inStreamDecryption = null, outStreamDecryption = null;
 	
 	public void setInStreamDecryption(ISAACCipher inStreamDecryption) {
@@ -1785,6 +1790,7 @@ public abstract class Player {
 		this.outStreamDecryption = outStreamDecryption;
 	}
 	
+	@SuppressWarnings("static-access")
 	public boolean samePlayer() {
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (j == playerId)

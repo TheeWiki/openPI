@@ -28,6 +28,7 @@ public class PlayerManager {
 	}
 
 	public void setupRegionPlayers(){
+		@SuppressWarnings("unused")
 		int hash = 0;
 		for(int i = 0; i < 9999; i += areaSize){//each region will be 24 squares big lol this will eb teh x axis
 			for(int j = 0; j < 12500; j += areaSize){//y axis

@@ -146,22 +146,6 @@ public class PlayerAssistant {
 	public int absX, absY;
 	public int heightLevel;
 
-	public static void QuestReward(Client c, String questName, int PointsGain, String Line1, String Line2, String Line3,
-			String Line4, String Line5, String Line6, int itemID) {
-		c.getPA().sendFrame126("You have completed " + questName + "!", 12144);
-		sendQuest(c, "" + (c.QuestPoints), 12147);
-		// c.QuestPoints += PointsGain;
-		sendQuest(c, Line1, 12150);
-		sendQuest(c, Line2, 12151);
-		sendQuest(c, Line3, 12152);
-		sendQuest(c, Line4, 12153);
-		sendQuest(c, Line5, 12154);
-		sendQuest(c, Line6, 12155);
-		c.getPlayerAssistant().sendFrame246(12145, 250, itemID);
-		showInterface(c, 12140);
-		Server.getStillGraphicsManager().stillGraphics(c, c.getX(), c.getY(), c.getHeightLevel(), 199, 0);
-	}
-
 	public static void showInterface(Client client, int i) {
 		client.getOutStream().createFrame(97);
 		client.getOutStream().writeWord(i);
@@ -530,6 +514,7 @@ public class PlayerAssistant {
 
 	}
 
+	@SuppressWarnings("unused")
 	public void sendPM(long name, int rights, byte[] chatmessage, int messagesize) {
 		// synchronized(c) {
 		if (c.getOutStream() != null && c != null) {
@@ -657,6 +642,7 @@ public class PlayerAssistant {
 	 * Reseting animations for everyone
 	 **/
 
+	@SuppressWarnings("static-access")
 	public void frame1() {
 		// synchronized(c) {
 		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
@@ -831,6 +817,7 @@ public class PlayerAssistant {
 	public void createPlayersStillGfx(int id, int x, int y, int height, int time) {
 		// synchronized(c) {
 		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
+			@SuppressWarnings("static-access")
 			Player p = Server.playerHandler.players[i];
 			if (p != null) {
 				Client person = (Client) p;
@@ -935,6 +922,7 @@ public class PlayerAssistant {
 	/**
 	 * Private Messaging
 	 **/
+	@SuppressWarnings("static-access")
 	public void logIntoPM() {
 		setPrivateMessaging(2);
 		for (int i1 = 0; i1 < Constants.MAX_PLAYERS; i1++) {
@@ -981,6 +969,7 @@ public class PlayerAssistant {
 		}
 	}
 
+	@SuppressWarnings({ "unused", "static-access" })
 	public void updatePM(int pID, int world) { // used for private chat updates
 		Player p = Server.playerHandler.players[pID];
 		if (p == null || p.playerName == null || p.playerName.equals("null")) {
@@ -1138,6 +1127,7 @@ public class PlayerAssistant {
 		if (c.duelStatus != 6) {
 			// c.killerId = c.getCombat().getKillerId(c.playerId);
 			c.killerId = findKiller();
+			@SuppressWarnings("static-access")
 			Client o = (Client) Server.playerHandler.players[c.killerId];
 			if (o != null) {
 				if (c.killerId != c.playerId)
@@ -1208,6 +1198,7 @@ public class PlayerAssistant {
 		}
 	}
 
+	@SuppressWarnings("static-access")
 	public void resetFollowers() {
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null) {
@@ -1277,6 +1268,7 @@ public class PlayerAssistant {
 		} else if (c.inFightCaves()) {
 			c.getPA().resetTzhaar();
 		} else { // we are in a duel, respawn outside of arena
+			@SuppressWarnings("static-access")
 			Client o = (Client) Server.playerHandler.players[c.duelingWith];
 			if (o != null) {
 				o.getPA().createPlayerHints(10, -1);
@@ -1460,6 +1452,7 @@ public class PlayerAssistant {
 	 * c.outStream.writeWord(c.followDistance); }
 	 */
 
+	@SuppressWarnings("static-access")
 	public void followPlayer() {
 		if (Server.playerHandler.players[c.followId] == null || Server.playerHandler.players[c.followId].isDead) {
 			c.followId = 0;
@@ -1474,6 +1467,7 @@ public class PlayerAssistant {
 		int otherX = Server.playerHandler.players[c.followId].getX();
 		int otherY = Server.playerHandler.players[c.followId].getY();
 		boolean withinDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 2);
+		@SuppressWarnings("unused")
 		boolean goodDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 1);
 		boolean hallyDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 2);
 		boolean bowDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 8);
@@ -1563,6 +1557,7 @@ public class PlayerAssistant {
 		c.faceUpdate(c.followId + 32768);
 	}
 
+	@SuppressWarnings("static-access")
 	public void followNpc() {
 		if (Server.npcHandler.npcs[c.followId2] == null || Server.npcHandler.npcs[c.followId2].isDead) {
 			c.followId2 = 0;
@@ -1577,6 +1572,7 @@ public class PlayerAssistant {
 		int otherX = Server.npcHandler.npcs[c.followId2].getX();
 		int otherY = Server.npcHandler.npcs[c.followId2].getY();
 		boolean withinDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 2);
+		@SuppressWarnings("unused")
 		boolean goodDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 1);
 		boolean hallyDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 2);
 		boolean bowDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 8);
@@ -2225,6 +2221,7 @@ public class PlayerAssistant {
 
 	}
 
+	@SuppressWarnings("static-access")
 	public int getNpcId(int id) {
 		for (int i = 0; i < NPCHandler.maxNPCs; i++) {
 			if (NPCHandler.npcs[i] != null) {
@@ -2391,6 +2388,7 @@ public class PlayerAssistant {
 		c.tzhaarToKill = -1;
 		c.tzhaarKilled = -1;
 		CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
+			@SuppressWarnings("static-access")
 			@Override
 			public void execute(CycleEventContainer e) {
 				Server.fightCaves.spawnNextWave((Client) Server.playerHandler.players[c.playerId]);

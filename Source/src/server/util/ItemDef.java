@@ -100,6 +100,7 @@ public class ItemDef {
 			return "";
 	}
 
+	@SuppressWarnings("unused")
 	public void readValues(Buffer stream) {
 		do {
 			int i = stream.readUnsignedByte();

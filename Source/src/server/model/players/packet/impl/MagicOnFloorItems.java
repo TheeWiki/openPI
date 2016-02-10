@@ -14,6 +14,7 @@ public class MagicOnFloorItems implements PacketType {
 		int itemY = c.getInStream().readSignedWordBigEndian();
 		int itemId = c.getInStream().readUnsignedWord();
 		int itemX = c.getInStream().readSignedWordBigEndian();
+		@SuppressWarnings("unused")
 		int spellId = c.getInStream().readUnsignedWordA();
 
 		if(!Server.itemHandler.itemExists(itemId, itemX, itemY)) {

@@ -96,6 +96,7 @@ public class Experience {
 					c.getDamage()[2] += Misc.random(10);
 				}
 			}
+			@SuppressWarnings("unused")
 			boolean magicFailed = false;
 			// c.npcIndex = 0;
 			int bonusAttack = c.getCombat().getBonusAttack(i);

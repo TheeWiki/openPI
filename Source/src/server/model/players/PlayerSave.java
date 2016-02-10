@@ -206,6 +206,7 @@ public class PlayerSave {
 	/**
 	 * Saving
 	 **/
+	@SuppressWarnings("static-access")
 	public static boolean saveGame(Client p) {
 		if (!p.saveFile || p.newPlayer || !p.saveCharacter) {
 			// System.out.println("first");

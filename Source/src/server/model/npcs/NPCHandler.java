@@ -37,6 +37,7 @@ public class NPCHandler {
 		//System.out.println("NPC Spawns Loaded");
 	}
 	
+	@SuppressWarnings("static-access")
 	public void multiAttackGfx(int i, int gfx) {
 		if (npcs[i].projectileId < 0)
 			return;
@@ -78,6 +79,7 @@ public class NPCHandler {
 		return false;
 	}
 	
+	@SuppressWarnings("static-access")
 	public void multiAttackDamage(int i) {
 		int max = getMaxHit(i);
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
@@ -124,6 +126,7 @@ public class NPCHandler {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public int getClosePlayer(int i) {
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null) {
@@ -139,6 +142,7 @@ public class NPCHandler {
 		return 0;
 	}
 	
+	@SuppressWarnings("static-access")
 	public int getCloseRandomPlayer(int i) {
 		ArrayList<Integer> players = new ArrayList<Integer>();
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
@@ -306,6 +310,7 @@ public class NPCHandler {
 	* Emotes
 	**/
 	
+	@SuppressWarnings("static-access")
 	public static int getAttackEmote(int i) {
 		switch(Server.npcHandler.npcs[i].npcType) {
 			case 2550:
@@ -888,6 +893,7 @@ public class NPCHandler {
 
 	
 
+		@SuppressWarnings("static-access")
 		public void process() {
 		for (int i = 0; i < maxNPCs; i++) {
 			if (npcs[i] == null) continue;
@@ -966,11 +972,11 @@ public class NPCHandler {
 							if(npcs[i].attackTimer == 0) {
 								if(c != null) {
 									attackPlayer(c, i);
-								} else {
+								} /*else {
 									npcs[i].killerId = 0;
 									npcs[i].underAttack = false;
 									npcs[i].facePlayer(0);
-								}
+								}*/
 							}
 						} else {
 							npcs[i].killerId = 0;
@@ -1062,8 +1068,9 @@ public class NPCHandler {
 								}
 							}
 								
-
+							@SuppressWarnings("unused")
 							int x = (npcs[i].absX + npcs[i].moveX);
+							@SuppressWarnings("unused")
 							int y = (npcs[i].absY + npcs[i].moveY);
 							//if (VirtualWorld.I(npcs[i].heightLevel, npcs[i].absX, npcs[i].absY, x, y, 0))
 								npcs[i].getNextNPCMovement(i);
@@ -1166,6 +1173,7 @@ public class NPCHandler {
 	* Npc killer id?
 	**/
 	
+	@SuppressWarnings({ "static-access", "unused" })
 	public int getNpcKillerId(int npcId) {
 		int oldDamage = 0;
 		int count = 0;
@@ -1187,6 +1195,7 @@ public class NPCHandler {
 	/**
 	 * 
 	 */
+	@SuppressWarnings("static-access")
 	private void killedBarrow(int i) {
 		Client c = (Client)Server.playerHandler.players[npcs[i].killedBy];
 		if(c != null) {
@@ -1199,6 +1208,7 @@ public class NPCHandler {
 		}
 	}
 	
+	@SuppressWarnings({ "static-access", "unused" })
 	private void killedTzhaar(int i) {
 		final Client c2 = (Client)Server.playerHandler.players[npcs[i].spawnedBy];
 		c2.tzhaarKilled++;
@@ -1213,6 +1223,7 @@ public class NPCHandler {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public void handleJadDeath(int i) {
 		Client c = (Client)Server.playerHandler.players[npcs[i].spawnedBy];
 		c.getItems().addItem(6570,1);
@@ -1261,6 +1272,7 @@ public class NPCHandler {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public void appendKillCount(int i) {
 		Client c = (Client)Server.playerHandler.players[npcs[i].killedBy];
 		if(c != null) {
@@ -1423,7 +1435,9 @@ public class NPCHandler {
 	/**
 	* Slayer Experience
 	**/	
+	@SuppressWarnings("static-access")
 	public void appendSlayerExperience(int i) {
+		@SuppressWarnings("unused")
 		int npc = 0;
 		Client c = (Client)Server.playerHandler.players[npcs[i].killedBy];
 		if(c != null) {
@@ -1443,6 +1457,7 @@ public class NPCHandler {
 	 *	Resets players in combat
 	 */
 	
+	@SuppressWarnings({ "static-access" })
 	public void resetPlayersInCombat(int i) {
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null)
@@ -1455,6 +1470,7 @@ public class NPCHandler {
 	* Npc names
 	**/
 	
+	@SuppressWarnings("static-access")
 	public String getNpcName(int npcId) {
 		for (int i = 0; i < maxNPCs; i++) {
 			if (Server.npcHandler.NpcList[i] != null) {
@@ -1490,6 +1506,7 @@ public class NPCHandler {
 		return true;
 	}
 	
+	@SuppressWarnings("static-access")
 	public void followPlayer(int i, int playerId) {
 		if (Server.playerHandler.players[playerId] == null) {
 			return;
@@ -1550,7 +1567,9 @@ public class NPCHandler {
 							break;
 						}	
 					}
+					@SuppressWarnings("unused")
 					int x = (npcs[i].absX + npcs[i].moveX);
+					@SuppressWarnings("unused")
 					int y = (npcs[i].absY + npcs[i].moveY);
 					npcs[i].facePlayer(playerId);
 					//if (checkClipping(i))
@@ -1571,6 +1590,7 @@ public class NPCHandler {
 	}
 	
 	
+	@SuppressWarnings("unused")
 	public boolean checkClipping(int i) {
 		NPC npc = npcs[i];
 		int size = npcSize(i);
@@ -1606,6 +1626,7 @@ public class NPCHandler {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public void loadSpell(int i) {
 		switch(npcs[i].npcType) {
 			case 2892:
@@ -1877,6 +1898,7 @@ public class NPCHandler {
 	*NPC Attacking Player
 	**/
 	
+	@SuppressWarnings("static-access")
 	public void attackPlayer(Client c, int i) {
 		if(npcs[i] != null) {
 			if (npcs[i].isDead)
@@ -1960,6 +1982,7 @@ public class NPCHandler {
 		return npcType < 3777 || npcType > 3780 && !(npcType >= 2440 && npcType <= 2446);
 	}
 	
+	@SuppressWarnings("static-access")
 	public void applyDamage(int i) {
 		if(npcs[i] != null) {
 			if(Server.playerHandler.players[npcs[i].oldIndex] == null) {
@@ -2097,6 +2120,7 @@ public class NPCHandler {
 	}
 	
 	
+	@SuppressWarnings("resource")
 	public boolean loadAutoSpawn(String FileName) {
 		String line = "";
 		String token = "";
@@ -2104,6 +2128,7 @@ public class NPCHandler {
 		String token2_2 = "";
 		String[] token3 = new String[10];
 		boolean EndOfFile = false;
+		@SuppressWarnings("unused")
 		int ReadMode = 0;
 		BufferedReader characterfile = null;
 		try {
@@ -2172,6 +2197,7 @@ public class NPCHandler {
 		return "nothing";
 	}
 
+	@SuppressWarnings("resource")
 	public boolean loadNPCList(String FileName) {
 		String line = "";
 		String token = "";
@@ -2179,6 +2205,7 @@ public class NPCHandler {
 		String token2_2 = "";
 		String[] token3 = new String[10];
 		boolean EndOfFile = false;
+		@SuppressWarnings("unused")
 		int ReadMode = 0;
 		BufferedReader characterfile = null;
 		try {

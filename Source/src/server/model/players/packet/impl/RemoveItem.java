@@ -9,6 +9,7 @@ import server.model.players.packet.PacketType;
  **/
 public class RemoveItem implements PacketType {
 
+	@SuppressWarnings("unused")
 	@Override
 	public void processPacket(Client c, int packetType, int packetSize) {
 		int interfaceId = c.getInStream().readUnsignedWordA();

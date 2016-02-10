@@ -15,6 +15,7 @@ import server.util.Misc;
  **/
 public class ClickingButtons implements PacketType {
 
+	@SuppressWarnings({ "static-access", "null" })
 	@Override
 	public void processPacket(final Client c, int packetType, int packetSize) {
 		int actionButtonId = Misc.hexToInt(c.getInStream().buffer, 0, packetSize);
@@ -658,6 +659,7 @@ public class ClickingButtons implements PacketType {
 		// home teleports
 		case 4171:
 		case 50056:
+			@SuppressWarnings("unused")
 			String type = c.playerMagicBook == 0 ? "modern" : "ancient";
 			c.getPA().startTeleport(Constants.LUMBY_X, Constants.LUMBY_Y, 0, "modern");
 			break;

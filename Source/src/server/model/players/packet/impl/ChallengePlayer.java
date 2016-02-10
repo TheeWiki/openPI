@@ -9,6 +9,7 @@ import server.model.players.packet.PacketType;
  **/
 public class ChallengePlayer implements PacketType {
 
+	@SuppressWarnings("static-access")
 	@Override
 	public void processPacket(Client c, int packetType, int packetSize) {		
 		switch(packetType) {

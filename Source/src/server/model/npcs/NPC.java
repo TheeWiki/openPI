@@ -217,6 +217,7 @@ public class NPC {
 		return dir;
 	}
 
+	@SuppressWarnings("static-access")
 	public void getNextNPCMovement(int i) {
 		direction = -1;
 		if(Server.npcHandler.npcs[i].freezeTimer == 0) {
@@ -255,6 +256,7 @@ public class NPC {
 		str.writeByteA(HP); 
 		str.writeByte(MaxHP); 	
 	}
+	@SuppressWarnings("static-access")
 	public static int MAX_NPCS = Server.npcHandler.maxNPCs;
 	
 	public void handleHitMask(int damage) {

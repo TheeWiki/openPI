@@ -5,6 +5,7 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
+import org.jboss.netty.handler.timeout.ReadTimeoutException;
 
 import server.model.players.Client;
 
@@ -14,14 +15,14 @@ public class ChannelHandler extends SimpleChannelHandler {
 	
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-		/*if (e.getCause() instanceof ReadTimeoutException) {
+	if (e.getCause() instanceof ReadTimeoutException) {
 			if (session.getClient() != null) {
 				System.out.println("Player " + session.getClient().playerName + " timed out!");
 			}
 		} else if(!(e.getCause() instanceof java.io.IOException)){
 			e.getCause().printStackTrace();
 		}
-		ctx.getChannel().close();*/
+		ctx.getChannel().close();
 	}
 	
 	@Override

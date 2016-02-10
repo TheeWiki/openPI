@@ -40,6 +40,7 @@ public class PestControl {
 			endGame(false);
 	}
 	
+	@SuppressWarnings("static-access")
 	public void startGame() {
 		if (playersInBoat() > 2) {
 			gameTimer = GAME_TIMER;
@@ -67,6 +68,7 @@ public class PestControl {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public int playersInBoat() {
 		int count = 0;
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
@@ -79,6 +81,7 @@ public class PestControl {
 		return count;
 	}
 	
+	@SuppressWarnings("static-access")
 	public void endGame(boolean won) {
 		gameTimer = -1;
 		waitTimer = WAIT_TIMER;
@@ -116,6 +119,7 @@ public class PestControl {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public boolean allPortalsDead() {
 		int count = 0;
 		for (int j = 0; j < Server.npcHandler.npcs.length; j++) {
@@ -128,6 +132,7 @@ public class PestControl {
 		return count >= 4;	
 	}
 	
+	@SuppressWarnings("static-access")
 	public void movePlayer(int index) {
 		Client c = (Client)Server.playerHandler.players[index];
 		if (c.combatLevel < 40) {

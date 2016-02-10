@@ -186,6 +186,7 @@ public class ItemHandler {
 	/**
 	* Shows items for everyone who is within 60 squares
 	**/
+	@SuppressWarnings("static-access")
 	public void createGlobalItem(GroundItem i) {
 		for (Player p : Server.playerHandler.players){
 			if(p != null) {
@@ -256,6 +257,7 @@ public class ItemHandler {
 	* Remove item for everyone within 60 squares
 	**/
 	
+	@SuppressWarnings("static-access")
 	public void removeGlobalItem(GroundItem i, int itemId, int itemX, int itemY, int itemAmount) {
 		for (Player p : Server.playerHandler.players){
 			if(p != null) {
@@ -309,6 +311,7 @@ public class ItemHandler {
 				if (temp != null)
 					temp.ShopValue = Integer.parseInt(line[1]);			
 			}		
+			s.close();
 		} catch (IOException e) {
 			e.printStackTrace();		
 		}
@@ -325,6 +328,7 @@ public class ItemHandler {
 		return null;
 	}
 	
+	@SuppressWarnings({ "resource", "unused" })
 	public boolean loadItemList(String FileName) {
 		String line = "";
 		String token = "";

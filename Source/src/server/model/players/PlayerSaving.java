@@ -30,7 +30,7 @@ public class PlayerSaving implements Runnable {
 		while(true) {
 			saveAllPlayers();
 			try {
-				thread.sleep(300000);
+				Thread.sleep(300000);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -63,6 +63,7 @@ public class PlayerSaving implements Runnable {
 		int totalSave = 0;
 		for (int id : requests) {
 			if (PlayerHandler.players[id] != null) {
+				@SuppressWarnings("unused")
 				Client c = (Client)PlayerHandler.players[id];
 				PlayerSave.saveGame((Client)PlayerHandler.players[id]);
 				totalSave++;

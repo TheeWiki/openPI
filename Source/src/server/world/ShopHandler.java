@@ -49,6 +49,7 @@ public class ShopHandler {
 	Misc.println("Shop Handler class successfully loaded");
 	}
 	
+	@SuppressWarnings("static-access")
 	public void process() {
 		boolean DidUpdate = false;
 		for(int i = 1; i <= TotalShops; i++) {
@@ -101,6 +102,7 @@ public class ShopHandler {
 		ShopItemsDelay[ShopID][ArrayID] = 0;
 	}
 
+	@SuppressWarnings({ "resource", "unused" })
 	public boolean loadShops(String FileName) {
 		String line = "";
 		String token = "";

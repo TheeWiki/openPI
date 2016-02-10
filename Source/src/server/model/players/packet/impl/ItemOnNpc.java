@@ -13,6 +13,7 @@ public class ItemOnNpc implements PacketType {
 		int itemId = c.getInStream().readSignedWordA();
 		int i = c.getInStream().readSignedWordA();
 		int slot = c.getInStream().readSignedWordBigEndian();
+		@SuppressWarnings("static-access")
 		int npcId = Server.npcHandler.npcs[i].npcType;
 		
 		UseItem.ItemonNpc(c, itemId, npcId, slot);

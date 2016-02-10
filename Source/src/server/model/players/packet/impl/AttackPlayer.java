@@ -11,6 +11,8 @@ import server.model.players.packet.PacketType;
 public class AttackPlayer implements PacketType {
 
 	public static final int ATTACK_PLAYER = 73, MAGE_PLAYER = 249;
+	
+	@SuppressWarnings("static-access")
 	@Override
 	public void processPacket(Client c, int packetType, int packetSize) {
 		c.playerIndex = 0;

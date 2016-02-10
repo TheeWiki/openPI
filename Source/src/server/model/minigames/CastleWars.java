@@ -114,6 +114,7 @@ public class CastleWars {
 		*/
 	}
 	
+	@SuppressWarnings("static-access")
 	public void updatePlayers() {
 		//saradomin players
 		for (int player : saradominWait) {
@@ -142,6 +143,7 @@ public class CastleWars {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public void updateInGamePlayers() {
 		if (saradomin.size() > 0) {
 			for (int player : saradomin) {
@@ -205,6 +207,7 @@ public class CastleWars {
 		}	
 	
 	}
+	@SuppressWarnings("static-access")
 	public void startGame() {
 		gameStartTimer = -1;
 		System.out.println("Starting Castle Wars game.");

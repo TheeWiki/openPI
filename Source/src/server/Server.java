@@ -24,14 +24,13 @@ import server.model.objects.DoubleDoors;
 import server.model.players.PlayerHandler;
 import server.net.PipelineFactory;
 import server.panel.ControlPanel;
-import server.util.log.Logger;
+import server.util.Logger;
 import server.world.ClanChatHandler;
 import server.world.ItemHandler;
 import server.world.ObjectHandler;
 import server.world.ObjectManager;
 import server.world.PlayerManager;
 import server.world.ShopHandler;
-import server.world.StillGraphicsManager;
 
 /**
  */
@@ -42,7 +41,6 @@ public class Server {
 	 *Calls to manage the players on the server.
 	 */
 	public static PlayerManager playerManager = null;
-	private static StillGraphicsManager stillGraphicsManager = null;
 	
 	
 	/**
@@ -208,7 +206,6 @@ public class Server {
                 
 		playerManager = PlayerManager.getSingleton();
 		playerManager.setupRegionPlayers();
-		stillGraphicsManager = new StillGraphicsManager();
 
 		
 	
@@ -257,16 +254,6 @@ public class Server {
 	public static long getSleepTimer() {
 		return sleepTime;
 	}
-	
-	
-	/**
-	 * Gets the Graphics manager.
-	 */
-	public static StillGraphicsManager getStillGraphicsManager() {
-		return stillGraphicsManager;
-	}
-	
-	
 	/**
 	 * Gets the Player manager.
 	 */

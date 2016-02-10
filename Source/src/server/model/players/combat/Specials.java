@@ -115,6 +115,7 @@ public class Specials {
 		}
 	}
 		
+	@SuppressWarnings("static-access")
 	public void activateSpecial(int weapon, int i) {
 		int equippedWeapon = c.playerEquipment[c.playerWeapon];	
 		if(Server.npcHandler.npcs[i] == null && c.npcIndex > 0) {

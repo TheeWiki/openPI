@@ -17,9 +17,11 @@ public class ItemOnObject implements PacketType {
 		 * b = ?
 		 */
 		
+		@SuppressWarnings("unused")
 		int a = c.getInStream().readUnsignedWord();
 		int objectId = c.getInStream().readSignedWordBigEndian();
 		int objectY = c.getInStream().readSignedWordBigEndianA();
+		@SuppressWarnings("unused")
 		int b = c.getInStream().readUnsignedWord();
 		int objectX = c.getInStream().readSignedWordBigEndianA();
 		int itemId = c.getInStream().readUnsignedWord();

@@ -13,6 +13,8 @@ import server.util.Misc;
 public class PrivateMessaging implements PacketType {
 
 	public final int ADD_FRIEND = 188, SEND_PM = 126, REMOVE_FRIEND = 215, CHANGE_PM_STATUS = 95, REMOVE_IGNORE = 59, ADD_IGNORE = 133;
+	
+	@SuppressWarnings("static-access")
 	@Override
 	public void processPacket(Client c, int packetType, int packetSize) {
 		switch(packetType) {
@@ -111,9 +113,11 @@ public class PrivateMessaging implements PacketType {
             break;
 			
 			case CHANGE_PM_STATUS:
-            int tradeAndCompete = c.getInStream().readUnsignedByte();
+            @SuppressWarnings("unused")
+			int tradeAndCompete = c.getInStream().readUnsignedByte();
             c.privateChat = c.getInStream().readUnsignedByte();
-            int publicChat = c.getInStream().readUnsignedByte();
+            @SuppressWarnings("unused")
+			int publicChat = c.getInStream().readUnsignedByte();
             for (int i1 = 1; i1 < Constants.MAX_PLAYERS; i1++) {
 			   if (Server.playerHandler.players[i1] != null && Server.playerHandler.players[i1].isActive == true) {
                     Client o = (Client)Server.playerHandler.players[i1];

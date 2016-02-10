@@ -44,6 +44,7 @@ public class FightPits {
 			endPitsGame("Nobody");
 	}
 	
+	@SuppressWarnings("static-access")
 	public String getLastPlayerName() {
 		for (int j = 0; j < playerInPits.length; j++) {
 			if (playerInPits[j] > 0)
@@ -52,6 +53,7 @@ public class FightPits {
 		return "Nobody";
 	}
 	
+	@SuppressWarnings("static-access")
 	public void updateWaitRoom() {
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null) {
@@ -66,6 +68,7 @@ public class FightPits {
 		}	
 	}
 	
+	@SuppressWarnings("static-access")
 	public void startGame() {
 		if (getWaitAmount() < 2) {
 			gameStartTimer = GAME_START_TIMER/2;
@@ -84,6 +87,7 @@ public class FightPits {
 		gameTime = GAME_TIMER;
 	}
 	
+	@SuppressWarnings("static-access")
 	public int getWaitAmount() {
 		int count = 0;
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
@@ -96,6 +100,7 @@ public class FightPits {
 		return count;
 	}
 	
+	@SuppressWarnings("static-access")
 	public void removePlayerFromPits(int playerId) {
 		for (int j = 0; j < playerInPits.length; j++) {
 			if (playerInPits[j] == playerId) {
@@ -109,7 +114,9 @@ public class FightPits {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public void endPitsGame(String champion) {
+		@SuppressWarnings("unused")
 		boolean giveReward = false;
 		if (playersRemaining == 1)
 			giveReward = true;
@@ -132,6 +139,8 @@ public class FightPits {
 	}
 	
 	private int pitsSlot = 0;
+	
+	@SuppressWarnings("static-access")
 	public void addToPitsGame(int playerId) {
 		if (Server.playerHandler.players[playerId] == null)
 			return;

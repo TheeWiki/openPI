@@ -6,6 +6,7 @@ import server.util.Misc;
 
 public class ItemOnGroundItem implements PacketType {
 
+	@SuppressWarnings("unused")
 	@Override
 	public void processPacket(Client c, int packetType, int packetSize) {
 		int a1 = c.getInStream().readSignedWordBigEndian();
