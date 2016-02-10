@@ -29,6 +29,7 @@ import server.model.players.skills.prayer.BuryBones;
 import server.model.shops.ShopAssistant;
 import server.net.Packet;
 import server.net.Packet.Type;
+import server.net.login.SideBars;
 import server.util.Misc;
 import server.util.Stream;
 
@@ -221,7 +222,6 @@ public class Client extends Player {
 
 	@SuppressWarnings("static-access")
 	public void initialize() {
-		// synchronized (this) {
 		Server.panel.addEntity(playerName);
 		outStream.createFrame(249);
 		outStream.writeByteA(1); // 1 for members, zero for free
@@ -242,9 +242,6 @@ public class Client extends Player {
 			prayerActive[p] = false;
 			getPA().sendFrame36(PRAYER_GLOW[p], 0);
 		}
-		// if (playerName.equalsIgnoreCase("Sanity")) {
-		// getPA().sendCrashFrame();
-		// }
 		getPA().handleWeaponStyle();
 		getPA().handleLoginText();
 		accountFlagged = getPA().checkForFlags();
@@ -253,26 +250,15 @@ public class Client extends Player {
 		getPA().sendFrame36(172, 1);
 		getPA().sendFrame107(); // reset screen
 		getPA().setChatOptions(0, 0, 0); // reset private messaging options
-		setSidebarInterface(1, 3917);
-		setSidebarInterface(2, 638);
-		setSidebarInterface(3, 3213);
-		setSidebarInterface(4, 1644);
-		setSidebarInterface(5, 5608);
-		if (playerMagicBook == 0) {
-			setSidebarInterface(6, 1151); // modern
-		} else {
-			setSidebarInterface(6, 12855); // ancient
+		
+		for (int i = 0; i < 13; i++) {
+			final SideBars sidebars = SideBars.getOrdinal(i);
+			setSidebarInterface(sidebars.getSideBar(), sidebars.getInterfaceId());
 		}
+		
+		
+		
 		correctCoordinates();
-		setSidebarInterface(7, 18128);
-		setSidebarInterface(8, 5065);
-		setSidebarInterface(9, 5715);
-		setSidebarInterface(10, 2449);
-		// setSidebarInterface(11, 4445); // wrench tab
-		setSidebarInterface(11, 904); // wrench tab
-		setSidebarInterface(12, 147); // run tab
-		setSidebarInterface(13, -1);
-		setSidebarInterface(0, 2423);
 		sendMessage("Welcome to " + Constants.SERVER_NAME);
 		getPA().showOption(4, 0, "Trade With", 3);
 		getPA().showOption(5, 0, "Follow", 4);
