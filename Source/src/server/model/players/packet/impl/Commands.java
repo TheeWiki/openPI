@@ -7,6 +7,7 @@ import server.model.players.Client;
 import server.model.players.PlayerHandler;
 import server.model.players.packet.PacketType;
 import server.util.Misc;
+import server.world.Location;
 
 /**
  * Commands
@@ -67,6 +68,10 @@ public class Commands implements PacketType {
 			if (playerCommand.equals("stats"))
 			{
 				c.getAccountStatistics().appendNewInterface(c);
+			}
+			if (playerCommand.equals("home"))
+			{
+				new Location(c, Constants.START_LOCATION_X, Constants.START_LOCATION_Y, 0);
 			}
 			if (playerCommand.equals("empty")) {
 				c.getItems().removeAllItems();
