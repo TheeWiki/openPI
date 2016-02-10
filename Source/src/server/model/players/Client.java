@@ -14,6 +14,7 @@ import server.event.CycleEvent;
 import server.event.CycleEventContainer;
 import server.event.CycleEventHandler;
 import server.model.EmoteHandler;
+import server.model.content.AccountStatistics;
 import server.model.items.ItemAssistant;
 import server.model.npcs.NPC;
 import server.model.players.combat.CombatAssistant;
@@ -657,7 +658,6 @@ public class Client extends Player {
 	}
 
 	private boolean canWalk = true;
-	public int emotesPerformed = 0;
 
 	public boolean canWalk() {
 		return canWalk;
@@ -676,7 +676,11 @@ public class Client extends Player {
 	public PlayerAssistant getPlayerAssistant() {
 		return playerAssistant;
 	}
-
+	public AccountStatistics killloger = new AccountStatistics();
+	public AccountStatistics getAccountStatistics()
+	{
+		return killloger;
+	}
 	/**
 	 * End of Skill Constructors
 	 */
@@ -810,4 +814,7 @@ public class Client extends Player {
 
 	private boolean isSkilling;
 
+	public int duelWins = 0, duelLoses = 0, teleHome = 0, specsUsed = 0, foodEaten = 0, potsDrank = 0, emotesPerformed = 0, timesVoted = 0, votesClaimed = 0,
+			timesMuted = 0, timesBanned = 0, prayersAcivated = 0, mbOpened = 0, itemsUpgraded = 0, kills = 0, deaths = 0;
+	
 }
