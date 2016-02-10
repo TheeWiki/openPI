@@ -4,11 +4,11 @@ character-password = 12345
 
 [CHARACTER]
 character-height = 0
-character-posx = 2663
-character-posy = 3303
+character-posx = 2610
+character-posy = 3092
 character-rights = 0
 crystal-bow-shots = 0
-skull-timer = 0
+skull-timer = -1
 magic-book = 0
 brother-info = 0	0
 brother-info = 1	0
@@ -24,7 +24,7 @@ pc-points = 0
 slayerTask = 0
 taskAmount = 0
 magePoints = 0
-autoRet = 0
+autoRet = 1
 barrowskillcount = 0
 flagged = false
 wave = 0
@@ -33,19 +33,19 @@ fightMode = 0
 void = 0	0	0	0	0
 
 [EQUIPMENT]
-character-equip = 0	-1	1	
-character-equip = 1	-1	1	
-character-equip = 2	-1	1	
-character-equip = 3	-1	55550	
+character-equip = 0	4753	1	
+character-equip = 1	6570	1	
+character-equip = 2	6585	1	
+character-equip = 3	-1	0	
 character-equip = 4	4736	1	
 character-equip = 5	-1	1	
 character-equip = 6	-1	0	
 character-equip = 7	4738	1	
 character-equip = 8	-1	0	
-character-equip = 9	-1	1	
-character-equip = 10	-1	1	
+character-equip = 9	7462	1	
+character-equip = 10	2577	1	
 character-equip = 11	-1	0	
-character-equip = 12	-1	1	
+character-equip = 12	6737	1	
 character-equip = 13	-1	0	
 
 [LOOK]
@@ -64,36 +64,46 @@ character-look = 11	5
 character-look = 12	0
 
 [SKILLS]
-character-skill = 0	99	30002800
-character-skill = 1	99	30000000
-character-skill = 2	99	30000000
-character-skill = 3	99	13034602
-character-skill = 4	99	30001900
-character-skill = 5	99	30000000
-character-skill = 6	99	30000000
-character-skill = 7	99	30000000
-character-skill = 8	99	30000000
-character-skill = 9	99	30000000
-character-skill = 10	99	30000000
-character-skill = 11	99	30000000
-character-skill = 12	99	30000000
-character-skill = 13	99	30000000
-character-skill = 14	99	30000000
-character-skill = 15	99	30000000
-character-skill = 16	99	30000000
-character-skill = 17	99	30000000
-character-skill = 18	99	30000000
-character-skill = 19	99	30000000
-character-skill = 20	99	30000000
+character-skill = 0	99	135018300
+character-skill = 1	99	135000000
+character-skill = 2	99	135000000
+character-skill = 3	81	13035001
+character-skill = 4	99	135001900
+character-skill = 5	99	135008800
+character-skill = 6	99	135000000
+character-skill = 7	99	135000000
+character-skill = 8	99	135000000
+character-skill = 9	99	135000000
+character-skill = 10	99	135000000
+character-skill = 11	99	135000000
+character-skill = 12	99	135000000
+character-skill = 13	99	135000000
+character-skill = 14	99	135000000
+character-skill = 15	99	135000000
+character-skill = 16	99	135000000
+character-skill = 17	99	135000000
+character-skill = 18	99	135000000
+character-skill = 19	99	135000000
+character-skill = 20	99	135000000
 character-skill = 21	1	0
 character-skill = 22	1	0
 character-skill = 23	1	0
 character-skill = 24	1	0
 
 [ITEMS]
-character-item = 2	869	1
+character-item = 0	4152	1
+character-item = 3	774	1
 
 [BANK]
+character-bank = 0	4741	3041
+character-bank = 1	559	3759
+character-bank = 2	561	2729
+character-bank = 3	566	3956
+character-bank = 4	4727	2
+character-bank = 5	4723	1
+character-bank = 6	4733	1
+character-bank = 7	4752	1
+character-bank = 9	4748	1
 
 [FRIENDS]
 character-friend = 0	1020628
