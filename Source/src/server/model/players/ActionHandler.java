@@ -1,7 +1,5 @@
 package server.model.players;
 
-import server.Server;
-import server.model.objects.Object;
 import server.world.locations.LocationController;
 
 public class ActionHandler {

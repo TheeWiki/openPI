@@ -2,16 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="Data"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="deps/jython.jar"/>
-	<classpathentry kind="lib" path="deps/log4j-1.2.15.jar"/>
-	<classpathentry kind="lib" path="deps/mysql.jar"/>
-	<classpathentry kind="lib" path="deps/poi.jar"/>
-	<classpathentry kind="lib" path="deps/slf4j-nop.jar"/>
-	<classpathentry kind="lib" path="deps/slf4j.jar"/>
-	<classpathentry kind="lib" path="deps/xstream.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="deps/mina.jar"/>
-	<classpathentry kind="lib" path="deps/netty.jar"/>
-	<classpathentry kind="lib" path="deps/gson-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/mina.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-nop.jar"/>
+	<classpathentry kind="lib" path="lib/netty.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
