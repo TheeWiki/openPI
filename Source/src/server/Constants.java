@@ -1,6 +1,7 @@
 package server;
 
 import server.model.npcs.NPCHandler;
+import server.util.Misc;
 
 public class Constants {
 
@@ -55,11 +56,11 @@ public class Constants {
 
 	public static boolean ADMIN_DROP_ITEMS = false; 
 
-	public static final int START_LOCATION_X = 3087;
-	public static final int START_LOCATION_Y = 3502;
+	public static final int START_LOCATION_X = 2611 + Misc.random(1);
+	public static final int START_LOCATION_Y = 3090 + Misc.random(1);
 
-	public static final int RESPAWN_X = 3087; 
-	public static final int RESPAWN_Y = 3502;
+	public static final int RESPAWN_X = 2611 + Misc.random(1); 
+	public static final int RESPAWN_Y = 3090 + Misc.random(1);
 
 	public static final int DUELING_RESPAWN_X = 3362;
 	public static final int DUELING_RESPAWN_Y = 3263;
