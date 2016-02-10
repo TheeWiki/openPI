@@ -1,5 +1,6 @@
 package server.util;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -236,4 +237,9 @@ public class Misc {
 	public static byte directionDeltaX[] = new byte[] { 0, 1, 1, 1, 0, -1, -1, -1 };
 	public static byte directionDeltaY[] = new byte[] { 1, 1, 0, -1, -1, -1, 0, 1 };
 	public static byte xlateDirectionToClient[] = new byte[] { 1, 2, 4, 7, 6, 5, 3, 0 };
+	
+	private static DecimalFormat formatter = new DecimalFormat("#,###.##");
+	public static String formatNumbers(int amount) {
+		return formatter.format(amount).toString();
+	}
 }
