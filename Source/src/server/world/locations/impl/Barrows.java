@@ -15,9 +15,6 @@ public class Barrows extends AbstractLocations
 	public void sendFirstClickObject(Client c, int object) {
 		switch(object)
 		{
-		/**
-		 * Barrows brothers.
-		 */
 		case 6772:
 			if(server.model.minigames.Barrows.selectCoffin(c, object)) {
 				return;

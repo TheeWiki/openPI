@@ -8,6 +8,9 @@ public final class LocationController {
 	{
 		Locations.getHome().sendFirstClickObject(c, object);
 		Locations.getBarrows().sendFirstClickObject(c, object);
+		Locations.getTzhaar().sendFirstClickObject(c, object);
+		Locations.getWilderness().sendFirstClickObject(c, object);
+		Locations.getTraverlyDungeon().sendFirstClickObject(c, object);
 	}
 	public static void sendSecondClickObject(Client c, int object)
 	{
