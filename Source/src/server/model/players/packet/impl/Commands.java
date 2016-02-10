@@ -53,8 +53,20 @@ public class Commands implements PacketType {
 
 				}
 			}
+			if (playerCommand.equals("empty")) {
+				c.getItems().removeAllItems();
+			}
 			if (playerCommand.equalsIgnoreCase("players")) {
 				c.sendMessage("There are currently " + 150 + PlayerHandler.getPlayerCount() + " players online.");
+			}
+			if (playerCommand.equals("barrowsloot")) {
+				for (int i = 0; i < 25; i++) {
+					c.getItems().addItem(c.getPA().randomRunes(), Misc.random(150) + 100);
+					if (Misc.random(10) == 1) {
+						System.out.println(
+								"Run  #" + i + ", Gathered Barrows: " + c.getItems().addItem(c.getPA().randomBarrows(), 1));
+					}
+				}
 			}
 			/*
 			 * if (playerCommand.startsWith("shop")) {
