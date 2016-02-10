@@ -3,9 +3,9 @@ character-username = Dennis
 character-password = 12345
 
 [CHARACTER]
-character-height = -1
-character-posx = 3578
-character-posy = 9706
+character-height = 0
+character-posx = 3213
+character-posy = 3424
 character-rights = 0
 crystal-bow-shots = 0
 skull-timer = 0
@@ -67,7 +67,7 @@ character-look = 12	0
 character-skill = 0	99	30002800
 character-skill = 1	99	30000000
 character-skill = 2	99	30000000
-character-skill = 3	71	13034436
+character-skill = 3	73	13034436
 character-skill = 4	99	30001400
 character-skill = 5	33	30000000
 character-skill = 6	99	30000000
