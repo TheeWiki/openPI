@@ -259,6 +259,8 @@ public class client extends RSApplet {
 						j77++;
 					}
 				}
+				
+				//
 				if((chatType == 3 || chatType == 7) && (splitPrivateChat == 0 || chatTypeView == 2) && (chatType == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(s1))) {
 					if (chatTypeView == 2 || chatTypeView == 0) {
 						if(yPos > 0 && yPos < 210) {
@@ -283,6 +285,7 @@ public class client extends RSApplet {
 						j77++;
 					}
 				}
+				//textDrawingArea.method385(0, s1 + ":", yPos, k1);
 				if(chatType == 4 && (tradeMode == 0 || tradeMode == 1 && isFriendOrSelf(s1))) {
 					if (chatTypeView == 3 || chatTypeView == 0) {
 						if(yPos > 0 && yPos < 210)

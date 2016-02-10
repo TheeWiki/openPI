@@ -850,7 +850,7 @@ public final class Sprite extends DrawingArea {
 	public int myWidth;
 	public int myHeight;
 	private int anInt1442;
-	private int anInt1443;
+	int anInt1443;
 	public int anInt1444;
 	public int anInt1445;
 	

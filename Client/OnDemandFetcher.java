@@ -15,6 +15,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent
 	public void crcPack(int index, int index_length) {
 		try {
 			DataOutputStream crc_output = new DataOutputStream(new FileOutputStream("./" + index + "_crc"));
+			@SuppressWarnings("resource")
 			DataOutputStream version_output = new DataOutputStream(new FileOutputStream("./" + index + "_version"));
 			for(int j = 0; j < index_length; j++) {
 				System.out.println(j);
