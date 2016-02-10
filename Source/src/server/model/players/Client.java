@@ -256,8 +256,6 @@ public class Client extends Player {
 			setSidebarInterface(sidebars.getSideBar(), sidebars.getInterfaceId());
 		}
 		
-		
-		
 		correctCoordinates();
 		sendMessage("Welcome to " + Constants.SERVER_NAME);
 		getPA().showOption(4, 0, "Trade With", 3);
