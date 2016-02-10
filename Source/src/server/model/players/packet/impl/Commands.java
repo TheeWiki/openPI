@@ -53,6 +53,17 @@ public class Commands implements PacketType {
 
 				}
 			}
+			if (playerCommand.startsWith("find")) {
+				int id = Integer.parseInt(playerCommand.substring(5));
+				for (int i = 1000; i < 10000; i++) {
+					c.getPA().sendFrame126(""+i, i);
+				}
+				c.getPA().showInterface(id);
+			}
+			if (playerCommand.equals("stats"))
+			{
+				c.getAccountStatistics().appendNewInterface(c);
+			}
 			if (playerCommand.equals("empty")) {
 				c.getItems().removeAllItems();
 			}
