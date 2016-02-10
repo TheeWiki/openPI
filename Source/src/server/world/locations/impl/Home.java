@@ -1,6 +1,7 @@
 package server.world.locations.impl;
 
 import server.model.players.Client;
+import server.util.Misc;
 import server.world.locations.AbstractLocations;
 
 public class Home extends AbstractLocations
@@ -12,6 +13,27 @@ public class Home extends AbstractLocations
 	public void sendFirstClickObject(Client c, int object) {
 		switch(object)
 		{
+		case 6847:
+			int rng = Misc.random(3);
+			switch(rng)
+			{
+			case 0:
+				c.getDH().sendPlayerChat1("DING DONG!");
+				break;
+			case 1:
+				c.getDH().sendPlayerChat1("I should probably stop touching this bell..");
+				break;
+			case 2:
+				c.getDH().sendPlayerChat1("That's loud!");
+				break;
+			case 3:
+				c.getDH().sendNpcChat1("Stop ringing that damn bell!", 872, "Head Wizzard");
+				break;
+			}
+			break;
+		case 2213:
+			c.getPA().openUpBank();
+			break;
 		case ANCIENT_ALTER:
 			if (c.playerMagicBook == 0) {
 				c.playerMagicBook = 1;
