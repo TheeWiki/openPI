@@ -183,7 +183,7 @@ public class PlayerHandler {
 			}
 		}
 
-		for (int i = 0; i < NPCHandler.npcLoopCount; i++) {
+		for (int i = 0; i < NPCHandler.maxNPCs; i++) {
 			if (NPCHandler.npcs[i] != null) {
 				int id = NPCHandler.npcs[i].npcId;
 				if (plr.RebuildNPCList == false && (plr.npcInListBitmap[id >> 3] & (1 << (id & 7))) != 0) {
