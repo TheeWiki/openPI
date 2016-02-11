@@ -94,7 +94,7 @@ public class CombatAssistant {
 				c.attackTimer = getAttackDelay(
 						c.getItems().getItemName(c.getEquipment()[c.playerWeapon]).toLowerCase());
 				c.specAccuracy = 1.0;
-				c.specDamage = 1.0;
+				c.specDamage = 1.0; 
 				if (!c.usingMagic) {
 					for (int bowId : c.BOWS) {
 						if (c.getEquipment()[c.playerWeapon] == bowId) {
@@ -129,7 +129,6 @@ public class CombatAssistant {
 					c.attackTimer = 2;
 					return;
 				}
-
 				if (!usingCross && !usingArrows && c.usingBow
 						&& (c.getEquipment()[c.playerWeapon] < 4212 || c.getEquipment()[c.playerWeapon] > 4223)) {
 					c.sendMessage("You have run out of arrows!");
