@@ -15,6 +15,7 @@ public final class ObjectDef {
 		objectDef.type = i;
 		objectDef.setDefaults();
 		objectDef.readValues(stream);
+		
 		return objectDef;
 	}
 

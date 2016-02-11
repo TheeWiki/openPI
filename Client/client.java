@@ -7480,6 +7480,7 @@ public class client extends RSApplet {
 			chatArea = new Sprite(streamLoader_2, "keys", 0);
 			tabArea = new Sprite(streamLoader_2, "chest", 0);
 			mapArea = new Sprite(streamLoader_2, "tex_red", 0);
+			
 			multiOverlay = new Sprite(streamLoader_2, "overlay_multiway", 0);
 			/**/
 			mapBack = new Background(streamLoader_2, "mapback", 0);
