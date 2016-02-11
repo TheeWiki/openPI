@@ -1,7 +1,5 @@
 package server.model.players.packet.impl;
 
-import com.sun.scenario.Settings;
-
 import server.Constants;
 import server.Server;
 import server.model.players.Client;
