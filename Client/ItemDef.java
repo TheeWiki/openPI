@@ -1,5 +1,9 @@
 import java.io.*;
 
+/**
+ * TODO: Item models that doesn't exist causes a Error: "od_ex: model ID"
+ * Need to fix/update data on client overall
+ */
 public final class ItemDef {
 
 	public static void nullLoader() {
