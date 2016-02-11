@@ -21,6 +21,16 @@ public class DialogueHandler {
 			c.getPA().removeAllWindows();
 			c.nextChat = 0;
 			break;
+		case 1:
+			sendStatement("You found a hidden tunnel! Do you want to enter it?");
+			c.dialogueAction = 1;
+			c.nextChat = 2;
+			break;
+		case 2:
+			sendOption2("Yea! I'm fearless!",  "No way! That looks scary!");
+			c.dialogueAction = 1;
+			c.nextChat = 0;
+			break;
 	}
 }
 

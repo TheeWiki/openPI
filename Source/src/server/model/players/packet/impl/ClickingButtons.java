@@ -314,8 +314,32 @@ public class ClickingButtons implements PacketType {
 			break;
 
 		case 9157:
+//			if (c.dialogueAction == 1) {
+//				c.getDH().sendDialogues(38, -1);
+//			}
 			if (c.dialogueAction == 1) {
-				c.getDH().sendDialogues(38, -1);
+				int r = 4;
+				// int r = Misc.random(3);
+				switch (r) {
+				case 0:
+					c.getPA().movePlayer(3534, 9677, 0);
+					break;
+
+				case 1:
+					c.getPA().movePlayer(3534, 9712, 0);
+					break;
+
+				case 2:
+					c.getPA().movePlayer(3568, 9712, 0);
+					break;
+
+				case 3:
+					c.getPA().movePlayer(3568, 9677, 0);
+					break;
+				case 4:
+					c.getPA().movePlayer(3551, 9694, 0);
+					break;
+				}
 			}
 			break;
 
