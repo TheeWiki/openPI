@@ -2,17 +2,13 @@ package server.model.players.combat;
 
 import server.Constants;
 import server.Server;
-import server.event.CycleEvent;
-import server.event.CycleEventContainer;
-import server.event.CycleEventHandler;
-import server.model.Animation;
-import server.model.Graphic;
 import server.model.npcs.NPCHandler;
 import server.model.players.Client;
 import server.model.players.Player;
 import server.model.players.PlayerHandler;
 import server.util.Misc;
 
+@SuppressWarnings("all")
 public class CombatAssistant {
 
 	private Client c;
@@ -20,22 +16,6 @@ public class CombatAssistant {
 	public CombatAssistant(Client Client) {
 		this.c = Client;
 	}
-
-	public int[][] slayerReqs = { { 1648, 5 }, { 1612, 15 }, { 1643, 45 }, { 1618, 50 }, { 1624, 65 }, { 1610, 75 },
-			{ 1613, 80 }, { 1615, 85 }, { 2783, 90 } };
-
-	public boolean goodSlayer(int i) {
-		for (int j = 0; j < slayerReqs.length; j++) {
-			if (slayerReqs[j][0] == NPCHandler.npcs[i].npcType) {
-				if (slayerReqs[j][1] > c.getLevel()[c.playerSlayer]) {
-					c.sendMessage("You need a slayer level of " + slayerReqs[j][1] + " to harm this NPC.");
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
 	/**
 	 * Attack Npcs
 	 */
@@ -51,22 +31,21 @@ public class CombatAssistant {
 				c.npcIndex = 0;
 				return;
 			}
-			if (NPCHandler.npcs[i].underAttackBy > 0 && NPCHandler.npcs[i].underAttackBy != c.playerId
+			if (NPCHandler.npcs[i].underAttackBy > 0
+					&& NPCHandler.npcs[i].underAttackBy != c.playerId
 					&& !NPCHandler.npcs[i].inMulti()) {
 				c.npcIndex = 0;
 				c.sendMessage("This monster is already in combat.");
 				return;
 			}
-			if ((c.underAttackBy > 0 || c.underAttackBy2 > 0) && c.underAttackBy2 != i && !c.inMulti()) {
+			if ((c.underAttackBy > 0 || c.underAttackBy2 > 0)
+					&& c.underAttackBy2 != i && !c.inMulti()) {
 				resetPlayerAttack();
 				c.sendMessage("I am already under attack.");
 				return;
 			}
-			if (!goodSlayer(i)) {
-				resetPlayerAttack();
-				return;
-			}
-			if (NPCHandler.npcs[i].spawnedBy != c.playerId && NPCHandler.npcs[i].spawnedBy > 0) {
+			if (NPCHandler.npcs[i].spawnedBy != c.playerId
+					&& NPCHandler.npcs[i].spawnedBy > 0) {
 				resetPlayerAttack();
 				c.sendMessage("This monster was not spawned for you.");
 				return;
@@ -74,16 +53,13 @@ public class CombatAssistant {
 			c.followId2 = i;
 			c.followId = 0;
 			if (c.attackTimer <= 0) {
-				c.usingBow = false;
-				c.magicFailed = false;
+				boolean usingBow = false;
 				boolean usingArrows = false;
-				c.usingRangeWeapon = false;
-				boolean usingCross = c.getEquipment()[c.playerWeapon] == 9185;
+				boolean usingOtherRangeWeapons = false;
+				boolean usingCross = c.playerEquipment[c.playerWeapon] == 9185;
 				c.bonusAttack = 0;
 				c.rangeItemUsed = 0;
 				c.projectileStage = 0;
-				c.oldNpcIndex = -1;
-				c.oldPlayerIndex = -1;
 				if (c.autocasting) {
 					c.spellId = c.autocastId;
 					c.usingMagic = true;
@@ -91,16 +67,17 @@ public class CombatAssistant {
 				if (c.spellId > 0) {
 					c.usingMagic = true;
 				}
-				c.attackTimer = getAttackDelay(
-						c.getItems().getItemName(c.getEquipment()[c.playerWeapon]).toLowerCase());
+				c.attackTimer = getAttackDelay(c.getItems()
+						.getItemName(c.playerEquipment[c.playerWeapon])
+						.toLowerCase());
 				c.specAccuracy = 1.0;
-				c.specDamage = 1.0; 
+				c.specDamage = 1.0;
 				if (!c.usingMagic) {
 					for (int bowId : c.BOWS) {
-						if (c.getEquipment()[c.playerWeapon] == bowId) {
-							c.usingBow = true;
+						if (c.playerEquipment[c.playerWeapon] == bowId) {
+							usingBow = true;
 							for (int arrowId : c.ARROWS) {
-								if (c.getEquipment()[c.playerArrows] == arrowId) {
+								if (c.playerEquipment[c.playerArrows] == arrowId) {
 									usingArrows = true;
 								}
 							}
@@ -108,54 +85,75 @@ public class CombatAssistant {
 					}
 
 					for (int otherRangeId : c.OTHER_RANGE_WEAPONS) {
-						if (c.getEquipment()[c.playerWeapon] == otherRangeId) {
-							c.usingRangeWeapon = true;
+						if (c.playerEquipment[c.playerWeapon] == otherRangeId) {
+							usingOtherRangeWeapons = true;
 						}
 					}
 				}
-				if (armaNpc(i) && !usingCross && !c.usingBow && !c.usingMagic && !usingCrystalBow()
-						&& !c.usingRangeWeapon) {
+				if (armaNpc(i) && !usingCross && !usingBow && !c.usingMagic
+						&& !usingCrystalBow() && !usingOtherRangeWeapons) {
 					resetPlayerAttack();
 					return;
 				}
-				if ((!c.goodDistance(c.getX(), c.getY(), NPCHandler.npcs[i].getX(), NPCHandler.npcs[i].getY(), 2)
-						&& (usingHally() && !c.usingRangeWeapon && !c.usingBow && !c.usingMagic))
-						|| (!c.goodDistance(c.getX(), c.getY(), NPCHandler.npcs[i].getX(), NPCHandler.npcs[i].getY(), 4)
-								&& (c.usingRangeWeapon && !c.usingBow && !c.usingMagic))
-						|| (!c.goodDistance(c.getX(), c.getY(), NPCHandler.npcs[i].getX(), NPCHandler.npcs[i].getY(), 1)
-								&& (!c.usingRangeWeapon && !usingHally() && !c.usingBow && !c.usingMagic))
-						|| ((!c.goodDistance(c.getX(), c.getY(), NPCHandler.npcs[i].getX(), NPCHandler.npcs[i].getY(),
-								8) && (c.usingBow || c.usingMagic)))) {
+				if ((!c.goodDistance(c.getX(), c.getY(),
+						NPCHandler.npcs[i].getX(), NPCHandler.npcs[i].getY(), 2) && (usingHally()
+						&& !usingOtherRangeWeapons && !usingBow && !c.usingMagic))
+						|| (!c.goodDistance(c.getX(), c.getY(),
+								NPCHandler.npcs[i].getX(),
+								NPCHandler.npcs[i].getY(), 4) && (usingOtherRangeWeapons
+								&& !usingBow && !c.usingMagic))
+						|| (!c.goodDistance(c.getX(), c.getY(),
+								NPCHandler.npcs[i].getX(),
+								NPCHandler.npcs[i].getY(), 1) && (!usingOtherRangeWeapons
+								&& !usingHally() && !usingBow && !c.usingMagic))
+						|| ((!c.goodDistance(c.getX(), c.getY(),
+								NPCHandler.npcs[i].getX(),
+								NPCHandler.npcs[i].getY(), 8) && (usingBow || c.usingMagic)))) {
 					c.attackTimer = 2;
 					return;
 				}
-				if (!usingCross && !usingArrows && c.usingBow
-						&& (c.getEquipment()[c.playerWeapon] < 4212 || c.getEquipment()[c.playerWeapon] > 4223)) {
+
+				if (!usingCross
+						&& !usingArrows
+						&& usingBow
+						&& (c.playerEquipment[c.playerWeapon] < 4212 || c.playerEquipment[c.playerWeapon] > 4223)) {
 					c.sendMessage("You have run out of arrows!");
 					c.stopMovement();
 					c.npcIndex = 0;
 					return;
 				}
-				if (!usingCorrectArrows() && Constants.CORRECT_ARROWS && c.usingBow && !usingCrystalBow()
-						&& c.getEquipment()[c.playerWeapon] != 9185) {
+				if (correctBowAndArrows() < c.playerEquipment[c.playerArrows]
+						&& Constants.CORRECT_ARROWS && usingBow
+						&& !usingCrystalBow()
+						&& c.playerEquipment[c.playerWeapon] != 9185) {
 					c.sendMessage("You can't use "
-							+ c.getItems().getItemName(c.getEquipment()[c.playerArrows]).toLowerCase() + "s with a "
-							+ c.getItems().getItemName(c.getEquipment()[c.playerWeapon]).toLowerCase() + ".");
+							+ c.getItems()
+									.getItemName(
+											c.playerEquipment[c.playerArrows])
+									.toLowerCase()
+							+ "s with a "
+							+ c.getItems()
+									.getItemName(
+											c.playerEquipment[c.playerWeapon])
+									.toLowerCase() + ".");
 					c.stopMovement();
 					c.npcIndex = 0;
 					return;
 				}
 
-				if (c.getEquipment()[c.playerWeapon] == 9185 && !properBolts()) {
+				if (c.playerEquipment[c.playerWeapon] == 9185 && !properBolts()) {
 					c.sendMessage("You must use bolts with a crossbow.");
 					c.stopMovement();
 					resetPlayerAttack();
 					return;
 				}
 
-				if (c.usingBow || c.usingMagic || c.usingRangeWeapon
-						|| (c.goodDistance(c.getX(), c.getY(), NPCHandler.npcs[i].getX(), NPCHandler.npcs[i].getY(), 2)
-								&& usingHally())) {
+				if (usingBow
+						|| c.usingMagic
+						|| usingOtherRangeWeapons
+						|| (c.goodDistance(c.getX(), c.getY(),
+								NPCHandler.npcs[i].getX(),
+								NPCHandler.npcs[i].getY(), 2) && usingHally())) {
 					c.stopMovement();
 				}
 
@@ -166,13 +164,15 @@ public class CombatAssistant {
 				}
 
 				c.faceUpdate(i);
+				// c.specAccuracy = 1.0;
+				// c.specDamage = 1.0;
 				NPCHandler.npcs[i].underAttackBy = c.playerId;
 				NPCHandler.npcs[i].lastDamageTaken = System.currentTimeMillis();
 				if (c.usingSpecial && !c.usingMagic) {
-					if (checkSpecAmount(c.getEquipment()[c.playerWeapon])) {
-						c.lastWeaponUsed = c.getEquipment()[c.playerWeapon];
-						c.lastArrowUsed = c.getEquipment()[c.playerArrows];
-						c.getSA().activateSpecial(c.playerEquipment[c.playerWeapon], i);
+					if (checkSpecAmount(c.playerEquipment[c.playerWeapon])) {
+						c.lastWeaponUsed = c.playerEquipment[c.playerWeapon];
+						c.lastArrowUsed = c.playerEquipment[c.playerArrows];
+						activateSpecial(c.playerEquipment[c.playerWeapon], i);
 						return;
 					} else {
 						c.sendMessage("You don't have the required special energy to use this attack.");
@@ -184,56 +184,62 @@ public class CombatAssistant {
 				}
 				c.specMaxHitIncrease = 0;
 				if (!c.usingMagic) {
-					c.playAnimation(Animation.create(WeaponAnimations.attackAnimation(c)));
+					c.startAnimation(getWepAnim(c.getItems()
+							.getItemName(c.playerEquipment[c.playerWeapon])
+							.toLowerCase()));
 				} else {
-					c.playAnimation(Animation.create(c.MAGIC_SPELLS[c.spellId][2]));
+					c.startAnimation(c.MAGIC_SPELLS[c.spellId][2]);
 				}
-				c.lastWeaponUsed = c.getEquipment()[c.playerWeapon];
-				c.lastArrowUsed = c.getEquipment()[c.playerArrows];
-				if (!c.usingBow && !c.usingMagic && !c.usingRangeWeapon) {
-					Experience.calculateDamageNPC(c, i, 0);
-					c.hitDelay = getHitDelay(c.getItems().getItemName(c.getEquipment()[c.playerWeapon]).toLowerCase());
+				c.lastWeaponUsed = c.playerEquipment[c.playerWeapon];
+				c.lastArrowUsed = c.playerEquipment[c.playerArrows];
+				if (!usingBow && !c.usingMagic && !usingOtherRangeWeapons) { // melee
+																				// hit
+																				// delay
+					c.hitDelay = getHitDelay(c.getItems()
+							.getItemName(c.playerEquipment[c.playerWeapon])
+							.toLowerCase());
 					c.projectileStage = 0;
 					c.oldNpcIndex = i;
 				}
 
-				if (c.usingBow && !c.usingRangeWeapon && !c.usingMagic || usingCross) { // range
-																						// hit
-																						// delay
+				if (usingBow && !usingOtherRangeWeapons && !c.usingMagic
+						|| usingCross) { // range hit delay
 					if (usingCross)
 						c.usingBow = true;
 					if (c.fightMode == 2)
 						c.attackTimer--;
-					c.lastArrowUsed = c.getEquipment()[c.playerArrows];
-					c.lastWeaponUsed = c.getEquipment()[c.playerWeapon];
-					c.playGraphic(Graphic.create(getRangeStartGFX(), 100));
-					Experience.calculateDamageNPC(c, i, 1);
-					c.hitDelay = getHitDelay(c.getItems().getItemName(c.getEquipment()[c.playerWeapon]).toLowerCase());
+					c.lastArrowUsed = c.playerEquipment[c.playerArrows];
+					c.lastWeaponUsed = c.playerEquipment[c.playerWeapon];
+					c.gfx100(getRangeStartGFX());
+					c.hitDelay = getHitDelay(c.getItems()
+							.getItemName(c.playerEquipment[c.playerWeapon])
+							.toLowerCase());
 					c.projectileStage = 1;
 					c.oldNpcIndex = i;
-					if (c.getEquipment()[c.playerWeapon] >= 4212 && c.getEquipment()[c.playerWeapon] <= 4223) {
-						c.rangeItemUsed = c.getEquipment()[c.playerWeapon];
+					if (c.playerEquipment[c.playerWeapon] >= 4212
+							&& c.playerEquipment[c.playerWeapon] <= 4223) {
+						c.rangeItemUsed = c.playerEquipment[c.playerWeapon];
 						c.crystalBowArrowCount++;
 						c.lastArrowUsed = 0;
 					} else {
-						c.rangeItemUsed = c.getEquipment()[c.playerArrows];
+						c.rangeItemUsed = c.playerEquipment[c.playerArrows];
 						c.getItems().deleteArrow();
 					}
 					fireProjectileNpc();
 				}
 
-				if (c.usingRangeWeapon && !c.usingMagic && !c.usingBow) { // knives,
+				if (usingOtherRangeWeapons && !c.usingMagic && !usingBow) { // knives,
 																			// darts,
 																			// etc
 																			// hit
 																			// delay
-					c.rangeItemUsed = c.getEquipment()[c.playerWeapon];
-					if (c.rangeItemUsed != 12926)
-						c.getItems().deleteEquipment();
-					c.playGraphic(Graphic.create(getRangeStartGFX(), 0, 100));
+					c.rangeItemUsed = c.playerEquipment[c.playerWeapon];
+					c.getItems().deleteEquipment();
+					c.gfx100(getRangeStartGFX());
 					c.lastArrowUsed = 0;
-					Experience.calculateDamageNPC(c, i, 1);
-					c.hitDelay = getHitDelay(c.getItems().getItemName(c.getEquipment()[c.playerWeapon]).toLowerCase());
+					c.hitDelay = getHitDelay(c.getItems()
+							.getItemName(c.playerEquipment[c.playerWeapon])
+							.toLowerCase());
 					c.projectileStage = 1;
 					c.oldNpcIndex = i;
 					if (c.fightMode == 2)
@@ -252,17 +258,19 @@ public class CombatAssistant {
 					c.projectileStage = 2;
 					if (c.MAGIC_SPELLS[c.spellId][3] > 0) {
 						if (getStartGfxHeight() == 100) {
-							c.playGraphic(Graphic.create(c.MAGIC_SPELLS[c.spellId][3], 0, 100));
+							c.gfx100(c.MAGIC_SPELLS[c.spellId][3]);
 						} else {
-							c.playGraphic(Graphic.create(c.MAGIC_SPELLS[c.spellId][3], 0, 0));
+							c.gfx0(c.MAGIC_SPELLS[c.spellId][3]);
 						}
 					}
 					if (c.MAGIC_SPELLS[c.spellId][4] > 0) {
-						c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, 78, c.MAGIC_SPELLS[c.spellId][4],
+						c.getPA().createPlayersProjectile(pX, pY, offX, offY,
+								50, 78, c.MAGIC_SPELLS[c.spellId][4],
 								getStartHeight(), getEndHeight(), i + 1, 50);
 					}
-					Experience.calculateDamageNPC(c, i, 2);
-					c.hitDelay = getHitDelay(c.getItems().getItemName(c.getEquipment()[c.playerWeapon]).toLowerCase());
+					c.hitDelay = getHitDelay(c.getItems()
+							.getItemName(c.playerEquipment[c.playerWeapon])
+							.toLowerCase());
 					c.oldNpcIndex = i;
 					c.oldSpellId = c.spellId;
 					c.spellId = 0;
@@ -270,35 +278,37 @@ public class CombatAssistant {
 						c.npcIndex = 0;
 				}
 
-				if (c.usingBow && Constants.CRYSTAL_BOW_DEGRADES) { // crystal bow
-																	// degrading
-					if (c.getEquipment()[c.playerWeapon] == 4212) { // new
-																	// crystal
-																	// bow
-																	// becomes
-																	// full
-																	// bow
-																	// on
-																	// the
-																	// first
-																	// shot
+				if (usingBow && Constants.CRYSTAL_BOW_DEGRADES) { // crystal bow
+																// degrading
+					if (c.playerEquipment[c.playerWeapon] == 4212) { // new
+																		// crystal
+																		// bow
+																		// becomes
+																		// full
+																		// bow
+																		// on
+																		// the
+																		// first
+																		// shot
 						c.getItems().wearItem(4214, 1, 3);
 					}
 
 					if (c.crystalBowArrowCount >= 250) {
-						switch (c.getEquipment()[c.playerWeapon]) {
+						switch (c.playerEquipment[c.playerWeapon]) {
 
 						case 4223: // 1/10 bow
 							c.getItems().wearItem(-1, 1, 3);
 							c.sendMessage("Your crystal bow has fully degraded.");
 							if (!c.getItems().addItem(4207, 1)) {
-								Server.itemHandler.createGroundItem(c, 4207, c.getX(), c.getY(), 1, c.getId());
+								Server.itemHandler.createGroundItem(c, 4207,
+										c.getX(), c.getY(), 1, c.getId());
 							}
 							c.crystalBowArrowCount = 0;
 							break;
 
 						default:
-							c.getItems().wearItem(++c.getEquipment()[c.playerWeapon], 1, 3);
+							c.getItems().wearItem(
+									++c.playerEquipment[c.playerWeapon], 1, 3);
 							c.sendMessage("Your crystal bow degrades.");
 							c.crystalBowArrowCount = 0;
 							break;
@@ -310,8 +320,62 @@ public class CombatAssistant {
 		}
 	}
 
+	public void appendMultiChinchompaEffect(int playerId, boolean splashed) {
+		if (PlayerHandler.players[playerId] != null) {
+			Client c2 = (Client) PlayerHandler.players[playerId];
+			if (c2.isDead || c2.respawnTimer > 0)
+				return;
+			if (checkMultiBarrageReqs(playerId)) {
+				c.barrageCount++;
+				if (Misc.random(calculateRangeAttack()) > Misc
+						.random(calculateRangeDefence()) && !c.magicFailed) {
+					if (getEndGfxHeight() == 100) { // end GFX
+						c2.gfx100(909);
+					} else {
+						c2.gfx0(909);
+					}
+					int damage = Misc.random(calculateRangeAttack());
+
+					if (c2.playerLevel[3] - damage < 0) {
+						damage = c2.playerLevel[3];
+					}
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE), 6);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3),
+							3);
+					PlayerHandler.players[playerId].handleHitMask(damage);
+					PlayerHandler.players[playerId].dealDamage(damage);
+					PlayerHandler.players[playerId].damageTaken[c.playerId] += damage;
+					c2.getPA().refreshSkill(3);
+					multiSpellEffect(playerId, damage);
+				} else {
+					c2.gfx100(85);
+				}
+			}
+		}
+	}
+
 	public void delayedHit(int i) { // npc hit delay
 		if (NPCHandler.npcs[i] != null) {
+			if (NPCHandler.npcs[i].isDead) {
+				c.npcIndex = 0;
+				return;
+			}
+			NPCHandler.npcs[i].facePlayer(c.playerId);
+
+			if (NPCHandler.npcs[i].underAttackBy > 0
+					&& Server.npcHandler.getsPulled(i)) {
+				NPCHandler.npcs[i].killerId = c.playerId;
+			} else if (NPCHandler.npcs[i].underAttackBy < 0
+					&& !Server.npcHandler.getsPulled(i)) {
+				NPCHandler.npcs[i].killerId = c.playerId;
+			}
+			c.lastNpcAttacked = i;
+			if (c.projectileStage == 0) { // melee hit damage
+				applyNpcMeleeDamage(i, 1);
+				if (c.doubleHit) {
+					applyNpcMeleeDamage(i, 2);
+				}
+			}
 
 			if (!c.castingMagic && c.projectileStage > 0) { // range hit damage
 				int damage = Misc.random(rangeMaxHit());
@@ -324,22 +388,26 @@ public class CombatAssistant {
 					NPCHandler.npcs[i].gfx0(758);
 				}
 
-				if (Misc.random(NPCHandler.npcs[i].defence) > Misc.random(10 + calculateRangeAttack()) && !ignoreDef) {
+				if (Misc.random(NPCHandler.npcs[i].defence) > Misc
+						.random(10 + calculateRangeAttack()) && !ignoreDef) {
 					damage = 0;
-				} else if (NPCHandler.npcs[i].npcType == 2881 || NPCHandler.npcs[i].npcType == 2883 && !ignoreDef) {
+				} else if (NPCHandler.npcs[i].npcType == 2881
+						|| NPCHandler.npcs[i].npcType == 2883 && !ignoreDef) {
 					damage = 0;
 				}
 
-				if (Misc.random(4) == 1 && c.lastArrowUsed == 9242 && damage > 0) {
+				if (Misc.random(4) == 1 && c.lastArrowUsed == 9242
+						&& damage > 0) {
 					NPCHandler.npcs[i].gfx0(754);
 					damage = NPCHandler.npcs[i].HP / 5;
-					c.handleHitMask(c.getLevel()[3] / 10);
-					c.dealDamage(c.getLevel()[3] / 10);
-					c.playGraphic(Graphic.create(754, 0, 0));
+					c.handleHitMask(c.playerLevel[3] / 10);
+					c.dealDamage(c.playerLevel[3] / 10);
+					c.gfx0(754);
 				}
 
 				if (c.lastWeaponUsed == 11235 || c.bowSpecShot == 1) {
-					if (Misc.random(NPCHandler.npcs[i].defence) > Misc.random(10 + calculateRangeAttack()))
+					if (Misc.random(NPCHandler.npcs[i].defence) > Misc
+							.random(10 + calculateRangeAttack()))
 						damage2 = 0;
 				}
 				if (c.dbowSpec) {
@@ -350,7 +418,8 @@ public class CombatAssistant {
 						damage2 = 8;
 					c.dbowSpec = false;
 				}
-				if (damage > 0 && Misc.random(5) == 1 && c.lastArrowUsed == 9244) {
+				if (damage > 0 && Misc.random(5) == 1
+						&& c.lastArrowUsed == 9244) {
 					damage *= 1.45;
 					NPCHandler.npcs[i].gfx0(756);
 				}
@@ -362,22 +431,24 @@ public class CombatAssistant {
 					damage2 = 0;
 				}
 				if (c.fightMode == 3) {
-					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 4);
-					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 1);
-					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 3);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3),
+							4);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3),
+							1);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3),
+							3);
 					c.getPA().refreshSkill(1);
 					c.getPA().refreshSkill(3);
 					c.getPA().refreshSkill(4);
 				} else {
 					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE), 4);
-					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 3);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3),
+							3);
 					c.getPA().refreshSkill(3);
 					c.getPA().refreshSkill(4);
 				}
 				if (damage > 0) {
-					if (NPCHandler.npcs[i].npcType >= 3777 && NPCHandler.npcs[i].npcType <= 3780) {
-						c.pcDamage += damage;
-					}
+					
 				}
 				boolean dropArrows = true;
 
@@ -418,10 +489,12 @@ public class CombatAssistant {
 				boolean magicFailed = false;
 				// c.npcIndex = 0;
 				int bonusAttack = getBonusAttack(i);
-				if (Misc.random(NPCHandler.npcs[i].defence) > 10 + Misc.random(mageAtk()) + bonusAttack) {
+				if (Misc.random(NPCHandler.npcs[i].defence) > 10
+						+ Misc.random(mageAtk()) + bonusAttack) {
 					damage = 0;
 					magicFailed = true;
-				} else if (NPCHandler.npcs[i].npcType == 2881 || NPCHandler.npcs[i].npcType == 2882) {
+				} else if (NPCHandler.npcs[i].npcType == 2881
+						|| NPCHandler.npcs[i].npcType == 2882) {
 					damage = 0;
 					magicFailed = true;
 				}
@@ -430,14 +503,16 @@ public class CombatAssistant {
 					damage = NPCHandler.npcs[i].HP;
 				}
 
-				c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Constants.MAGIC_EXP_RATE), 6);
-				c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Constants.MAGIC_EXP_RATE / 3), 3);
+				c.getPA().addSkillXP(
+						(c.MAGIC_SPELLS[c.oldSpellId][7] + damage
+								* Constants.MAGIC_EXP_RATE), 6);
+				c.getPA().addSkillXP(
+						(c.MAGIC_SPELLS[c.oldSpellId][7] + damage
+								* Constants.MAGIC_EXP_RATE / 3), 3);
 				c.getPA().refreshSkill(3);
 				c.getPA().refreshSkill(6);
 				if (damage > 0) {
-					if (NPCHandler.npcs[i].npcType >= 3777 && NPCHandler.npcs[i].npcType <= 3780) {
-						c.pcDamage += damage;
-					}
+					
 				}
 				if (getEndGfxHeight() == 100 && !magicFailed) { // end GFX
 					NPCHandler.npcs[i].gfx100(c.MAGIC_SPELLS[c.oldSpellId][5]);
@@ -459,10 +534,12 @@ public class CombatAssistant {
 					case 12911:
 					case 12929:
 						int heal = Misc.random(damage / 2);
-						if (c.getLevel()[3] + heal >= c.getPA().getLevelForXP(c.getExperience()[3])) {
-							c.getLevel()[3] = c.getPA().getLevelForXP(c.getExperience()[3]);
+						if (c.playerLevel[3] + heal >= c.getPA().getLevelForXP(
+								c.playerXP[3])) {
+							c.playerLevel[3] = c.getPA().getLevelForXP(
+									c.playerXP[3]);
 						} else {
-							c.getLevel()[3] += heal;
+							c.playerLevel[3] += heal;
 						}
 						c.getPA().refreshSkill(3);
 						break;
@@ -494,12 +571,75 @@ public class CombatAssistant {
 		if (c.bowSpecShot >= 2) {
 			c.bowSpecShot = 0;
 			// c.attackTimer =
-			// getAttackDelay(c.getItems().getItemName(c.getEquipment()[c.playerWeapon]).toLowerCase());
+			// getAttackDelay(c.getItems().getItemName(c.playerEquipment[c.playerWeapon]).toLowerCase());
 		}
 		if (c.bowSpecShot == 1) {
 			fireProjectileNpc();
 			c.hitDelay = 2;
 			c.bowSpecShot = 0;
+		}
+	}
+
+	public void applyNpcMeleeDamage(int i, int damageMask) {
+		int damage = Misc.random(calculateMeleeMaxHit());
+		if (NPCHandler.npcs[i].HP - damage < 0) {
+			damage = NPCHandler.npcs[i].HP;
+		}
+		if (c.fightMode == 3) {
+			c.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE / 3), 0);
+			c.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE / 3), 1);
+			c.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE / 3), 2);
+			c.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE / 3), 3);
+			c.getPA().refreshSkill(0);
+			c.getPA().refreshSkill(1);
+			c.getPA().refreshSkill(2);
+			c.getPA().refreshSkill(3);
+		} else {
+			c.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE), c.fightMode);
+			c.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE / 3), 3);
+			c.getPA().refreshSkill(c.fightMode);
+			c.getPA().refreshSkill(3);
+		}
+		if (damage > 0) {
+			
+		}
+		NPCHandler.npcs[i].underAttack = true;
+		// Server.npcHandler.npcs[i].killerId = c.playerId;
+		c.killingNpcIndex = c.npcIndex;
+		c.lastNpcAttacked = i;
+		switch (c.specEffect) {
+		case 4:
+			if (damage > 0) {
+				if (c.playerLevel[3] + damage > c.getLevelForXP(c.playerXP[3]))
+					if (c.playerLevel[3] > c.getLevelForXP(c.playerXP[3]))
+						;
+					else
+						c.playerLevel[3] = c.getLevelForXP(c.playerXP[3]);
+				else
+					c.playerLevel[3] += damage;
+				c.getPA().refreshSkill(3);
+			}
+			break;
+
+		}
+		switch (damageMask) {
+		case 1:
+			NPCHandler.npcs[i].hitDiff = damage;
+			NPCHandler.npcs[i].HP -= damage;
+			c.totalDamageDealt += damage;
+			NPCHandler.npcs[i].hitUpdateRequired = true;
+			NPCHandler.npcs[i].updateRequired = true;
+			break;
+
+		case 2:
+			NPCHandler.npcs[i].hitDiff2 = damage;
+			NPCHandler.npcs[i].HP -= damage;
+			c.totalDamageDealt += damage;
+			NPCHandler.npcs[i].hitUpdateRequired2 = true;
+			NPCHandler.npcs[i].updateRequired = true;
+			c.doubleHit = false;
+			break;
+
 		}
 	}
 
@@ -513,65 +653,13 @@ public class CombatAssistant {
 				int nY = NPCHandler.npcs[c.oldNpcIndex].getY();
 				int offX = (pY - nY) * -1;
 				int offY = (pX - nX) * -1;
-				/*
-				 * c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50,
-				 * getProjectileSpeed(), getRangeProjectileGFX(), 43, 31,
-				 * c.oldNpcIndex + 1, getStartDelay()); if (usingDbow())
-				 * c.getPA().createPlayersProjectile2(pX, pY, offX, offY, 50,
-				 * getProjectileSpeed(), getRangeProjectileGFX(), 60, 31,
-				 * c.oldNpcIndex + 1, getStartDelay(), 35);
-				 */
-				int clientSpeed = 0;
-				int showDelay = 0;
-				int slope = 0;
-				int distance = c.distanceToPoint(nX, nY);
-				if (c.lastWeaponUsed == 9185 || c.lastWeaponUsed == 11785) {
-					clientSpeed = c.armadylSpecial ? 75 : 55;
-					showDelay = 45;
-					slope = 5;
-					if (c.armadylSpecial) {
-						c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, clientSpeed, 301, 46, 36,
-								c.oldNpcIndex + 1, showDelay, slope);
-					} else {
-						c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, clientSpeed, getRangeProjectileGFX(),
-								46, 36, c.oldNpcIndex + 1, showDelay, slope);
-					}
-					return;
-				} else if (c.lastWeaponUsed == 11235) {
-					if (distance <= 1) {
-						clientSpeed = 55;
-					} else if (distance > 1 && distance <= 3) {
-						clientSpeed = 55;
-					} else if (distance > 3 && distance <= 8) {
-						clientSpeed = 65;
-						c.hitDelay += 1;
-					} else {
-						clientSpeed = 75;
-					}
-					showDelay = 45;
-					slope = 15;
-					clientSpeed += 30;
-					c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, clientSpeed, getRangeProjectileGFX(), 41,
-							31, c.oldNpcIndex + 1, 36, 3);
-					c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, clientSpeed + 10, getRangeProjectileGFX(),
-							46, 36, c.oldNpcIndex + 1, 36, slope + 6);
-					return;
-				} else if (c.msbSpec) {
-					c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, 40 + (distance * 5), 249, 43, 35,
-							c.oldNpcIndex + 1, 36, 15);
-					c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, 65 + (distance * 5), 249, 43, 35,
-							c.oldNpcIndex + 1, 36, 15);
-					return;
-				} else {
-					clientSpeed = 55 + (distance * 5);
-					if (distance > 2) {
-						c.hitDelay += 1;
-					}
-					showDelay = 45;
-					slope = 15;
-				}
-				c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, clientSpeed, getRangeProjectileGFX(), 46, 36,
-						c.oldNpcIndex + 1, showDelay, slope);
+				c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50,
+						getProjectileSpeed(), getRangeProjectileGFX(), 43, 31,
+						c.oldNpcIndex + 1, getStartDelay());
+				if (usingDbow())
+					c.getPA().createPlayersProjectile2(pX, pY, offX, offY, 50,
+							getProjectileSpeed(), getRangeProjectileGFX(), 60,
+							31, c.oldNpcIndex + 1, getStartDelay(), 35);
 			}
 		}
 	}
@@ -584,8 +672,7 @@ public class CombatAssistant {
 
 		if (PlayerHandler.players[i] != null) {
 
-			if (PlayerHandler.players[i].isDead || PlayerHandler.players[i].getLevel()[3] <= 0 || c.getLevel()[3] <= 0
-					|| c.isDead) {
+			if (PlayerHandler.players[i].isDead) {
 				resetPlayerAttack();
 				return;
 			}
@@ -594,12 +681,26 @@ public class CombatAssistant {
 				resetPlayerAttack();
 				return;
 			}
+
+			/*
+			 * if (c.teleTimer > 0 || Server.playerHandler.players[i].teleTimer
+			 * > 0) { resetPlayerAttack(); return; }
+			 */
+
 			if (!c.getCombat().checkReqs()) {
 				return;
 			}
-			boolean sameSpot = c.absX == PlayerHandler.players[i].getX() && c.absY == PlayerHandler.players[i].getY();
-			if (!c.goodDistance(PlayerHandler.players[i].getX(), PlayerHandler.players[i].getY(), c.getX(), c.getY(),
-					25) && !sameSpot) {
+
+			if (c.getPA().getWearingAmount() < 4 && c.duelStatus < 1) {
+				c.sendMessage("You must be wearing at least 4 items to attack someone.");
+				resetPlayerAttack();
+				return;
+			}
+			boolean sameSpot = c.absX == PlayerHandler.players[i].getX()
+					&& c.absY == PlayerHandler.players[i].getY();
+			if (!c.goodDistance(PlayerHandler.players[i].getX(),
+					PlayerHandler.players[i].getY(), c.getX(), c.getY(), 25)
+					&& !sameSpot) {
 				resetPlayerAttack();
 				return;
 			}
@@ -622,13 +723,14 @@ public class CombatAssistant {
 				c.specEffect = 0;
 				c.usingRangeWeapon = false;
 				c.rangeItemUsed = 0;
+				boolean usingBow = false;
 				boolean usingArrows = false;
-				c.usingRangeWeapon = false;
+				boolean usingOtherRangeWeapons = false;
+				boolean usingCross = c.playerEquipment[c.playerWeapon] == 9185;
 				c.projectileStage = 0;
-				c.oldNpcIndex = -1;
-				c.oldPlayerIndex = -1;
-				c.getCombatBonus()[0] = c.playerBonus[10];
-				if (c.absX == PlayerHandler.players[i].absX && c.absY == PlayerHandler.players[i].absY) {
+
+				if (c.absX == PlayerHandler.players[i].absX
+						&& c.absY == PlayerHandler.players[i].absY) {
 					if (c.freezeTimer > 0) {
 						resetPlayerAttack();
 						return;
@@ -647,10 +749,10 @@ public class CombatAssistant {
 				// c.sendMessage("Made it here1.");
 				if (!c.usingMagic) {
 					for (int bowId : c.BOWS) {
-						if (c.getEquipment()[c.playerWeapon] == bowId) {
-							c.usingBow = true;
+						if (c.playerEquipment[c.playerWeapon] == bowId) {
+							usingBow = true;
 							for (int arrowId : c.ARROWS) {
-								if (c.getEquipment()[c.playerArrows] == arrowId) {
+								if (c.playerEquipment[c.playerArrows] == arrowId) {
 									usingArrows = true;
 								}
 							}
@@ -658,8 +760,8 @@ public class CombatAssistant {
 					}
 
 					for (int otherRangeId : c.OTHER_RANGE_WEAPONS) {
-						if (c.getEquipment()[c.playerWeapon] == otherRangeId) {
-							c.usingRangeWeapon = true;
+						if (c.playerEquipment[c.playerWeapon] == otherRangeId) {
+							usingOtherRangeWeapons = true;
 						}
 					}
 				}
@@ -671,14 +773,14 @@ public class CombatAssistant {
 				if (c.spellId > 0) {
 					c.usingMagic = true;
 				}
-				c.turnPlayerTo(PlayerHandler.players[i].getX(), PlayerHandler.players[i].getY());
-				c.attackTimer = getAttackDelay(
-						c.getItems().getItemName(c.getEquipment()[c.playerWeapon]).toLowerCase());
+				c.attackTimer = getAttackDelay(c.getItems()
+						.getItemName(c.playerEquipment[c.playerWeapon])
+						.toLowerCase());
 
 				if (c.duelRule[9]) {
 					boolean canUseWeapon = false;
 					for (int funWeapon : Constants.FUN_WEAPONS) {
-						if (c.getEquipment()[c.playerWeapon] == funWeapon) {
+						if (c.playerEquipment[c.playerWeapon] == funWeapon) {
 							canUseWeapon = true;
 						}
 					}
@@ -689,11 +791,12 @@ public class CombatAssistant {
 					}
 				}
 				// c.sendMessage("Made it here3.");
-				if (c.duelRule[2] && (c.usingBow || c.usingRangeWeapon)) {
+				if (c.duelRule[2] && (usingBow || usingOtherRangeWeapons)) {
 					c.sendMessage("Range has been disabled in this duel!");
 					return;
 				}
-				if (c.duelRule[3] && (!c.usingBow && !c.usingRangeWeapon && !c.usingMagic)) {
+				if (c.duelRule[3]
+						&& (!usingBow && !usingOtherRangeWeapons && !c.usingMagic)) {
 					c.sendMessage("Melee has been disabled in this duel!");
 					return;
 				}
@@ -704,39 +807,70 @@ public class CombatAssistant {
 					return;
 				}
 
-				if ((!c.goodDistance(c.getX(), c.getY(), PlayerHandler.players[i].getX(),
-						PlayerHandler.players[i].getY(), 4) && (c.usingRangeWeapon && !c.usingBow && !c.usingMagic))
-						|| (!c.goodDistance(c.getX(), c.getY(), PlayerHandler.players[i].getX(),
-								PlayerHandler.players[i].getY(), 2)
-								&& (!c.usingRangeWeapon && usingHally() && !c.usingBow && !c.usingMagic))
-						|| (!c.goodDistance(c.getX(), c.getY(), PlayerHandler.players[i].getX(),
-								PlayerHandler.players[i].getY(), getRequiredDistance())
-								&& (!c.usingRangeWeapon && !usingHally() && !c.usingBow && !c.usingMagic))
-						|| (!c.goodDistance(c.getX(), c.getY(), PlayerHandler.players[i].getX(),
-								PlayerHandler.players[i].getY(), 10) && (c.usingBow || c.usingMagic))) {
+				if ((!c.goodDistance(c.getX(), c.getY(),
+						PlayerHandler.players[i].getX(),
+						PlayerHandler.players[i].getY(), 4) && (usingOtherRangeWeapons
+						&& !usingBow && !c.usingMagic))
+						|| (!c.goodDistance(c.getX(), c.getY(),
+								PlayerHandler.players[i].getX(),
+								PlayerHandler.players[i].getY(), 2) && (!usingOtherRangeWeapons
+								&& usingHally() && !usingBow && !c.usingMagic))
+						|| (!c.goodDistance(c.getX(), c.getY(),
+								PlayerHandler.players[i].getX(),
+								PlayerHandler.players[i].getY(),
+								getRequiredDistance()) && (!usingOtherRangeWeapons
+								&& !usingHally() && !usingBow && !c.usingMagic))
+						|| (!c.goodDistance(c.getX(), c.getY(),
+								PlayerHandler.players[i].getX(),
+								PlayerHandler.players[i].getY(), 10) && (usingBow || c.usingMagic))) {
 					// c.sendMessage("Setting attack timer to 1");
 					c.attackTimer = 1;
-					if (!c.usingBow && !c.usingMagic && !c.usingRangeWeapon && c.freezeTimer > 0)
+					if (!usingBow && !c.usingMagic && !usingOtherRangeWeapons
+							&& c.freezeTimer > 0)
 						resetPlayerAttack();
 					return;
 				}
 
-				if (!usingArrows && c.usingBow
-						&& (c.getEquipment()[c.playerWeapon] < 4212 || c.getEquipment()[c.playerWeapon] > 4223)
+				if (!usingCross
+						&& !usingArrows
+						&& usingBow
+						&& (c.playerEquipment[c.playerWeapon] < 4212 || c.playerEquipment[c.playerWeapon] > 4223)
 						&& !c.usingMagic) {
 					c.sendMessage("You have run out of arrows!");
 					c.stopMovement();
 					resetPlayerAttack();
 					return;
 				}
-				if (!usingCorrectArrows() && Constants.CORRECT_ARROWS && c.usingBow && !usingCrystalBow()
+				if (correctBowAndArrows() < c.playerEquipment[c.playerArrows]
+						&& Constants.CORRECT_ARROWS && usingBow
+						&& !usingCrystalBow()
+						&& c.playerEquipment[c.playerWeapon] != 9185
 						&& !c.usingMagic) {
 					c.sendMessage("You can't use "
-							+ c.getItems().getItemName(c.getEquipment()[c.playerArrows]).toLowerCase() + "s with a "
-							+ c.getItems().getItemName(c.getEquipment()[c.playerWeapon]).toLowerCase() + ".");
+							+ c.getItems()
+									.getItemName(
+											c.playerEquipment[c.playerArrows])
+									.toLowerCase()
+							+ "s with a "
+							+ c.getItems()
+									.getItemName(
+											c.playerEquipment[c.playerWeapon])
+									.toLowerCase() + ".");
 					c.stopMovement();
 					resetPlayerAttack();
 					return;
+				}
+				if (c.playerEquipment[c.playerWeapon] == 9185 && !properBolts()
+						&& !c.usingMagic) {
+					c.sendMessage("You must use bolts with a crossbow.");
+					c.stopMovement();
+					resetPlayerAttack();
+					return;
+				}
+
+				if (usingBow || c.usingMagic || usingOtherRangeWeapons
+						|| usingHally()) {
+					c.stopMovement();
 				}
 
 				if (!checkMagicReqs(c.spellId)) {
@@ -745,40 +879,22 @@ public class CombatAssistant {
 					return;
 				}
 
-				c.faceUpdate(PlayerHandler.players[i].getFace());
-				if (!c.attackedPlayers.contains(c.playerIndex)
-						&& !PlayerHandler.players[c.playerIndex].attackedPlayers.contains(c.playerId)) {
-					c.attackedPlayers.add(c.playerIndex);
-					c.isSkulled = true;
-					c.skullTimer = Constants.SKULL_TIMER;
-					c.headIconPk = 0;
-					c.getPA().requestUpdates();
+				c.faceUpdate(i + 32768);
+
+				if (c.duelStatus != 5) {
+					if (!c.attackedPlayers.contains(c.playerIndex)
+							&& !PlayerHandler.players[c.playerIndex].attackedPlayers
+									.contains(c.playerId)) {
+						c.attackedPlayers.add(c.playerIndex);
+						c.isSkulled = true;
+						c.skullTimer = Constants.SKULL_TIMER;
+						c.headIconPk = 0;
+						c.getPA().requestUpdates();
+					}
 				}
 				c.specAccuracy = 1.0;
 				c.specDamage = 1.0;
-				c.oldPlayerIndex = -1;
 				c.delayedDamage = c.delayedDamage2 = 0;
-				Client otherClient = (Client) PlayerHandler.players[i];
-				if (!c.usingMagic && !c.usingBow) {
-					if (otherClient.attackTimer <= 3 || otherClient.attackTimer == 0) {
-						otherClient.playAnimation(Animation.create(WeaponAnimations.blockAnimation(otherClient)));
-					}
-				} else {
-					if (otherClient.attackTimer <= 3 || otherClient.attackTimer == 0) {
-						otherClient.playAnimation(Animation.create(WeaponAnimations.blockAnimation(otherClient), 50));
-					}
-				}
-				if (c.getEquipment()[3] == 12006) {
-					if (c.getHits()[0] > 0) {
-						c.getHits()[0] -= 1;
-						if (c.getHits()[0] == 0) {
-							c.getItems().removeItem(12006, 3);
-							c.getItems().deleteItem(12006, 1);
-							c.getItems().addItem(12004, 1);
-							c.sendMessage("Your abyssal tentacle has degraded.");
-						}
-					}
-				}
 				if (c.usingSpecial && !c.usingMagic) {
 					if (c.duelRule[10] && c.duelStatus == 5) {
 						c.sendMessage("Special attacks have been disabled during this duel!");
@@ -787,9 +903,9 @@ public class CombatAssistant {
 						resetPlayerAttack();
 						return;
 					}
-					if (checkSpecAmount(c.getEquipment()[c.playerWeapon])) {
-						c.lastArrowUsed = c.getEquipment()[c.playerArrows];
-						c.getSA().activateSpecial(c.playerEquipment[c.playerWeapon], i);
+					if (checkSpecAmount(c.playerEquipment[c.playerWeapon])) {
+						c.lastArrowUsed = c.playerEquipment[c.playerArrows];
+						activateSpecial(c.playerEquipment[c.playerWeapon], i);
 						c.followId = c.playerIndex;
 						return;
 					} else {
@@ -802,85 +918,78 @@ public class CombatAssistant {
 				}
 
 				if (!c.usingMagic) {
-					c.playAnimation(Animation.create(WeaponAnimations.attackAnimation(c)));
+					c.startAnimation(getWepAnim(c.getItems()
+							.getItemName(c.playerEquipment[c.playerWeapon])
+							.toLowerCase()));
 					c.mageFollow = false;
 				} else {
-					c.playAnimation(Animation.create(c.MAGIC_SPELLS[c.spellId][2]));
+					c.startAnimation(c.MAGIC_SPELLS[c.spellId][2]);
 					c.mageFollow = true;
 					c.followId = c.playerIndex;
 				}
-				if (!PlayerHandler.players[i].inSafeZone()) {
-					PlayerHandler.players[i].attackableTimer = System.currentTimeMillis();
-				}
 				PlayerHandler.players[i].underAttackBy = c.playerId;
-				PlayerHandler.players[i].logoutDelay = System.currentTimeMillis();
-				PlayerHandler.players[i].singleCombatDelay = System.currentTimeMillis();
+				PlayerHandler.players[i].logoutDelay = System
+						.currentTimeMillis();
+				PlayerHandler.players[i].singleCombatDelay = System
+						.currentTimeMillis();
 				PlayerHandler.players[i].killerId = c.playerId;
 				c.lastArrowUsed = 0;
 				c.rangeItemUsed = 0;
-				if (!c.usingBow && !c.usingMagic && !c.usingRangeWeapon) { // melee
-																			// hit
-																			// delay
+				if (!usingBow && !c.usingMagic && !usingOtherRangeWeapons) { // melee
+																				// hit
+																				// delay
 					c.followId = PlayerHandler.players[c.playerIndex].playerId;
 					c.getPA().followPlayer();
+					c.hitDelay = getHitDelay(c.getItems()
+							.getItemName(c.playerEquipment[c.playerWeapon])
+							.toLowerCase());
 					c.delayedDamage = Misc.random(calculateMeleeMaxHit());
 					c.projectileStage = 0;
 					c.oldPlayerIndex = i;
-					Experience.calculateDamage(c, (Client) PlayerHandler.players[c.oldPlayerIndex], 0);
-					if (Misc.random(1) == 0) {
-						c.getCombat().appendDamage(c.oldPlayerIndex, 0, 1);
-					} else {
-						c.hitDelay = getHitDelay(
-								c.getItems().getItemName(c.getEquipment()[c.playerWeapon]).toLowerCase());
-					}
 				}
 
-				if (c.usingBow && !c.usingRangeWeapon && !c.usingMagic) { // range
-																			// hit
-																			// delay
-					if (c.getEquipment()[c.playerWeapon] >= 4212 && c.getEquipment()[c.playerWeapon] <= 4223) {
-						c.rangeItemUsed = c.getEquipment()[c.playerWeapon];
+				if (usingBow && !usingOtherRangeWeapons && !c.usingMagic
+						|| usingCross) { // range hit delay
+					if (c.playerEquipment[c.playerWeapon] >= 4212
+							&& c.playerEquipment[c.playerWeapon] <= 4223) {
+						c.rangeItemUsed = c.playerEquipment[c.playerWeapon];
 						c.crystalBowArrowCount++;
 					} else {
-						c.rangeItemUsed = c.getEquipment()[c.playerArrows];
+						c.rangeItemUsed = c.playerEquipment[c.playerArrows];
 						c.getItems().deleteArrow();
 					}
 					if (c.fightMode == 2)
 						c.attackTimer--;
+					if (usingCross)
+						c.usingBow = true;
 					c.usingBow = true;
 					c.followId = PlayerHandler.players[c.playerIndex].playerId;
 					c.getPA().followPlayer();
-					c.lastWeaponUsed = c.getEquipment()[c.playerWeapon];
-					c.lastArrowUsed = c.getEquipment()[c.playerArrows];
-					c.playGraphic(Graphic.create(getRangeStartGFX(), 0, 100));
+					c.lastWeaponUsed = c.playerEquipment[c.playerWeapon];
+					c.lastArrowUsed = c.playerEquipment[c.playerArrows];
+					c.gfx100(getRangeStartGFX());
+					c.hitDelay = getHitDelay(c.getItems()
+							.getItemName(c.playerEquipment[c.playerWeapon])
+							.toLowerCase());
 					c.projectileStage = 1;
 					c.oldPlayerIndex = i;
-					Experience.calculateDamage(c, (Client) PlayerHandler.players[c.oldPlayerIndex], 1);
-					if (c.lastWeaponUsed == 11235) {
-						c.dbowIndex = c.playerIndex;
-						c.dbowTimer = 5;
-					} else {
-						c.hitDelay = c.getCombat().getHitDelay(c.getItems().getItemName(c.getEquipment()[3]));
-					}
 					fireProjectilePlayer();
 				}
 
-				if (c.usingRangeWeapon) { // knives, darts, etc hit delay
-					c.rangeItemUsed = c.getEquipment()[c.playerWeapon];
-					if (c.rangeItemUsed != 12926)
-						c.getItems().deleteEquipment();
+				if (usingOtherRangeWeapons) { // knives, darts, etc hit delay
+					c.rangeItemUsed = c.playerEquipment[c.playerWeapon];
+					c.getItems().deleteEquipment();
 					c.usingRangeWeapon = true;
 					c.followId = PlayerHandler.players[c.playerIndex].playerId;
 					c.getPA().followPlayer();
-					c.playGraphic(Graphic.create(getRangeStartGFX(), 0, 100));
+					c.gfx100(getRangeStartGFX());
 					if (c.fightMode == 2)
 						c.attackTimer--;
-					c.hitDelay = getHitDelay(c.getItems().getItemName(c.getEquipment()[c.playerWeapon]).toLowerCase());
-					if (c.fightMode == 2)
-						c.hitDelay--;
+					c.hitDelay = getHitDelay(c.getItems()
+							.getItemName(c.playerEquipment[c.playerWeapon])
+							.toLowerCase());
 					c.projectileStage = 1;
 					c.oldPlayerIndex = i;
-					Experience.calculateDamage(c, (Client) PlayerHandler.players[c.oldPlayerIndex], 1);
 					fireProjectilePlayer();
 				}
 
@@ -895,66 +1004,84 @@ public class CombatAssistant {
 					c.projectileStage = 2;
 					if (c.MAGIC_SPELLS[c.spellId][3] > 0) {
 						if (getStartGfxHeight() == 100) {
-							c.playGraphic(Graphic.create(c.MAGIC_SPELLS[c.spellId][3], 0, 100));
+							c.gfx100(c.MAGIC_SPELLS[c.spellId][3]);
 						} else {
-							c.playGraphic(Graphic.create(c.MAGIC_SPELLS[c.spellId][3], 0, 0));
+							c.gfx0(c.MAGIC_SPELLS[c.spellId][3]);
 						}
 					}
 					if (c.MAGIC_SPELLS[c.spellId][4] > 0) {
-						c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, 78, c.MAGIC_SPELLS[c.spellId][4],
-								getStartHeight(), getEndHeight(), -i - 1, getStartDelay());
+						c.getPA().createPlayersProjectile(pX, pY, offX, offY,
+								50, 78, c.MAGIC_SPELLS[c.spellId][4],
+								getStartHeight(), getEndHeight(), -i - 1,
+								getStartDelay());
 					}
 					if (c.autocastId > 0) {
 						c.followId = c.playerIndex;
 						c.followDistance = 5;
 					}
-					Client o = (Client) PlayerHandler.players[i];
-					Experience.calculateDamage(c, o, 2);
-					c.hitDelay = (int) getDelay(c, o, c.getCombat().getStartDelay(), 78);
-					if (c.MAGIC_SPELLS[c.spellId][0] == 12871) {
-						c.attackTimer = c.hitDelay;
-					}
+					c.hitDelay = getHitDelay(c.getItems()
+							.getItemName(c.playerEquipment[c.playerWeapon])
+							.toLowerCase());
 					c.oldPlayerIndex = i;
 					c.oldSpellId = c.spellId;
 					c.spellId = 0;
+					Client o = (Client) PlayerHandler.players[i];
 					if (c.MAGIC_SPELLS[c.oldSpellId][0] == 12891 && o.isMoving) {
 						// c.sendMessage("Barrage projectile..");
-						c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, 85, 368, 25, 25, -i - 1,
-								getStartDelay());
+						c.getPA().createPlayersProjectile(pX, pY, offX, offY,
+								50, 85, 368, 25, 25, -i - 1, getStartDelay());
+					}
+					if (Misc.random(mageAtk()) > Misc.random(o.getCombat()
+							.mageDef())) {
+						c.magicFailed = false;
+					} else if (Misc.random(mageAtk()) < Misc.random(o
+							.getCombat().mageDef())) {
+						c.magicFailed = true;
+					}
+					int freezeDelay = getFreezeTime();// freeze time
+					if (freezeDelay > 0
+							&& PlayerHandler.players[i].freezeTimer <= -3
+							&& !c.magicFailed) {
+						PlayerHandler.players[i].freezeTimer = freezeDelay;
+						o.resetWalkingQueue();
+						o.sendMessage("You have been frozen.");
+						o.frozenBy = c.playerId;
 					}
 					if (!c.autocasting && c.spellId <= 0)
 						c.playerIndex = 0;
 				}
 
-				if (c.usingBow && Constants.CRYSTAL_BOW_DEGRADES) { // crystal bow
-																	// degrading
-					if (c.getEquipment()[c.playerWeapon] == 4212) { // new
-																	// crystal
-																	// bow
-																	// becomes
-																	// full
-																	// bow
-																	// on
-																	// the
-																	// first
-																	// shot
+				if (usingBow && Constants.CRYSTAL_BOW_DEGRADES) { // crystal bow
+																// degrading
+					if (c.playerEquipment[c.playerWeapon] == 4212) { // new
+																		// crystal
+																		// bow
+																		// becomes
+																		// full
+																		// bow
+																		// on
+																		// the
+																		// first
+																		// shot
 						c.getItems().wearItem(4214, 1, 3);
 					}
 
 					if (c.crystalBowArrowCount >= 250) {
-						switch (c.getEquipment()[c.playerWeapon]) {
+						switch (c.playerEquipment[c.playerWeapon]) {
 
 						case 4223: // 1/10 bow
 							c.getItems().wearItem(-1, 1, 3);
 							c.sendMessage("Your crystal bow has fully degraded.");
 							if (!c.getItems().addItem(4207, 1)) {
-								Server.itemHandler.createGroundItem(c, 4207, c.getX(), c.getY(), 1, c.getId());
+								Server.itemHandler.createGroundItem(c, 4207,
+										c.getX(), c.getY(), 1, c.getId());
 							}
 							c.crystalBowArrowCount = 0;
 							break;
 
 						default:
-							c.getItems().wearItem(++c.getEquipment()[c.playerWeapon], 1, 3);
+							c.getItems().wearItem(
+									++c.playerEquipment[c.playerWeapon], 1, 3);
 							c.sendMessage("Your crystal bow degrades.");
 							c.crystalBowArrowCount = 0;
 							break;
@@ -965,18 +1092,12 @@ public class CombatAssistant {
 		}
 	}
 
-	public boolean isAttackable(int i) {
-		if (System.currentTimeMillis() - PlayerHandler.players[c.playerIndex].attackableTimer > 10000) {
-			return true;
-		}
-		return false;
-	}
-
 	public boolean usingCrystalBow() {
-		return c.getEquipment()[c.playerWeapon] >= 4212 && c.getEquipment()[c.playerWeapon] <= 4223;
+		return c.playerEquipment[c.playerWeapon] >= 4212
+				&& c.playerEquipment[c.playerWeapon] <= 4223;
 	}
 
-	public void appendVengeance(int otherPlayer, final int damage) {
+	public void appendVengeance(int otherPlayer, int damage) {
 		if (damage <= 0)
 			return;
 		Player o = PlayerHandler.players[otherPlayer];
@@ -984,40 +1105,24 @@ public class CombatAssistant {
 		o.forcedChatUpdateRequired = true;
 		o.updateRequired = true;
 		o.vengOn = false;
-		CycleEventHandler.getSingleton().addEvent(2, c, new CycleEvent() {
-			int vengDamage = damage;
-
-			@Override
-			public void execute(CycleEventContainer container) {
-				if (c == null || c.getLevel()[3] <= 0 || c.isDead) {
-					container.stop();
-					return;
-				}
-				vengDamage = (int) (vengDamage * 0.75);
-				if (vengDamage > c.getLevel()[3]) {
-					vengDamage = c.getLevel()[3];
-				}
-				c.setHitDiff2(vengDamage);
-				c.setHitUpdateRequired2(true);
-				c.getLevel()[3] -= vengDamage;
-				c.getPA().refreshSkill(3);
-				c.updateRequired = true;
-				container.stop();
+		if ((o.playerLevel[3] - damage) > 0) {
+			damage = (int) (damage * 0.75);
+			if (damage > c.playerLevel[3]) {
+				damage = c.playerLevel[3];
 			}
-
-			@Override
-			public void stop() {
-				// TODO Auto-generated method stub
-
-			}
-
-		}, 1);
+			c.setHitDiff2(damage);
+			c.setHitUpdateRequired2(true);
+			c.playerLevel[3] -= damage;
+			c.getPA().refreshSkill(3);
+		}
+		c.updateRequired = true;
 	}
 
 	public void playerDelayedHit(int i) {
 		if (PlayerHandler.players[i] != null) {
-			if (PlayerHandler.players[i].isDead || c.isDead || PlayerHandler.players[i].getLevel()[3] <= 0
-					|| c.getLevel()[3] <= 0) {
+			if (PlayerHandler.players[i].isDead || c.isDead
+					|| PlayerHandler.players[i].playerLevel[3] <= 0
+					|| c.playerLevel[3] <= 0) {
 				c.playerIndex = 0;
 				return;
 			}
@@ -1033,77 +1138,79 @@ public class CombatAssistant {
 					o.playerIndex = c.playerId;
 				}
 			}
-//			if (o.getTradeHandler().getCurrentTrade() != null) {
-//				if (o.getTradeHandler().getCurrentTrade().isOpen()) {
-//					o.getTradeHandler().decline();
-//				}
-//			}
+			if (o.attackTimer <= 3 || o.attackTimer == 0 && o.playerIndex == 0
+					&& !c.castingMagic) { // block animation
+				o.startAnimation(o.getCombat().getBlockEmote());
+			}
+			if (o.inTrade) {
+				o.getTradeAndDuel().declineTrade();
+			}
+			if (c.projectileStage == 0) { // melee hit damage
+				applyPlayerMeleeDamage(i, 1);
+				if (c.doubleHit) {
+					applyPlayerMeleeDamage(i, 2);
+				}
+			}
 
 			if (!c.castingMagic && c.projectileStage > 0) { // range hit damage
 				int damage = Misc.random(rangeMaxHit());
 				int damage2 = -1;
-				if (c.lastWeaponUsed == 11235 || c.msbSpec)
+				if (c.lastWeaponUsed == 11235 || c.bowSpecShot == 1)
 					damage2 = Misc.random(rangeMaxHit());
 				boolean ignoreDef = false;
 				if (Misc.random(4) == 1 && c.lastArrowUsed == 9243) {
 					ignoreDef = true;
-					c.playGraphic(Graphic.create(758, 0, 0));
+					o.gfx0(758);
 				}
-				if (Misc.random(10 + o.getCombat().calculateRangeDefence()) > Misc.random(10 + calculateRangeAttack())
-						&& !ignoreDef) {
+				if (Misc.random(10 + o.getCombat().calculateRangeDefence()) > Misc
+						.random(10 + calculateRangeAttack()) && !ignoreDef) {
 					damage = 0;
 				}
-				if (Misc.random(4) == 1 && c.lastArrowUsed == 9242 && damage > 0) {
-					PlayerHandler.players[i].playGraphic(Graphic.create(754, 0, 0));
+				if (Misc.random(4) == 1 && c.lastArrowUsed == 9242
+						&& damage > 0) {
+					PlayerHandler.players[i].gfx0(754);
 					damage = NPCHandler.npcs[i].HP / 5;
-					c.handleHitMask(c.getLevel()[3] / 10);
-					c.dealDamage(c.getLevel()[3] / 10);
-					c.playGraphic(Graphic.create(754, 0, 0));
+					c.handleHitMask(c.playerLevel[3] / 10);
+					c.dealDamage(c.playerLevel[3] / 10);
+					c.gfx0(754);
 				}
 
-				if (c.lastWeaponUsed == 11235 || c.msbSpec) {
+				if (c.lastWeaponUsed == 11235 || c.bowSpecShot == 1) {
 					if (Misc.random(10 + o.getCombat().calculateRangeDefence()) > Misc
 							.random(10 + calculateRangeAttack()))
 						damage2 = 0;
 				}
 
 				if (c.dbowSpec) {
-					o.playGraphic(Graphic.create(1100, 0, 100));
+					o.gfx100(1100);
 					if (damage < 8)
 						damage = 8;
 					if (damage2 < 8)
 						damage2 = 8;
 					c.dbowSpec = false;
 				}
-				if (c.msbSpec) {
-					c.msbSpec = false;
-					c.attackTimer++;
-					c.hitDelay++;
-				}
-				if (c.armadylSpecial) {
-					damage = c.getCombat().rangeMaxHit();
-					c.armadylSpecial = false;
-				}
-				if (damage > 0 && Misc.random(5) == 1 && c.lastArrowUsed == 9244) {
+				if (damage > 0 && Misc.random(5) == 1
+						&& c.lastArrowUsed == 9244) {
 					damage *= 1.45;
-					o.playGraphic(Graphic.create(756, 0, 0));
+					o.gfx0(756);
 				}
-				if (o.prayerActive[17] && System.currentTimeMillis() - o.protRangeDelay > 1500) { // if
-																									// prayer
-																									// active
-																									// reduce
-																									// damage
-																									// by
-																									// half
-					damage = (int) damage * 60 / 100;
+				if (o.prayerActive[17]
+						&& System.currentTimeMillis() - o.protRangeDelay > 1500) { // if
+																					// prayer
+																					// active
+																					// reduce
+																					// damage
+																					// by
+																					// half
+					damage = damage * 60 / 100;
 					if (c.lastWeaponUsed == 11235 || c.bowSpecShot == 1)
-						damage2 = (int) damage2 * 60 / 100;
+						damage2 = damage2 * 60 / 100;
 				}
-				if (PlayerHandler.players[i].getLevel()[3] - damage < 0) {
-					damage = PlayerHandler.players[i].getLevel()[3];
+				if (PlayerHandler.players[i].playerLevel[3] - damage < 0) {
+					damage = PlayerHandler.players[i].playerLevel[3];
 				}
-				if (PlayerHandler.players[i].getLevel()[3] - damage - damage2 < 0) {
-					damage2 = PlayerHandler.players[i].getLevel()[3] - damage;
+				if (PlayerHandler.players[i].playerLevel[3] - damage - damage2 < 0) {
+					damage2 = PlayerHandler.players[i].playerLevel[3] - damage;
 				}
 				if (damage < 0)
 					damage = 0;
@@ -1118,15 +1225,19 @@ public class CombatAssistant {
 				if (damage2 > 0)
 					applyRecoil(damage2, i);
 				if (c.fightMode == 3) {
-					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 4);
-					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 1);
-					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 3);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3),
+							4);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3),
+							1);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3),
+							3);
 					c.getPA().refreshSkill(1);
 					c.getPA().refreshSkill(3);
 					c.getPA().refreshSkill(4);
 				} else {
 					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE), 4);
-					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3), 3);
+					c.getPA().addSkillXP((damage * Constants.RANGE_EXP_RATE / 3),
+							3);
 					c.getPA().refreshSkill(3);
 					c.getPA().refreshSkill(4);
 				}
@@ -1142,17 +1253,19 @@ public class CombatAssistant {
 					c.getItems().dropArrowPlayer();
 				}
 				PlayerHandler.players[i].underAttackBy = c.playerId;
-				PlayerHandler.players[i].logoutDelay = System.currentTimeMillis();
-				PlayerHandler.players[i].singleCombatDelay = System.currentTimeMillis();
+				PlayerHandler.players[i].logoutDelay = System
+						.currentTimeMillis();
+				PlayerHandler.players[i].singleCombatDelay = System
+						.currentTimeMillis();
 				PlayerHandler.players[i].killerId = c.playerId;
 				// Server.playerHandler.players[i].setHitDiff(damage);
-				// Server.playerHandler.players[i].getLevel()[3] -= damage;
+				// Server.playerHandler.players[i].playerLevel[3] -= damage;
 				PlayerHandler.players[i].dealDamage(damage);
 				PlayerHandler.players[i].damageTaken[c.playerId] += damage;
 				c.killedBy = PlayerHandler.players[i].playerId;
 				PlayerHandler.players[i].handleHitMask(damage);
 				if (damage2 != -1) {
-					// Server.playerHandler.players[i].getLevel()[3] -=
+					// Server.playerHandler.players[i].playerLevel[3] -=
 					// damage2;
 					PlayerHandler.players[i].dealDamage(damage2);
 					PlayerHandler.players[i].damageTaken[c.playerId] += damage2;
@@ -1168,42 +1281,66 @@ public class CombatAssistant {
 					applySmite(i, damage2);
 
 			} else if (c.projectileStage > 0) { // magic hit damage
-				int damage = Misc.random(MagicFormula.magicMaxHit(c));
+				int damage = Misc.random(c.MAGIC_SPELLS[c.oldSpellId][6]);
 				if (godSpells()) {
 					if (System.currentTimeMillis() - c.godSpellDelay < Constants.GOD_SPELL_CHARGE) {
 						damage += 10;
 					}
 				}
-				if (o.prayerActive[16] && System.currentTimeMillis() - o.protMageDelay > 1500) { // if
-																									// prayer
-																									// active
-																									// reduce
-																									// damage
-																									// by
-																									// half
-					damage = (int) damage * 60 / 100;
+				// c.playerIndex = 0;
+				if (c.magicFailed)
+					damage = 0;
+
+				if (o.prayerActive[16]
+						&& System.currentTimeMillis() - o.protMageDelay > 1500) { // if
+																					// prayer
+																					// active
+																					// reduce
+																					// damage
+																					// by
+																					// half
+					damage = damage * 60 / 100;
 				}
-				if (PlayerHandler.players[i].getLevel()[3] - damage < 0) {
-					damage = PlayerHandler.players[i].getLevel()[3];
+				if (PlayerHandler.players[i].playerLevel[3] - damage < 0) {
+					damage = PlayerHandler.players[i].playerLevel[3];
 				}
 				if (o.vengOn)
 					appendVengeance(i, damage);
 				if (damage > 0)
 					applyRecoil(damage, i);
-				c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Constants.MAGIC_EXP_RATE), 6);
-				c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Constants.MAGIC_EXP_RATE / 3), 3);
+				c.getPA().addSkillXP(
+						(c.MAGIC_SPELLS[c.oldSpellId][7] + damage
+								* Constants.MAGIC_EXP_RATE), 6);
+				c.getPA().addSkillXP(
+						(c.MAGIC_SPELLS[c.oldSpellId][7] + damage
+								* Constants.MAGIC_EXP_RATE / 3), 3);
 				c.getPA().refreshSkill(3);
 				c.getPA().refreshSkill(6);
+
+				if (getEndGfxHeight() == 100 && !c.magicFailed) { // end GFX
+					PlayerHandler.players[i]
+							.gfx100(c.MAGIC_SPELLS[c.oldSpellId][5]);
+				} else if (!c.magicFailed) {
+					PlayerHandler.players[i]
+							.gfx0(c.MAGIC_SPELLS[c.oldSpellId][5]);
+				} else if (c.magicFailed) {
+					PlayerHandler.players[i].gfx100(85);
+				}
+
 				if (!c.magicFailed) {
-					if (System.currentTimeMillis() - PlayerHandler.players[i].reduceStat > 35000) {
-						PlayerHandler.players[i].reduceStat = System.currentTimeMillis();
+					if (System.currentTimeMillis()
+							- PlayerHandler.players[i].reduceStat > 35000) {
+						PlayerHandler.players[i].reduceStat = System
+								.currentTimeMillis();
 						switch (c.MAGIC_SPELLS[c.oldSpellId][0]) {
 						case 12987:
 						case 13011:
 						case 12999:
 						case 13023:
-							PlayerHandler.players[i].getLevel()[0] -= ((o.getPA()
-									.getLevelForXP(PlayerHandler.players[i].getExperience()[0]) * 10) / 100);
+							PlayerHandler.players[i].playerLevel[0] -= ((o
+									.getPA()
+									.getLevelForXP(
+											PlayerHandler.players[i].playerXP[0]) * 10) / 100);
 							break;
 						}
 					}
@@ -1213,7 +1350,9 @@ public class CombatAssistant {
 						if (System.currentTimeMillis() - o.teleBlockDelay > o.teleBlockLength) {
 							o.teleBlockDelay = System.currentTimeMillis();
 							o.sendMessage("You have been teleblocked.");
-							if (o.prayerActive[16] && System.currentTimeMillis() - o.protMageDelay > 1500)
+							if (o.prayerActive[16]
+									&& System.currentTimeMillis()
+											- o.protMageDelay > 1500)
 								o.teleBlockLength = 150000;
 							else
 								o.teleBlockLength = 300000;
@@ -1224,80 +1363,89 @@ public class CombatAssistant {
 					case 12919: // blood spells
 					case 12911:
 					case 12929:
-						int heal = (int) (damage / 4);
-						if (c.getLevel()[3] + heal > c.getPA().getLevelForXP(c.getExperience()[3])) {
-							c.getLevel()[3] = c.getPA().getLevelForXP(c.getExperience()[3]);
+						int heal = damage / 4;
+						if (c.playerLevel[3] + heal > c.getPA().getLevelForXP(
+								c.playerXP[3])) {
+							c.playerLevel[3] = c.getPA().getLevelForXP(
+									c.playerXP[3]);
 						} else {
-							c.getLevel()[3] += heal;
+							c.playerLevel[3] += heal;
 						}
 						c.getPA().refreshSkill(3);
 						break;
 
 					case 1153:
-						PlayerHandler.players[i]
-								.getLevel()[0] -= ((o.getPA().getLevelForXP(PlayerHandler.players[i].getExperience()[0])
-										* 5) / 100);
+						PlayerHandler.players[i].playerLevel[0] -= ((o.getPA()
+								.getLevelForXP(
+										PlayerHandler.players[i].playerXP[0]) * 5) / 100);
 						o.sendMessage("Your attack level has been reduced!");
-						PlayerHandler.players[i].reduceSpellDelay[c.reduceSpellId] = System.currentTimeMillis();
+						PlayerHandler.players[i].reduceSpellDelay[c.reduceSpellId] = System
+								.currentTimeMillis();
 						o.getPA().refreshSkill(0);
 						break;
 
 					case 1157:
-						PlayerHandler.players[i]
-								.getLevel()[2] -= ((o.getPA().getLevelForXP(PlayerHandler.players[i].getExperience()[2])
-										* 5) / 100);
+						PlayerHandler.players[i].playerLevel[2] -= ((o.getPA()
+								.getLevelForXP(
+										PlayerHandler.players[i].playerXP[2]) * 5) / 100);
 						o.sendMessage("Your strength level has been reduced!");
-						PlayerHandler.players[i].reduceSpellDelay[c.reduceSpellId] = System.currentTimeMillis();
+						PlayerHandler.players[i].reduceSpellDelay[c.reduceSpellId] = System
+								.currentTimeMillis();
 						o.getPA().refreshSkill(2);
 						break;
 
 					case 1161:
-						PlayerHandler.players[i]
-								.getLevel()[1] -= ((o.getPA().getLevelForXP(PlayerHandler.players[i].getExperience()[1])
-										* 5) / 100);
+						PlayerHandler.players[i].playerLevel[1] -= ((o.getPA()
+								.getLevelForXP(
+										PlayerHandler.players[i].playerXP[1]) * 5) / 100);
 						o.sendMessage("Your defence level has been reduced!");
-						PlayerHandler.players[i].reduceSpellDelay[c.reduceSpellId] = System.currentTimeMillis();
+						PlayerHandler.players[i].reduceSpellDelay[c.reduceSpellId] = System
+								.currentTimeMillis();
 						o.getPA().refreshSkill(1);
 						break;
 
 					case 1542:
-						PlayerHandler.players[i]
-								.getLevel()[1] -= ((o.getPA().getLevelForXP(PlayerHandler.players[i].getExperience()[1])
-										* 10) / 100);
+						PlayerHandler.players[i].playerLevel[1] -= ((o.getPA()
+								.getLevelForXP(
+										PlayerHandler.players[i].playerXP[1]) * 10) / 100);
 						o.sendMessage("Your defence level has been reduced!");
-						PlayerHandler.players[i].reduceSpellDelay[c.reduceSpellId] = System.currentTimeMillis();
+						PlayerHandler.players[i].reduceSpellDelay[c.reduceSpellId] = System
+								.currentTimeMillis();
 						o.getPA().refreshSkill(1);
 						break;
 
 					case 1543:
-						PlayerHandler.players[i]
-								.getLevel()[2] -= ((o.getPA().getLevelForXP(PlayerHandler.players[i].getExperience()[2])
-										* 10) / 100);
+						PlayerHandler.players[i].playerLevel[2] -= ((o.getPA()
+								.getLevelForXP(
+										PlayerHandler.players[i].playerXP[2]) * 10) / 100);
 						o.sendMessage("Your strength level has been reduced!");
-						PlayerHandler.players[i].reduceSpellDelay[c.reduceSpellId] = System.currentTimeMillis();
+						PlayerHandler.players[i].reduceSpellDelay[c.reduceSpellId] = System
+								.currentTimeMillis();
 						o.getPA().refreshSkill(2);
 						break;
 
 					case 1562:
-						PlayerHandler.players[i]
-								.getLevel()[0] -= ((o.getPA().getLevelForXP(PlayerHandler.players[i].getExperience()[0])
-										* 10) / 100);
+						PlayerHandler.players[i].playerLevel[0] -= ((o.getPA()
+								.getLevelForXP(
+										PlayerHandler.players[i].playerXP[0]) * 10) / 100);
 						o.sendMessage("Your attack level has been reduced!");
-						PlayerHandler.players[i].reduceSpellDelay[c.reduceSpellId] = System.currentTimeMillis();
+						PlayerHandler.players[i].reduceSpellDelay[c.reduceSpellId] = System
+								.currentTimeMillis();
 						o.getPA().refreshSkill(0);
 						break;
 					}
 				}
 
-				PlayerHandler.players[i].logoutDelay = System.currentTimeMillis();
+				PlayerHandler.players[i].logoutDelay = System
+						.currentTimeMillis();
 				PlayerHandler.players[i].underAttackBy = c.playerId;
 				PlayerHandler.players[i].killerId = c.playerId;
-				PlayerHandler.players[i].singleCombatDelay = System.currentTimeMillis();
+				PlayerHandler.players[i].singleCombatDelay = System
+						.currentTimeMillis();
 				if (c.MAGIC_SPELLS[c.oldSpellId][6] != 0) {
-					// Server.playerHandler.players[i].getLevel()[3] -= damage;
+					// Server.playerHandler.players[i].playerLevel[3] -= damage;
 					PlayerHandler.players[i].dealDamage(damage);
 					PlayerHandler.players[i].damageTaken[c.playerId] += damage;
-					c.totalPlayerDamageDealt += damage;
 					if (!c.magicFailed) {
 						// Server.playerHandler.players[i].setHitDiff(damage);
 						// Server.playerHandler.players[i].setHitUpdateRequired(true);
@@ -1318,7 +1466,8 @@ public class CombatAssistant {
 								continue;
 							if (c.barrageCount >= 9)
 								break;
-							if (o.goodDistance(o.getX(), o.getY(), PlayerHandler.players[j].getX(),
+							if (o.goodDistance(o.getX(), o.getY(),
+									PlayerHandler.players[j].getX(),
 									PlayerHandler.players[j].getY(), 1))
 								appendMultiBarrage(j, c.magicFailed);
 						}
@@ -1330,6 +1479,7 @@ public class CombatAssistant {
 			}
 		}
 		c.getPA().requestUpdates();
+		int oldindex = c.oldPlayerIndex;
 		if (c.bowSpecShot <= 0) {
 			c.oldPlayerIndex = 0;
 			c.projectileStage = 0;
@@ -1365,33 +1515,37 @@ public class CombatAssistant {
 				return;
 			if (checkMultiBarrageReqs(playerId)) {
 				c.barrageCount++;
-				if (Misc.random(mageAtk()) > Misc.random(mageDef()) && !c.magicFailed) {
+				if (Misc.random(mageAtk()) > Misc.random(mageDef())
+						&& !c.magicFailed) {
 					if (getEndGfxHeight() == 100) { // end GFX
-						c2.playGraphic(Graphic.create(c.MAGIC_SPELLS[c.oldSpellId][5], 0, 100));
+						c2.gfx100(c.MAGIC_SPELLS[c.oldSpellId][5]);
 					} else {
-						c2.playGraphic(Graphic.create(c.MAGIC_SPELLS[c.oldSpellId][5], 0, 0));
+						c2.gfx0(c.MAGIC_SPELLS[c.oldSpellId][5]);
 					}
 					int damage = Misc.random(c.MAGIC_SPELLS[c.oldSpellId][6]);
 					if (c2.prayerActive[12]) {
 						damage *= (int) (.60);
 					}
-					if (c2.getLevel()[3] - damage < 0) {
-						damage = c2.getLevel()[3];
+					if (c2.playerLevel[3] - damage < 0) {
+						damage = c2.playerLevel[3];
 					}
-					c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Constants.MAGIC_EXP_RATE), 6);
-					c.getPA().addSkillXP((c.MAGIC_SPELLS[c.oldSpellId][7] + damage * Constants.MAGIC_EXP_RATE / 3), 3);
+					c.getPA().addSkillXP(
+							(c.MAGIC_SPELLS[c.oldSpellId][7] + damage
+									* Constants.MAGIC_EXP_RATE), 6);
+					c.getPA().addSkillXP(
+							(c.MAGIC_SPELLS[c.oldSpellId][7] + damage
+									* Constants.MAGIC_EXP_RATE / 3), 3);
 					// Server.playerHandler.players[playerId].setHitDiff(damage);
 					// Server.playerHandler.players[playerId].setHitUpdateRequired(true);
 					PlayerHandler.players[playerId].handleHitMask(damage);
-					// Server.playerHandler.players[playerId].getLevel()[3] -=
+					// Server.playerHandler.players[playerId].playerLevel[3] -=
 					// damage;
 					PlayerHandler.players[playerId].dealDamage(damage);
 					PlayerHandler.players[playerId].damageTaken[c.playerId] += damage;
 					c2.getPA().refreshSkill(3);
-					c.totalPlayerDamageDealt += damage;
 					multiSpellEffect(playerId, damage);
 				} else {
-					c2.playGraphic(Graphic.create(85, 0, 100));
+					c2.gfx100(85);
 				}
 			}
 		}
@@ -1401,19 +1555,22 @@ public class CombatAssistant {
 		switch (c.MAGIC_SPELLS[c.oldSpellId][0]) {
 		case 13011:
 		case 13023:
-			if (System.currentTimeMillis() - PlayerHandler.players[playerId].reduceStat > 35000) {
-				PlayerHandler.players[playerId].reduceStat = System.currentTimeMillis();
-				PlayerHandler.players[playerId].getLevel()[0] -= ((PlayerHandler.players[playerId]
-						.getLevelForXP(PlayerHandler.players[playerId].getExperience()[0]) * 10) / 100);
+			if (System.currentTimeMillis()
+					- PlayerHandler.players[playerId].reduceStat > 35000) {
+				PlayerHandler.players[playerId].reduceStat = System
+						.currentTimeMillis();
+				PlayerHandler.players[playerId].playerLevel[0] -= ((PlayerHandler.players[playerId]
+						.getLevelForXP(PlayerHandler.players[playerId].playerXP[0]) * 10) / 100);
 			}
 			break;
 		case 12919: // blood spells
 		case 12929:
-			int heal = (int) (damage / 4);
-			if (c.getLevel()[3] + heal >= c.getPA().getLevelForXP(c.getExperience()[3])) {
-				c.getLevel()[3] = c.getPA().getLevelForXP(c.getExperience()[3]);
+			int heal = damage / 4;
+			if (c.playerLevel[3] + heal >= c.getPA().getLevelForXP(
+					c.playerXP[3])) {
+				c.playerLevel[3] = c.getPA().getLevelForXP(c.playerXP[3]);
 			} else {
-				c.getLevel()[3] += heal;
+				c.playerLevel[3] += heal;
 			}
 			c.getPA().refreshSkill(3);
 			break;
@@ -1427,147 +1584,147 @@ public class CombatAssistant {
 		}
 	}
 
-	public void appendDamageNPC(int i, int style, int damageMask) {
-		int damage = 0;
-		damage = c.getDamage()[style];
-		if (NPCHandler.npcs[i] == null) {
-			c.npcIndex = 0;
-			return;
-		}
-		if (NPCHandler.npcs[i].isDead) {
-			c.npcIndex = 0;
-			return;
-		}
-		NPCHandler.npcs[i].facePlayer(c.playerId);
-
-		if (NPCHandler.npcs[i].underAttackBy > 0 && Server.npcHandler.getsPulled(i)) {
-			NPCHandler.npcs[i].killerId = c.playerId;
-		} else if (NPCHandler.npcs[i].underAttackBy < 0 && !Server.npcHandler.getsPulled(i)) {
-			NPCHandler.npcs[i].killerId = c.playerId;
-		}
-		if (c.projectileStage > 0) {
-			if (c.msbSpec) {
-				c.msbSpec = false;
-				c.attackTimer++;
-				c.hitDelay++;
-			}
-		} else if (c.projectileStage > 0 && c.castingMagic) {
-			if (getEndGfxHeight() == 100 && !c.magicFailed) { // end GFX
-				NPCHandler.npcs[i].gfx100(c.MAGIC_SPELLS[c.oldSpellId][5]);
-			} else if (!c.magicFailed) {
-				NPCHandler.npcs[i].gfx0(c.MAGIC_SPELLS[c.oldSpellId][5]);
-			}
-
-			if (c.magicFailed) {
-				NPCHandler.npcs[i].gfx100(85);
-			}
-		}
-		c.lastNpcAttacked = i;
-		switch (damageMask) {
-		case 1:
-			NPCHandler.npcs[i].hitDiff = damage;
-			NPCHandler.npcs[i].HP -= damage;
-			c.totalDamageDealt += damage;
-			NPCHandler.npcs[i].hitUpdateRequired = true;
-			NPCHandler.npcs[i].updateRequired = true;
-			break;
-
-		case 2:
-			NPCHandler.npcs[i].hitDiff2 = damage;
-			NPCHandler.npcs[i].HP -= damage;
-			c.totalDamageDealt += damage;
-			NPCHandler.npcs[i].hitUpdateRequired2 = true;
-			NPCHandler.npcs[i].updateRequired = true;
-			c.doubleHit = false;
-			break;
-		}
-		c.usingMagic = false;
-		c.castingMagic = false;
-		c.oldSpellId = 0;
-	}
-
-	public void appendDamage(int i, int style, int hitMask) {
-		int damage = 0;
-		damage = c.getDamage()[style];
+	public void applyPlayerMeleeDamage(int i, int damageMask) {
 		Client o = (Client) PlayerHandler.players[i];
 		if (o == null) {
 			return;
 		}
-		if (o.getLevel()[3] <= 0 || o.isDead || c.isDead || c.getLevel()[3] <= 0 || o.respawnTimer > 0) {
-			c.faceUpdate(0);
-			c.playerIndex = 0;
-			return;
+		int damage = 0;
+		if (damageMask == 1) {
+			damage = c.delayedDamage;
+			c.delayedDamage = 0;
+		} else {
+			damage = c.delayedDamage2;
+			c.delayedDamage2 = 0;
 		}
-		o.getPA().removeAllWindows();
-		if (o.playerIndex <= 0 && o.npcIndex <= 0) {
-			if (o.autoRet == 1) {
-				o.playerIndex = c.playerId;
-			}
+		if (c.playerEquipment[c.playerWeapon] == 5698
+				&& o.poisonDamage <= 0 && Misc.random(3) == 1) {
+			o.getPA().appendPoison(13);
+			c.bonusAttack += damage / 3;
+		} else {
+			c.bonusAttack += damage / 3;
 		}
-		if (c.projectileStage > 0 && !c.castingMagic) {
-			if (c.msbSpec) {
-				c.msbSpec = false;
-				c.attackTimer++;
-				c.hitDelay++;
-			}
-		} else if (c.projectileStage > 0) {
-			if (getEndGfxHeight() == 100 && !c.magicFailed) { // end GFX
-				o.playGraphic(Graphic.create(c.MAGIC_SPELLS[c.oldSpellId][5], 0, 100));
-			} else if (!c.magicFailed) {
-				o.playGraphic(Graphic.create(c.MAGIC_SPELLS[c.oldSpellId][5], 0, 0));
-			} else if (c.magicFailed) {
-				o.playGraphic(Graphic.create(85, 0, 100));
-			}
+		if (c.maxNextHit) {
+			damage = calculateMeleeMaxHit();
+		}
+		if (c.ssSpec && damageMask == 2) {
+			damage = 5 + Misc.random(11);
+			c.ssSpec = false;
+		}
+		if (PlayerHandler.players[i].playerLevel[3] - damage < 0) {
+			damage = PlayerHandler.players[i].playerLevel[3];
 		}
 		if (o.vengOn && damage > 0)
 			appendVengeance(i, damage);
 		if (damage > 0)
 			applyRecoil(damage, i);
-		if (o.getEquipment()[c.playerAmulet] == 12853) {
-			if (o.getEquipment()[c.playerWeapon] == 4718 && o.getEquipment()[c.playerHat] == 4716
-					&& o.getEquipment()[c.playerChest] == 4720 && o.getEquipment()[c.playerLegs] == 4722) {
-				if (Misc.random(3) == 0 && damage > 1) {
-					int damnedDamage = (int) (damage * .15);
-					if (damnedDamage > c.getLevel()[3]) {
-						damnedDamage = c.getLevel()[3];
-					}
-					c.sendMessage(o.playerName + "'s amulet of damaged 15% of your damage on you.");
-					c.dealDamage(damnedDamage);
-					c.updateRequired = true;
-					c.handleHitMask(damnedDamage);
-					c.getPA().refreshSkill(3);
+		switch (c.specEffect) {
+		case 1: // dragon scimmy special
+			if (damage > 0) {
+				if (o.prayerActive[16] || o.prayerActive[17]
+						|| o.prayerActive[18]) {
+					o.headIcon = -1;
+					o.getPA().sendFrame36(c.PRAYER_GLOW[16], 0);
+					o.getPA().sendFrame36(c.PRAYER_GLOW[17], 0);
+					o.getPA().sendFrame36(c.PRAYER_GLOW[18], 0);
 				}
+				o.sendMessage("You have been injured!");
+				o.stopPrayerDelay = System.currentTimeMillis();
+				o.prayerActive[16] = false;
+				o.prayerActive[17] = false;
+				o.prayerActive[18] = false;
+				o.getPA().requestUpdates();
 			}
+			break;
+		case 2:
+			if (damage > 0) {
+				if (o.freezeTimer <= 0)
+					o.freezeTimer = 30;
+				o.gfx0(369);
+				o.sendMessage("You have been frozen.");
+				o.frozenBy = c.playerId;
+				o.stopMovement();
+				c.sendMessage("You freeze your enemy.");
+			}
+			break;
+		case 3:
+			if (damage > 0) {
+				o.playerLevel[1] -= damage;
+				o.sendMessage("You feel weak.");
+				if (o.playerLevel[1] < 1)
+					o.playerLevel[1] = 1;
+				o.getPA().refreshSkill(1);
+			}
+			break;
+		case 4:
+			if (damage > 0) {
+				if (c.playerLevel[3] + damage > c.getLevelForXP(c.playerXP[3]))
+					if (c.playerLevel[3] > c.getLevelForXP(c.playerXP[3]))
+						;
+					else
+						c.playerLevel[3] = c.getLevelForXP(c.playerXP[3]);
+				else
+					c.playerLevel[3] += damage;
+				c.getPA().refreshSkill(3);
+			}
+			break;
 		}
-		applySmite(i, damage);
-		o.logoutDelay = System.currentTimeMillis();
-		o.underAttackBy = c.playerId;
-		o.killerId = c.playerId;
-		o.singleCombatDelay = System.currentTimeMillis();
+		c.specEffect = 0;
+		if (c.fightMode == 3) {
+			c.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE / 3), 0);
+			c.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE / 3), 1);
+			c.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE / 3), 2);
+			c.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE / 3), 3);
+			c.getPA().refreshSkill(0);
+			c.getPA().refreshSkill(1);
+			c.getPA().refreshSkill(2);
+			c.getPA().refreshSkill(3);
+		} else {
+			c.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE), c.fightMode);
+			c.getPA().addSkillXP((damage * Constants.MELEE_EXP_RATE / 3), 3);
+			c.getPA().refreshSkill(c.fightMode);
+			c.getPA().refreshSkill(3);
+		}
+		PlayerHandler.players[i].logoutDelay = System.currentTimeMillis();
+		PlayerHandler.players[i].underAttackBy = c.playerId;
+		PlayerHandler.players[i].killerId = c.playerId;
+		PlayerHandler.players[i].singleCombatDelay = System.currentTimeMillis();
 		if (c.killedBy != PlayerHandler.players[i].playerId)
-			c.totalPlayerDamageDealt = 0;
-		c.killedBy = o.playerId;
-		o.dealDamage(damage);
-		o.damageTaken[c.playerId] += damage;
-		c.totalPlayerDamageDealt += damage;
-		o.updateRequired = true;
-		o.handleHitMask(damage);
-		if (c.doubleHit) {
-			Experience.calculateDamage(c, o, style);
-			damage = c.getDamage()[style];
-			o.dealDamage(damage);
-			o.damageTaken[c.playerId] += damage;
-			c.totalPlayerDamageDealt += damage;
-			o.updateRequired = true;
+		c.killedBy = PlayerHandler.players[i].playerId;
+		applySmite(i, damage);
+		switch (damageMask) {
+		case 1:
+			/*
+			 * if (!Server.playerHandler.players[i].getHitUpdateRequired()){
+			 * Server.playerHandler.players[i].setHitDiff(damage);
+			 * Server.playerHandler.players[i].setHitUpdateRequired(true); }
+			 * else { Server.playerHandler.players[i].setHitDiff2(damage);
+			 * Server.playerHandler.players[i].setHitUpdateRequired2(true); }
+			 */
+			// Server.playerHandler.players[i].playerLevel[3] -= damage;
+			PlayerHandler.players[i].dealDamage(damage);
+			PlayerHandler.players[i].damageTaken[c.playerId] += damage;
+			PlayerHandler.players[i].updateRequired = true;
+			o.getPA().refreshSkill(3);
+			break;
+
+		case 2:
+			/*
+			 * if (!Server.playerHandler.players[i].getHitUpdateRequired2()){
+			 * Server.playerHandler.players[i].setHitDiff2(damage);
+			 * Server.playerHandler.players[i].setHitUpdateRequired2(true); }
+			 * else { Server.playerHandler.players[i].setHitDiff(damage);
+			 * Server.playerHandler.players[i].setHitUpdateRequired(true); }
+			 */
+			// Server.playerHandler.players[i].playerLevel[3] -= damage;
+			PlayerHandler.players[i].dealDamage(damage);
+			PlayerHandler.players[i].damageTaken[c.playerId] += damage;
+			PlayerHandler.players[i].updateRequired = true;
 			c.doubleHit = false;
-			o.handleHitMask(damage);
+			o.getPA().refreshSkill(3);
+			break;
 		}
-		o.getPA().refreshSkill(3);
-		c.oldSpellId = 0;
-		c.projectileStage = 0;
-		c.usingMagic = false;
-		c.castingMagic = false;
-		c.getPA().requestUpdates();
+		PlayerHandler.players[i].handleHitMask(damage);
 	}
 
 	public void applySmite(int index, int damage) {
@@ -1577,9 +1734,9 @@ public class CombatAssistant {
 			return;
 		if (PlayerHandler.players[index] != null) {
 			Client c2 = (Client) PlayerHandler.players[index];
-			c2.getLevel()[5] -= (int) (damage / 4);
-			if (c2.getLevel()[5] <= 0) {
-				c2.getLevel()[5] = 0;
+			c2.playerLevel[5] -= damage / 4;
+			if (c2.playerLevel[5] <= 0) {
+				c2.playerLevel[5] = 0;
 				c2.getCombat().resetPrayers();
 			}
 			c2.getPA().refreshSkill(5);
@@ -1597,71 +1754,26 @@ public class CombatAssistant {
 				int oY = PlayerHandler.players[c.oldPlayerIndex].getY();
 				int offX = (pY - oY) * -1;
 				int offY = (pX - oX) * -1;
-				int clientSpeed = 0;
-				int showDelay = 0;
-				int slope = 0;
-				int distance = c.distanceToPoint(oX, oY);
-				String itemName = c.getItems().getItemName(c.lastWeaponUsed).toLowerCase();
-				if (c.lastWeaponUsed == 9185 || c.lastWeaponUsed == 11785) {
-					clientSpeed = c.armadylSpecial ? 75 : 55;
-					showDelay = 45;
-					slope = 5;
-					if (c.armadylSpecial) {
-						c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, clientSpeed, 301, 46, 36,
-								-c.oldPlayerIndex - 1, showDelay, slope);
-					} else {
-						c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, clientSpeed, getRangeProjectileGFX(),
-								46, 36, -c.oldPlayerIndex - 1, showDelay, slope);
-					}
-					return;
-				} else if (itemName.contains("dart") || itemName.contains("knife") || itemName.contains("blowpipe")) {
-					clientSpeed = 35;
-					showDelay = 20;
-					slope = 13;
-					c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, clientSpeed, getRangeProjectileGFX(), 46,
-							36, -c.oldPlayerIndex - 1, showDelay, slope);
-					return;
-				} else if (c.lastWeaponUsed == 11235) {
-					if (distance <= 1) {
-						clientSpeed = 55;
-					} else if (distance > 1 && distance <= 3) {
-						clientSpeed = 55;
-					} else if (distance > 3 && distance <= 8) {
-						clientSpeed = 65;
-						c.hitDelay += 1;
-					} else {
-						clientSpeed = 75;
-					}
-					showDelay = 45;
-					slope = 15;
-					clientSpeed += 30;
-					c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, clientSpeed, getRangeProjectileGFX(), 41,
-							31, -c.oldPlayerIndex - 1, 36, 3);
-					c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, clientSpeed + 10, getRangeProjectileGFX(),
-							46, 36, -c.oldPlayerIndex - 1, 36, slope + 6);
-					return;
-				} else if (c.msbSpec) {
-					c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, 40 + (distance * 5), 249, 43, 35,
-							-c.oldPlayerIndex - 1, 36, 15);
-					c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, 65 + (distance * 5), 249, 43, 35,
-							-c.oldPlayerIndex - 1, 36, 15);
-					return;
-				} else {
-					clientSpeed = 55 + (distance * 5);
-					if (distance > 2) {
-						c.hitDelay += 1;
-					}
-					showDelay = 45;
-					slope = 15;
+				if (!c.msbSpec)
+					c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50,
+							getProjectileSpeed(), getRangeProjectileGFX(), 43,
+							31, -c.oldPlayerIndex - 1, getStartDelay());
+				else if (c.msbSpec) {
+					c.getPA().createPlayersProjectile2(pX, pY, offX, offY, 50,
+							getProjectileSpeed(), getRangeProjectileGFX(), 43,
+							31, -c.oldPlayerIndex - 1, getStartDelay(), 10);
+					c.msbSpec = false;
 				}
-				c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, clientSpeed, getRangeProjectileGFX(), 46, 36,
-						-c.oldPlayerIndex - 1, showDelay, slope);
+				if (usingDbow())
+					c.getPA().createPlayersProjectile2(pX, pY, offX, offY, 50,
+							getProjectileSpeed(), getRangeProjectileGFX(), 60,
+							31, -c.oldPlayerIndex - 1, getStartDelay(), 35);
 			}
 		}
 	}
 
 	public boolean usingDbow() {
-		return c.getEquipment()[c.playerWeapon] == 11235;
+		return c.playerEquipment[c.playerWeapon] == 11235;
 	}
 
 	/** Prayer **/
@@ -1675,12 +1787,12 @@ public class CombatAssistant {
 			c.sendMessage("Prayer has been disabled in this duel!");
 			return;
 		}
-		if (i == 24 && c.getLevel()[1] < 65) {
+		if (i == 24 && c.playerLevel[1] < 65) {
 			c.getPA().sendFrame36(c.PRAYER_GLOW[i], 0);
 			c.sendMessage("You may not use this prayer yet.");
 			return;
 		}
-		if (i == 25 && c.getLevel()[1] < 70) {
+		if (i == 25 && c.playerLevel[1] < 70) {
 			c.getPA().sendFrame36(c.PRAYER_GLOW[i], 0);
 			c.sendMessage("You may not use this prayer yet.");
 			return;
@@ -1691,8 +1803,8 @@ public class CombatAssistant {
 		int[] rangePray = { 3, 11, 19 };
 		int[] magePray = { 4, 12, 20 };
 
-		if (c.getLevel()[5] > 0 || !Constants.PRAYER_POINTS_REQUIRED) {
-			if (c.getPA().getLevelForXP(c.getExperience()[5]) >= c.PRAYER_LEVEL_REQUIRED[i]
+		if (c.playerLevel[5] > 0 || !Constants.PRAYER_POINTS_REQUIRED) {
+			if (c.getPA().getLevelForXP(c.playerXP[5]) >= c.PRAYER_LEVEL_REQUIRED[i]
 					|| !Constants.PRAYER_LEVEL_REQUIRED) {
 				boolean headIcon = false;
 				switch (i) {
@@ -1703,7 +1815,8 @@ public class CombatAssistant {
 						for (int j = 0; j < defPray.length; j++) {
 							if (defPray[j] != i) {
 								c.prayerActive[defPray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[defPray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[defPray[j]], 0);
 							}
 						}
 					}
@@ -1716,19 +1829,22 @@ public class CombatAssistant {
 						for (int j = 0; j < strPray.length; j++) {
 							if (strPray[j] != i) {
 								c.prayerActive[strPray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[strPray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[strPray[j]], 0);
 							}
 						}
 						for (int j = 0; j < rangePray.length; j++) {
 							if (rangePray[j] != i) {
 								c.prayerActive[rangePray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[rangePray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[rangePray[j]], 0);
 							}
 						}
 						for (int j = 0; j < magePray.length; j++) {
 							if (magePray[j] != i) {
 								c.prayerActive[magePray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[magePray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[magePray[j]], 0);
 							}
 						}
 					}
@@ -1741,19 +1857,22 @@ public class CombatAssistant {
 						for (int j = 0; j < atkPray.length; j++) {
 							if (atkPray[j] != i) {
 								c.prayerActive[atkPray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[atkPray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[atkPray[j]], 0);
 							}
 						}
 						for (int j = 0; j < rangePray.length; j++) {
 							if (rangePray[j] != i) {
 								c.prayerActive[rangePray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[rangePray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[rangePray[j]], 0);
 							}
 						}
 						for (int j = 0; j < magePray.length; j++) {
 							if (magePray[j] != i) {
 								c.prayerActive[magePray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[magePray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[magePray[j]], 0);
 							}
 						}
 					}
@@ -1766,25 +1885,29 @@ public class CombatAssistant {
 						for (int j = 0; j < atkPray.length; j++) {
 							if (atkPray[j] != i) {
 								c.prayerActive[atkPray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[atkPray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[atkPray[j]], 0);
 							}
 						}
 						for (int j = 0; j < strPray.length; j++) {
 							if (strPray[j] != i) {
 								c.prayerActive[strPray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[strPray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[strPray[j]], 0);
 							}
 						}
 						for (int j = 0; j < rangePray.length; j++) {
 							if (rangePray[j] != i) {
 								c.prayerActive[rangePray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[rangePray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[rangePray[j]], 0);
 							}
 						}
 						for (int j = 0; j < magePray.length; j++) {
 							if (magePray[j] != i) {
 								c.prayerActive[magePray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[magePray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[magePray[j]], 0);
 							}
 						}
 					}
@@ -1796,25 +1919,29 @@ public class CombatAssistant {
 						for (int j = 0; j < atkPray.length; j++) {
 							if (atkPray[j] != i) {
 								c.prayerActive[atkPray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[atkPray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[atkPray[j]], 0);
 							}
 						}
 						for (int j = 0; j < strPray.length; j++) {
 							if (strPray[j] != i) {
 								c.prayerActive[strPray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[strPray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[strPray[j]], 0);
 							}
 						}
 						for (int j = 0; j < rangePray.length; j++) {
 							if (rangePray[j] != i) {
 								c.prayerActive[rangePray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[rangePray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[rangePray[j]], 0);
 							}
 						}
 						for (int j = 0; j < magePray.length; j++) {
 							if (magePray[j] != i) {
 								c.prayerActive[magePray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[magePray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[magePray[j]], 0);
 							}
 						}
 					}
@@ -1856,31 +1983,36 @@ public class CombatAssistant {
 						for (int j = 0; j < atkPray.length; j++) {
 							if (atkPray[j] != i) {
 								c.prayerActive[atkPray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[atkPray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[atkPray[j]], 0);
 							}
 						}
 						for (int j = 0; j < strPray.length; j++) {
 							if (strPray[j] != i) {
 								c.prayerActive[strPray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[strPray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[strPray[j]], 0);
 							}
 						}
 						for (int j = 0; j < rangePray.length; j++) {
 							if (rangePray[j] != i) {
 								c.prayerActive[rangePray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[rangePray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[rangePray[j]], 0);
 							}
 						}
 						for (int j = 0; j < magePray.length; j++) {
 							if (magePray[j] != i) {
 								c.prayerActive[magePray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[magePray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[magePray[j]], 0);
 							}
 						}
 						for (int j = 0; j < defPray.length; j++) {
 							if (defPray[j] != i) {
 								c.prayerActive[defPray[j]] = false;
-								c.getPA().sendFrame36(c.PRAYER_GLOW[defPray[j]], 0);
+								c.getPA().sendFrame36(
+										c.PRAYER_GLOW[defPray[j]], 0);
 							}
 						}
 					}
@@ -1910,8 +2042,10 @@ public class CombatAssistant {
 				}
 			} else {
 				c.getPA().sendFrame36(c.PRAYER_GLOW[i], 0);
-				c.getPA().sendFrame126("You need a @blu@Prayer level of " + c.PRAYER_LEVEL_REQUIRED[i] + " to use "
-						+ c.PRAYER_NAME[i] + ".", 357);
+				c.getPA().sendFrame126(
+						"You need a @blu@Prayer level of "
+								+ c.PRAYER_LEVEL_REQUIRED[i] + " to use "
+								+ c.PRAYER_NAME[i] + ".", 357);
 				c.getPA().sendFrame126("Click here to continue", 358);
 				c.getPA().sendFrame164(356);
 			}
@@ -1927,22 +2061,312 @@ public class CombatAssistant {
 	 **/
 
 	public void activateSpecial(int weapon, int i) {
-		c.getSA().activateSpecial(weapon, i);
+		if (NPCHandler.npcs[i] == null && c.npcIndex > 0) {
+			return;
+		}
+		if (PlayerHandler.players[i] == null && c.playerIndex > 0) {
+			return;
+		}
+		c.doubleHit = false;
+		c.specEffect = 0;
+		c.projectileStage = 0;
+		c.specMaxHitIncrease = 2;
+		if (c.npcIndex > 0) {
+			c.oldNpcIndex = i;
+		} else if (c.playerIndex > 0) {
+			c.oldPlayerIndex = i;
+			PlayerHandler.players[i].underAttackBy = c.playerId;
+			PlayerHandler.players[i].logoutDelay = System.currentTimeMillis();
+			PlayerHandler.players[i].singleCombatDelay = System
+					.currentTimeMillis();
+			PlayerHandler.players[i].killerId = c.playerId;
+		}
+		switch (weapon) {
+
+		case 1305: // dragon long
+			c.gfx100(248);
+			c.startAnimation(1058);
+			c.hitDelay = getHitDelay(c.getItems()
+					.getItemName(c.playerEquipment[c.playerWeapon])
+					.toLowerCase());
+			c.specAccuracy = 1.10;
+			c.specDamage = 1.20;
+			break;
+
+		case 1215: // dragon daggers
+		case 1231:
+		case 5680:
+		case 5698:
+			c.gfx100(252);
+			c.startAnimation(1062);
+			c.hitDelay = getHitDelay(c.getItems()
+					.getItemName(c.playerEquipment[c.playerWeapon])
+					.toLowerCase());
+			c.doubleHit = true;
+			c.specAccuracy = 1.30;
+			c.specDamage = 1.05;
+			break;
+
+		case 11730:
+			c.gfx100(1224);
+			c.startAnimation(811);
+			c.hitDelay = getHitDelay(c.getItems()
+					.getItemName(c.playerEquipment[c.playerWeapon])
+					.toLowerCase());
+			c.doubleHit = true;
+			c.ssSpec = true;
+			c.specAccuracy = 1.30;
+			break;
+
+		case 4151: // whip
+			if (NPCHandler.npcs[i] != null) {
+				NPCHandler.npcs[i].gfx100(341);
+			}
+			c.specAccuracy = 1.10;
+			c.startAnimation(1658);
+			c.hitDelay = getHitDelay(c.getItems()
+					.getItemName(c.playerEquipment[c.playerWeapon])
+					.toLowerCase());
+			break;
+
+		case 11694: // ags
+			c.startAnimation(4304);
+			c.specDamage = 1.25;
+			c.specAccuracy = 1.85;
+			c.gfx0(1222);
+			c.hitDelay = getHitDelay(c.getItems()
+					.getItemName(c.playerEquipment[c.playerWeapon])
+					.toLowerCase());
+			break;
+
+		case 11700:
+			c.startAnimation(4302);
+			c.gfx0(1221);
+			c.specAccuracy = 1.25;
+			c.hitDelay = getHitDelay(c.getItems()
+					.getItemName(c.playerEquipment[c.playerWeapon])
+					.toLowerCase());
+			c.specEffect = 2;
+			break;
+
+		case 11696:
+			c.startAnimation(4301);
+			c.gfx0(1223);
+			c.specDamage = 1.10;
+			c.specAccuracy = 1.5;
+			c.hitDelay = getHitDelay(c.getItems()
+					.getItemName(c.playerEquipment[c.playerWeapon])
+					.toLowerCase());
+			c.specEffect = 3;
+			break;
+
+		case 11698:
+			c.startAnimation(4303);
+			c.gfx0(1220);
+			c.specAccuracy = 1.25;
+			c.specEffect = 4;
+			c.hitDelay = getHitDelay(c.getItems()
+					.getItemName(c.playerEquipment[c.playerWeapon])
+					.toLowerCase());
+			break;
+
+		case 1249:
+			c.startAnimation(405);
+			c.gfx100(253);
+			if (c.playerIndex > 0) {
+				Client o = (Client) PlayerHandler.players[i];
+				o.getPA().getSpeared(c.absX, c.absY);
+			}
+			break;
+
+		case 3204: // d hally
+			c.gfx100(282);
+			c.startAnimation(1203);
+			c.hitDelay = getHitDelay(c.getItems()
+					.getItemName(c.playerEquipment[c.playerWeapon])
+					.toLowerCase());
+			if (NPCHandler.npcs[i] != null && c.npcIndex > 0) {
+				if (!c.goodDistance(c.getX(), c.getY(),
+						NPCHandler.npcs[i].getX(), NPCHandler.npcs[i].getY(), 1)) {
+					c.doubleHit = true;
+				}
+			}
+			if (PlayerHandler.players[i] != null && c.playerIndex > 0) {
+				if (!c.goodDistance(c.getX(), c.getY(),
+						PlayerHandler.players[i].getX(),
+						PlayerHandler.players[i].getY(), 1)) {
+					c.doubleHit = true;
+					c.delayedDamage2 = Misc.random(calculateMeleeMaxHit());
+				}
+			}
+			break;
+
+		case 4153: // maul
+			c.startAnimation(1667);
+			c.hitDelay = getHitDelay(c.getItems()
+					.getItemName(c.playerEquipment[c.playerWeapon])
+					.toLowerCase());
+			/*
+			 * if (c.playerIndex > 0) gmaulPlayer(i); else gmaulNpc(i);
+			 */
+			c.gfx100(337);
+			break;
+
+		case 4587: // dscimmy
+			c.gfx100(347);
+			c.specEffect = 1;
+			c.startAnimation(1872);
+			c.hitDelay = getHitDelay(c.getItems()
+					.getItemName(c.playerEquipment[c.playerWeapon])
+					.toLowerCase());
+			break;
+
+		case 1434: // mace
+			c.startAnimation(1060);
+			c.gfx100(251);
+			c.specMaxHitIncrease = 3;
+			c.hitDelay = getHitDelay(c.getItems()
+					.getItemName(c.playerEquipment[c.playerWeapon])
+					.toLowerCase()) + 1;
+			c.specDamage = 1.35;
+			c.specAccuracy = 1.15;
+			break;
+
+		case 859: // magic long
+			c.usingBow = true;
+			c.bowSpecShot = 3;
+			c.rangeItemUsed = c.playerEquipment[c.playerArrows];
+			c.getItems().deleteArrow();
+			c.lastWeaponUsed = weapon;
+			c.startAnimation(426);
+			c.gfx100(250);
+			c.hitDelay = getHitDelay(c.getItems()
+					.getItemName(c.playerEquipment[c.playerWeapon])
+					.toLowerCase());
+			c.projectileStage = 1;
+			if (c.fightMode == 2)
+				c.attackTimer--;
+			break;
+
+		case 861: // magic short
+			c.usingBow = true;
+			c.bowSpecShot = 1;
+			c.rangeItemUsed = c.playerEquipment[c.playerArrows];
+			c.getItems().deleteArrow();
+			c.lastWeaponUsed = weapon;
+			c.startAnimation(1074);
+			c.hitDelay = 3;
+			c.projectileStage = 1;
+			c.hitDelay = getHitDelay(c.getItems()
+					.getItemName(c.playerEquipment[c.playerWeapon])
+					.toLowerCase());
+			if (c.fightMode == 2)
+				c.attackTimer--;
+			if (c.playerIndex > 0)
+				fireProjectilePlayer();
+			else if (c.npcIndex > 0)
+				fireProjectileNpc();
+			break;
+
+		case 11235: // dark bow
+			c.usingBow = true;
+			c.dbowSpec = true;
+			c.rangeItemUsed = c.playerEquipment[c.playerArrows];
+			c.getItems().deleteArrow();
+			c.getItems().deleteArrow();
+			c.lastWeaponUsed = weapon;
+			c.hitDelay = 3;
+			c.startAnimation(426);
+			c.projectileStage = 1;
+			c.gfx100(getRangeStartGFX());
+			c.hitDelay = getHitDelay(c.getItems()
+					.getItemName(c.playerEquipment[c.playerWeapon])
+					.toLowerCase());
+			if (c.fightMode == 2)
+				c.attackTimer--;
+			if (c.playerIndex > 0)
+				fireProjectilePlayer();
+			else if (c.npcIndex > 0)
+				fireProjectileNpc();
+			c.specAccuracy = 1.75;
+			c.specDamage = 1.50;
+			break;
+		}
+		c.delayedDamage = Misc.random(calculateMeleeMaxHit());
+		c.delayedDamage2 = Misc.random(calculateMeleeMaxHit());
+		c.usingSpecial = false;
+		c.getItems().updateSpecialBar();
 	}
 
 	public boolean checkSpecAmount(int weapon) {
-		if(c.specAmount >= c.getSA().specAmount()) {
-			c.specAmount -= c.getSA().specAmount();
-			c.getItems().addSpecialBar(weapon);
-			return true;
+		switch (weapon) {
+		case 1249:
+		case 1215:
+		case 1231:
+		case 5680:
+		case 5698:
+		case 1305:
+		case 1434:
+			if (c.specAmount >= 2.5) {
+				c.specAmount -= 2.5;
+				c.getItems().addSpecialBar(weapon);
+				return true;
+			}
+			return false;
+
+		case 4151:
+		case 11694:
+		case 11698:
+		case 4153:
+			if (c.specAmount >= 5) {
+				c.specAmount -= 5;
+				c.getItems().addSpecialBar(weapon);
+				return true;
+			}
+			return false;
+
+		case 3204:
+			if (c.specAmount >= 3) {
+				c.specAmount -= 3;
+				c.getItems().addSpecialBar(weapon);
+				return true;
+			}
+			return false;
+
+		case 1377:
+		case 11696:
+		case 11730:
+			if (c.specAmount >= 10) {
+				c.specAmount -= 10;
+				c.getItems().addSpecialBar(weapon);
+				return true;
+			}
+			return false;
+
+		case 4587:
+		case 859:
+		case 861:
+		case 11235:
+		case 11700:
+			if (c.specAmount >= 5.5) {
+				c.specAmount -= 5.5;
+				c.getItems().addSpecialBar(weapon);
+				return true;
+			}
+			return false;
+
+		default:
+			return true; // incase u want to test a weapon
 		}
-		return false;
 	}
 
 	public void resetPlayerAttack() {
 		c.usingMagic = false;
 		c.npcIndex = 0;
+		c.faceUpdate(0);
 		c.playerIndex = 0;
+		c.getPA().resetFollow();
+		// c.sendMessage("Reset attack.");
 	}
 
 	public int getCombatDifference(int combat1, int combat2) {
@@ -1961,17 +2385,12 @@ public class CombatAssistant {
 
 	public int getKillerId(int playerId) {
 		int oldDamage = 0;
+		int count = 0;
 		int killerId = 0;
 		for (int i = 1; i < Constants.MAX_PLAYERS; i++) {
 			if (PlayerHandler.players[i] != null) {
 				if (PlayerHandler.players[i].killedBy == playerId) {
-					if (PlayerHandler.players[i].withinDistance(PlayerHandler.players[playerId])) {
-						if (PlayerHandler.players[i].totalPlayerDamageDealt > oldDamage) {
-							oldDamage = PlayerHandler.players[i].totalPlayerDamageDealt;
-							killerId = i;
-						}
-					}
-					PlayerHandler.players[i].totalPlayerDamageDealt = 0;
+					
 					PlayerHandler.players[i].killedBy = 0;
 				}
 			}
@@ -2028,11 +2447,11 @@ public class CombatAssistant {
 	}
 
 	public void reducePrayerLevel() {
-		if (c.getLevel()[5] - 1 > 0) {
-			c.getLevel()[5] -= 1;
+		if (c.playerLevel[5] - 1 > 0) {
+			c.playerLevel[5] -= 1;
 		} else {
 			c.sendMessage("You have run out of prayer points!");
-			c.getLevel()[5] = 0;
+			c.playerLevel[5] = 0;
 			resetPrayers();
 			c.prayerId = -1;
 		}
@@ -2058,10 +2477,17 @@ public class CombatAssistant {
 		}
 		if (c.playerIndex == c.playerId)
 			return false;
-		if (c.inPits && PlayerHandler.players[c.playerIndex].inPits)
-			return true;
-		if (c.duelStatus == 5 && PlayerHandler.players[c.playerIndex].duelStatus == 5
-				&& PlayerHandler.players[c.playerIndex].arenas() && c.arenas()) {
+		if (PlayerHandler.players[c.playerIndex].inDuelArena()
+				&& c.duelStatus != 5 && !c.usingMagic) {
+			if (c.arenas() || c.duelStatus == 5) {
+				c.sendMessage("You can't challenge inside the arena!");
+				return false;
+			}
+			c.getTradeAndDuel().requestDuel(c.playerIndex);
+			return false;
+		}
+		if (c.duelStatus == 5
+				&& PlayerHandler.players[c.playerIndex].duelStatus == 5) {
 			if (PlayerHandler.players[c.playerIndex].duelingWith == c.getId()) {
 				return true;
 			} else {
@@ -2069,38 +2495,48 @@ public class CombatAssistant {
 				return false;
 			}
 		}
-		if (PlayerHandler.players[c.playerIndex].inSafeZone() && isAttackable(c.playerIndex)) {
-			c.sendMessage(PlayerHandler.players[c.playerIndex].playerName + " is in a safe zone.");
+		if (!PlayerHandler.players[c.playerIndex].inWild()) {
+			c.sendMessage("That player is not in the wilderness.");
 			c.stopMovement();
 			c.getCombat().resetPlayerAttack();
 			return false;
 		}
-		if (c.inSafeZone() && isAttackable(c.playerIndex)) {
-			c.sendMessage("You are not in a PVP zone.");
+		if (!c.inWild()) {
+			c.sendMessage("You are not in the wilderness.");
 			c.stopMovement();
 			c.getCombat().resetPlayerAttack();
 			return false;
 		}
-		if (!c.withinRange((Client) PlayerHandler.players[c.playerIndex])) {
-			c.sendMessage("Your combat level difference is too great to attack that player here.");
-			c.stopMovement();
-			c.getCombat().resetPlayerAttack();
-			return false;
-		}
-		if (!PlayerHandler.players[c.playerIndex].inMulti()) {
-			if (PlayerHandler.players[c.playerIndex].underAttackBy != c.playerId
-					&& PlayerHandler.players[c.playerIndex].underAttackBy != 0) {
-				c.sendMessage("That player is already in combat.");
+		if (Constants.COMBAT_LEVEL_DIFFERENCE) {
+			int combatDif1 = c.getCombat().getCombatDifference(c.combatLevel,
+					PlayerHandler.players[c.playerIndex].combatLevel);
+			if (combatDif1 > c.wildLevel
+					|| combatDif1 > PlayerHandler.players[c.playerIndex].wildLevel) {
+				c.sendMessage("Your combat level difference is too great to attack that player here.");
 				c.stopMovement();
 				c.getCombat().resetPlayerAttack();
 				return false;
 			}
-			if (PlayerHandler.players[c.playerIndex].playerId != c.underAttackBy && c.underAttackBy != 0
-					|| c.underAttackBy2 > 0) {
-				c.sendMessage("You are already in combat.");
-				c.stopMovement();
-				c.getCombat().resetPlayerAttack();
-				return false;
+		}
+
+		if (Constants.SINGLE_AND_MULTI_ZONES) {
+			if (!PlayerHandler.players[c.playerIndex].inMulti()) { // single
+																	// combat
+																	// zones
+				if (PlayerHandler.players[c.playerIndex].underAttackBy != c.playerId
+						&& PlayerHandler.players[c.playerIndex].underAttackBy != 0) {
+					c.sendMessage("That player is already in combat.");
+					c.stopMovement();
+					c.getCombat().resetPlayerAttack();
+					return false;
+				}
+				if (PlayerHandler.players[c.playerIndex].playerId != c.underAttackBy
+						&& c.underAttackBy != 0 || c.underAttackBy2 > 0) {
+					c.sendMessage("You are already in combat.");
+					c.stopMovement();
+					c.getCombat().resetPlayerAttack();
+					return false;
+				}
 			}
 		}
 		return true;
@@ -2112,27 +2548,27 @@ public class CombatAssistant {
 		}
 		if (i == c.playerId)
 			return false;
-		if (c.inPits && PlayerHandler.players[i].inPits)
-			return true;
 		if (!PlayerHandler.players[i].inWild()) {
 			return false;
 		}
 		if (Constants.COMBAT_LEVEL_DIFFERENCE) {
-			int combatDif1 = c.getCombat().getCombatDifference(c.combatLevel, PlayerHandler.players[i].combatLevel);
-			if (combatDif1 > c.wildLevel || combatDif1 > PlayerHandler.players[i].wildLevel) {
+			int combatDif1 = c.getCombat().getCombatDifference(c.combatLevel,
+					PlayerHandler.players[i].combatLevel);
+			if (combatDif1 > c.wildLevel
+					|| combatDif1 > PlayerHandler.players[i].wildLevel) {
 				c.sendMessage("Your combat level difference is too great to attack that player here.");
 				return false;
 			}
 		}
 
 		if (Constants.SINGLE_AND_MULTI_ZONES) {
-			if (!PlayerHandler.players[i].inMulti()) { // single combat
-														// zones
+			if (!PlayerHandler.players[i].inMulti()) { // single combat zones
 				if (PlayerHandler.players[i].underAttackBy != c.playerId
 						&& PlayerHandler.players[i].underAttackBy != 0) {
 					return false;
 				}
-				if (PlayerHandler.players[i].playerId != c.underAttackBy && c.underAttackBy != 0) {
+				if (PlayerHandler.players[i].playerId != c.underAttackBy
+						&& c.underAttackBy != 0) {
 					c.sendMessage("You are already in combat.");
 					return false;
 				}
@@ -2145,13 +2581,195 @@ public class CombatAssistant {
 	 * Weapon stand, walk, run, etc emotes
 	 **/
 
-	public void getPlayerAnimIndex() {
-		c.playerStandIndex = WeaponAnimations.standAnimation(c);
+	public void getPlayerAnimIndex(String weaponName) {
+		c.playerStandIndex = 0x328;
 		c.playerTurnIndex = 0x337;
-		c.playerWalkIndex = WeaponAnimations.walkAnimation(c);
-		c.playerRunIndex = WeaponAnimations.runAnimation(c);
-		WeaponAnimations.setTurnAnimations(c);
-		c.getPA().requestUpdates();
+		c.playerWalkIndex = 0x333;
+		c.playerTurn180Index = 0x334;
+		c.playerTurn90CWIndex = 0x335;
+		c.playerTurn90CCWIndex = 0x336;
+		c.playerRunIndex = 0x338;
+
+		if (weaponName.contains("halberd") || weaponName.contains("guthan")) {
+			c.playerStandIndex = 809;
+			c.playerWalkIndex = 1146;
+			c.playerRunIndex = 1210;
+			return;
+		}
+		if (weaponName.contains("dharok")) {
+			c.playerStandIndex = 0x811;
+			c.playerWalkIndex = 0x67F;
+			c.playerRunIndex = 0x680;
+			return;
+		}
+		if (weaponName.contains("ahrim")) {
+			c.playerStandIndex = 809;
+			c.playerWalkIndex = 1146;
+			c.playerRunIndex = 1210;
+			return;
+		}
+		if (weaponName.contains("verac")) {
+			c.playerStandIndex = 1832;
+			c.playerWalkIndex = 1830;
+			c.playerRunIndex = 1831;
+			return;
+		}
+		if (weaponName.contains("wand") || weaponName.contains("staff")) {
+			c.playerStandIndex = 809;
+			c.playerRunIndex = 1210;
+			c.playerWalkIndex = 1146;
+			return;
+		}
+		if (weaponName.contains("karil")) {
+			c.playerStandIndex = 2074;
+			c.playerWalkIndex = 2076;
+			c.playerRunIndex = 2077;
+			return;
+		}
+		if (weaponName.contains("2h sword") || weaponName.contains("godsword")
+				|| weaponName.contains("saradomin sw")) {
+			c.playerStandIndex = 4300;
+			c.playerWalkIndex = 4306;
+			c.playerRunIndex = 4305;
+			return;
+		}
+		if (weaponName.contains("bow")) {
+			c.playerStandIndex = 808;
+			c.playerWalkIndex = 819;
+			c.playerRunIndex = 824;
+			return;
+		}
+
+		switch (c.playerEquipment[c.playerWeapon]) {
+		case 4151:
+			c.playerStandIndex = 1832;
+			c.playerWalkIndex = 1660;
+			c.playerRunIndex = 1661;
+			break;
+		case 6528:
+			c.playerStandIndex = 0x811;
+			c.playerWalkIndex = 2064;
+			c.playerRunIndex = 1664;
+			break;
+		case 4153:
+			c.playerStandIndex = 1662;
+			c.playerWalkIndex = 1663;
+			c.playerRunIndex = 1664;
+			break;
+		case 11694:
+		case 11696:
+		case 11730:
+		case 11698:
+		case 11700:
+			c.playerStandIndex = 4300;
+			c.playerWalkIndex = 4306;
+			c.playerRunIndex = 4305;
+			break;
+		case 1305:
+			c.playerStandIndex = 809;
+			break;
+		}
+	}
+
+	/**
+	 * Weapon emotes
+	 **/
+
+	public int getWepAnim(String weaponName) {
+		if (c.playerEquipment[c.playerWeapon] <= 0) {
+			switch (c.fightMode) {
+			case 0:
+				return 422;
+			case 2:
+				return 423;
+			case 1:
+				return 451;
+			}
+		}
+		if (weaponName.contains("knife") || weaponName.contains("dart")
+				|| weaponName.contains("javelin")
+				|| weaponName.contains("thrownaxe")) {
+			return 806;
+		}
+		if (weaponName.contains("halberd")) {
+			return 440;
+		}
+		if (weaponName.startsWith("dragon dagger")) {
+			return 402;
+		}
+		if (weaponName.endsWith("dagger")) {
+			return 412;
+		}
+		if (weaponName.contains("2h sword") || weaponName.contains("godsword")
+				|| weaponName.contains("aradomin sword")) {
+			return 4307;
+		}
+		if (weaponName.contains("sword")) {
+			return 451;
+		}
+		if (weaponName.contains("karil")) {
+			return 2075;
+		}
+		if (weaponName.contains("bow") && !weaponName.contains("'bow")) {
+			return 426;
+		}
+		if (weaponName.contains("'bow"))
+			return 4230;
+
+		switch (c.playerEquipment[c.playerWeapon]) { // if you don't want to use
+														// strings
+		case 6522:
+			return 2614;
+		case 4153: // granite maul
+			return 1665;
+		case 4726: // guthan
+			return 2080;
+		case 4747: // torag
+			return 0x814;
+		case 4718: // dharok
+			return 2067;
+		case 4710: // ahrim
+			return 406;
+		case 4755: // verac
+			return 2062;
+		case 4734: // karil
+			return 2075;
+		case 4151:
+			return 1658;
+		case 6528:
+			return 2661;
+		default:
+			return 451;
+		}
+	}
+
+	/**
+	 * Block emotes
+	 */
+	public int getBlockEmote() {
+		if (c.playerEquipment[c.playerShield] >= 8844
+				&& c.playerEquipment[c.playerShield] <= 8850) {
+			return 4177;
+		}
+		switch (c.playerEquipment[c.playerWeapon]) {
+		case 4755:
+			return 2063;
+
+		case 4153:
+			return 1666;
+
+		case 4151:
+			return 1659;
+
+		case 11694:
+		case 11698:
+		case 11700:
+		case 11696:
+		case 11730:
+			return -1;
+		default:
+			return 404;
+		}
 	}
 
 	/**
@@ -2170,10 +2788,10 @@ public class CombatAssistant {
 				return 5;
 			}
 		}
-		if (c.getEquipment()[c.playerWeapon] == -1)
+		if (c.playerEquipment[c.playerWeapon] == -1)
 			return 4;// unarmed
 
-		switch (c.getEquipment()[c.playerWeapon]) {
+		switch (c.playerEquipment[c.playerWeapon]) {
 		case 11235:
 			return 9;
 		case 11730:
@@ -2193,7 +2811,8 @@ public class CombatAssistant {
 		else if (s.equals("ahrims staff"))
 			return 6;
 		else if (s.contains("staff")) {
-			if (s.contains("zamarok") || s.contains("guthix") || s.contains("saradomian") || s.contains("slayer")
+			if (s.contains("zamarok") || s.contains("guthix")
+					|| s.contains("saradomian") || s.contains("slayer")
 					|| s.contains("ancient"))
 				return 4;
 			else
@@ -2205,11 +2824,12 @@ public class CombatAssistant {
 				return 4;
 			else if (s.contains("Ogre"))
 				return 8;
-			else if (s.contains("short") || s.contains("hunt") || s.contains("sword"))
+			else if (s.contains("short") || s.contains("hunt")
+					|| s.contains("sword"))
 				return 4;
 			else if (s.contains("long") || s.contains("crystal"))
 				return 6;
-			else if (s.contains("crossbow"))
+			else if (s.contains("'bow"))
 				return 7;
 
 			return 5;
@@ -2259,9 +2879,9 @@ public class CombatAssistant {
 			return 4;
 		else if (s.equals("toktz-mej-tal"))// staff
 			return 6;
-		else if (s.contains("whip") || s.contains("tentacle"))
+		else if (s.contains("whip"))
 			return 4;
-		else if (s.contains("dart") || s.contains("blowpipe"))
+		else if (s.contains("dart"))
 			return 3;
 		else if (s.contains("knife"))
 			return 3;
@@ -2285,38 +2905,42 @@ public class CombatAssistant {
 			}
 		} else {
 
-			if (weaponName.contains("knife") || weaponName.contains("dart") || weaponName.contains("javelin")
-					|| weaponName.contains("thrownaxe") || weaponName.contains("blowpipe")) {
+			if (weaponName.contains("knife") || weaponName.contains("dart")
+					|| weaponName.contains("javelin")
+					|| weaponName.contains("thrownaxe")) {
 				return 3;
 			}
 			if (weaponName.contains("cross") || weaponName.contains("c'bow")) {
-				return 3;
+				return 4;
 			}
-			if (weaponName.contains("bow")) {
-				return 3;
+			if (weaponName.contains("bow") && !c.dbowSpec) {
+				return 4;
 			} else if (c.dbowSpec) {
-				return 3;
+				return 4;
 			}
 
-			switch (c.getEquipment()[c.playerWeapon]) {
+			switch (c.playerEquipment[c.playerWeapon]) {
 			case 6522: // Toktz-xil-ul
 				return 3;
+
+			default:
+				return 2;
 			}
-			return 2;
 		}
 	}
 
 	public int getRequiredDistance() {
-		if (!c.usingMagic && !c.usingBow && c.freezeTimer <= 0) {
-			return c.isMoving ? 3 : 1;
-		} else if (c.usingMagic || c.usingBow) {
-			return 9;
+		if (c.followId > 0 && c.freezeTimer <= 0 && !c.isMoving)
+			return 2;
+		else if (c.followId > 0 && c.freezeTimer <= 0 && c.isMoving) {
+			return 3;
+		} else {
+			return 1;
 		}
-		return 1;
 	}
 
 	public boolean usingHally() {
-		switch (c.getEquipment()[c.playerWeapon]) {
+		switch (c.playerEquipment[c.playerWeapon]) {
 		case 3190:
 		case 3192:
 		case 3194:
@@ -2337,114 +2961,112 @@ public class CombatAssistant {
 	 **/
 
 	public int calculateMeleeAttack() {
-		int attackLevel = c.getLevel()[0];
+		int attackLevel = c.playerLevel[0];
+		// 2, 5, 11, 18, 19
 		if (c.prayerActive[2]) {
-			attackLevel = (int) ((double) attackLevel
-					+ (double) c.getLevelForXP(c.getExperience()[c.playerAttack]) * 0.05D);
+			attackLevel += c.getLevelForXP(c.playerXP[c.playerAttack]) * 0.05;
 		} else if (c.prayerActive[7]) {
-			attackLevel = (int) ((double) attackLevel
-					+ (double) c.getLevelForXP(c.getExperience()[c.playerAttack]) * 0.1D);
+			attackLevel += c.getLevelForXP(c.playerXP[c.playerAttack]) * 0.1;
 		} else if (c.prayerActive[15]) {
-			attackLevel = (int) ((double) attackLevel
-					+ (double) c.getLevelForXP(c.getExperience()[c.playerAttack]) * 0.15D);
+			attackLevel += c.getLevelForXP(c.playerXP[c.playerAttack]) * 0.15;
 		} else if (c.prayerActive[24]) {
-			attackLevel = (int) ((double) attackLevel
-					+ (double) c.getLevelForXP(c.getExperience()[c.playerAttack]) * 0.15D);
+			attackLevel += c.getLevelForXP(c.playerXP[c.playerAttack]) * 0.15;
 		} else if (c.prayerActive[25]) {
-			attackLevel = (int) ((double) attackLevel
-					+ (double) c.getLevelForXP(c.getExperience()[c.playerAttack]) * 0.2D);
+			attackLevel += c.getLevelForXP(c.playerXP[c.playerAttack]) * 0.2;
 		}
-
-		if (c.fullVoidMelee()) {
-			attackLevel = (int) ((double) attackLevel
-					+ (double) c.getLevelForXP(c.getExperience()[c.playerAttack]) * 0.1D);
-		}
-
-		attackLevel = (int) ((double) attackLevel * c.specAccuracy);
+		if (c.fullVoidMelee())
+			attackLevel += c.getLevelForXP(c.playerXP[c.playerAttack]) * 0.1;
+		attackLevel *= c.specAccuracy;
+		// c.sendMessage("Attack: " + (attackLevel +
+		// (c.playerBonus[bestMeleeAtk()] * 2)));
 		int i = c.playerBonus[bestMeleeAtk()];
 		i += c.bonusAttack;
-
-		int toReturn = (int) ((double) attackLevel + (double) attackLevel * 0.15D + (double) i + (double) i * 0.5D);
-
-		return toReturn;
+		if (c.playerEquipment[c.playerAmulet] == 11128
+				&& c.playerEquipment[c.playerWeapon] == 6528) {
+			i *= 1.30;
+		}
+		return (int) (attackLevel + (attackLevel * 0.15) + (i + i * 0.05));
 	}
 
 	public int bestMeleeAtk() {
-		return c.playerBonus[0] > c.playerBonus[1] && c.playerBonus[0] > c.playerBonus[2] ? 0
-				: (c.playerBonus[1] > c.playerBonus[0] && c.playerBonus[1] > c.playerBonus[2] ? 1
-						: (c.playerBonus[2] > c.playerBonus[1] && c.playerBonus[2] > c.playerBonus[0] ? 2 : 0));
+		if (c.playerBonus[0] > c.playerBonus[1]
+				&& c.playerBonus[0] > c.playerBonus[2])
+			return 0;
+		if (c.playerBonus[1] > c.playerBonus[0]
+				&& c.playerBonus[1] > c.playerBonus[2])
+			return 1;
+		return c.playerBonus[2] <= c.playerBonus[1]
+				|| c.playerBonus[2] <= c.playerBonus[0] ? 0 : 2;
 	}
 
 	public int calculateMeleeMaxHit() {
-		int maxHit = 0;
-		double prayerMultiplier = 1;
-		double otherBonusMultiplier = 1; // TODO: void melee = 1.2, slayer helm
-											// = 1.15, salve amulet = 1.15,
-											// salve amulet(e) = 1.2
-		int strengthLevel = c.getLevel()[2];
-		int combatStyleBonus = 0;
-
+		double maxHit = 0;
+		int strBonus = c.playerBonus[10];
+		int strength = c.playerLevel[2];
+		int lvlForXP = c.getLevelForXP(c.playerXP[2]);
 		if (c.prayerActive[1]) {
-			prayerMultiplier = 1.05;
+			strength += (int) (lvlForXP * .05);
 		} else if (c.prayerActive[6]) {
-			prayerMultiplier = 1.1;
+			strength += (int) (lvlForXP * .10);
 		} else if (c.prayerActive[14]) {
-			prayerMultiplier = 1.15;
+			strength += (int) (lvlForXP * .15);
 		} else if (c.prayerActive[24]) {
-			prayerMultiplier = 1.18;
+			strength += (int) (lvlForXP * .18);
 		} else if (c.prayerActive[25]) {
-			prayerMultiplier = 1.23;
+			strength += (int) (lvlForXP * .23);
 		}
-
-		if (c.fullVoidMelee()) {
-			otherBonusMultiplier = 1.1;
+		if (c.playerEquipment[c.playerHat] == 2526
+				&& c.playerEquipment[c.playerChest] == 2520
+				&& c.playerEquipment[c.playerLegs] == 2522) {
+			maxHit += (maxHit * 10 / 100);
 		}
-
-		int effectiveStrengthDamage = (int) ((strengthLevel * prayerMultiplier * otherBonusMultiplier)
-				+ combatStyleBonus);
-		double baseDamage = 1.3 + (effectiveStrengthDamage / 10) + (c.getCombatBonus()[0] / 80)
-				+ ((effectiveStrengthDamage * c.getCombatBonus()[0]) / 640);
-
-		maxHit = (int) (baseDamage * c.specDamage);
-
-		if (c.getEquipment()[c.playerWeapon] == 4718 && c.getEquipment()[c.playerHat] == 4716
-				&& c.getEquipment()[c.playerChest] == 4720 && c.getEquipment()[c.playerLegs] == 4722) {
-			int hpLost = c.getPA().getLevelForXP(c.getExperience()[3]) - c.getLevel()[3];
-			maxHit += hpLost * 0.35;
+		maxHit += 1.05D + strBonus * strength * 0.00175D;
+		maxHit += strength * 0.11D;
+		if (c.playerEquipment[c.playerWeapon] == 4718
+				&& c.playerEquipment[c.playerHat] == 4716
+				&& c.playerEquipment[c.playerChest] == 4720
+				&& c.playerEquipment[c.playerLegs] == 4722) {
+			maxHit += (c.getPA().getLevelForXP(c.playerXP[3]) - c.playerLevel[3]) / 2;
 		}
-		if (c.getEquipment()[3] == 6528 && c.getEquipment()[c.playerAmulet] == 11128) {
-			maxHit += ((int) maxHit * .20);
+		if (c.specDamage > 1)
+			maxHit = (int) (maxHit * c.specDamage);
+		if (maxHit < 0)
+			maxHit = 1;
+		if (c.fullVoidMelee())
+			maxHit = (int) (maxHit * 1.10);
+		if (c.playerEquipment[c.playerAmulet] == 11128
+				&& c.playerEquipment[c.playerWeapon] == 6528) {
+			maxHit *= 1.20;
 		}
 		return (int) Math.floor(maxHit);
 	}
 
 	public int calculateMeleeDefence() {
-		int defenceLevel = c.getLevel()[1];
+		int defenceLevel = c.playerLevel[1];
 		int i = c.playerBonus[bestMeleeDef()];
 		if (c.prayerActive[0]) {
-			defenceLevel = (int) ((double) defenceLevel
-					+ (double) c.getLevelForXP(c.getExperience()[c.playerDefence]) * 0.05D);
+			defenceLevel += c.getLevelForXP(c.playerXP[c.playerDefence]) * 0.05;
 		} else if (c.prayerActive[5]) {
-			defenceLevel = (int) ((double) defenceLevel
-					+ (double) c.getLevelForXP(c.getExperience()[c.playerDefence]) * 0.1D);
+			defenceLevel += c.getLevelForXP(c.playerXP[c.playerDefence]) * 0.1;
 		} else if (c.prayerActive[13]) {
-			defenceLevel = (int) ((double) defenceLevel
-					+ (double) c.getLevelForXP(c.getExperience()[c.playerDefence]) * 0.15D);
+			defenceLevel += c.getLevelForXP(c.playerXP[c.playerDefence]) * 0.15;
 		} else if (c.prayerActive[24]) {
-			defenceLevel = (int) ((double) defenceLevel
-					+ (double) c.getLevelForXP(c.getExperience()[c.playerDefence]) * 0.2D);
+			defenceLevel += c.getLevelForXP(c.playerXP[c.playerDefence]) * 0.2;
 		} else if (c.prayerActive[25]) {
-			defenceLevel = (int) ((double) defenceLevel
-					+ (double) c.getLevelForXP(c.getExperience()[c.playerDefence]) * 0.25D);
+			defenceLevel += c.getLevelForXP(c.playerXP[c.playerDefence]) * 0.25;
 		}
-		double mod = 1.0D;
-		return (int) (((double) defenceLevel + (double) defenceLevel * 0.05D + (double) i + (double) i * 0.05D) * mod);
+		return (int) (defenceLevel + (defenceLevel * 0.15) + (i + i * 0.05));
 	}
 
 	public int bestMeleeDef() {
-		return c.playerBonus[5] > c.playerBonus[6] && c.playerBonus[5] > c.playerBonus[7] ? 5
-				: (c.playerBonus[6] > c.playerBonus[5] && c.playerBonus[6] > c.playerBonus[7] ? 6
-						: (c.playerBonus[7] > c.playerBonus[5] && c.playerBonus[7] > c.playerBonus[6] ? 7 : 5));
+		if (c.playerBonus[5] > c.playerBonus[6]
+				&& c.playerBonus[5] > c.playerBonus[7])
+			return 5;
+		if (c.playerBonus[6] > c.playerBonus[5]
+				&& c.playerBonus[6] > c.playerBonus[7])
+			return 6;
+		return c.playerBonus[7] <= c.playerBonus[5]
+				|| c.playerBonus[7] <= c.playerBonus[6] ? 5 : 7;
 	}
 
 	/**
@@ -2452,10 +3074,10 @@ public class CombatAssistant {
 	 **/
 
 	public int calculateRangeAttack() {
-		int attackLevel = c.getLevel()[4];
+		int attackLevel = c.playerLevel[4];
 		attackLevel *= c.specAccuracy;
 		if (c.fullVoidRange())
-			attackLevel += c.getLevelForXP(c.getExperience()[c.playerRanged]) * 0.1;
+			attackLevel += c.getLevelForXP(c.playerXP[c.playerRanged]) * 0.1;
 		if (c.prayerActive[3])
 			attackLevel *= 1.05;
 		else if (c.prayerActive[11])
@@ -2470,149 +3092,206 @@ public class CombatAssistant {
 	}
 
 	public int calculateRangeDefence() {
-		int defenceLevel = c.getLevel()[1];
+		int defenceLevel = c.playerLevel[1];
 		if (c.prayerActive[0]) {
-			defenceLevel += c.getLevelForXP(c.getExperience()[c.playerDefence]) * 0.05;
+			defenceLevel += c.getLevelForXP(c.playerXP[c.playerDefence]) * 0.05;
 		} else if (c.prayerActive[5]) {
-			defenceLevel += c.getLevelForXP(c.getExperience()[c.playerDefence]) * 0.1;
+			defenceLevel += c.getLevelForXP(c.playerXP[c.playerDefence]) * 0.1;
 		} else if (c.prayerActive[13]) {
-			defenceLevel += c.getLevelForXP(c.getExperience()[c.playerDefence]) * 0.15;
+			defenceLevel += c.getLevelForXP(c.playerXP[c.playerDefence]) * 0.15;
 		} else if (c.prayerActive[24]) {
-			defenceLevel += c.getLevelForXP(c.getExperience()[c.playerDefence]) * 0.2;
+			defenceLevel += c.getLevelForXP(c.playerXP[c.playerDefence]) * 0.2;
 		} else if (c.prayerActive[25]) {
-			defenceLevel += c.getLevelForXP(c.getExperience()[c.playerDefence]) * 0.25;
+			defenceLevel += c.getLevelForXP(c.playerXP[c.playerDefence]) * 0.25;
 		}
-		return (int) (defenceLevel + c.playerBonus[9] + (c.playerBonus[9] / 2));
+		return defenceLevel + c.playerBonus[9] + (c.playerBonus[9] / 2);
 	}
 
 	public boolean usingBolts() {
-		return c.getEquipment()[c.playerArrows] >= 9130 && c.getEquipment()[c.playerArrows] <= 9145
-				|| c.getEquipment()[c.playerArrows] >= 9230 && c.getEquipment()[c.playerArrows] <= 9245;
+		return c.playerEquipment[c.playerArrows] >= 9130
+				&& c.playerEquipment[c.playerArrows] <= 9145
+				|| c.playerEquipment[c.playerArrows] >= 9230
+				&& c.playerEquipment[c.playerArrows] <= 9245;
 	}
 
 	public int rangeMaxHit() {
-		int a = c.getLevel()[4];
-		int d = getRangeStr(c.usingBow ? c.lastArrowUsed : c.rangeItemUsed);
-		double b = 1.00;
-		if (c.prayerActive[3]) {
-			b *= 1.05;
-		} else if (c.prayerActive[11]) {
-			b *= 1.10;
-		} else if (c.prayerActive[19]) {
-			b *= 1.15;
-		}
-		if (c.fullVoidRange()) {
-			b *= 1.20;
-		}
-		double e = Math.floor(a * b);
-		if (c.fightMode == 0) {
-			e = (e + 3.0);
-		}
-		double darkbow = 1.0;
-		if (c.dbowSpec) {
-			if (c.lastWeaponUsed == 11235) {
-				if (c.lastArrowUsed == 11212) {
-					darkbow = 1.5;
-				} else {
-					darkbow = 1.3;
-				}
-			}
-		}
-		double max = (1.3 + e / 10 + d / 80 + e * d / 640) * darkbow;
+		int rangeLevel = c.playerLevel[4];
+		double modifier = 1.0;
+		double wtf = c.specDamage;
+		int itemUsed = c.usingBow ? c.lastArrowUsed : c.lastWeaponUsed;
+		if (c.prayerActive[3])
+			modifier += 0.05;
+		else if (c.prayerActive[11])
+			modifier += 0.10;
+		else if (c.prayerActive[19])
+			modifier += 0.15;
+		if (c.fullVoidRange())
+			modifier += 0.20;
+		double c = modifier * rangeLevel;
+		int rangeStr = getRangeStr(itemUsed);
+		double max = (c + 8) * (rangeStr + 64) / 640;
+		if (wtf != 1)
+			max *= wtf;
+		if (max < 1)
+			max = 1;
 		return (int) max;
 	}
 
 	public int getRangeStr(int i) {
-		int str = 0;
-		int[][] data = { { 877, 10 }, { 9140, 46 }, { 9145, 36 }, { 9141, 64 }, { 9142, 82 }, { 9143, 100 },
-				{ 9144, 115 }, { 9236, 14 }, { 9237, 30 }, { 9238, 48 }, { 9239, 66 }, { 9240, 83 }, { 9241, 85 },
-				{ 9242, 103 }, { 9243, 105 }, { 9244, 117 }, { 9245, 120 }, { 882, 7 }, { 884, 10 }, { 886, 16 },
-				{ 888, 22 }, { 890, 31 }, { 892, 49 }, { 4740, 55 }, { 11212, 60 }, { 806, 1 }, { 807, 3 }, { 808, 4 },
-				{ 809, 7 }, { 810, 10 }, { 811, 14 }, { 12926, 60 }, { 11230, 20 }, { 864, 3 }, { 863, 4 }, { 865, 7 },
-				{ 866, 10 }, { 867, 14 }, { 868, 24 }, { 825, 6 }, { 826, 10 }, { 827, 12 }, { 828, 18 }, { 829, 28 },
-				{ 830, 42 }, { 800, 5 }, { 801, 7 }, { 802, 11 }, { 803, 16 }, { 804, 23 }, { 805, 36 }, { 9976, 0 },
-				{ 9977, 15 }, { 4212, 70 }, { 4214, 70 }, { 4215, 70 }, { 4216, 70 }, { 4217, 70 }, { 4218, 70 },
-				{ 4219, 70 }, { 4220, 70 }, { 4221, 70 }, { 4222, 70 }, { 4223, 70 }, { 6522, 49 }, { 10034, 15 }, };
-		for (int l = 0; l < data.length; l++) {
-			if (i == data[l][0]) {
-				str = data[l][1];
-			}
+		if (i == 4214)
+			return 70;
+		switch (i) {
+		// bronze to rune bolts
+		case 877:
+			return 10;
+		case 9140:
+			return 46;
+		case 9141:
+			return 64;
+		case 9142:
+		case 9241:
+		case 9240:
+			return 82;
+		case 9143:
+		case 9243:
+		case 9242:
+			return 100;
+		case 9144:
+		case 9244:
+		case 9245:
+			return 115;
+			// bronze to dragon arrows
+		case 882:
+			return 7;
+		case 884:
+			return 10;
+		case 886:
+			return 16;
+		case 888:
+			return 22;
+		case 890:
+			return 31;
+		case 892:
+		case 4740:
+			return 49;
+		case 11212:
+			return 60;
+			// knifes
+		case 864:
+			return 3;
+		case 863:
+			return 4;
+		case 865:
+			return 7;
+		case 866:
+			return 10;
+		case 867:
+			return 14;
+		case 868:
+			return 24;
 		}
-		return str;
+		return 0;
 	}
 
 	/*
-	 * public int rangeMaxHit() { int rangehit = 0; rangehit += c.getLevel()[4]
+	 * public int rangeMaxHit() { int rangehit = 0; rangehit += c.playerLevel[4]
 	 * / 7.5; int weapon = c.lastWeaponUsed; int Arrows = c.lastArrowUsed; if
-	 * (weapon == 4223) {//Cbow 1/10 rangehit = 2; rangehit += c.getLevel()[4] /
-	 * 7; } else if (weapon == 4222) {//Cbow 2/10 rangehit = 3; rangehit +=
-	 * c.getLevel()[4] / 7; } else if (weapon == 4221) {//Cbow 3/10 rangehit =
-	 * 3; rangehit += c.getLevel()[4] / 6.5; } else if (weapon == 4220) {//Cbow
-	 * 4/10 rangehit = 4; rangehit += c.getLevel()[4] / 6.5; } else if (weapon
-	 * == 4219) {//Cbow 5/10 rangehit = 4; rangehit += c.getLevel()[4] / 6; }
+	 * (weapon == 4223) {//Cbow 1/10 rangehit = 2; rangehit += c.playerLevel[4]
+	 * / 7; } else if (weapon == 4222) {//Cbow 2/10 rangehit = 3; rangehit +=
+	 * c.playerLevel[4] / 7; } else if (weapon == 4221) {//Cbow 3/10 rangehit =
+	 * 3; rangehit += c.playerLevel[4] / 6.5; } else if (weapon == 4220) {//Cbow
+	 * 4/10 rangehit = 4; rangehit += c.playerLevel[4] / 6.5; } else if (weapon
+	 * == 4219) {//Cbow 5/10 rangehit = 4; rangehit += c.playerLevel[4] / 6; }
 	 * else if (weapon == 4218) {//Cbow 6/10 rangehit = 5; rangehit +=
-	 * c.getLevel()[4] / 6; } else if (weapon == 4217) {//Cbow 7/10 rangehit =
-	 * 5; rangehit += c.getLevel()[4] / 5.5; } else if (weapon == 4216) {//Cbow
-	 * 8/10 rangehit = 6; rangehit += c.getLevel()[4] / 5.5; } else if (weapon
-	 * == 4215) {//Cbow 9/10 rangehit = 6; rangehit += c.getLevel()[4] / 5; }
+	 * c.playerLevel[4] / 6; } else if (weapon == 4217) {//Cbow 7/10 rangehit =
+	 * 5; rangehit += c.playerLevel[4] / 5.5; } else if (weapon == 4216) {//Cbow
+	 * 8/10 rangehit = 6; rangehit += c.playerLevel[4] / 5.5; } else if (weapon
+	 * == 4215) {//Cbow 9/10 rangehit = 6; rangehit += c.playerLevel[4] / 5; }
 	 * else if (weapon == 4214) {//Cbow Full rangehit = 7; rangehit +=
-	 * c.getLevel()[4] / 5; } else if (weapon == 6522) { rangehit = 5; rangehit
-	 * += c.getLevel()[4] / 6; } else if (weapon == 9029) {//dragon darts
-	 * rangehit = 8; rangehit += c.getLevel()[4] / 10; } else if (weapon == 811
-	 * || weapon == 868) {//rune darts rangehit = 2; rangehit += c.getLevel()[4]
-	 * / 8.5; } else if (weapon == 810 || weapon == 867) {//adamant darts
-	 * rangehit = 2; rangehit += c.getLevel()[4] / 9; } else if (weapon == 809
-	 * || weapon == 866) {//mithril darts rangehit = 2; rangehit +=
-	 * c.getLevel()[4] / 9.5; } else if (weapon == 808 || weapon == 865)
-	 * {//Steel darts rangehit = 2; rangehit += c.getLevel()[4] / 10; } else if
-	 * (weapon == 807 || weapon == 863) {//Iron darts rangehit = 2; rangehit +=
-	 * c.getLevel()[4] / 10.5; } else if (weapon == 806 || weapon == 864)
-	 * {//Bronze darts rangehit = 1; rangehit += c.getLevel()[4] / 11; } else if
-	 * (Arrows == 4740 && weapon == 4734) {//BoltRacks rangehit = 3; rangehit +=
-	 * c.getLevel()[4] / 6; } else if (Arrows == 11212) {//dragon arrows
-	 * rangehit = 4; rangehit += c.getLevel()[4] / 5.5; } else if (Arrows ==
-	 * 892) {//rune arrows rangehit = 3; rangehit += c.getLevel()[4] / 6; } else
-	 * if (Arrows == 890) {//adamant arrows rangehit = 2; rangehit +=
-	 * c.getLevel()[4] / 7; } else if (Arrows == 888) {//mithril arrows rangehit
-	 * = 2; rangehit += c.getLevel()[4] / 7.5; } else if (Arrows == 886)
-	 * {//steel arrows rangehit = 2; rangehit += c.getLevel()[4] / 8; } else if
-	 * (Arrows == 884) {//Iron arrows rangehit = 2; rangehit += c.getLevel()[4]
-	 * / 9; } else if (Arrows == 882) {//Bronze arrows rangehit = 1; rangehit +=
-	 * c.getLevel()[4] / 9.5; } else if (Arrows == 9244) { rangehit = 8;
-	 * rangehit += c.getLevel()[4] / 3; } else if (Arrows == 9139) { rangehit =
-	 * 12; rangehit += c.getLevel()[4] / 4; } else if (Arrows == 9140) {
-	 * rangehit = 2; rangehit += c.getLevel()[4] / 7; } else if (Arrows == 9141)
-	 * { rangehit = 3; rangehit += c.getLevel()[4] / 6; } else if (Arrows ==
-	 * 9142) { rangehit = 4; rangehit += c.getLevel()[4] / 6; } else if (Arrows
-	 * == 9143) { rangehit = 7; rangehit += c.getLevel()[4] / 5; } else if
-	 * (Arrows == 9144) { rangehit = 7; rangehit += c.getLevel()[4] / 4.5; } int
-	 * bonus = 0; bonus -= rangehit / 10; rangehit += bonus; if (c.specDamage !=
-	 * 1) rangehit *= c.specDamage; if (rangehit == 0) rangehit++; if
-	 * (c.fullVoidRange()) { rangehit *= 1.10; } if (c.prayerActive[3]) rangehit
-	 * *= 1.05; else if (c.prayerActive[11]) rangehit *= 1.10; else if
-	 * (c.prayerActive[19]) rangehit *= 1.15; return rangehit; }
+	 * c.playerLevel[4] / 5; } else if (weapon == 6522) { rangehit = 5; rangehit
+	 * += c.playerLevel[4] / 6; } else if (weapon == 9029) {//dragon darts
+	 * rangehit = 8; rangehit += c.playerLevel[4] / 10; } else if (weapon == 811
+	 * || weapon == 868) {//rune darts rangehit = 2; rangehit +=
+	 * c.playerLevel[4] / 8.5; } else if (weapon == 810 || weapon == 867)
+	 * {//adamant darts rangehit = 2; rangehit += c.playerLevel[4] / 9; } else
+	 * if (weapon == 809 || weapon == 866) {//mithril darts rangehit = 2;
+	 * rangehit += c.playerLevel[4] / 9.5; } else if (weapon == 808 || weapon ==
+	 * 865) {//Steel darts rangehit = 2; rangehit += c.playerLevel[4] / 10; }
+	 * else if (weapon == 807 || weapon == 863) {//Iron darts rangehit = 2;
+	 * rangehit += c.playerLevel[4] / 10.5; } else if (weapon == 806 || weapon
+	 * == 864) {//Bronze darts rangehit = 1; rangehit += c.playerLevel[4] / 11;
+	 * } else if (Arrows == 4740 && weapon == 4734) {//BoltRacks rangehit = 3;
+	 * rangehit += c.playerLevel[4] / 6; } else if (Arrows == 11212) {//dragon
+	 * arrows rangehit = 4; rangehit += c.playerLevel[4] / 5.5; } else if
+	 * (Arrows == 892) {//rune arrows rangehit = 3; rangehit += c.playerLevel[4]
+	 * / 6; } else if (Arrows == 890) {//adamant arrows rangehit = 2; rangehit
+	 * += c.playerLevel[4] / 7; } else if (Arrows == 888) {//mithril arrows
+	 * rangehit = 2; rangehit += c.playerLevel[4] / 7.5; } else if (Arrows ==
+	 * 886) {//steel arrows rangehit = 2; rangehit += c.playerLevel[4] / 8; }
+	 * else if (Arrows == 884) {//Iron arrows rangehit = 2; rangehit +=
+	 * c.playerLevel[4] / 9; } else if (Arrows == 882) {//Bronze arrows rangehit
+	 * = 1; rangehit += c.playerLevel[4] / 9.5; } else if (Arrows == 9244) {
+	 * rangehit = 8; rangehit += c.playerLevel[4] / 3; } else if (Arrows ==
+	 * 9139) { rangehit = 12; rangehit += c.playerLevel[4] / 4; } else if
+	 * (Arrows == 9140) { rangehit = 2; rangehit += c.playerLevel[4] / 7; } else
+	 * if (Arrows == 9141) { rangehit = 3; rangehit += c.playerLevel[4] / 6; }
+	 * else if (Arrows == 9142) { rangehit = 4; rangehit += c.playerLevel[4] /
+	 * 6; } else if (Arrows == 9143) { rangehit = 7; rangehit +=
+	 * c.playerLevel[4] / 5; } else if (Arrows == 9144) { rangehit = 7; rangehit
+	 * += c.playerLevel[4] / 4.5; } int bonus = 0; bonus -= rangehit / 10;
+	 * rangehit += bonus; if (c.specDamage != 1) rangehit *= c.specDamage; if
+	 * (rangehit == 0) rangehit++; if (c.fullVoidRange()) { rangehit *= 1.10; }
+	 * if (c.prayerActive[3]) rangehit *= 1.05; else if (c.prayerActive[11])
+	 * rangehit *= 1.10; else if (c.prayerActive[19]) rangehit *= 1.15; return
+	 * rangehit; }
 	 */
 
 	public boolean properBolts() {
-		return c.getEquipment()[c.playerArrows] >= 9140 && c.getEquipment()[c.playerArrows] <= 9144
-				|| c.getEquipment()[c.playerArrows] >= 9240 && c.getEquipment()[c.playerArrows] <= 9244;
+		return c.playerEquipment[c.playerArrows] >= 9140
+				&& c.playerEquipment[c.playerArrows] <= 9144
+				|| c.playerEquipment[c.playerArrows] >= 9240
+				&& c.playerEquipment[c.playerArrows] <= 9244;
 	}
 
-	public boolean usingCorrectArrows() {
-		int data[][] = { { 841, 882, 884 }, { 843, 882, 884, 886 }, { 849, 882, 884, 886, 888 },
-				{ 853, 882, 884, 886, 888, 890 }, { 857, 882, 884, 886, 888, 890 },
-				{ 861, 882, 884, 886, 888, 890, 892 }, { 11235, 882, 884, 886, 888, 890, 11212 },
-				{ 9185, 9144, 9244, 9243 }, { 11785, 9144, 9244, 9243 }, { 4734, 4740 } };
-		for (int i = 0; i < data.length; i++) {
-			if (c.getEquipment()[3] == data[i][0]) {
-				for (int x = 0; x < data[i].length; x++) {
-					if (c.getEquipment()[c.playerArrows] == data[i][x]) {
-						return true;
-					}
-				}
-			}
+	public int correctBowAndArrows() {
+		if (usingBolts())
+			return -1;
+		switch (c.playerEquipment[c.playerWeapon]) {
+
+		case 839:
+		case 841:
+			return 882;
+
+		case 843:
+		case 845:
+			return 884;
+
+		case 847:
+		case 849:
+			return 886;
+
+		case 851:
+		case 853:
+			return 888;
+
+		case 855:
+		case 857:
+			return 890;
+
+		case 859:
+		case 861:
+			return 892;
+
+		case 4734:
+		case 4935:
+		case 4936:
+		case 4937:
+			return 4740;
+
+		case 11235:
+			return 11212;
 		}
-		return false;
+		return -1;
 	}
 
 	public int getRangeStartGFX() {
@@ -2712,17 +3391,17 @@ public class CombatAssistant {
 
 	public int getRangeProjectileGFX() {
 		if (c.dbowSpec) {
-			return 1099;
+			return 672;
 		}
-		if (c.msbSpec) {
-			return 249;
+		if (c.bowSpecShot > 0) {
+			switch (c.rangeItemUsed) {
+			default:
+				return 249;
+			}
 		}
-		if (c.getEquipment()[3] == 9185 || c.getEquipment()[3] == 11785)
+		if (c.playerEquipment[c.playerWeapon] == 9185)
 			return 27;
 		switch (c.rangeItemUsed) {
-
-		case 12926:
-			return 1122;
 
 		case 863:
 			return 213;
@@ -2829,7 +3508,7 @@ public class CombatAssistant {
 	}
 
 	public int getProjectileShowDelay() {
-		switch (c.getEquipment()[c.playerWeapon]) {
+		switch (c.playerEquipment[c.playerWeapon]) {
 		case 863:
 		case 864:
 		case 865:
@@ -2875,72 +3554,62 @@ public class CombatAssistant {
 	 * MAGIC
 	 **/
 
+	public boolean canHitMage(Client o) {
+		return Misc.random(mageAtk()) > Misc.random(o.getCombat().mageDef());
+	}
+
 	public int mageAtk() {
-		int attackLevel = c.getLevel()[6];
-		if (c.fullVoidMage()) {
-			attackLevel = (int) ((double) attackLevel + (double) c.getLevelForXP(c.getExperience()[6]) * 0.2D);
-		}
-
-		if (c.prayerActive[4]) {
-			attackLevel = (int) ((double) attackLevel * 1.05D);
-		} else if (c.prayerActive[12]) {
-			attackLevel = (int) ((double) attackLevel * 1.1D);
-		} else if (c.prayerActive[20]) {
-			attackLevel = (int) ((double) attackLevel * 1.15D);
-		}
-
-		return (int) ((double) attackLevel + (double) c.playerBonus[3] * 2.25D);
+		int attackLevel = c.playerLevel[6];
+		if (c.fullVoidMage())
+			attackLevel = (int) (attackLevel + c.getLevelForXP(c.playerXP[6]) * 0.20000000000000001D);
+		if (c.prayerActive[4])
+			attackLevel = (int) (attackLevel * 1.05D);
+		else if (c.prayerActive[12])
+			attackLevel = (int) (attackLevel * 1.1000000000000001D);
+		else if (c.prayerActive[20])
+			attackLevel = (int) (attackLevel * 1.1499999999999999D);
+		return (int) (attackLevel + c.playerBonus[3] * 2.25D);
 	}
 
 	public int mageDef() {
-		int defenceLevel = c.getLevel()[1] / 2 + c.getLevel()[6] / 2;
-		if (c.prayerActive[4]) {
-			defenceLevel = (int) ((double) defenceLevel
-					+ (double) c.getLevelForXP(c.getExperience()[c.playerDefence]) * 0.05D);
-		} else if (c.prayerActive[12]) {
-			defenceLevel = (int) ((double) defenceLevel
-					+ (double) c.getLevelForXP(c.getExperience()[c.playerDefence]) * 0.1D);
-		} else if (c.prayerActive[20]) {
-			defenceLevel = (int) ((double) defenceLevel
-					+ (double) c.getLevelForXP(c.getExperience()[c.playerDefence]) * 0.15D);
-		}
-
+		int defenceLevel = c.playerLevel[1] / 2 + c.playerLevel[6] / 2;
+		if (c.prayerActive[4])
+			defenceLevel = (int) (defenceLevel + c
+					.getLevelForXP(c.playerXP[c.playerDefence]) * 0.050000000000000003D);
+		else if (c.prayerActive[12])
+			defenceLevel = (int) (defenceLevel + c
+					.getLevelForXP(c.playerXP[c.playerDefence]) * 0.10000000000000001D);
+		else if (c.prayerActive[20])
+			defenceLevel = (int) (defenceLevel + c
+					.getLevelForXP(c.playerXP[c.playerDefence]) * 0.14999999999999999D);
 		return defenceLevel + c.playerBonus[8] + c.playerBonus[8] / 4;
 	}
 
 	public boolean wearingStaff(int runeId) {
-		int wep = c.getEquipment()[c.playerWeapon];
+		int wep = c.playerEquipment[c.playerWeapon];
 		switch (runeId) {
 		case 554:
-			if (wep == 1387)
-				return true;
-			break;
+			return wep == 1387;
 		case 555:
-			if (wep == 1383)
-				return true;
-			break;
+			return wep == 1383;
 		case 556:
-			if (wep == 1381)
-				return true;
-			break;
+			return wep == 1381;
 		case 557:
-			if (wep == 1385)
-				return true;
-			break;
+			return wep == 1385;
 		}
 		return false;
 	}
 
 	public boolean checkMagicReqs(int spell) {
 		if (c.usingMagic && Constants.RUNES_REQUIRED) { // check for runes
-			if ((!c.getItems().playerHasItem(c.MAGIC_SPELLS[spell][8], c.MAGIC_SPELLS[spell][9])
-					&& !wearingStaff(c.MAGIC_SPELLS[spell][8]))
-					|| (!c.getItems().playerHasItem(c.MAGIC_SPELLS[spell][10], c.MAGIC_SPELLS[spell][11])
-							&& !wearingStaff(c.MAGIC_SPELLS[spell][10]))
-					|| (!c.getItems().playerHasItem(c.MAGIC_SPELLS[spell][12], c.MAGIC_SPELLS[spell][13])
-							&& !wearingStaff(c.MAGIC_SPELLS[spell][12]))
-					|| (!c.getItems().playerHasItem(c.MAGIC_SPELLS[spell][14], c.MAGIC_SPELLS[spell][15])
-							&& !wearingStaff(c.MAGIC_SPELLS[spell][14]))) {
+			if ((!c.getItems().playerHasItem(c.MAGIC_SPELLS[spell][8],
+					c.MAGIC_SPELLS[spell][9]) && !wearingStaff(c.MAGIC_SPELLS[spell][8]))
+					|| (!c.getItems().playerHasItem(c.MAGIC_SPELLS[spell][10],
+							c.MAGIC_SPELLS[spell][11]) && !wearingStaff(c.MAGIC_SPELLS[spell][10]))
+					|| (!c.getItems().playerHasItem(c.MAGIC_SPELLS[spell][12],
+							c.MAGIC_SPELLS[spell][13]) && !wearingStaff(c.MAGIC_SPELLS[spell][12]))
+					|| (!c.getItems().playerHasItem(c.MAGIC_SPELLS[spell][14],
+							c.MAGIC_SPELLS[spell][15]) && !wearingStaff(c.MAGIC_SPELLS[spell][14]))) {
 				c.sendMessage("You don't have the required runes to cast this spell.");
 				return false;
 			}
@@ -2948,14 +3617,10 @@ public class CombatAssistant {
 
 		if (c.usingMagic && c.playerIndex > 0) {
 			if (PlayerHandler.players[c.playerIndex] != null) {
-				for (int r = 0; r < c.REDUCE_SPELLS.length; r++) { // reducing
-																	// spells,
-																	// confuse
-																	// etc
+				for (int r = 0; r < c.REDUCE_SPELLS.length; r++) {
 					if (PlayerHandler.players[c.playerIndex].REDUCE_SPELLS[r] == c.MAGIC_SPELLS[spell][0]) {
 						c.reduceSpellId = r;
-						if ((System.currentTimeMillis()
-								- PlayerHandler.players[c.playerIndex].reduceSpellDelay[c.reduceSpellId]) > PlayerHandler.players[c.playerIndex].REDUCE_SPELL_TIME[c.reduceSpellId]) {
+						if ((System.currentTimeMillis() - PlayerHandler.players[c.playerIndex].reduceSpellDelay[c.reduceSpellId]) > PlayerHandler.players[c.playerIndex].REDUCE_SPELL_TIME[c.reduceSpellId]) {
 							PlayerHandler.players[c.playerIndex].canUseReducingSpell[c.reduceSpellId] = true;
 						} else {
 							PlayerHandler.players[c.playerIndex].canUseReducingSpell[c.reduceSpellId] = false;
@@ -2976,16 +3641,18 @@ public class CombatAssistant {
 		int staffRequired = getStaffNeeded();
 		if (c.usingMagic && staffRequired > 0 && Constants.RUNES_REQUIRED) { // staff
 																			// required
-			if (c.getEquipment()[c.playerWeapon] != staffRequired) {
-				c.sendMessage(
-						"You need a " + c.getItems().getItemName(staffRequired).toLowerCase() + " to cast this spell.");
+			if (c.playerEquipment[c.playerWeapon] != staffRequired) {
+				c.sendMessage("You need a "
+						+ c.getItems().getItemName(staffRequired).toLowerCase()
+						+ " to cast this spell.");
 				return false;
 			}
 		}
 
 		if (c.usingMagic && Constants.MAGIC_LEVEL_REQUIRED) { // check magic level
-			if (c.getLevel()[6] < c.MAGIC_SPELLS[spell][1]) {
-				c.sendMessage("You need to have a magic level of " + c.MAGIC_SPELLS[spell][1] + " to cast this spell.");
+			if (c.playerLevel[6] < c.MAGIC_SPELLS[spell][1]) {
+				c.sendMessage("You need to have a magic level of "
+						+ c.MAGIC_SPELLS[spell][1] + " to cast this spell.");
 				return false;
 			}
 		}
@@ -2993,29 +3660,42 @@ public class CombatAssistant {
 			if (c.MAGIC_SPELLS[spell][8] > 0) { // deleting runes
 				if (!wearingStaff(c.MAGIC_SPELLS[spell][8]))
 					c.getItems().deleteItem(c.MAGIC_SPELLS[spell][8],
-							c.getItems().getItemSlot(c.MAGIC_SPELLS[spell][8]), c.MAGIC_SPELLS[spell][9]);
+							c.getItems().getItemSlot(c.MAGIC_SPELLS[spell][8]),
+							c.MAGIC_SPELLS[spell][9]);
 			}
 			if (c.MAGIC_SPELLS[spell][10] > 0) {
 				if (!wearingStaff(c.MAGIC_SPELLS[spell][10]))
-					c.getItems().deleteItem(c.MAGIC_SPELLS[spell][10],
-							c.getItems().getItemSlot(c.MAGIC_SPELLS[spell][10]), c.MAGIC_SPELLS[spell][11]);
+					c.getItems()
+							.deleteItem(
+									c.MAGIC_SPELLS[spell][10],
+									c.getItems().getItemSlot(
+											c.MAGIC_SPELLS[spell][10]),
+									c.MAGIC_SPELLS[spell][11]);
 			}
 			if (c.MAGIC_SPELLS[spell][12] > 0) {
 				if (!wearingStaff(c.MAGIC_SPELLS[spell][12]))
-					c.getItems().deleteItem(c.MAGIC_SPELLS[spell][12],
-							c.getItems().getItemSlot(c.MAGIC_SPELLS[spell][12]), c.MAGIC_SPELLS[spell][13]);
+					c.getItems()
+							.deleteItem(
+									c.MAGIC_SPELLS[spell][12],
+									c.getItems().getItemSlot(
+											c.MAGIC_SPELLS[spell][12]),
+									c.MAGIC_SPELLS[spell][13]);
 			}
 			if (c.MAGIC_SPELLS[spell][14] > 0) {
 				if (!wearingStaff(c.MAGIC_SPELLS[spell][14]))
-					c.getItems().deleteItem(c.MAGIC_SPELLS[spell][14],
-							c.getItems().getItemSlot(c.MAGIC_SPELLS[spell][14]), c.MAGIC_SPELLS[spell][15]);
+					c.getItems()
+							.deleteItem(
+									c.MAGIC_SPELLS[spell][14],
+									c.getItems().getItemSlot(
+											c.MAGIC_SPELLS[spell][14]),
+									c.MAGIC_SPELLS[spell][15]);
 			}
 		}
 		return true;
 	}
 
 	public int getFreezeTime() {
-		switch (c.MAGIC_SPELLS[c.spellId][0]) {
+		switch (c.MAGIC_SPELLS[c.oldSpellId][0]) {
 		case 1572:
 		case 12861: // ice rush
 			return 10;
@@ -3037,7 +3717,6 @@ public class CombatAssistant {
 	}
 
 	public void freezePlayer(int i) {
-
 	}
 
 	public int getStartHeight() {
@@ -3088,8 +3767,8 @@ public class CombatAssistant {
 		case 12999: // shadow blitz
 			return 15;
 
-		case 12911: // blood blitz
-			return 10;
+		case 12911:
+			return 10;// blood blitz
 
 		default:
 			return 31;
@@ -3097,10 +3776,13 @@ public class CombatAssistant {
 	}
 
 	public int getStartDelay() {
+		switch (c.playerEquipment[c.playerWeapon]) {
+		case 15241:
+			return 0;
+		}
 		switch (c.MAGIC_SPELLS[c.spellId][0]) {
 		case 1539:
 			return 60;
-
 		default:
 			return 53;
 		}
@@ -3179,56 +3861,9 @@ public class CombatAssistant {
 	}
 
 	public void handleDfs() {
-		if (System.currentTimeMillis() - c.dfsDelay > 30000) {
-			if (c.playerIndex > 0 && PlayerHandler.players[c.playerIndex] != null) {
-				int damage = Misc.random(15) + 5;
-				c.playAnimation(Animation.create(2836));
-				c.playGraphic(Graphic.create(600, 0, 0));
-				PlayerHandler.players[c.playerIndex].getLevel()[3] -= damage;
-				PlayerHandler.players[c.playerIndex].hitDiff2 = damage;
-				PlayerHandler.players[c.playerIndex].hitUpdateRequired2 = true;
-				PlayerHandler.players[c.playerIndex].updateRequired = true;
-				c.dfsDelay = System.currentTimeMillis();
-			} else {
-				c.sendMessage("I should be in combat before using this.");
-			}
-		} else {
-			c.sendMessage("My shield hasn't finished recharging yet.");
-		}
 	}
 
 	public void handleDfsNPC() {
-		if (System.currentTimeMillis() - c.dfsDelay > 30000) {
-			if (c.npcIndex > 0 && NPCHandler.npcs[c.npcIndex] != null) {
-				int damage = Misc.random(15) + 5;
-				c.playAnimation(Animation.create(2836));
-				c.playGraphic(Graphic.create(600, 0, 0));
-				NPCHandler.npcs[c.npcIndex].HP -= damage;
-				NPCHandler.npcs[c.npcIndex].hitDiff2 = damage;
-				NPCHandler.npcs[c.npcIndex].hitUpdateRequired2 = true;
-				NPCHandler.npcs[c.npcIndex].updateRequired = true;
-				c.dfsDelay = System.currentTimeMillis();
-			} else {
-				c.sendMessage("I should be in combat before using this.");
-			}
-		} else {
-			c.sendMessage("My shield hasn't finished recharging yet.");
-		}
-	}
-
-	public void applyRecoil(int damage, int i) {
-		if (damage > 0 && PlayerHandler.players[i].getEquipment()[c.playerRing] == 2550) {
-			int recDamage = damage / 10 + 1;
-			if (!c.getHitUpdateRequired()) {
-				c.setHitDiff(recDamage);
-				c.setHitUpdateRequired(true);
-			} else if (!c.getHitUpdateRequired2()) {
-				c.setHitDiff2(recDamage);
-				c.setHitUpdateRequired2(true);
-			}
-			c.dealDamage(recDamage);
-			c.updateRequired = true;
-		}
 	}
 
 	public int getBonusAttack(int i) {
@@ -3247,7 +3882,8 @@ public class CombatAssistant {
 	public void handleGmaulPlayer() {
 		if (c.playerIndex > 0) {
 			Client o = (Client) PlayerHandler.players[c.playerIndex];
-			if (c.goodDistance(c.getX(), c.getY(), o.getX(), o.getY(), getRequiredDistance())) {
+			if (c.goodDistance(c.getX(), c.getY(), o.getX(), o.getY(),
+					getRequiredDistance())) {
 				if (checkReqs()) {
 					if (checkSpecAmount(4153)) {
 						boolean hit = Misc.random(calculateMeleeAttack()) > Misc
@@ -3255,11 +3891,14 @@ public class CombatAssistant {
 						int damage = 0;
 						if (hit)
 							damage = Misc.random(calculateMeleeMaxHit());
-						if (o.prayerActive[18] && System.currentTimeMillis() - o.protMeleeDelay > 1500)
+						if (o.prayerActive[18]
+								|| o.curseActive[9]
+								&& System.currentTimeMillis()
+										- o.protMeleeDelay > 1500)
 							damage *= .6;
 						o.handleHitMask(damage);
-						c.playAnimation(Animation.create(1667));
-						c.playGraphic(Graphic.create(340, 0, 100));
+						c.startAnimation(1667);
+						c.gfx100(340);
 						o.dealDamage(damage);
 					}
 				}
@@ -3267,11 +3906,33 @@ public class CombatAssistant {
 		}
 	}
 
-	public boolean staffOfDeadEffect(int i) {
-		if (System.currentTimeMillis() - PlayerHandler.players[i].stofdDelay > 60000) {
-			return false;
+	public void applyRecoil(int damage, int i) {
+		if (damage > 0
+				&& PlayerHandler.players[i].playerEquipment[c.playerRing] == 2550) {
+			int recDamage = damage / 10 + 1;
+			if (!c.getHitUpdateRequired()) {
+				c.setHitDiff(recDamage);
+				removeRecoil(c);
+				c.recoilHits = recDamage;
+				c.setHitUpdateRequired(true);
+			} else if (!c.getHitUpdateRequired2()) {
+				c.setHitDiff2(recDamage);
+				c.setHitUpdateRequired2(true);
+			}
+			c.dealDamage(recDamage);
+			c.updateRequired = true;
 		}
-		return true;
+	}
+
+	public void removeRecoil(Client c) {
+		if (c.recoilHits >= 50) {
+			c.getItems().removeItem(2550, c.playerRing);
+			c.getItems().deleteItem(2550, c.getItems().getItemSlot(2550), 1);
+			c.sendMessage("Your ring of recoil shaters!");
+			c.recoilHits = 0;
+		} else {
+			c.recoilHits++;
+		}
 	}
 
 	public boolean armaNpc(int i) {
@@ -3285,17 +3946,50 @@ public class CombatAssistant {
 		return false;
 	}
 
-	public static double getDelay(Client attacker, Client victim, int delay, int speed) {
-		/** The distance between the entities. */
-		int distance = attacker.distanceToPoint(victim.getX(), victim.getY());
-
-		/** The speed at which the projectile is traveling. */
-		int projectileSpeed = delay + speed + distance * 5;
-
-		/** The delay of the hit. */
-		double hitDelay = projectileSpeed * .02857;
-
-		/** Returns the hit delay. */
-		return hitDelay;
+	public static int finalMagicDamage(Client c) {
+		double damage = c.MAGIC_SPELLS[c.oldSpellId][6] * 10;
+		double damageMultiplier = 1;
+		int level = c.playerLevel[c.playerMagic];
+		if (level > c.getLevelForXP(c.playerXP[6])
+				&& c.getLevelForXP(c.playerXP[6]) >= 95)
+			damageMultiplier += .03 * ((level > 104 ? 104 : level) - 99);
+		else
+			damageMultiplier = 1;
+		switch (c.playerEquipment[c.playerWeapon]) {
+		case 18371: // Gravite Staff
+			damageMultiplier += .05;
+			break;
+		case 4675: // Ancient Staff
+		case 4710: // Ahrim's Staff
+		case 4862: // Ahrim's Staff
+		case 4864: // Ahrim's Staff
+		case 4865: // Ahrim's Staff
+		case 6914: // Master Wand
+		case 8841: // Void Knight Mace
+		case 13867: // Zuriel's Staff
+		case 13869: // Zuriel's Staff (Deg)
+			damageMultiplier += .10;
+			break;
+		case 15486: // Staff of Light
+			damageMultiplier += .15;
+			break;
+		case 18355: // Chaotic Staff
+			damageMultiplier += .20;
+			break;
+		}
+		switch (c.playerEquipment[c.playerAmulet]) {
+		case 18333: // Arcane Pulse
+			damageMultiplier += .05;
+			break;
+		case 18334:// Arcane Blast
+			damageMultiplier += .10;
+			break;
+		case 18335:// Arcane Stream
+			damageMultiplier += .15;
+			break;
+		}
+		damage *= damageMultiplier;
+		return (int) damage;
 	}
+
 }

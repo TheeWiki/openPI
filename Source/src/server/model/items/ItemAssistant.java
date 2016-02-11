@@ -54,23 +54,23 @@ public class ItemAssistant {
 			{ 4757, 4992 }, { 4759, 4998 } };
 
 	public boolean addBankItem(int item, double amount) {
-		synchronized(c) {
+		synchronized (c) {
 			if (amount < 1) {
 				amount = 1;
 			}
-			if(item <= 0) {
-				return  false;
+			if (item <= 0) {
+				return false;
 			}
 			for (int i = 0; i < c.bankItems.length; i++) {
-				if ((c.bankItems[i] == (item + 1)) && (c.bankItems[i] > 0) && (c.bankItemsN[i] < Constants.MAXITEM_AMOUNT)) {
+				if ((c.bankItems[i] == (item + 1)) && (c.bankItems[i] > 0)
+						&& (c.bankItemsN[i] < Constants.MAXITEM_AMOUNT)) {
 					c.bankItems[i] = (item + 1);
-					if (((c.bankItemsN[i] + amount) < Constants.MAXITEM_AMOUNT)
-							&& ((c.bankItemsN[i] + amount) > -1)) {
+					if (((c.bankItemsN[i] + amount) < Constants.MAXITEM_AMOUNT) && ((c.bankItemsN[i] + amount) > -1)) {
 						c.bankItemsN[i] += amount;
 					} else {
 						int old = c.bankItemsN[i];
 						c.bankItemsN[i] = Constants.MAXITEM_AMOUNT;
-						if((old + amount) - (long) Constants.MAXITEM_AMOUNT > 0) {
+						if ((old + amount) - (long) Constants.MAXITEM_AMOUNT > 0) {
 							addBankItem(item, (old + amount) - (long) Constants.MAXITEM_AMOUNT);
 						}
 					}
@@ -82,14 +82,14 @@ public class ItemAssistant {
 					c.bankItems[i] = item + 1;
 					if ((amount < Constants.MAXITEM_AMOUNT) && (amount > -1)) {
 						c.bankItemsN[i] = 1;
-							if (amount > 1) {
-								addBankItem(item, amount - 1);
-						return true;
+						if (amount > 1) {
+							addBankItem(item, amount - 1);
+							return true;
 						}
 					} else {
 						int old = 0;
-							c.bankItemsN[i] = Constants.MAXITEM_AMOUNT;
-						if((old + amount) - (long) Constants.MAXITEM_AMOUNT > 0) {
+						c.bankItemsN[i] = Constants.MAXITEM_AMOUNT;
+						if ((old + amount) - (long) Constants.MAXITEM_AMOUNT > 0) {
 							addBankItem(item, (old + amount) - (long) Constants.MAXITEM_AMOUNT);
 						}
 					}
@@ -466,6 +466,7 @@ public class ItemAssistant {
 			return false;
 		} // }
 	}
+
 	public void addOrDropItem(int item, int amount) {
 		if (isStackable(item) && hasFreeSlots(1)) {
 			addItem(item, amount);
@@ -476,9 +477,11 @@ public class ItemAssistant {
 			addItem(item, amount);
 		}
 	}
+
 	public boolean hasFreeSlots(int slots) {
 		return (freeSlots() >= slots);
 	}
+
 	/**
 	 * Gets the item type.
 	 */
@@ -1271,7 +1274,7 @@ public class ItemAssistant {
 			resetBonus();
 			getBonus();
 			writeBonus();
-			c.getCombat().getPlayerAnimIndex();
+			c.getCombat().getPlayerAnimIndex(c.getItems().getItemName(c.playerEquipment[c.playerWeapon]).toLowerCase());
 			c.getPA().requestUpdates();
 			return true;
 		} else {
@@ -1309,7 +1312,7 @@ public class ItemAssistant {
 			c.getItems().resetBonus();
 			c.getItems().getBonus();
 			c.getItems().writeBonus();
-			c.getCombat().getPlayerAnimIndex();
+			c.getCombat().getPlayerAnimIndex(c.getItems().getItemName(c.playerEquipment[c.playerWeapon]).toLowerCase());
 			c.updateRequired = true;
 			c.setAppearanceUpdateRequired(true);
 		} // }
@@ -1352,7 +1355,7 @@ public class ItemAssistant {
 					resetBonus();
 					getBonus();
 					writeBonus();
-					c.getCombat().getPlayerAnimIndex();
+					c.getCombat().getPlayerAnimIndex(c.getItems().getItemName(c.playerEquipment[c.playerWeapon]).toLowerCase());
 					c.getOutStream().createFrame(34);
 					c.getOutStream().writeWord(6);
 					c.getOutStream().writeWord(1688);
@@ -2162,6 +2165,7 @@ public class ItemAssistant {
 		}
 		resetItems(3214);
 	}
+
 	public void removeAllBankItems() {
 		for (int i = 0; i < c.bankItems.length; i++) {
 			c.bankItems[i] = 0;
@@ -2171,6 +2175,7 @@ public class ItemAssistant {
 		}
 		resetItems(3214);
 	}
+
 	/**
 	 * Checks if you have a free slot.
 	 * 

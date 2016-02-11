@@ -18,9 +18,7 @@ import server.model.content.AccountStatistics;
 import server.model.items.ItemAssistant;
 import server.model.npcs.NPC;
 import server.model.players.combat.CombatAssistant;
-import server.model.players.combat.Experience;
 import server.model.players.combat.PlayerKilling;
-import server.model.players.combat.Specials;
 import server.model.players.packet.PacketHandler;
 import server.model.players.skills.cooking.Food;
 import server.model.players.skills.herblore.PotionMixing;
@@ -118,13 +116,7 @@ public class Client extends Player {
 		}
 		return fail;
 	}
-
-	public Specials getSA() {
-		return specials;
-	}
-
-	private Specials specials = new Specials(this);
-
+	
 	public void removeAttribute(String key) {
 		attributes.remove(key);
 	}
@@ -475,13 +467,10 @@ public class Client extends Player {
 
 		if (hitDelay == 1) {
 			if (oldNpcIndex > 0) {
-				getCombat().appendDamageNPC(oldNpcIndex, combatStyle, 1);
-				if (doubleHit) {
-					Experience.calculateDamageNPC(this, oldNpcIndex, combatStyle);
-					getCombat().appendDamageNPC(oldNpcIndex, combatStyle, 2);
-				}
-			} else if (oldPlayerIndex > 0) {
-				getCombat().appendDamage(oldPlayerIndex, combatStyle, 1);
+				getCombat().delayedHit(oldNpcIndex);
+			}
+			if (oldPlayerIndex > 0) {
+				getCombat().playerDelayedHit(oldPlayerIndex);
 			}
 		}
 

@@ -15,7 +15,6 @@ import server.model.npcs.drops.Drop;
 import server.model.npcs.drops.NPCDrops;
 import server.model.players.Client;
 import server.model.players.PlayerHandler;
-import server.model.players.combat.WeaponAnimations;
 import server.util.Misc;
 
 public class NPCHandler {
@@ -1974,10 +1973,7 @@ public class NPCHandler {
 			if (c.playerIndex <= 0 && c.npcIndex <= 0)
 				if (c.autoRet == 1)
 					c.npcIndex = i;
-			if(c.attackTimer <= 3 || c.attackTimer == 0 && c.npcIndex == 0 && c.oldNpcIndex == 0) {
-				c.playAnimation(Animation.create(WeaponAnimations
-						.blockAnimation(c)));
-			}
+			
 			if(c.respawnTimer <= 0) {	
 				int damage = 0;
 				if(npcs[i].attackType == 0) {

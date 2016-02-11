@@ -1,5 +1,7 @@
 package server.model.players.packet.impl;
 
+import com.sun.scenario.Settings;
+
 import server.Constants;
 import server.Server;
 import server.model.players.Client;
@@ -107,21 +109,12 @@ public class AttackPlayer implements PacketType {
 				c.sendMessage("You have run out of arrows!");
 				return;
 			} 
-			if (!c.getCombat().usingCorrectArrows() && Constants.CORRECT_ARROWS
-					&& c.usingBow && !c.getCombat().usingCrystalBow()
-					&& !c.usingMagic) {
-				c.sendMessage("You can't use "
-						+ c.getItems()
-								.getItemName(c.getEquipment()[c.playerArrows])
-								.toLowerCase()
-						+ "s with a "
-						+ c.getItems()
-								.getItemName(c.getEquipment()[c.playerWeapon])
-								.toLowerCase() + ".");
+			if(c.getCombat().correctBowAndArrows() < c.playerEquipment[c.playerArrows] && Constants.CORRECT_ARROWS && usingBow && !c.getCombat().usingCrystalBow() && c.playerEquipment[c.playerWeapon] != 9185) {
+				c.sendMessage("You can't use "+c.getItems().getItemName(c.playerEquipment[c.playerArrows]).toLowerCase()+"s with a "+c.getItems().getItemName(c.playerEquipment[c.playerWeapon]).toLowerCase()+".");
 				c.stopMovement();
 				c.getCombat().resetPlayerAttack();
 				return;
-			}
+		}
 			if (c.playerEquipment[c.playerWeapon] == 9185 && !c.getCombat().properBolts()) {
 					c.sendMessage("You must use bolts with a crossbow.");
 					c.stopMovement();

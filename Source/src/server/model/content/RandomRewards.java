@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import server.model.players.Client;
-import server.util.Misc;
 
 public class RandomRewards 
 {
@@ -13,7 +12,7 @@ public class RandomRewards
 	public static void addItems(Client c)
 	{
 		for (int i = 0; i < z; i++) {
-			c.getItems().addItem(Misc.random(2) + items.get(i), 1);
+			c.getItems().addItem(items.get(i), 1);
 		}
 	}
 	static Random r = new Random();
