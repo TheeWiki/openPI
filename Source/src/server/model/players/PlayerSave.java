@@ -90,7 +90,7 @@ public class PlayerSave {
 						p.specAmount = Double.parseDouble(token2);
 					} else if (token.equals("selected-coffin")) {
 						p.randomCoffin = Integer.parseInt(token2);
-					} else if (token.equals("barrows-killcount")) {
+					} else if (token.equals("pk-points")) {
 						p.pkPoints = Integer.parseInt(token2);
 					} else if (token.equals("teleblock-length")) {
 						p.teleBlockDelay = System.currentTimeMillis();
@@ -265,15 +265,15 @@ public class PlayerSave {
 			characterfile.write("magic-book = ", 0, 13);
 			characterfile.write(Integer.toString(p.playerMagicBook), 0, Integer.toString(p.playerMagicBook).length());
 			characterfile.newLine();
-			for (int b = 0; b < p.barrowsNpcs.length; b++) {
-				characterfile.write("brother-info = ", 0, 15);
-				characterfile.write(Integer.toString(b), 0, Integer.toString(b).length());
-				characterfile.write("	", 0, 1);
-				characterfile.write(
-						p.barrowsNpcs[b][1] <= 1 ? Integer.toString(0) : Integer.toString(p.barrowsNpcs[b][1]), 0,
-						Integer.toString(p.barrowsNpcs[b][1]).length());
-				characterfile.newLine();
-			}
+//			for (int b = 0; b < p.barrowsNpcs.length; b++) {
+//				characterfile.write("brother-info = ", 0, 15);
+//				characterfile.write(Integer.toString(b), 0, Integer.toString(b).length());
+//				characterfile.write("	", 0, 1);
+//				characterfile.write(
+//						p.barrowsNpcs[b][1] <= 1 ? Integer.toString(0) : Integer.toString(p.barrowsNpcs[b][1]), 0,
+//						Integer.toString(p.barrowsNpcs[b][1]).length());
+//				characterfile.newLine();
+//			}
 			characterfile.write("special-amount = ", 0, 17);
 			characterfile.write(Double.toString(p.specAmount), 0, Double.toString(p.specAmount).length());
 			characterfile.newLine();
