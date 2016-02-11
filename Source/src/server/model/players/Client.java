@@ -24,6 +24,7 @@ import server.model.players.skills.cooking.Food;
 import server.model.players.skills.herblore.PotionMixing;
 import server.model.players.skills.herblore.Potions;
 import server.model.players.skills.prayer.BuryBones;
+import server.model.players.skills.prayer.Draining;
 import server.model.shops.ShopAssistant;
 import server.net.Packet;
 import server.net.Packet.Type;
@@ -329,7 +330,8 @@ public class Client extends Player {
 		} else if (followId2 > 0) {
 			getPA().followNpc();
 		}
-		getCombat().handlePrayerDrain();
+		Draining.handlePrayerDrain(this);
+		
 		if (System.currentTimeMillis() - singleCombatDelay > 3300) {
 			underAttackBy = 0;
 		}
@@ -789,5 +791,6 @@ public class Client extends Player {
 
 	public int duelWins = 0, duelLoses = 0, teleHome = 0, specsUsed = 0, foodEaten = 0, potsDrank = 0, emotesPerformed = 0, timesVoted = 0, votesClaimed = 0,
 			timesMuted = 0, timesBanned = 0, prayersAcivated = 0, mbOpened = 0, itemsUpgraded = 0, kills = 0, deaths = 0;
+	public int altarPrayed;
 	
 }
