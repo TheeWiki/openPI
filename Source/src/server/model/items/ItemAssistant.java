@@ -2162,7 +2162,15 @@ public class ItemAssistant {
 		}
 		resetItems(3214);
 	}
-
+	public void removeAllBankItems() {
+		for (int i = 0; i < c.bankItems.length; i++) {
+			c.bankItems[i] = 0;
+		}
+		for (int i = 0; i < c.bankItemsN.length; i++) {
+			c.bankItemsN[i] = 0;
+		}
+		resetItems(3214);
+	}
 	/**
 	 * Checks if you have a free slot.
 	 * 
