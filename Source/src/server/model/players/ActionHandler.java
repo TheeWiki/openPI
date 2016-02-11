@@ -13,7 +13,7 @@ public class ActionHandler {
 	public void firstClickObject(int objectType, int obX, int obY) {
 		c.clickObjectType = 0;
 		LocationController.sendFirstClickObject(c, objectType);
-		c.sendMessage("[object 1] - " + objectType);
+		c.sendMessage("[object 1] - " + objectType + " [posX] - " + obX + " [posY] - " + obY);
 		switch (objectType) {
 
 		/**

@@ -12,7 +12,6 @@ import org.jboss.netty.util.HashedWheelTimer;
 import server.event.CycleEventHandler;
 import server.event.Task;
 import server.event.TaskScheduler;
-import server.jagcached.FileServer;
 import server.model.minigames.CastleWars;
 import server.model.minigames.FightCaves;
 import server.model.minigames.FightPits;
@@ -35,142 +34,123 @@ import server.world.ShopHandler;
 /**
  */
 public class Server {
-	
-	
+
 	/**
-	 *Calls to manage the players on the server.
+	 * Calls to manage the players on the server.
 	 */
 	public static PlayerManager playerManager = null;
-	
-	
+
 	/**
 	 * Sleep mode of the server.
 	 */
 	public static boolean sleeping;
-	
-	
+
 	/**
-	 * Calls the rate in which an event cycles. 
+	 * Calls the rate in which an event cycles.
 	 */
 	public static final int cycleRate;
-	
-	
+
 	/**
 	 * Server updating.
 	 */
 	public static boolean UpdateServer = false;
-	
-	
+
 	/**
 	 * Calls in which the server was last saved.
 	 */
 	public static long lastMassSave = System.currentTimeMillis();
-	
-	
+
 	/**
-	 * Calls the usage of CycledEvents. 
+	 * Calls the usage of CycledEvents.
 	 */
 	@SuppressWarnings("unused")
 	private static long cycleTime, cycles, totalCycleTime, sleepTime;
-	
-	
+
 	/**
 	 * Used for debugging the server.
 	 */
 	@SuppressWarnings("unused")
 	private static DecimalFormat debugPercentFormat;
-	
-	
+
 	/**
 	 * Forced shutdowns.
 	 */
-	public static boolean shutdownServer = false;		
-	public static boolean shutdownClientHandler;	
-	
-	public static ControlPanel panel = new ControlPanel(true); // false if you want it off
-	
+	public static boolean shutdownServer = false;
+	public static boolean shutdownClientHandler;
+
+	public static ControlPanel panel = new ControlPanel(true); // false if you
+																// want it off
+
 	/**
 	 * Used to identify the server port.
 	 */
 	public static int serverlistenerPort;
-	
-	
+
 	/**
 	 * Calls the usage of player items.
 	 */
 	public static ItemHandler itemHandler = new ItemHandler();
-	
-	
+
 	/**
 	 * Handles logged in players.
 	 */
 	public static PlayerHandler playerHandler = new PlayerHandler();
-	
-	
+
 	/**
 	 * Handles global NPCs.
 	 */
-    public static NPCHandler npcHandler = new NPCHandler();
-    
-    
-    /**
-     * Handles global shops.
-     */
+	public static NPCHandler npcHandler = new NPCHandler();
+
+	/**
+	 * Handles global shops.
+	 */
 	public static ShopHandler shopHandler = new ShopHandler();
-	
-	
+
 	/**
 	 * Handles global objects.
 	 */
 	public static ObjectHandler objectHandler = new ObjectHandler();
 	public static ObjectManager objectManager = new ObjectManager();
-	
-	
+
 	/**
 	 * Handles the castlewars minigame.
 	 */
 	public static CastleWars castleWars = new CastleWars();
-	
-	
+
 	/**
 	 * Handles the fightpits minigame.
 	 */
 	public static FightPits fightPits = new FightPits();
-	
-	
+
 	/**
 	 * Handles the pestcontrol minigame.
 	 */
 	public static PestControl pestControl = new PestControl();
-	
-	
+
 	/**
 	 * Handles the fightcaves minigames.
 	 */
 	public static FightCaves fightCaves = new FightCaves();
-	
-	
+
 	/**
 	 * Handles the clan chat.
 	 */
 	public static ClanChatHandler clanChat = new ClanChatHandler();
-        
-	
+
 	/**
 	 * Handles the task scheduler.
 	 */
 	private static final TaskScheduler scheduler = new TaskScheduler();
 
-	
 	/**
 	 * Gets the task scheduler.
 	 */
 	public static TaskScheduler getTaskScheduler() {
 		return scheduler;
 	}
-	
+
 	static {
-		if(!Constants.SERVER_DEBUG) {
+		if (!Constants.SERVER_DEBUG) {
 			serverlistenerPort = 43594;
 		} else {
 			serverlistenerPort = 43594;
@@ -180,104 +160,86 @@ public class Server {
 		sleepTime = 0;
 		debugPercentFormat = new DecimalFormat("0.0#%");
 	}
-	
-	
+
 	/**
 	 * Starts the server.
-	 */    
+	 */
 	public static void main(java.lang.String args[]) throws NullPointerException, IOException {
 
 		long startTime = System.currentTimeMillis();
 		System.setOut(new Logger(System.out));
 		System.setErr(new Logger(System.err));
-		System.out.println("Launching fileserver..");
-		
 
-		try {
-			new FileServer().start();
-			new server.fileserver.FileServer().bind();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		
 		NPCDrops.init();
 		bind();
-                
-                
+
 		playerManager = PlayerManager.getSingleton();
 		playerManager.setupRegionPlayers();
 
-		
-	
 		Doors.getSingleton().load();
 		DoubleDoors.getSingleton().load();
 		Connection.initialize();
 
-		
 		/**
-		 *Successfully loaded the server.
+		 * Successfully loaded the server.
 		 */
-                long endTime = System.currentTimeMillis();
-                long elapsed = endTime-startTime;
-                System.out.println("Server started up in "+elapsed+" ms");
-		
-                
-                
-        /**
+		long endTime = System.currentTimeMillis();
+		long elapsed = endTime - startTime;
+		System.out.println("Server started up in " + elapsed + " ms");
+
+		/**
 		 * Main server tick.
 		 */
 		scheduler.schedule(new Task() {
 			@Override
-                    protected void execute() {
-                        itemHandler.process();
-                        playerHandler.process();	
-                        npcHandler.process();
-                        shopHandler.process();
-                        CycleEventHandler.getSingleton().process();
-                        objectManager.process();
-                        fightPits.process();
-                        pestControl.process();
-                        }
-                });
-		
+			protected void execute() {
+				itemHandler.process();
+				playerHandler.process();
+				npcHandler.process();
+				shopHandler.process();
+				CycleEventHandler.getSingleton().process();
+				objectManager.process();
+				fightPits.process();
+				pestControl.process();
+			}
+		});
+
 	}
-	
+
 	/**
 	 * Logging execution.
 	 */
 	public static boolean playerExecuted = false;
-	
-	
+
 	/**
 	 * Gets the sleep mode timer and puts the server into sleep mode.
 	 */
 	public static long getSleepTimer() {
 		return sleepTime;
 	}
+
 	/**
 	 * Gets the Player manager.
 	 */
 	public static PlayerManager getPlayerManager() {
 		return playerManager;
 	}
-	
-	
+
 	/**
 	 * Gets the Object manager.
 	 */
 	public static ObjectManager getObjectManager() {
 		return objectManager;
 	}
-	
-	
-/**
- * Java connection.
- * Ports.
- */
-        private static void bind() {
-            ServerBootstrap serverBootstrap = new ServerBootstrap (new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
-            serverBootstrap.setPipelineFactory (new PipelineFactory(new HashedWheelTimer()));
-            serverBootstrap.bind (new InetSocketAddress(serverlistenerPort));	
-        }
-	
+
+	/**
+	 * Java connection. Ports.
+	 */
+	private static void bind() {
+		ServerBootstrap serverBootstrap = new ServerBootstrap(
+				new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
+		serverBootstrap.setPipelineFactory(new PipelineFactory(new HashedWheelTimer()));
+		serverBootstrap.bind(new InetSocketAddress(serverlistenerPort));
+	}
+
 }
