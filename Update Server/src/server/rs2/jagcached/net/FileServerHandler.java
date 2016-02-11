@@ -25,6 +25,7 @@ public final class FileServerHandler extends IdleStateAwareChannelUpstreamHandle
 	/**
 	 * The logger for this class.
 	 */
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FileServerHandler.class.getName());
 	
 	@Override

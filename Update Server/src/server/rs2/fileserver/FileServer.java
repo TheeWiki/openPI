@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import org.apache.mina.common.IoAcceptor;
 import org.apache.mina.transport.socket.nio.SocketAcceptor;
 
-import server.rs2.Loader;
 import server.rs2.fileserver.UpdateSession.Type;
 
 /**
@@ -34,6 +33,7 @@ public class FileServer {
 	/**
 	 * Logger instance.
 	 */
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FileServer.class.getName());
 
 	/**
@@ -44,6 +44,7 @@ public class FileServer {
 	/**
 	 * The <code>IoAcceptor</code> instance.
 	 */
+	@SuppressWarnings("unused")
 	private final IoAcceptor httpAcceptor = new SocketAcceptor();
 
 	/**

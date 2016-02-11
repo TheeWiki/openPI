@@ -1,15 +1,8 @@
 package server.rs2;
 
-import org.apache.log4j.Logger;
+import java.io.IOException;
 
 import server.rs2.jagcached.FileServer;
-
-/**
- * Loads the file server
- * 
- * @author Arithium
- * 
- */
 
 public class Loader {
 

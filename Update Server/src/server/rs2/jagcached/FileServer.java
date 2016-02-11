@@ -12,7 +12,6 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.jboss.netty.util.HashedWheelTimer;
 import org.jboss.netty.util.Timer;
 
-import server.rs2.Loader;
 import server.rs2.jagcached.dispatch.RequestWorkerPool;
 import server.rs2.jagcached.net.FileServerHandler;
 import server.rs2.jagcached.net.NetworkConstants;
@@ -27,6 +26,7 @@ public final class FileServer {
 	/**
 	 * The logger for this class.
 	 */
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FileServer.class.getName());
 	
 	/**
