@@ -320,11 +320,6 @@ public final class RSInterface {
 		tab.tooltip = tooltip;
 	}
 	
-	public static void curseTab(TextDrawingArea[] tda) {
-	
-	
-	}
-	
 	public static void prayerTab(TextDrawingArea[] tda) {
         RSInterface tab = addTabInterface(5608);
         RSInterface currentPray = interfaceCache[687];
