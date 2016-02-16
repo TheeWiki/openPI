@@ -13,6 +13,9 @@ public class Home extends AbstractLocations
 	public void sendFirstClickObject(Client c, int object) {
 		switch(object)
 		{
+		case 6839:
+    		c.setForceMovement(0, 7, false, false, 1, 300, 2, 0x338);
+		break;
 		case 6847:
 			int rng = Misc.random(3);
 			switch(rng)
