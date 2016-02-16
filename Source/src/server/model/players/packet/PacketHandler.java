@@ -49,6 +49,8 @@ public class PacketHandler{
 	static {
 		
 		SilentPacket u = new SilentPacket();
+		packetId[86] = u; // camera movement packet
+		packetId[3] = u; // idle packet (click away from client prints size 3, etc.
 		packetId[3] = u;
 		packetId[202] = u;
 		packetId[77] = u;
