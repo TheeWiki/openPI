@@ -23,6 +23,32 @@ public final class EntityDef {
 		stream.currentOffset = streamIndices[i];
 		entityDef.type = i;
 		entityDef.readValues(stream);
+//		if(i == ####) {
+//			stream.currentOffset = streamIndices[630]; 
+//		entityDef.aByte68 = 3;
+//		entityDef.readValues(stream); // Collect original NPC data
+//			entityDef.name = "llolwut";
+//			entityDef.description = "Why?".getBytes();
+//			entityDef.combatLevel = 138;
+//			entityDef.actions = new String[5];
+//			entityDef.actions[0] = "Stare";
+//	                entityDef.actions[1] = "Stare";
+//	                entityDef.actions[2] = "Stare";
+//	                entityDef.actions[3] = "Stare";
+//	                entityDef.actions[4] = "Stare";
+//		entityDef.anIntArray94 = new int[10];
+//		entityDef.anIntArray94[0] = 62575;//Npc's Cape
+//		entityDef.anIntArray94[1] = 62738;//Npc's Head
+//		entityDef.anIntArray94[2] = 62746;//Npc's Plate
+//		entityDef.anIntArray94[3] = 62743;//Npc's Legs
+//		entityDef.anIntArray94[4] = 56227;//Npc's Weapon
+//		entityDef.anIntArray94[5] = 55728;//Npc's Gloves
+//		entityDef.anIntArray94[6] = 53327;//Npc's Boots
+//		entityDef.anIntArray94[7] = 17461;//Npc's Shadow
+//		entityDef.anIntArray94[8] = 20147;//Npc's Arms (don't edit)
+//		entityDef.anIntArray94[9] = 40939;//Npc's Off hand
+//		entityDef.walkAnim = 1146;
+//		entityDef.standAnim = 12010;
 		//entityDef.readValues(true, aClass30_Sub2_Sub2_60); // Collect original NPC data
 	/*if(i == 2550) { // NPC ID 
     entityDef.actions = new String[5];
