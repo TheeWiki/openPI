@@ -37,21 +37,21 @@ public class Location {
 	/*
 	 * Gets the X coordinate
 	 */
-	int getX() {
+	public int getX() {
 		return x;
 	}
 	
 	/*
 	 * gets the y coordinate
 	 */
-	int getY() {
+	public	int getY() {
 		return y;
 	}
 	
 	/*
 	 * gets the heightLevel
 	 */
-	int getHeight() {
+	public	int getHeight() {
 		return height;
 	}
 	
