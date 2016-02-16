@@ -5187,7 +5187,7 @@ public class client extends RSApplet {
 							clientData = true;
 						if (inputString.equals("::itemid"))
 						{
-							new ItemListSearch();
+							new ItemListSearch(); // duno why it won't work same thing from my other client
 						}
 						if(inputString.equals("::dataoff"))
 							clientData = false;
