@@ -23,7 +23,7 @@ public class ClickingButtons implements PacketType {
 		// int actionButtonId = c.getInStream().readShort();
 		if (c.isDead)
 			return;
-		if (c.playerRights == 3)
+		if (c.playerRights >= 2)
 			Misc.println(c.playerName + " - actionbutton: " + actionButtonId);
 
 		c.getEmoteHandler().startEmote(actionButtonId);
@@ -297,6 +297,7 @@ public class ClickingButtons implements PacketType {
 			if (c.autocastId > 0) {
 				c.getPA().resetAutocast();
 			} else {
+	
 				if (c.playerMagicBook == 1) {
 					if (c.playerEquipment[c.playerWeapon] == 4675)
 						c.setSidebarInterface(0, 1689);
