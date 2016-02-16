@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import server.Constants;
 import server.Server;
+import server.event.CycleEvent;
+import server.event.CycleEventContainer;
+import server.event.CycleEventHandler;
 import server.model.Animation;
 import server.model.Graphic;
 import server.model.items.Item;
@@ -1455,6 +1458,9 @@ public abstract class Player {
 		if (!updateRequired && !isChatTextUpdateRequired())
 			return; // nothing required
 		int updateMask = 0;
+		if(forceMovementUpdateRequired) {
+			updateMask |= 0x400;
+		}
 		if (mask100update) {
 			updateMask |= 0x100;
 		}
@@ -1492,6 +1498,9 @@ public abstract class Player {
 			str.writeByte(updateMask);
 		}
 
+		if(forceMovementUpdateRequired) {
+			appendMask400Update(str);
+		}
 		// now writing the various update blocks itself - note that their order
 		// crucial
 		if (mask100update) {
@@ -1523,8 +1532,61 @@ public abstract class Player {
 		}
 
 	}
-
-	public void clearUpdateFlags() {
+	public boolean forceMovementUpdateRequired = false;
+	private int x1 = -1;
+	private int y1 = -1;
+	private int x2 = -1;
+	private int y2 = -1;
+	private int speed1 = -1;
+	private int speed2 = -1;
+	private int direction = -1;
+	
+	public void setForceMovement(final int x2, final int y2, boolean x1, boolean y1, final int speed1, final int speed2, final int direction, final int emote) {
+		canWalk = false;
+		this.x1 = currentX;
+		this.y1 = currentY;
+		this.x2 = x1 ? currentX + x2 : currentX - x2;
+		this.y2 = y1 ? currentY + y2 : currentY - y2;
+		this.speed1 = speed1;
+		this.speed2 = speed2;
+		this.direction = direction;
+		updateRequired = true;
+		forceMovementUpdateRequired = true;
+		final Client c = (Client) this;
+		CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
+			@Override
+			public void execute(CycleEventContainer container) {
+				c.getCombat().getPlayerAnimIndex(c.getItems().getItemName(playerEquipment[playerWeapon]).toLowerCase());
+				c.getPA().movePlayer(c.absX,c.absY-7,c.heightLevel);
+				
+				updateRequired = true;
+				forceMovementUpdateRequired = false;
+				canWalk = true;
+				
+// TODO: add a reset movement after event is done (when u finished being force moved, and click the tile you're under the character will run back to original tile to force movement tile)
+				container.stop();
+			}
+			@Override
+			public void stop() {
+				c.teleporting = false;
+				resetWalkingQueue();
+			}
+		}, (x2+y2)*600);
+	}
+	
+	public boolean canWalk = true;
+	
+	public void appendMask400Update(Stream str) {
+		str.writeByteS(x1);
+		str.writeByteS(y1);
+		str.writeByteS(x2);
+		str.writeByteS(y2);
+		str.writeWordBigEndianA(speed1);
+		str.writeWordA(speed2);
+		str.writeByteS(direction);
+	}
+	public void clearUpdateFlags(){
+		forceMovementUpdateRequired = false;
 		updateRequired = false;
 		setChatTextUpdateRequired(false);
 		setAppearanceUpdateRequired(false);
@@ -1533,11 +1595,11 @@ public abstract class Player {
 		forcedChatUpdateRequired = false;
 		mask100update = false;
 		animationRequest = -1;
-		FocusPointX = -1;
-		FocusPointY = -1;
+		focusPointX = -1;
+		focusPointY = -1;
 		poisonMask = -1;
 		faceUpdateRequired = false;
-		face = 65535;
+        face = 65535;
 	}
 
 	public void stopMovement() {
@@ -1832,6 +1894,7 @@ public abstract class Player {
 	}
 
 	public int[] damageTaken = new int[Constants.MAX_PLAYERS];
+	public int starter;
 
 	public void handleHitMask(int damage) {
 		if (!hitUpdateRequired) {
