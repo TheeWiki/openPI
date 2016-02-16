@@ -599,7 +599,7 @@ public class ItemAssistant {
 			c.setSidebarInterface(0, 328); // spike, impale, smash, block
 			c.getPA().sendFrame246(329, 200, Weapon);
 			c.getPA().sendFrame126(WeaponName, 331);
-		} else if (WeaponName2.startsWith("dart") || WeaponName2.startsWith("knife")
+		} else if (c.playerEquipment[c.playerWeapon] == 5641 || WeaponName2.startsWith("dart") || WeaponName2.startsWith("knife")
 				|| WeaponName2.startsWith("javelin") || WeaponName.equalsIgnoreCase("toktz-xil-ul")) {
 			c.setSidebarInterface(0, 4446); // accurate, rapid, longrange
 			c.getPA().sendFrame246(4447, 200, Weapon);
