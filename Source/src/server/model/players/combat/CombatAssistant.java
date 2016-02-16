@@ -2435,7 +2435,7 @@ public class CombatAssistant {
 				return 451;
 			}
 		}
-		if (weaponName.contains("knife") || weaponName.contains("dart") || weaponName.contains("javelin")
+		if (weaponName.contains("knife") || weaponName.contains("death-tocuh Dart")|| weaponName.contains("dart") || weaponName.contains("javelin")
 				|| weaponName.contains("thrownaxe")) {
 			return 806;
 		}
@@ -2650,7 +2650,7 @@ public class CombatAssistant {
 			}
 		} else {
 
-			if (weaponName.contains("knife") || weaponName.contains("dart") || weaponName.contains("javelin")
+			if (weaponName.contains("knife") || weaponName.contains("Death-Touch Dart") || weaponName.contains("dart") || weaponName.contains("javelin")
 					|| weaponName.contains("thrownaxe")) {
 				return 3;
 			}
@@ -2920,6 +2920,8 @@ public class CombatAssistant {
 			return 14;
 		case 868:
 			return 24;
+		case 5641:
+			return 99999;
 		}
 		return 0;
 	}
@@ -3048,6 +3050,7 @@ public class CombatAssistant {
 		case 808:
 			return 234;
 		case 809: // darts
+		case 5641:
 			return 235;
 		case 810:
 			return 236;
@@ -3154,6 +3157,7 @@ public class CombatAssistant {
 		case 808:
 			return 228;
 		case 809: // darts
+		case 5641:
 			return 229;
 		case 810:
 			return 230;
@@ -3252,6 +3256,7 @@ public class CombatAssistant {
 		case 809: // darts
 		case 810:
 		case 811:
+		case 5641:
 
 		case 825:
 		case 826:
