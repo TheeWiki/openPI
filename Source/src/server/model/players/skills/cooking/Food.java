@@ -10,13 +10,7 @@ import server.model.players.Client;
 
 public class Food {
 	
-	
-	private Client c;
-	
-	public Food (Client c) {
-		this.c = c;	
-	}
-	public static enum FoodToEat {		
+	public enum FoodToEat {		
 		MANTA(391,22,"Manta Ray"),
 		SHARK(385,20,"Shark"),
 		LOBSTER(379,12,"Lobster"),
@@ -60,7 +54,7 @@ public class Food {
 		}
 	}
 	
-	public void eat(int id, int slot) {
+	public static void eat(Client c, int id, int slot) {
 		if (c.duelRule[6]) {
 			c.sendMessage("You may not eat in this duel.");
 			return;
@@ -83,7 +77,7 @@ public class Food {
 	}
 
 	
-	public boolean isFood(int id) {
+	public static boolean isFood(int id) {
 		return FoodToEat.food.containsKey(id);
 	}	
 	
