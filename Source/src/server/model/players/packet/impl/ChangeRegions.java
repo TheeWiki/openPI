@@ -23,7 +23,7 @@ public class ChangeRegions implements PacketType {
 			c.headIconPk = 0;
 			c.getPA().requestUpdates();
 		}
-
+		c.toleranceTimer = System.currentTimeMillis();
 	}
 		
 }
