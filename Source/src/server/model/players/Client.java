@@ -48,8 +48,6 @@ public class Client extends Player {
 	private Queue<Packet> queuedPackets = new LinkedList<Packet>();
 	private Potions potions = new Potions(this);
 	private PotionMixing potionMixing = new PotionMixing(this);
-	private Food food = new Food(this);
-
 	public int lowMemoryVersion = 0;
 	public int timeOutCounter = 0;
 	public int returnCode = 2;
@@ -575,11 +573,6 @@ public class Client extends Player {
 	public PotionMixing getPotMixing() {
 		return potionMixing;
 	}
-
-	public Food getFood() {
-		return food;
-	}
-
 	private BuryBones buryBones = new BuryBones(this);
 
 	public BuryBones getBones() {
