@@ -2,6 +2,7 @@ package server.model.players.packet.impl;
 
 import server.model.players.Client;
 import server.model.players.packet.PacketType;
+import server.model.players.skills.cooking.Food;
 
 /**
  * Clicking an item, bury bone, eat food etc
@@ -30,6 +31,10 @@ public class ClickItem implements PacketType {
 				pouch = 3;
 			c.getPA().fillPouch(pouch);
 			return;
+		}
+		if (Food.isFood(itemId))
+		{
+			Food.eat(c, itemId, itemSlot);
 		}
 		if (c.getBones().readBone(itemId)){ 
 			c.getBones().boneOnGround(itemId);
