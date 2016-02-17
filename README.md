@@ -16,6 +16,12 @@ Overview of what this repository contains
 | openPI Launcher     | Visual Basic        |
 | openPI Client Updater     | Java        |
 
+Library dependancies used
+
+- Gson
+- Mina
+- Netty
+
 # Credits
 - Sanity -> Project Insanity framework
 - Galkon -> Client MITB #317
