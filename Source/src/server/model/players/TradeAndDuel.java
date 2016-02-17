@@ -22,6 +22,10 @@ public class TradeAndDuel{
 	
 	public CopyOnWriteArrayList<GameItem> offeredItems = new CopyOnWriteArrayList<GameItem>();
 	
+	/**
+	 * TODO: Fix bug where if you click accept trade while in a trade your interface will close for requested player
+	 * @param id
+	 */
 	public void requestTrade(int id){
 		try {
 			@SuppressWarnings("static-access")
