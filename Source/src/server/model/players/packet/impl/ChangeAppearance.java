@@ -8,6 +8,9 @@ import server.model.players.packet.PacketType;
  **/
 public class ChangeAppearance implements PacketType {
 
+	/**
+	 * TODO: Fix updating from make-over mage accept button
+	 */
 	@Override
 	public void processPacket(Client c, int packetType, int packetSize) {
 		int[] appearance = new int[13];
