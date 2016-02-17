@@ -880,23 +880,27 @@ public abstract class Player {
 	}
 
 	public boolean goodDistance(int objectX, int objectY, int playerX, int playerY, int distance) {
-		for (int i = 0; i <= distance; i++) {
-			for (int j = 0; j <= distance; j++) {
-				if ((objectX + i) == playerX
-						&& ((objectY + j) == playerY || (objectY - j) == playerY || objectY == playerY)) {
-					return true;
-				} else if ((objectX - i) == playerX
-						&& ((objectY + j) == playerY || (objectY - j) == playerY || objectY == playerY)) {
-					return true;
-				} else if (objectX == playerX
-						&& ((objectY + j) == playerY || (objectY - j) == playerY || objectY == playerY)) {
-					return true;
-				}
-			}
-		}
-		return false;
+		return ((objectX-playerX <= distance && objectX-playerX >= -distance) && (objectY-playerY <= distance && objectY-playerY >= -distance));
 	}
-
+//	public boolean goodDistance(int objectX, int objectY, int playerX, int playerY, int distance) {
+//		for (int i = 0; i <= distance; i++) {
+//			for (int j = 0; j <= distance; j++) {
+//				if ((objectX + i) == playerX
+//						&& ((objectY + j) == playerY || (objectY - j) == playerY || objectY == playerY)) {
+//					return true;
+//				} else if ((objectX - i) == playerX
+//						&& ((objectY + j) == playerY || (objectY - j) == playerY || objectY == playerY)) {
+//					return true;
+//				} else if (objectX == playerX
+//						&& ((objectY + j) == playerY || (objectY - j) == playerY || objectY == playerY)) {
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+//	}
+	public long toleranceTimer;
+	
 	public int getNextWalkingDirection() {
 		if (wQueueReadPtr == wQueueWritePtr)
 			return -1;
@@ -1458,7 +1462,7 @@ public abstract class Player {
 		if (!updateRequired && !isChatTextUpdateRequired())
 			return; // nothing required
 		int updateMask = 0;
-		if(forceMovementUpdateRequired) {
+		if (forceMovementUpdateRequired) {
 			updateMask |= 0x400;
 		}
 		if (mask100update) {
@@ -1498,7 +1502,7 @@ public abstract class Player {
 			str.writeByte(updateMask);
 		}
 
-		if(forceMovementUpdateRequired) {
+		if (forceMovementUpdateRequired) {
 			appendMask400Update(str);
 		}
 		// now writing the various update blocks itself - note that their order
@@ -1532,6 +1536,7 @@ public abstract class Player {
 		}
 
 	}
+
 	public boolean forceMovementUpdateRequired = false;
 	private int x1 = -1;
 	private int y1 = -1;
@@ -1540,8 +1545,9 @@ public abstract class Player {
 	private int speed1 = -1;
 	private int speed2 = -1;
 	private int direction = -1;
-	
-	public void setForceMovement(final int x2, final int y2, boolean x1, boolean y1, final int speed1, final int speed2, final int direction, final int emote) {
+
+	public void setForceMovement(final int x2, final int y2, boolean x1, boolean y1, final int speed1, final int speed2,
+			final int direction, final int emote) {
 		canWalk = false;
 		this.x1 = currentX;
 		this.y1 = currentY;
@@ -1557,25 +1563,29 @@ public abstract class Player {
 			@Override
 			public void execute(CycleEventContainer container) {
 				c.getCombat().getPlayerAnimIndex(c.getItems().getItemName(playerEquipment[playerWeapon]).toLowerCase());
-				c.getPA().movePlayer(c.absX,c.absY-7,c.heightLevel);
-				
+				c.getPA().movePlayer(c.absX, c.absY - 7, c.heightLevel);
+
 				updateRequired = true;
 				forceMovementUpdateRequired = false;
 				canWalk = true;
-				
-// TODO: add a reset movement after event is done (when u finished being force moved, and click the tile you're under the character will run back to original tile to force movement tile)
+
+				// TODO: add a reset movement after event is done (when u
+				// finished being force moved, and click the tile you're under
+				// the character will run back to original tile to force
+				// movement tile)
 				container.stop();
 			}
+
 			@Override
 			public void stop() {
 				c.teleporting = false;
 				resetWalkingQueue();
 			}
-		}, (x2+y2)*600);
+		}, (x2 + y2) * 600);
 	}
-	
+
 	public boolean canWalk = true;
-	
+
 	public void appendMask400Update(Stream str) {
 		str.writeByteS(x1);
 		str.writeByteS(y1);
@@ -1585,7 +1595,8 @@ public abstract class Player {
 		str.writeWordA(speed2);
 		str.writeByteS(direction);
 	}
-	public void clearUpdateFlags(){
+
+	public void clearUpdateFlags() {
 		forceMovementUpdateRequired = false;
 		updateRequired = false;
 		setChatTextUpdateRequired(false);
@@ -1599,7 +1610,7 @@ public abstract class Player {
 		focusPointY = -1;
 		poisonMask = -1;
 		faceUpdateRequired = false;
-        face = 65535;
+		face = 65535;
 	}
 
 	public void stopMovement() {
