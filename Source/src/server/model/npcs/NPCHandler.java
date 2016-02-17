@@ -148,7 +148,7 @@ public class NPCHandler {
 	public int getCloseRandomPlayer(int i) {
 		ArrayList<Integer> players = new ArrayList<Integer>();
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
-			if (Server.playerHandler.players[j] != null) {
+			if (Server.playerHandler.players[j] != null && (System.currentTimeMillis() - Server.playerHandler.players[j].toleranceTimer < 1500000)) {
 				if (goodDistance(Server.playerHandler.players[j].absX, Server.playerHandler.players[j].absY,
 						npcs[i].absX, npcs[i].absY, 2 + distanceRequired(i) + followDistance(i)) || isFightCaveNpc(i)) {
 					if ((Server.playerHandler.players[j].underAttackBy <= 0
