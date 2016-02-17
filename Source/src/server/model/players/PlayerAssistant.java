@@ -204,125 +204,7 @@ public class PlayerAssistant {
 		c.getOutStream().endFrameVarSizeWord();
 		c.flushOutStream();
 	}
-
-	/**
-	 * Quest tab information
-	 **/
-	public void loadQuests() {
-		c.getPA().sendFrame126("Free", 663);
-		// c.getPA().sendFrame126("", 7332);
-		// c.getPA().sendFrame126("", 7333);
-		// c.getPA().sendFrame126("", 7334);
-		// c.getPA().sendFrame126("@gre@Dwarf Cannon", 7336);
-		// c.getPA().sendFrame126("", 7339);
-		c.getPA().sendFrame126("", 7338);
-		c.getPA().sendFrame126("", 7340);
-		c.getPA().sendFrame126("", 7346);
-		c.getPA().sendFrame126("", 7341);
-		c.getPA().sendFrame126("", 7342);
-		c.getPA().sendFrame126("", 7337);
-		c.getPA().sendFrame126("", 7343);
-		c.getPA().sendFrame126("", 7335);
-		c.getPA().sendFrame126("", 7344);
-		c.getPA().sendFrame126("", 7345);
-		c.getPA().sendFrame126("", 7347);
-		c.getPA().sendFrame126("", 7348);
-
-		/* Members Quests */
-		sendFrame126("", 12772);
-
-		// unknown id
-		c.getPA().sendFrame126("", 7352);
-		c.getPA().sendFrame126("", 12129);
-		c.getPA().sendFrame126("", 8438);
-		c.getPA().sendFrame126("", 12852);
-		c.getPA().sendFrame126("", 7354);
-		c.getPA().sendFrame126("", 7355);
-		c.getPA().sendFrame126("", 7356);
-		c.getPA().sendFrame126("", 8679);
-		c.getPA().sendFrame126("", 7459);
-		c.getPA().sendFrame126("", 7357);
-		c.getPA().sendFrame126("", 12836);
-		c.getPA().sendFrame126("", 7358);
-		c.getPA().sendFrame126("", 7359);
-		c.getPA().sendFrame126("", 14169);
-		c.getPA().sendFrame126("", 10115);
-		c.getPA().sendFrame126("", 14604);
-		c.getPA().sendFrame126("", 7360);
-		c.getPA().sendFrame126("", 12282);
-		c.getPA().sendFrame126("", 13577);
-		c.getPA().sendFrame126("", 12839);
-		c.getPA().sendFrame126("", 7361);
-		c.getPA().sendFrame126("", 11857);
-		c.getPA().sendFrame126("", 7362);
-		c.getPA().sendFrame126("", 7363);
-		c.getPA().sendFrame126("", 7364);
-		c.getPA().sendFrame126("", 10135);
-		c.getPA().sendFrame126("", 4508);
-		c.getPA().sendFrame126("", 11907);
-		c.getPA().sendFrame126("", 7365);
-		c.getPA().sendFrame126("", 7366);
-		c.getPA().sendFrame126("", 7367);
-		c.getPA().sendFrame126("", 13389);
-		c.getPA().sendFrame126("", 7368);
-		c.getPA().sendFrame126("", 11132);
-		c.getPA().sendFrame126("", 7369);
-		c.getPA().sendFrame126("", 12389);
-		c.getPA().sendFrame126("", 13974);
-		c.getPA().sendFrame126("", 7370);
-		c.getPA().sendFrame126("", 8137);
-		c.getPA().sendFrame126("", 7371);
-		c.getPA().sendFrame126("", 12345);
-		c.getPA().sendFrame126("", 7372);
-		c.getPA().sendFrame126("", 8115);
-		// unknown id
-		c.getPA().sendFrame126("", 8576);
-		c.getPA().sendFrame126("", 12139);
-		c.getPA().sendFrame126("", 7373);
-		c.getPA().sendFrame126("", 7374);
-		c.getPA().sendFrame126("", 8969);
-		c.getPA().sendFrame126("", 7375);
-		c.getPA().sendFrame126("", 7376);
-		c.getPA().sendFrame126("", 1740);
-		c.getPA().sendFrame126("", 3278);
-		c.getPA().sendFrame126("", 7378);
-		c.getPA().sendFrame126("", 6518);
-		c.getPA().sendFrame126("", 7379);
-		c.getPA().sendFrame126("", 7380);
-		c.getPA().sendFrame126("", 7381);
-		c.getPA().sendFrame126("", 11858);
-		// unknown id
-		c.getPA().sendFrame126("", 9927);
-		c.getPA().sendFrame126("", 7349);
-		c.getPA().sendFrame126("", 7350);
-		c.getPA().sendFrame126("", 7351);
-		c.getPA().sendFrame126("", 13356);
-		// more
-		c.getPA().sendFrame126("", 6024);
-		c.getPA().sendFrame126("", 191);
-		c.getPA().sendFrame126("", 15235);
-		c.getPA().sendFrame126("", 249);
-		c.getPA().sendFrame126("", 15592);
-		c.getPA().sendFrame126("", 15098);
-		c.getPA().sendFrame126("", 15352);
-		c.getPA().sendFrame126("", 14912);
-		c.getPA().sendFrame126("", 668);
-		c.getPA().sendFrame126("", 18306);
-		c.getPA().sendFrame126("", 15499);
-		c.getPA().sendFrame126("", 18684);
-		c.getPA().sendFrame126("", 6027);
-		c.getPA().sendFrame126("", 15487);
-		c.getPA().sendFrame126("", 18517);
-		c.getPA().sendFrame126("", 16128);
-		c.getPA().sendFrame126("", 6987);
-		c.getPA().sendFrame126("", 16149);
-		c.getPA().sendFrame126("", 15841);
-		c.getPA().sendFrame126("", 7353);
-		c.getPA().sendFrame126("", 17510);
-		c.getPA().sendFrame126("", 673);
-		/* END OF ALL QUESTS */
-	}
-
+	
 	public void sendFrame126(String s, int id) {
 		// synchronized(c) {
 		if (c.getOutStream() != null && c != null) {
@@ -2478,17 +2360,16 @@ public class PlayerAssistant {
 	}
 
 	public void handleLoginText() {
-		loadQuests();
-		c.getPA().sendFrame126("Varrock Teleport", 13037);
-		c.getPA().sendFrame126("Lumbridge Teleport", 13047);
-		c.getPA().sendFrame126("Falador Teleport", 13055);
-		c.getPA().sendFrame126("Camelot Teleport", 13063);
-		c.getPA().sendFrame126("Ardougne Teleport", 13071);
-		c.getPA().sendFrame126("Varrock Teleport", 1300);
-		c.getPA().sendFrame126("Lumbridge Teleport", 1325);
-		c.getPA().sendFrame126("Falador Teleport", 1350);
-		c.getPA().sendFrame126("Camelot Teleport", 1382);
-		c.getPA().sendFrame126("Ardougne Teleport", 1415);
+//		c.getPA().sendFrame126("Varrock Teleport", 13037);
+//		c.getPA().sendFrame126("Lumbridge Teleport", 13047);
+//		c.getPA().sendFrame126("Falador Teleport", 13055);
+//		c.getPA().sendFrame126("Camelot Teleport", 13063);
+//		c.getPA().sendFrame126("Ardougne Teleport", 13071);
+//		c.getPA().sendFrame126("Varrock Teleport", 1300);
+//		c.getPA().sendFrame126("Lumbridge Teleport", 1325);
+//		c.getPA().sendFrame126("Falador Teleport", 1350);
+//		c.getPA().sendFrame126("Camelot Teleport", 1382);
+//		c.getPA().sendFrame126("Ardougne Teleport", 1415);
 	}
 
 	public void handleWeaponStyle() {
