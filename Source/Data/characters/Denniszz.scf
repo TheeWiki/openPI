@@ -1,0 +1,111 @@
+[ACCOUNT]
+character-username = Denniszz
+character-password = 12345
+
+[CHARACTER]
+character-height = 0
+character-posx = 2610
+character-posy = 3093
+character-rights = 0
+crystal-bow-shots = 0
+skull-timer = 0
+magic-book = 0
+pc-points = 0
+kills = 0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+membership = false
+startdate = 0
+special-amount = 0.0
+selected-coffin = 0
+barrows-killcount = 0
+teleblock-length = 0
+character-energy = 100
+pc-points = 0
+slayerTask = 0
+taskAmount = 0
+magePoints = 0
+
+autoRet = 0
+barrowskillcount = 0
+flagged = false
+wave = 0
+gwkc = 0
+fightMode = 0
+void = 0	0	0	0	0
+
+[EQUIPMENT]
+character-equip = 0	1155	1	
+character-equip = 1	-1	1	
+character-equip = 2	1704	1	
+character-equip = 3	1321	1	
+character-equip = 4	1103	1	
+character-equip = 5	1173	1	
+character-equip = 6	-1	0	
+character-equip = 7	1075	1	
+character-equip = 8	-1	0	
+character-equip = 9	1059	1	
+character-equip = 10	-1	1	
+character-equip = 11	-1	0	
+character-equip = 12	-1	1	
+character-equip = 13	-1	0	
+
+[LOOK]
+character-look = 0	0
+character-look = 1	0
+character-look = 2	18
+character-look = 3	26
+character-look = 4	33
+character-look = 5	36
+character-look = 6	42
+character-look = 7	10
+character-look = 8	0
+character-look = 9	0
+character-look = 10	0
+character-look = 11	0
+character-look = 12	0
+
+[SKILLS]
+character-skill = 0	1	0
+character-skill = 1	1	0
+character-skill = 2	1	0
+character-skill = 3	10	1300
+character-skill = 4	1	0
+character-skill = 5	1	0
+character-skill = 6	1	0
+character-skill = 7	1	0
+character-skill = 8	1	0
+character-skill = 9	1	0
+character-skill = 10	1	0
+character-skill = 11	1	0
+character-skill = 12	1	0
+character-skill = 13	1	0
+character-skill = 14	1	0
+character-skill = 15	1	0
+character-skill = 16	1	0
+character-skill = 17	1	0
+character-skill = 18	1	0
+character-skill = 19	1	0
+character-skill = 20	1	0
+character-skill = 21	1	0
+character-skill = 22	1	0
+character-skill = 23	1	0
+character-skill = 24	1	0
+
+[ITEMS]
+character-item = 0	996	100000
+character-item = 1	555	500
+character-item = 2	556	500
+character-item = 3	557	500
+character-item = 4	558	500
+character-item = 5	559	500
+character-item = 6	560	500
+character-item = 7	641	1
+character-item = 8	651	1
+character-item = 9	1382	1
+character-item = 11	1096	1
+character-item = 12	1130	1
+character-item = 13	842	1
+character-item = 14	883	500
+
+[BANK]
+
+[EOF]
