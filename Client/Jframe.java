@@ -14,7 +14,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.UIManager;
 
 
-public class Jframe extends client implements ActionListener {
+public class Jframe extends Client implements ActionListener {
 
     /**
 	 * 
@@ -22,7 +22,7 @@ public class Jframe extends client implements ActionListener {
 	private static final long serialVersionUID = -8173720640262523513L;
 	private JFrame frame;
 
-	public Jframe(String args[]) {
+	public Jframe(String args[]) throws Exception {
 		super();
 		try {
 			sign.signlink.startpriv(InetAddress.getByName(server));
@@ -34,8 +34,7 @@ public class Jframe extends client implements ActionListener {
 
 	public void initUI() {
 		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			JPopupMenu.setDefaultLightWeightPopupEnabled(false);
+			JFrame.setDefaultLookAndFeelDecorated(true);
 			frame = new JFrame(Constants.CLIENT_NAME);
 			frame.setLayout(new BorderLayout());
 			setFocusTraversalKeysEnabled(false);
@@ -53,8 +52,8 @@ public class Jframe extends client implements ActionListener {
 			frame.pack();
 
 			frame.setLocationRelativeTo(null);
-			frame.setVisible(true); // can see the client
-			frame.setResizable(false); // resizeable frame
+			frame.setVisible(true);
+			frame.setResizable(false);
 
 			init();
 		} catch (Exception e) {
