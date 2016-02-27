@@ -7,18 +7,18 @@ import org.jboss.netty.buffer.ChannelBuffer;
 
 public class Misc {
 	
-	public static String getRS2String(final ChannelBuffer buf) {
-		final StringBuilder bldr = new StringBuilder();
+	public static String getRS2String(final ChannelBuffer buffer) {
+		final StringBuilder builder = new StringBuilder();
 		byte b;
-		while (buf.readable() && (b = buf.readByte()) != 10)
-			bldr.append((char) b);
-		return bldr.toString();
+		while (buffer.readable() && (b = buffer.readByte()) != 10)
+			builder.append((char) b);
+		return builder.toString();
 	}
 
-	public static String formatPlayerName(String str) {
-		str = ucFirst(str);
-		str.replace("_", " ");
-		return str;
+	public static String formatPlayerName(String string) {
+		string = ucFirst(string);
+		string.replace("_", " ");
+		return string;
 	}
 
 	public static String longToPlayerName(long l) {
@@ -54,34 +54,34 @@ public class Misc {
 		return new String(ac, 12 - i, i);
 	}
 
-	public static String format(int num) {
-		return NumberFormat.getInstance().format(num);
+	public static String format(int number) {
+		return NumberFormat.getInstance().format(number);
 	}
 
-	public static String ucFirst(String str) {
-		str = str.toLowerCase();
-		if (str.length() > 1) {
-			str = str.substring(0, 1).toUpperCase() + str.substring(1);
+	public static String ucFirst(String string) {
+		string = string.toLowerCase();
+		if (string.length() > 1) {
+			string = string.substring(0, 1).toUpperCase() + string.substring(1);
 		} else {
-			return str.toUpperCase();
+			return string.toUpperCase();
 		}
-		return str;
+		return string;
 	}
 
-	public static void print_debug(String str) {
-		System.out.print(str);
+	public static void print_debug(String string) {
+		System.out.print(string);
 	}
 
-	public static void println_debug(String str) {
-		System.out.println(str);
+	public static void println_debug(String string) {
+		System.out.println(string);
 	}
 
-	public static void print(String str) {
-		System.out.print(str);
+	public static void print(String string) {
+		System.out.print(string);
 	}
 
-	public static void println(String str) {
-		System.out.println(str);
+	public static void println(String string) {
+		System.out.println(string);
 	}
 
 	public static String Hex(byte data[]) {
@@ -114,12 +114,12 @@ public class Misc {
 		return temp;
 	}
 
-	public static String basicEncrypt(String s) {
+	public static String basicEncrypt(String string) {
 		String toReturn = "";
-		for (int j = 0; j < s.length(); j++) {
-			toReturn += (int) s.charAt(j);
+		for (int j = 0; j < string.length(); j++) {
+			toReturn += (int) string.charAt(j);
 		}
-		// System.out.println("Encrypt: " + toReturn);
+//		 System.out.println("Encrypt: " + toReturn);
 		return toReturn;
 	}
 
@@ -131,10 +131,10 @@ public class Misc {
 		return (int) (java.lang.Math.random() * (range + 1));
 	}
 
-	public static long playerNameToInt64(String s) {
+	public static long playerNameToInt64(String strign) {
 		long l = 0L;
-		for (int i = 0; i < s.length(); i++) {
-			char c = s.charAt(i);
+		for (int i = 0; i < strign.length(); i++) {
+			char c = strign.charAt(i);
 			l *= 37L;
 			if (c >= 'A' && c <= 'Z')
 				l += (1 + c) - 65;
@@ -183,7 +183,7 @@ public class Misc {
 		return new String(buf, 0, buf.length);
 	}
 
-	public static void textPack(byte packedData[], java.lang.String text) {
+	public static void textPack(byte packedData[], String text) {
 		if (text.length() > 80)
 			text = text.substring(0, 80);
 		text = text.toLowerCase();
