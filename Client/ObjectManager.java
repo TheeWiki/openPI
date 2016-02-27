@@ -819,7 +819,7 @@ label0:
 		//}
 	}
 
-	public static client clientInstance;
+	public static Client clientInstance;
 
 	private static int method176(int i, int j, int k)
 	{
