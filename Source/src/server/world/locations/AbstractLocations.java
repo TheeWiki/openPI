@@ -1,6 +1,6 @@
 package server.world.locations;
 
-import server.model.players.Client;
+import server.model.players.Player;
 
 /**
  * This abstracted class constructs how the classes that extends this abstract
@@ -19,7 +19,7 @@ public abstract class AbstractLocations {
 	 * @param c
 	 * @param object
 	 */
-	public abstract void sendFirstClickObject(Client c, int object);
+	public abstract void sendFirstClickObject(Player c, int object);
 
 	/**
 	 * This abstract void represents the second click option of a object in
@@ -29,7 +29,7 @@ public abstract class AbstractLocations {
 	 * @param c
 	 * @param object
 	 */
-	public abstract void sendSecondClickObject(Client c, int object);
+	public abstract void sendSecondClickObject(Player c, int object);
 
 	/**
 	 * This abstract void represents the third click option of a object in which
@@ -39,7 +39,7 @@ public abstract class AbstractLocations {
 	 * @param c
 	 * @param object
 	 */
-	public abstract void sendThirdClickObject(Client c, int object);
+	public abstract void sendThirdClickObject(Player c, int object);
 
 	/**
 	 * This abstract void represents the first click option of a npc in which
@@ -49,7 +49,7 @@ public abstract class AbstractLocations {
 	 * @param c
 	 * @param npc
 	 */
-	public abstract void sendFirstClickNpc(Client c, int npc);
+	public abstract void sendFirstClickNpc(Player c, int npc);
 
 	/**
 	 * This abstract void represents the second click option of a npc in which
@@ -59,7 +59,7 @@ public abstract class AbstractLocations {
 	 * @param c
 	 * @param npc
 	 */
-	public abstract void sendSecondClickNpc(Client c, int npc);
+	public abstract void sendSecondClickNpc(Player c, int npc);
 
 	/**
 	 * This abstract void represents the third click option of a npc in which
@@ -69,5 +69,5 @@ public abstract class AbstractLocations {
 	 * @param c
 	 * @param npc
 	 */
-	public abstract void sendThirdClickNpc(Client c, int npc);
+	public abstract void sendThirdClickNpc(Player c, int npc);
 }

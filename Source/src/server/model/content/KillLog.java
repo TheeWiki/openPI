@@ -1,7 +1,7 @@
 package server.model.content;
 
 import server.Server;
-import server.model.players.Client;
+import server.model.players.Player;
 
 /**
  * TODO: finish/fix
@@ -29,7 +29,7 @@ public class KillLog {
 			4007, 4003, 4017, 4018, 4019, 4008, 4009, 4010, 4020, 4121, 4125,
 			4129, 4122, 4127, 4126, 5424 };
 
-	public static void killInterface(Client player) {
+	public static void killInterface(Player player) {
 		player.getPA().sendFrame126("@blu@NPC Kill Log", 8144);
 
 		player.getPA().sendFrame126("", 8145);
@@ -57,7 +57,7 @@ public class KillLog {
 
 	}
 
-	public static boolean hasKills(Client p, int index) {
+	public static boolean hasKills(Player p, int index) {
 		return p.loggedKills[index] >= getKillsForPet(index);
 	}
 
@@ -69,7 +69,7 @@ public class KillLog {
 		return KILLS_REQUIRED_FOR_PET[index];
 	}
 
-	public static void handleKill(Client player, int npcType) {
+	public static void handleKill(Player player, int npcType) {
 		if (isNpc(npcType)) {
 			int index = getNpcArrayIndex(npcType);
 			player.loggedKills[index] += 1;

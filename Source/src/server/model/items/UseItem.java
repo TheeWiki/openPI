@@ -1,6 +1,6 @@
 package server.model.items;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.util.Misc;
 
 /**
@@ -20,7 +20,7 @@ public class UseItem {
 	 * @param objectY
 	 * @param itemId
 	 */
-	public static void ItemonObject(Client c, int objectID, int objectX, int objectY, int itemId) {
+	public static void ItemonObject(Player c, int objectID, int objectX, int objectY, int itemId) {
 		if (!c.getItems().playerHasItem(itemId, 1))
 			return;
 		switch (objectID) {
@@ -40,7 +40,7 @@ public class UseItem {
 	 * @param itemUsed
 	 * @param useWith
 	 */
-	public static void ItemonItem(Client c, int itemUsed, int useWith) {
+	public static void ItemonItem(Player c, int itemUsed, int useWith) {
 //		if (itemUsed == 2368 && useWith == 2366 || itemUsed == 2366 && useWith == 2368) {
 //			c.getItems().deleteItem(2368, c.getItems().getItemSlot(2368), 1);
 //			c.getItems().deleteItem(2366, c.getItems().getItemSlot(2366), 1);
@@ -65,7 +65,7 @@ public class UseItem {
 	 * @param npcId
 	 * @param slot
 	 */
-	public static void ItemonNpc(Client c, int itemId, int npcId, int slot) {
+	public static void ItemonNpc(Player c, int itemId, int npcId, int slot) {
 		switch (itemId) {
 
 		default:

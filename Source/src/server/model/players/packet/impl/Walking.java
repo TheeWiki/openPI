@@ -2,7 +2,7 @@ package server.model.players.packet.impl;
 
 import server.Server;
 import server.model.minigames.duel_arena.Rules;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.packet.PacketType;
 
 
@@ -13,7 +13,7 @@ public class Walking implements PacketType {
 
 	@SuppressWarnings("static-access")
 	@Override
-	public void processPacket(Client c, int packetType, int packetSize) {	
+	public void processPacket(Player c, int packetType, int packetSize) {	
 		c.walkingToItem = false;
 		c.clickNpcType = 0;
 		c.clickObjectType = 0;

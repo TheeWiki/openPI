@@ -1,6 +1,6 @@
 package server.model.items;
 
-import server.model.players.Client;
+import server.model.players.Player;
 
 /**
  * PvP / Barrows armor degrading
@@ -43,7 +43,7 @@ public class ItemDegrading {
 		{ 4759, 4994, 4995, 4996, 4997, 4998 }
 	};
 
-	public static void appendDegrade(Client c) {
+	public static void appendDegrade(Player c) {
 		for (int j = 0; j < c.playerEquipment.length; j++) {
 			for (int i = 0; i < DEGRADEABLES.length; i++) {
 				if (c.playerEquipment[j] == DEGRADEABLES[i][0]) {

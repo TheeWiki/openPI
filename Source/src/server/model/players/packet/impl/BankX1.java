@@ -1,6 +1,6 @@
 package server.model.players.packet.impl;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.packet.PacketType;
 /**
  * Bank X Items
@@ -11,7 +11,7 @@ public class BankX1 implements PacketType {
 	public static final int	PART2 = 208;
 	public int XremoveSlot, XinterfaceID, XremoveID, Xamount;
 	@Override
-	public void processPacket(Client c, int packetType, int packetSize) {
+	public void processPacket(Player c, int packetType, int packetSize) {
 		if (packetType == 135) {
 			c.xRemoveSlot = c.getInStream().readSignedWordBigEndian();
 			c.xInterfaceId = c.getInStream().readUnsignedWordA();

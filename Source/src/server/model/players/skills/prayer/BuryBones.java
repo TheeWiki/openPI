@@ -4,7 +4,7 @@ package server.model.players.skills.prayer;
 import java.util.HashMap;
 
 import server.Constants;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.skills.SkillIndex;
 
 public class BuryBones {
@@ -81,7 +81,7 @@ public class BuryBones {
 		}
 	}
 
-	public static void boneOnGround(Client c, int itemId, int itemSlot) {
+	public static void boneOnGround(Player c, int itemId, int itemSlot) {
 		if (System.currentTimeMillis() - c.buryDelay > Constants.TICK) {
 			for (final BonesData bones : BonesData.values()) {
 				if (itemId == bones.getboneID()) {

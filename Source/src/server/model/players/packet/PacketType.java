@@ -1,8 +1,8 @@
 package server.model.players.packet;
 
-import server.model.players.Client;
+import server.model.players.Player;
 
 public interface PacketType {
-	public void processPacket(Client c, int packetType, int packetSize);
+	public void processPacket(Player c, int packetType, int packetSize);
 }
 

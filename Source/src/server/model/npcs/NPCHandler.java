@@ -14,7 +14,7 @@ import server.model.items.Item;
 import server.model.minigames.tzhaar.FightCaves;
 import server.model.npcs.drops.Drop;
 import server.model.npcs.drops.NPCDrops;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.EquipmentListener;
 import server.model.players.PlayerHandler;
 import server.model.players.skills.SkillIndex;
@@ -46,7 +46,7 @@ public class NPCHandler {
 			return;
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null) {
-				Client c = (Client) Server.playerHandler.players[j];
+				Player c = (Player) Server.playerHandler.players[j];
 				if (c.heightLevel != npcs[i].heightLevel)
 					continue;
 				if (Server.playerHandler.players[j].goodDistance(c.absX, c.absY, npcs[i].absX, npcs[i].absY, 15)) {
@@ -88,7 +88,7 @@ public class NPCHandler {
 		int max = getMaxHit(i);
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null) {
-				Client c = (Client) Server.playerHandler.players[j];
+				Player c = (Player) Server.playerHandler.players[j];
 				if (c.isDead || c.heightLevel != npcs[i].heightLevel)
 					continue;
 				if (Server.playerHandler.players[j].goodDistance(c.absX, c.absY, npcs[i].absX, npcs[i].absY, 15)) {
@@ -250,7 +250,7 @@ public class NPCHandler {
 	 * @param headIcon
 	 *            has head icon?
 	 */
-	public void spawnNpc(Client c, int npcType, int x, int y, int heightLevel, int WalkingType, int HP, int maxHit,
+	public void spawnNpc(Player c, int npcType, int x, int y, int heightLevel, int WalkingType, int HP, int maxHit,
 			int attack, int defence, boolean attackPlayer, boolean headIcon) {
 		// first, search for a free slot
 		int slot = -1;
@@ -1458,7 +1458,7 @@ public class NPCHandler {
 					if (!npcs[i].isDead) {
 						int p = npcs[i].killerId;
 						if (Server.playerHandler.players[p] != null) {
-							Client c = (Client) Server.playerHandler.players[p];
+							Player c = (Player) Server.playerHandler.players[p];
 							followPlayer(i, c.playerId);
 							if (npcs[i] == null)
 								continue;
@@ -1614,7 +1614,7 @@ public class NPCHandler {
 							handleJadDeath(i);
 						}
 					} else if (npcs[i].actionTimer == 0 && npcs[i].needRespawn == true) {
-						Client player = (Client) Server.playerHandler.players[npcs[i].spawnedBy];
+						Player player = (Player) Server.playerHandler.players[npcs[i].spawnedBy];
 						if (player != null) {
 
 							npcs[i] = null;
@@ -1692,7 +1692,7 @@ public class NPCHandler {
 	 */
 	@SuppressWarnings("static-access")
 	private void killedBarrow(int i) {
-		Client c = (Client) Server.playerHandler.players[npcs[i].killedBy];
+		Player c = (Player) Server.playerHandler.players[npcs[i].killedBy];
 		if (c != null) {
 			for (int o = 0; o < c.barrowsNpcs.length; o++) {
 				if (npcs[i].npcType == c.barrowsNpcs[o][0]) {
@@ -1705,7 +1705,7 @@ public class NPCHandler {
 
 	@SuppressWarnings({ "static-access" })
 	private void killedTzhaar(int i) {
-		final Client c2 = (Client) Server.playerHandler.players[npcs[i].spawnedBy];
+		final Player c2 = (Player) Server.playerHandler.players[npcs[i].spawnedBy];
 		c2.tzhaarKilled++;
 		if (c2.tzhaarKilled == c2.tzhaarToKill) {
 			c2.waveId++;
@@ -1723,7 +1723,7 @@ public class NPCHandler {
 
 	@SuppressWarnings("static-access")
 	public void handleJadDeath(int i) {
-		Client c = (Client) Server.playerHandler.players[npcs[i].spawnedBy];
+		Player c = (Player) Server.playerHandler.players[npcs[i].spawnedBy];
 		c.getItems().addItem(c.fightForOnyx == true ? 6571 : 6570, 1);
 		c.getItems().addItem(6529, c.fightForOnyx == true ? 32_000 / 2 + Misc.random(999) : 32_000 + Misc.random(999));
 		c.getPA().resetTzhaar();
@@ -1731,7 +1731,7 @@ public class NPCHandler {
 		c.sendMessage("Congratulations on completing the fight caves minigame!");
 	}
 
-	public void sendDrop(Client player, Drop drop, int i) {
+	public void sendDrop(Player player, Drop drop, int i) {
 		/*
 		 * Since I dumped drops from rswiki it contains items that your server
 		 * might not support.
@@ -1755,11 +1755,11 @@ public class NPCHandler {
 	}
 
 	public void dropItems(int i) {
-		Client killer = (Client) PlayerHandler.players[npcs[i].killedBy];
+		Player killer = (Player) PlayerHandler.players[npcs[i].killedBy];
 		Drop[] drops = NPCDrops.getDrops(npcs[i].npcType);
 		if (drops == null)
 			return;
-		Client c = (Client) PlayerHandler.players[npcs[i].killedBy];
+		Player c = (Player) PlayerHandler.players[npcs[i].killedBy];
 		if (c != null) {
 			KillLog.handleKill(c, npcs[i].npcType);
 			if (npcs[i].npcType == 912 || npcs[i].npcType == 913 || npcs[i].npcType == 914)
@@ -1786,7 +1786,7 @@ public class NPCHandler {
 
 	@SuppressWarnings("static-access")
 	public void appendKillCount(int i) {
-		Client c = (Client) Server.playerHandler.players[npcs[i].killedBy];
+		Player c = (Player) Server.playerHandler.players[npcs[i].killedBy];
 		if (c != null) {
 			int[] kcMonsters = { 122, 49, 2558, 2559, 2560, 2561, 2550, 2551, 2552, 2553, 2562, 2563, 2564, 2565 };
 			for (int j : kcMonsters) {
@@ -1949,7 +1949,7 @@ public class NPCHandler {
 	public void appendSlayerExperience(int i) {
 		@SuppressWarnings("unused")
 		int npc = 0;
-		Client c = (Client) Server.playerHandler.players[npcs[i].killedBy];
+		Player c = (Player) Server.playerHandler.players[npcs[i].killedBy];
 		if (c != null) {
 			if (c.slayerTask == npcs[i].npcType) {
 				c.taskAmount--;
@@ -2425,7 +2425,7 @@ public class NPCHandler {
 	 * @param c
 	 * @param i
 	 */
-	public void attackPlayer(Client c, int i) {
+	public void attackPlayer(Player c, int i) {
 		if (npcs[i] != null) {
 			if (npcs[i].isDead)
 				return;
@@ -2505,7 +2505,7 @@ public class NPCHandler {
 		return 0;
 	}
 
-	public boolean specialCase(Client c, int i) { // responsible for npcs that
+	public boolean specialCase(Player c, int i) { // responsible for npcs that
 													// much
 		if (goodDistance(npcs[i].getX(), npcs[i].getY(), c.getX(), c.getY(), 8)
 				&& !goodDistance(npcs[i].getX(), npcs[i].getY(), c.getX(), c.getY(), distanceRequired(i)))
@@ -2525,7 +2525,7 @@ public class NPCHandler {
 			}
 			if (npcs[i].isDead)
 				return;
-			Client c = (Client) Server.playerHandler.players[npcs[i].oldIndex];
+			Player c = (Player) Server.playerHandler.players[npcs[i].oldIndex];
 			if (multiAttacks(i)) {
 				multiAttackDamage(i);
 				return;
@@ -2615,7 +2615,7 @@ public class NPCHandler {
 		}
 	}
 
-	public void handleSpecialEffects(Client c, int i, int damage) {
+	public void handleSpecialEffects(Player c, int i, int damage) {
 		if (npcs[i].npcType == 2892 || npcs[i].npcType == 2894) {
 			if (damage > 0) {
 				if (c != null) {
@@ -2814,7 +2814,7 @@ public class NPCHandler {
 		if (npcs[i].npcType == FightCaves.TZ_KEK_SPAWN) {
 			int p = npcs[i].killerId;
 			if (PlayerHandler.players[p] != null) {
-				Client c = (Client) PlayerHandler.players[p];
+				Player c = (Player) PlayerHandler.players[p];
 				c.tzKekSpawn += 1;
 				if (c.tzKekSpawn == 2) {
 					killedTzhaar(i);
@@ -2825,7 +2825,7 @@ public class NPCHandler {
 		if (npcs[i].npcType == FightCaves.TZ_KEK) {
 			int p = npcs[i].killerId;
 			if (PlayerHandler.players[p] != null) {
-				Client c = (Client) PlayerHandler.players[p];
+				Player c = (Player) PlayerHandler.players[p];
 				FightCaves.tzKekEffect(c, i);
 			}
 		}

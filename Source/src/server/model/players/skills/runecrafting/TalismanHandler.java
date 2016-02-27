@@ -1,6 +1,6 @@
 package server.model.players.skills.runecrafting;
 
-import server.model.players.Client;
+import server.model.players.Player;
 
 public class TalismanHandler {
 	
@@ -40,7 +40,7 @@ public class TalismanHandler {
 		}
 	}
 	
-	public static void handleTalisman(final Client c, final int itemId) {
+	public static void handleTalisman(final Player c, final int itemId) {
 		for (final talismanData t : talismanData.values()) {
 			if (itemId == t.getTalisman()) {
 				c.getPA().spellTeleport(t.getXCoordinate(), t.getYCoordinate(), 0);

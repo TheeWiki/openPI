@@ -3,8 +3,9 @@ package server.model.players.skills.guilds;
 import server.event.CycleEvent;
 import server.event.CycleEventContainer;
 import server.event.CycleEventHandler;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.EquipmentListener;
+import server.model.players.Player;
 import server.util.Misc;
 
 /**
@@ -36,9 +37,9 @@ public class RangersGuild {
 	
 	public boolean isFiringTarget;
 
-	private Client c;
+	private Player c;
 
-	public RangersGuild(Client c) {
+	public RangersGuild(Player c) {
 		this.c = c;
 	}
 

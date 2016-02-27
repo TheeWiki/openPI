@@ -2,7 +2,7 @@ package server.model.minigames.tzhaar;
 
 import server.Server;
 import server.model.npcs.NPCHandler;
-import server.model.players.Client;
+import server.model.players.Player;
 
 /**
  * @author Robbie
@@ -112,7 +112,7 @@ public class FightCaves {
 	 * @param i
 	 *            The npcId.
 	 */
-	public static void tzKekEffect(Client c, int i) {
+	public static void tzKekEffect(Player c, int i) {
 		if (NPCHandler.npcs[i].npcType == TZ_KEK) {
 
 			int x = NPCHandler.npcs[i].absX + 2;
@@ -147,7 +147,7 @@ public class FightCaves {
 	 * @param damage
 	 *            What the npchit
 	 */
-	public static void tzKihEffect(Client c, int i, int damage) {
+	public static void tzKihEffect(Player c, int i, int damage) {
 		if (NPCHandler.npcs[i].npcType == TZ_KIH) {
 			if (c != null) {
 				if (c.playerLevel[5] > 0) {
@@ -234,7 +234,7 @@ public class FightCaves {
 	 * @param c
 	 *            The player.
 	 */
-	public void spawnNextWave(Client c) {
+	public void spawnNextWave(Player c) {
 		if (c != null) {
 			if (c.waveId >= WAVES.length) {
 				c.waveId = 0;

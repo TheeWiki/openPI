@@ -1,7 +1,7 @@
 package server.world.sound;
 
 import server.Server;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.EquipmentListener;
 import server.util.Misc;
 
@@ -12,9 +12,9 @@ import server.util.Misc;
  */
 public class Sounds {
 
-	Client c;
+	Player c;
 
-	public Sounds(Client c) {
+	public Sounds(Player c) {
 		this.c = c;
 	}
 
@@ -174,7 +174,7 @@ public class Sounds {
 		return Server.itemHandler.ItemList[ItemID].itemName;
 	}
 
-	public static int getPlayerBlockSounds(Client c) {
+	public static int getPlayerBlockSounds(Player c) {
 
 		int blockSound = 511;
 		
@@ -223,7 +223,7 @@ public class Sounds {
 		return blockSound;
 	}
 
-	public static int GetWeaponSound(Client c) {
+	public static int GetWeaponSound(Player c) {
 
 		String wep = getItemName(c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]).toLowerCase();
 		

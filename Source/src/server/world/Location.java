@@ -4,7 +4,7 @@ import server.Constants;
 import server.event.CycleEvent;
 import server.event.CycleEventContainer;
 import server.event.CycleEventHandler;
-import server.model.players.Client;
+import server.model.players.Player;
 
 public class Location {
 	
@@ -18,7 +18,7 @@ public class Location {
 	 * @param y y coordindate
 	 * @param height heightlevel
 	 */
-	public Location(Client player, int x, int y, int height) {
+	public Location(Player player, int x, int y, int height) {
 		this.x = x;
 		this.y = y;
 		this.height = height;
@@ -52,7 +52,7 @@ public class Location {
 	 * Handles the teleport
 	 * @param player player teleporting
 	 */
-	public void handleTeleport(final Client player) {
+	public void handleTeleport(final Player player) {
 		if (!canTeleport(player))
 			return;
 		player.teleporting = true;
@@ -90,7 +90,7 @@ public class Location {
 	 * @param player player teleporting
 	 * @return teleport gfx
 	 */
-	private int getTeleportGfx(Client player) {
+	private int getTeleportGfx(Player player) {
 		return player.playerMagicBook == 0 ? 308 : player.playerMagicBook == 1 ? 0 : 1685; 
 	}
 	
@@ -99,7 +99,7 @@ public class Location {
 	 * @param player player teleporting
 	 * @return teleport animation
 	 */
-	private int getTeleportAnimation(Client player) {
+	private int getTeleportAnimation(Player player) {
 		return player.playerMagicBook == 0 ? 714 : player.playerMagicBook == 1 ? 1979 : 9606; 
 	}
 	
@@ -108,7 +108,7 @@ public class Location {
 	 * @param player player teleporting
 	 * @return end animation for teleporting
 	 */
-	private int getTeleportEndAnimation(Client player) {
+	private int getTeleportEndAnimation(Player player) {
 		return player.playerMagicBook == 0 ? 715 : 0; 
 	}
 	
@@ -117,7 +117,7 @@ public class Location {
 	 * @param player player teleporting
 	 * @return end animation for teleporting
 	 */
-	private int getTeleportEndGfx(Client player) {
+	private int getTeleportEndGfx(Player player) {
 		return /*player.playerMagicBook == 1 ? 8941 : player.playerMagicBook == 1 ? */1681/* : 9013*/; 
 	}
 	
@@ -126,7 +126,7 @@ public class Location {
 	 * @param player player teleporting
 	 * @return can teleport or not
 	 */
-	private boolean canTeleport(Client player) {
+	private boolean canTeleport(Player player) {
 		if (player.inWild() && player.wildLevel > Constants.NO_TELEPORT_WILD_LEVEL) {
 			player.sendMessage("You can't teleport above level "+ Constants.NO_TELEPORT_WILD_LEVEL + " in the wilderness.");
 			return false;

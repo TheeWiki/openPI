@@ -6,7 +6,7 @@ import server.event.CycleEvent;
 import server.event.CycleEventContainer;
 import server.event.CycleEventHandler;
 import server.model.npcs.NPCHandler;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.EquipmentListener;
 import server.model.players.packet.PacketType;
 import server.model.players.skills.magic.Enchantment;
@@ -20,7 +20,7 @@ public class ClickNPC implements PacketType {
 
 	@SuppressWarnings("static-access")
 	@Override
-	public void processPacket(final Client c, int packetType, int packetSize) {
+	public void processPacket(final Player c, int packetType, int packetSize) {
 		c.npcIndex = 0;
 		c.npcClickIndex = 0;
 		c.playerIndex = 0;

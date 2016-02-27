@@ -1,6 +1,6 @@
 package server.model.players.packet;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.packet.impl.AttackPlayer;
 import server.model.players.packet.impl.Bank10;
 import server.model.players.packet.impl.Bank5;
@@ -51,7 +51,7 @@ public class PacketHandler{
 		
 		SilentPacket u = new SilentPacket();
 		packetId[86] = u; // camera movement packet
-		packetId[3] = u; // idle packet (click away from client prints size 3, etc.
+		packetId[3] = u; // idle packet (click away from Player prints size 3, etc.
 		packetId[3] = u;
 		packetId[202] = u;
 		packetId[77] = u;
@@ -135,7 +135,7 @@ public class PacketHandler{
 	}
 
 
-	public static void processPacket(Client c, int packetType, int packetSize) {	
+	public static void processPacket(Player c, int packetType, int packetSize) {	
 		if(packetType == -1) {
 			return;
 		}

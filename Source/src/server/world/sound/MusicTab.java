@@ -1,6 +1,6 @@
 package server.world.sound;
 
-import server.model.players.Client;
+import server.model.players.Player;
 
 /**
  * 
@@ -245,7 +245,7 @@ public class MusicTab {
 	 * 
 	 * @param c
 	 */
-	public static void loadMusicTab(Client c) {
+	public static void loadMusicTab(Player c) {
 		for (int i = 0; i < Music.songs.length; i++) {
 			if (Music.unlocked[Music.songs[i].array] == true) {
 				Music.updateList(c, Music.songs[i].tabId);
@@ -262,7 +262,7 @@ public class MusicTab {
 	 * @param c
 	 */
 	// Sets the boolean for each music id for the first time.
-	public static void initializeMusicBooleanFirstTime(Client c) {
+	public static void initializeMusicBooleanFirstTime(Player c) {
 		for (int i = 0; i < Music.unlocked.length; i++) {
 			Music.unlocked[i] = false;
 			if (i > 350) // above 350, no region music anymore but clickable.
@@ -271,7 +271,7 @@ public class MusicTab {
 		}
 	}
 
-	public static void setToManual(Client c) {
+	public static void setToManual(Player c) {
 		c.auto = 0;
 		c.getPA().sendFrame36(18, 0); // set to AUTO. 1 = AUTO 0 = MAN
 	}
@@ -281,7 +281,7 @@ public class MusicTab {
 	 * @param c
 	 * @param Id
 	 */
-	public static void handleClick(Client c, int Id) {
+	public static void handleClick(Player c, int Id) {
 		switch (Id) {
 		case 24125: // AUTO
 			c.auto = 1;

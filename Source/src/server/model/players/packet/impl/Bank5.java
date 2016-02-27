@@ -1,6 +1,6 @@
 package server.model.players.packet.impl;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.packet.PacketType;
 /**
  * Bank 5 Items
@@ -8,7 +8,7 @@ import server.model.players.packet.PacketType;
 public class Bank5 implements PacketType {
 
 	@Override
-	public void processPacket(Client c, int packetType, int packetSize) {
+	public void processPacket(Player c, int packetType, int packetSize) {
 	int interfaceId = c.getInStream().readSignedWordBigEndianA();
 	int removeId = c.getInStream().readSignedWordBigEndianA();
 	int removeSlot = c.getInStream().readSignedWordBigEndian();

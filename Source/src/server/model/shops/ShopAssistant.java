@@ -3,14 +3,14 @@ package server.model.shops;
 import server.Constants;
 import server.Server;
 import server.model.items.Item;
-import server.model.players.Client;
+import server.model.players.Player;
 
 public class ShopAssistant {
 
-	private Client c;
+	private Player c;
 	
-	public ShopAssistant(Client client) {
-		this.c = client;
+	public ShopAssistant(Player Player) {
+		this.c = Player;
 	}
 	
 	/**

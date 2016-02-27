@@ -1,6 +1,6 @@
 package server.model.items;
 
-import server.model.players.Client;
+import server.model.players.Player;
 
 public class Poisonable {
     
@@ -27,7 +27,7 @@ public class Poisonable {
 		return null;
 	}
 
-	private static boolean isPoisionable(Client c, int wep) {
+	private static boolean isPoisionable(Player c, int wep) {
 		String wepName = c.getItems().getItemName(wep);
 		for (int i = 0; i < poisionData.length; i++) {
 			if (wepName.toLowerCase().contains(poisionData[i][0])) {
@@ -37,7 +37,7 @@ public class Poisonable {
 		return false;
 	}
 
-	public static boolean useItemonItem(Client c, int id, int id2) {
+	public static boolean useItemonItem(Player c, int id, int id2) {
 		String wep = null;
 		String poisionPrefix = null;
 		int amount = 5;

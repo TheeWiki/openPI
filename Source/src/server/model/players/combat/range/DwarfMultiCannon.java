@@ -10,7 +10,7 @@ import server.event.EventManager;
 import server.model.npcs.NPC;
 import server.model.npcs.NPCHandler;
 import server.model.objects.Objects;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.skills.SkillIndex;
 import server.util.Misc;
 import server.util.Direction;
@@ -26,9 +26,9 @@ public class DwarfMultiCannon {
      */
     ;
     private Direction s = Direction.SOUTH_EAST;
-    private Client player;
-    public DwarfMultiCannon(Client client) {
-        this.player = client;
+    private Player player;
+    public DwarfMultiCannon(Player Player) {
+        this.player = Player;
     }
     private static final int CANNON_BASE = 7, CANNON_STAND = 8, CANNON_BARRELS = 9, CANNON = 6;
     private static final int CANNONBALL = 2, CANNON_BASE_ID = 6, CANNON_STAND_ID = 8, CANNON_BARRELS_ID = 10, CANNON_FURNACE_ID = 12;

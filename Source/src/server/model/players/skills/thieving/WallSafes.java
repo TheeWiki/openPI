@@ -1,6 +1,6 @@
 package server.model.players.skills.thieving;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.PlayerHandler;
 import server.model.players.skills.SkillIndex;
 import server.util.Misc;
@@ -65,9 +65,9 @@ public class WallSafes {
 	 * Generates random rewards via Misc.random
 	 * 
 	 * @param c
-	 *            The player or client
+	 *            The player or Player
 	 */
-	public static void getRandomReward(Client c) {
+	public static void getRandomReward(Player c) {
 		int random = Misc.random(19);
 		if (random < 12) {
 			c.startAnimation(UNLOCKING_ANIM);
@@ -89,9 +89,9 @@ public class WallSafes {
 	 * @param damage
 	 *            The damage
 	 * @param c
-	 *            The player or client
+	 *            The player or Player
 	 */
-	public static void appendHit(int damage, Client c) {
+	public static void appendHit(int damage, Player c) {
 		PlayerHandler.players[c.playerId].setHitDiff(damage);
 		PlayerHandler.players[c.playerId].playerLevel[3] -= damage;
 		c.getPA().refreshSkill(3);
@@ -103,11 +103,11 @@ public class WallSafes {
 	 * Checks the wall safe
 	 * 
 	 * @param c
-	 *            The player or client
+	 *            The player or Player
 	 * @param objectType
 	 *            Object ID
 	 */
-	public static void checkWallSafe(Client c) {
+	public static void checkWallSafe(Player c) {
 		if (c.playerLevel[SkillIndex.THIEVING.getSkillId()] >= LEVEL_REQUIRED) {
 			if (System.currentTimeMillis() - c.lastThieve < 2500)
 				return;

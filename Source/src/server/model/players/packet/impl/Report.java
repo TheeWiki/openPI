@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.PlayerHandler;
 import server.model.players.packet.PacketType;
 import server.util.Misc;
@@ -15,7 +15,7 @@ import server.util.Misc;
  *
  * Handles player abuse reports via the 'Report Abuse' interface.
  * Moderators are by default given the ability to file as many
- * abuse reports they manage to, contrary to the ordinary clients.
+ * abuse reports they manage to, contrary to the ordinary Players.
  *
  * Credits to Sir Raxim because of his release. I had forgotten some
  * important parts in my initial release.
@@ -26,7 +26,7 @@ import server.util.Misc;
 public final class Report implements PacketType {
 
 	@Override
-	public void processPacket(Client c, int packetType, int packetSize) {
+	public void processPacket(Player c, int packetType, int packetSize) {
 		/*
 		 * Reads the reported username from the stream. Because the 317 protocol
 		 * sent this as {@link Long} we must convert it to {@link String}.
@@ -40,7 +40,7 @@ public final class Report implements PacketType {
 		int brokenRuleIdent = c.getInStream().readUnsignedWordBigEndian();
 
 		/*
-		 * Gets the last time we filed an abuse report. If the client didn't file
+		 * Gets the last time we filed an abuse report. If the Player didn't file
 		 * one this session, the default 0L will be returned (to allow them to file it).
 		 */
 		long lastReport = Long.valueOf(c.getAttributes().getAttribute("lastReport", 0L).toString());
@@ -50,7 +50,7 @@ public final class Report implements PacketType {
 		 */
 		if (brokenRuleIdent < 0 || brokenRuleIdent > 12) {
 			/*
-			 * Client modification, or not in sync with the server.
+			 * Player modification, or not in sync with the server.
 			 * Not sure what to reply in this situation, actually.
 			 */
 			return;
@@ -76,7 +76,7 @@ public final class Report implements PacketType {
 
 		/*
 		 * Because offline players can't really do anything, let's just make sure the
-		 * client reported is online ;)
+		 * Player reported is online ;)
 		 */
 		if (!PlayerHandler.isPlayerOn(reportedName)) {
 			c.sendMessage("Cannot find " + Misc.formatPlayerName(reportedName) + ".");
@@ -101,7 +101,7 @@ public final class Report implements PacketType {
 		System.out.println(sb.toString());
 
 		/*
-		 * Because it seems like we have successfully made sure the client reported is
+		 * Because it seems like we have successfully made sure the Player reported is
 		 * currently online, we would like to log it to a .txt document.
 		 */
 		try {
@@ -150,7 +150,7 @@ public final class Report implements PacketType {
 			for (int i = chatMessages.length - 1; i >= 0; i--) {
 				/*
 				 * Sort out nulls, messages older than 60 seconds and not related to the
-				 * two clients in the scene (the reported player + the one reporting).
+				 * two Players in the scene (the reported player + the one reporting).
 				 */
 				if (chatMessages[i] == null ||
 						System.currentTimeMillis() - chatMessages[i].millis >= 60000 ||
@@ -178,19 +178,19 @@ public final class Report implements PacketType {
 			exception.printStackTrace();
 
 			/*
-			 * Because the abuse could be crucial, we must also inform the client.
+			 * Because the abuse could be crucial, we must also inform the Player.
 			 */
 			c.sendMessage("Failed to write the abuse report. Please contact an administrator.");
 
 			/*
-			 * Stop the method from going any further. We'd rather not tell the {@link Client}
+			 * Stop the method from going any further. We'd rather not tell the {@link Player}
 			 * their report was filed properly, after telling them it wasn't ;)
 			 */
 			return;
 		}
 
 		/*
-		 * Let's thank the {@link Client} for helping us rid cheaters and abusers :)
+		 * Let's thank the {@link Player} for helping us rid cheaters and abusers :)
 		 */
 		c.sendMessage("Thank-you, your abuse report has been received.");
 
@@ -203,10 +203,10 @@ public final class Report implements PacketType {
 	}
 
 	/**
-	 * Logs an message sent by clients via public chat.
+	 * Logs an message sent by Players via public chat.
 	 *
 	 * @param name
-	 *		The name of the client who spoke.
+	 *		The name of the Player who spoke.
 	 * @param text
 	 *		The message (what they said) in {@link byte}-form.
 	 * @param len
@@ -244,7 +244,7 @@ public final class Report implements PacketType {
 	}
 
 	/*
-	 * Class which represents an message sent by an {@link Client}.
+	 * Class which represents an message sent by an {@link Player}.
 	 */
 	private static final class ChatMessage {
 
@@ -252,7 +252,7 @@ public final class Report implements PacketType {
 		 * Construct a new instance of this object.
 		 *
 		 * @param name
-		 *		The name of the {@link Client} that spoke.
+		 *		The name of the {@link Player} that spoke.
 		 * @param message
 		 *		The message they sent.
 		 */
@@ -264,7 +264,7 @@ public final class Report implements PacketType {
 		}
 
 		/*
-		 * The name of the {@link Client} that spoke.
+		 * The name of the {@link Player} that spoke.
 		 */
 		private final String name;
 

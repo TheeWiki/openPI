@@ -1,7 +1,7 @@
 package server.event.impl;
 
 import server.Server;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.util.Misc;
 
 public class RockGolem {
@@ -15,7 +15,7 @@ public class RockGolem {
 		{111, 	138, 	418, 	150, 	7},
 	};
 
-	public static void spawnRockGolem(Client c) {
+	public static void spawnRockGolem(Player c) {
 		if(c.combatLevel <= 4)
 			return;
 		for (int[] aRockGolem : rockGolem) {

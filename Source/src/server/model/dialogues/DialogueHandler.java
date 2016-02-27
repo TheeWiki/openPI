@@ -1,13 +1,13 @@
 package server.model.dialogues;
 
-import server.model.players.Client;
+import server.model.players.Player;
 
 public class DialogueHandler {
 
-	private Client c;
+	private Player c;
 	
-	public DialogueHandler(Client client) {
-		this.c = client;
+	public DialogueHandler(Player Player) {
+		this.c = Player;
 	}
 	
 	/**

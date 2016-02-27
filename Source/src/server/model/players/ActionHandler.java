@@ -16,7 +16,7 @@ import server.world.locations.AbstractLocations;
  */
 public class ActionHandler {
 
-	public void firstClickObject(Client c, int objectType, int obX, int obY) {
+	public void firstClickObject(Player c, int objectType, int obX, int obY) {
 		c.clickObjectType = 1;
 		c.sendMessage("[object 1] - " + objectType + " [posX] - " + obX + " [posY] - " + obY);
 		CastleWarObjects.handleObject(c, objectType, obX, obY);
@@ -29,7 +29,7 @@ public class ActionHandler {
 		}
 	}
 
-	public void secondClickObject(Client c, int objectType, int obX, int obY) {
+	public void secondClickObject(Player c, int objectType, int obX, int obY) {
 		c.clickObjectType = 2;
 		c.sendMessage("[object 2] - " + objectType + " [posX] - " + obX + " [posY] - " + obY);
 		Plugin.execute("locControl_o_2", c, objectType, obX, obY);
@@ -41,7 +41,7 @@ public class ActionHandler {
 		}
 	}
 
-	public void thirdClickObject(Client c, int objectType, int obX, int obY) {
+	public void thirdClickObject(Player c, int objectType, int obX, int obY) {
 		c.clickObjectType = 3;
 		c.sendMessage("[object 3] - " + objectType + " [posX] - " + obX + " [posY] - " + obY);
 		Plugin.execute("locControl_o_3", c, objectType, obX, obY);
@@ -53,7 +53,7 @@ public class ActionHandler {
 		}
 	}
 
-	public void firstClickNpc(Client c, int npcType) {
+	public void firstClickNpc(Player c, int npcType) {
 		c.clickNpcType = 1;
 		c.npcClickIndex = 1;
 		c.sendMessage("[npc 1] - " + npcType);
@@ -66,7 +66,7 @@ public class ActionHandler {
 		}
 	}
 
-	public void secondClickNpc(Client c, int npcType) {
+	public void secondClickNpc(Player c, int npcType) {
 		c.clickNpcType = 2;
 		c.npcClickIndex = 2;
 		c.sendMessage("[npc 2] - " + npcType);
@@ -78,7 +78,7 @@ public class ActionHandler {
 		}
 	}
 
-	public void thirdClickNpc(Client c, int npcType) {
+	public void thirdClickNpc(Player c, int npcType) {
 		c.clickNpcType = 3;
 		c.npcClickIndex = 3;
 		c.sendMessage("[npc 3] - " + npcType);

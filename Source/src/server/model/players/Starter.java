@@ -39,7 +39,7 @@ public class Starter {
 	 * 
 	 * @param player
 	 */
-	public static void newPlayer(Client player) {
+	public static void newPlayer(Player player) {
 		player.getPA().showInterface(3559);
 		player.canChangeAppearance = true;
 		for (int item = 0; item < ITEMS.length; item++) {

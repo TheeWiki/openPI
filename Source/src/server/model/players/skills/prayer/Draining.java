@@ -1,6 +1,6 @@
 package server.model.players.skills.prayer;
 
-import server.model.players.Client;
+import server.model.players.Player;
 
 public class Draining {
 	
@@ -55,7 +55,7 @@ public class Draining {
 			3, //Turmoil
 		};
 
-	public static void handlePrayerDrain(Client c) {
+	public static void handlePrayerDrain(Player c) {
 		c.usingPrayer = false;
 		double toRemove = 0.0;
 		for (int rate = 0; rate < PRAYER_DRAIN.length; rate++) {
@@ -73,7 +73,7 @@ public class Draining {
 			c.getCombat().reducePrayerLevel();
 		}
 	}
-	public static void handleCurseDrain(Client c) {
+	public static void handleCurseDrain(Player c) {
 		c.usingPrayer = false;
 		double toRemove = 0.0;
 		for(int rate = 0; rate < CURSE_DRAIN.length; rate++) {

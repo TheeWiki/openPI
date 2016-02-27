@@ -1,11 +1,11 @@
 package server.model.minigames.castle_wars;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.EquipmentListener;
 
 public class CastleWarObjects {
 
-    public static void handleObject(Client c, int id, int x, int y) {
+    public static void handleObject(Player c, int id, int x, int y) {
         if (!CastleWars.isInCw(c)) {
 //            c.sendMessage("You are not in Castlewars.");
             return;
@@ -225,7 +225,7 @@ public class CastleWarObjects {
                 break;
         }
     }
-    public static void castlewarsObjects(Client c, int objectType, int obX, int obY)
+    public static void castlewarsObjects(Player c, int objectType, int obX, int obY)
     {
     	switch(objectType)
     	{

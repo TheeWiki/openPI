@@ -1,6 +1,6 @@
 package server.world.locations.impl;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.skills.AwardSkillcape;
 import server.util.Misc;
 import server.world.locations.AbstractLocations;
@@ -11,7 +11,7 @@ public class Home extends AbstractLocations
 	private final int ANCIENT_ALTER = 6552, PRAYER_ALTER = 409;
 	
 	@Override
-	public void sendFirstClickObject(Client c, int object) {
+	public void sendFirstClickObject(Player c, int object) {
 		switch(object)
 		{
 		case 6839:
@@ -68,19 +68,19 @@ public class Home extends AbstractLocations
 	}
 
 	@Override
-	public void sendSecondClickObject(Client c, int object) {
+	public void sendSecondClickObject(Player c, int object) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendThirdClickObject(Client c, int object) {
+	public void sendThirdClickObject(Player c, int object) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendFirstClickNpc(Client c, int npc) {
+	public void sendFirstClickNpc(Player c, int npc) {
 		switch(npc)
 		{
 		case 599:
@@ -94,13 +94,13 @@ public class Home extends AbstractLocations
 	}
 
 	@Override
-	public void sendSecondClickNpc(Client c, int npc) {
+	public void sendSecondClickNpc(Player c, int npc) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendThirdClickNpc(Client c, int npc) {
+	public void sendThirdClickNpc(Player c, int npc) {
 		// TODO Auto-generated method stub
 		
 	}

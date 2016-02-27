@@ -1,6 +1,6 @@
 package server.model.minigames.pest_control;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.skills.SkillIndex;
 
 public class PestControlRewards {
@@ -70,7 +70,7 @@ public class PestControlRewards {
 	 * @param c
 	 * @param button
 	 */
-	public static void exchangePestPoints(Client c) {
+	public static void exchangePestPoints(Player c) {
 		if (!CAN_EXCHANGE_POINTS) {
 			c.sendMessage("Pest Control point exchange is currently disabled.");
 			return;
@@ -89,7 +89,7 @@ public class PestControlRewards {
 		c.getPA().showInterface(REWARDS_INTERFACE);
 	}
 
-	public static void handlePestButtons(Client c, int button) {
+	public static void handlePestButtons(Player c, int button) {
 		switch(button) {
 
 		/**

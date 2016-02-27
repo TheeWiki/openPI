@@ -7,7 +7,7 @@ import server.model.minigames.castle_wars.CastleWars;
 import server.model.minigames.duel_arena.Rules;
 import server.model.npcs.NPC;
 import server.model.npcs.NPCHandler;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.EquipmentListener;
 import server.model.players.Player;
 import server.model.players.PlayerHandler;
@@ -19,10 +19,10 @@ import server.util.Misc;
 @SuppressWarnings("all")
 public class CombatAssistant {
 
-	private Client c;
+	private Player c;
 
-	public CombatAssistant(Client Client) {
-		this.c = Client;
+	public CombatAssistant(Player Player) {
+		this.c = Player;
 	}
 
 	/**
@@ -450,7 +450,7 @@ public class CombatAssistant {
 						if ((nX - pX == -1 || nX - pX == 0 || nX - pX == 1)
 								&& (nY - pY == -1 || nY - pY == 0 || nY - pY == 1)) {
 							if (multis() && Server.npcHandler.npcs[i].inMulti()) {
-								Client p = (Client) Server.playerHandler.players[c.playerId];
+								Player p = (Player) Server.playerHandler.players[c.playerId];
 								appendMultiBarrageNPC(j, c.magicFailed);
 								Server.npcHandler.attackPlayer(p, j);
 							}
@@ -619,8 +619,8 @@ public class CombatAssistant {
 	 **/
 
 	public void attackPlayer(int i) {
-		if (CastleWars.isInCw((Client) PlayerHandler.players[i]) && CastleWars.isInCw(c)) {
-			if (CastleWars.getTeamNumber(c) == CastleWars.getTeamNumber((Client) PlayerHandler.players[i])) {
+		if (CastleWars.isInCw((Player) PlayerHandler.players[i]) && CastleWars.isInCw(c)) {
+			if (CastleWars.getTeamNumber(c) == CastleWars.getTeamNumber((Player) PlayerHandler.players[i])) {
 				c.sendMessage("You cannot attack your own teammate.");
 				return;
 			}
@@ -940,7 +940,7 @@ public class CombatAssistant {
 					c.oldPlayerIndex = i;
 					c.oldSpellId = c.spellId;
 					c.spellId = 0;
-					Client o = (Client) PlayerHandler.players[i];
+					Player o = (Player) PlayerHandler.players[i];
 					if (Enchantment.MAGIC_SPELLS[c.oldSpellId][0] == 12891 && o.isMoving) {
 						// c.sendMessage("Barrage projectile..");
 						c.getPA().createPlayersProjectile(pX, pY, offX, offY, 50, 85, 368, 25, 25, -i - 1,
@@ -1038,7 +1038,7 @@ public class CombatAssistant {
 				c.playerIndex = 0;
 				return;
 			}
-			Client o = (Client) PlayerHandler.players[i];
+			Player o = (Player) PlayerHandler.players[i];
 			o.getPA().removeAllWindows();
 			if (o.playerIndex <= 0 && o.npcIndex <= 0) {
 				if (o.autoRet == 1) {
@@ -1378,7 +1378,7 @@ public class CombatAssistant {
 
 	public void appendMultiBarrage(int playerId, boolean splashed) {
 		if (PlayerHandler.players[playerId] != null) {
-			Client c2 = (Client) PlayerHandler.players[playerId];
+			Player c2 = (Player) PlayerHandler.players[playerId];
 			if (c2.isDead || c2.respawnTimer > 0)
 				return;
 			if (checkMultiBarrageReqs(playerId)) {
@@ -1445,7 +1445,7 @@ public class CombatAssistant {
 	}
 
 	public void applyPlayerMeleeDamage(int i, int damageMask) {
-		Client o = (Client) PlayerHandler.players[i];
+		Player o = (Player) PlayerHandler.players[i];
 		if (o == null) {
 			return;
 		}
@@ -1591,7 +1591,7 @@ public class CombatAssistant {
 		if (damage <= 0)
 			return;
 		if (PlayerHandler.players[index] != null) {
-			Client c2 = (Client) PlayerHandler.players[index];
+			Player c2 = (Player) PlayerHandler.players[index];
 			c2.playerLevel[5] -= damage / 4;
 			if (c2.playerLevel[5] <= 0) {
 				c2.playerLevel[5] = 0;
@@ -1991,7 +1991,7 @@ public class CombatAssistant {
 			c.startAnimation(405);
 			c.gfx100(253);
 			if (c.playerIndex > 0) {
-				Client o = (Client) PlayerHandler.players[i];
+				Player o = (Player) PlayerHandler.players[i];
 				o.getPA().getSpeared(c.absX, c.absY);
 			}
 			break;
@@ -3289,7 +3289,7 @@ public class CombatAssistant {
 	 * MAGIC
 	 **/
 
-	public boolean canHitMage(Client o) {
+	public boolean canHitMage(Player o) {
 		return Misc.random(mageAtk()) > Misc.random(o.getCombat().mageDef());
 	}
 
@@ -3651,7 +3651,7 @@ public class CombatAssistant {
 
 	public void handleGmaulPlayer() {
 		if (c.playerIndex > 0) {
-			Client o = (Client) PlayerHandler.players[c.playerIndex];
+			Player o = (Player) PlayerHandler.players[c.playerIndex];
 			if (c.goodDistance(c.getX(), c.getY(), o.getX(), o.getY(), getRequiredDistance())) {
 				if (checkReqs()) {
 					if (checkSpecAmount(4153)) {
@@ -3690,7 +3690,7 @@ public class CombatAssistant {
 		}
 	}
 
-	public void removeRecoil(Client c) {
+	public void removeRecoil(Player c) {
 		if (c.recoilHits >= 50) {
 			c.getItems().removeItem(2550, EquipmentListener.RING_SLOT.getSlot());
 			c.getItems().deleteItem(2550, c.getItems().getItemSlot(2550), 1);
@@ -3712,7 +3712,7 @@ public class CombatAssistant {
 		return false;
 	}
 
-	public static int finalMagicDamage(Client c) {
+	public static int finalMagicDamage(Player c) {
 		double damage = Enchantment.MAGIC_SPELLS[c.oldSpellId][6] * 10;
 		double damageMultiplier = 1;
 		int level = c.playerLevel[SkillIndex.MAGIC.getSkillId()];

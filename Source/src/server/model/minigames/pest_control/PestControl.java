@@ -2,7 +2,7 @@ package server.model.minigames.pest_control;
 
 import server.Server;
 import server.model.npcs.NPCHandler;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.EquipmentListener;
 import server.model.players.PlayerHandler;
 
@@ -70,7 +70,7 @@ public class PestControl {
 			for (int j = 0; j < PlayerHandler.players.length; j++) {
 				if (PlayerHandler.players[j] != null) {
 					if (PlayerHandler.players[j].inPcBoat()) {
-						Client c = (Client) PlayerHandler.players[j];
+						Player c = (Player) PlayerHandler.players[j];
 						c.sendMessage("There need to be at least 3 players to start a game of pest control.");
 					}
 				}
@@ -94,14 +94,14 @@ public class PestControl {
 		for (int j = 0; j < PlayerHandler.players.length; j++) {
 			if (PlayerHandler.players[j] != null) {
 				if (PlayerHandler.players[j].inPcBoat()) {
-					Client c = (Client) PlayerHandler.players[j];
+					Player c = (Player) PlayerHandler.players[j];
 					c.getPA().sendFrame126("Next Departure: " + waitTimer + "", 21120);
 					c.getPA().sendFrame126("Players Ready: " + playersInBoat() + "", 21121);
 					c.getPA().sendFrame126("(Need 3 to 25 players)", 21122);
 					c.getPA().sendFrame126("Points: " + c.pcPoints + "", 21123);
 				}
 				if (PlayerHandler.players[j].inPcGame()) {
-					Client c = (Client) PlayerHandler.players[j];
+					Player c = (Player) PlayerHandler.players[j];
 					for (j = 0; j < NPCHandler.npcs.length; j++) {
 						if (NPCHandler.npcs[j] != null) {
 							if (NPCHandler.npcs[j].npcType == 6142)
@@ -158,7 +158,7 @@ public class PestControl {
 		for (int j = 0; j < PlayerHandler.players.length; j++) {
 			if (PlayerHandler.players[j] != null) {
 				if (PlayerHandler.players[j].inPcGame()) {
-					Client c = (Client) PlayerHandler.players[j];
+					Player c = (Player) PlayerHandler.players[j];
 					c.getPA().movePlayer(2657, 2639, 0);
 					if (won && c.pcDamage > 4) {
 						c.sendMessage(
@@ -209,7 +209,7 @@ public class PestControl {
 	}
 
 	public void movePlayer(int index) {
-		Client c = (Client) PlayerHandler.players[index];
+		Player c = (Player) PlayerHandler.players[index];
 		if (c.combatLevel < 40) {
 			c.sendMessage("You must be at least 40 to enter this boat.");
 			return;

@@ -1,6 +1,6 @@
 package server.model.players.packet;
 
-import server.model.players.Client;
+import server.model.players.Player;
 
 /**
  * Packet interface.
@@ -10,6 +10,6 @@ import server.model.players.Client;
  */
 public interface Packet {
 
-	public void handlePacket(Client client, int packetType, int packetSize);
+	public void handlePacket(Player Player, int packetType, int packetSize);
 
 }

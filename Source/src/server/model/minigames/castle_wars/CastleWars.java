@@ -3,7 +3,7 @@ package server.model.minigames.castle_wars;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.EquipmentListener;
 import server.util.Misc;
 
@@ -24,11 +24,11 @@ public class CastleWars {
 	/*
 	 * Hashmap for the waitingroom players
 	 */
-	private static HashMap<Client, Integer> waitingRoom = new HashMap<Client, Integer>();
+	private static HashMap<Player, Integer> waitingRoom = new HashMap<Player, Integer>();
 	/*
 	 * hashmap for the gameRoom players
 	 */
-	private static HashMap<Client, Integer> gameRoom = new HashMap<Client, Integer>();
+	private static HashMap<Player, Integer> gameRoom = new HashMap<Player, Integer>();
 	/*
 	 * The coordinates for the waitingRoom both sara/zammy
 	 */
@@ -81,7 +81,7 @@ public class CastleWars {
 	 * @param team
 	 *            the team!
 	 */
-	public static void addToWaitRoom(Client player, int team) {
+	public static void addToWaitRoom(Player player, int team) {
 		if (player == null) {
 			return;
 		} else if (gameStarted == true) {
@@ -105,7 +105,7 @@ public class CastleWars {
 	 *            team he wants to be in - team = 1 (saradomin), team = 2
 	 *            (zamorak), team = 3 (random)
 	 */
-	public static void toWaitingRoom(Client player, int team) {
+	public static void toWaitingRoom(Player player, int team) {
 		if (team == 1) {
 			if (getSaraPlayers() > getZammyPlayers() && getSaraPlayers() > 0) {
 				player.sendMessage("The saradomin team is full, try again later!");
@@ -146,7 +146,7 @@ public class CastleWars {
 	 * @param player
 	 * @param wearItem
 	 */
-	public static void returnFlag(Client player, int wearItem) {
+	public static void returnFlag(Player player, int wearItem) {
 		if (player == null) {
 			return;
 		}
@@ -206,7 +206,7 @@ public class CastleWars {
 	 *            the player who returned the flag
 	 * @param team
 	 */
-	public static void captureFlag(Client player) {
+	public static void captureFlag(Player player) {
 		if (player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] > 0) {
 			player.sendMessage("Please remove your weapon before attempting to get the flag again!");
 			return;
@@ -234,7 +234,7 @@ public class CastleWars {
 	 * @param flagId
 	 *            the banner id.
 	 */
-	public static void addFlag(Client player, int flagId) {
+	public static void addFlag(Player player, int flagId) {
 		player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] = flagId;
 		player.playerEquipmentN[EquipmentListener.WEAPON_SLOT.getSlot()] = 1;
 		player.getItems().updateSlot(EquipmentListener.WEAPON_SLOT.getSlot());
@@ -250,7 +250,7 @@ public class CastleWars {
 	 * @param flagId
 	 *            the flag item ID
 	 */
-	public static void dropFlag(Client player, int flagId) {
+	public static void dropFlag(Player player, int flagId) {
 		int object = -1;
 		switch (flagId) {
 		case SARA_BANNER: // sara
@@ -264,9 +264,9 @@ public class CastleWars {
 			createFlagHintIcon(player.getX(), player.getY());
 			break;
 		}
-		Iterator<Client> iterator = gameRoom.keySet().iterator();
+		Iterator<Player> iterator = gameRoom.keySet().iterator();
 		while (iterator.hasNext()) {
-			Client teamPlayer = (Client) iterator.next();
+			Player teamPlayer = (Player) iterator.next();
 			teamPlayer.getPA().object(object, player.getX(), player.getY(), 0, 10);
 		}
 	}
@@ -279,7 +279,7 @@ public class CastleWars {
 	 * @param objectId
 	 *            the flag object id.
 	 */
-	public static void pickupFlag(Client player) {
+	public static void pickupFlag(Player player) {
 		switch (player.objectId) {
 		case 4900: // sara
 			setSaraFlag(1);
@@ -291,9 +291,9 @@ public class CastleWars {
 			break;
 		}
 		createHintIcon(player, (gameRoom.get(player) == 1) ? 2 : 1);
-		Iterator<Client> iterator = gameRoom.keySet().iterator();
+		Iterator<Player> iterator = gameRoom.keySet().iterator();
 		while (iterator.hasNext()) {
-			Client teamPlayer = (Client) iterator.next();
+			Player teamPlayer = (Player) iterator.next();
 			teamPlayer.getPA().createObjectHints(player.objectX, player.objectY, 170, -1);
 			teamPlayer.getPA().object(-1, player.objectX, player.objectY, 0, 10);
 		}
@@ -308,10 +308,10 @@ public class CastleWars {
 	 * @param t
 	 *            team of the opponent team. (:
 	 */
-	public static void createHintIcon(Client player, int t) {
-		Iterator<Client> iterator = gameRoom.keySet().iterator();
+	public static void createHintIcon(Player player, int t) {
+		Iterator<Player> iterator = gameRoom.keySet().iterator();
 		while (iterator.hasNext()) {
-			Client teamPlayer = (Client) iterator.next();
+			Player teamPlayer = (Player) iterator.next();
 			System.out.println(teamPlayer.playerName + " => Team => " + gameRoom.get(teamPlayer));
 			System.out.println("desired team = " + t);
 			teamPlayer.getPA().createPlayerHints(10, -1);
@@ -333,9 +333,9 @@ public class CastleWars {
 	 * @param y
 	 */
 	public static void createFlagHintIcon(int x, int y) {
-		Iterator<Client> iterator = gameRoom.keySet().iterator();
+		Iterator<Player> iterator = gameRoom.keySet().iterator();
 		while (iterator.hasNext()) {
-			Client teamPlayer = (Client) iterator.next();
+			Player teamPlayer = (Player) iterator.next();
 			teamPlayer.getPA().createObjectHints(x, y, 170, 2);
 		}
 	}
@@ -346,7 +346,7 @@ public class CastleWars {
 	 * @param player
 	 * @return
 	 */
-	public static int getTeamNumber(Client player) {
+	public static int getTeamNumber(Player player) {
 		if (player == null) {
 			return -1;
 		}
@@ -362,7 +362,7 @@ public class CastleWars {
 	 * @param player
 	 *            player who wants to leave
 	 */
-	public static void leaveWaitingRoom(Client player) {
+	public static void leaveWaitingRoom(Player player) {
 		if (player == null) {
 			System.out.println("player is null");
 			return;
@@ -404,9 +404,9 @@ public class CastleWars {
 	 * Method we use to update the player's interface in the waiting room
 	 */
 	public static void updatePlayers() {
-		Iterator<Client> iterator = waitingRoom.keySet().iterator();
+		Iterator<Player> iterator = waitingRoom.keySet().iterator();
 		while (iterator.hasNext()) {
-			Client player = (Client) iterator.next();
+			Player player = (Player) iterator.next();
 			if (player != null) {
 				player.getPA().walkableInterface(6673);
 				player.getPA().sendFrame126(
@@ -424,9 +424,9 @@ public class CastleWars {
 	 */
 	public static void updateInGamePlayers() {
 		if (getSaraPlayers() > 0 && getZammyPlayers() > 0) {
-			Iterator<Client> iterator = gameRoom.keySet().iterator();
+			Iterator<Player> iterator = gameRoom.keySet().iterator();
 			while (iterator.hasNext()) {
-				Client player = (Client) iterator.next();
+				Player player = (Player) iterator.next();
 				int config;
 				if (player == null) {
 					continue;
@@ -457,9 +457,9 @@ public class CastleWars {
 		System.out.println("Starting Castle Wars game.");
 		gameStarted = true;
 		timeRemaining = GAME_TIMER / 2;
-		Iterator<Client> iterator = waitingRoom.keySet().iterator();
+		Iterator<Player> iterator = waitingRoom.keySet().iterator();
 		while (iterator.hasNext()) {
-			Client player = (Client) iterator.next();
+			Player player = (Player) iterator.next();
 			int team = waitingRoom.get(player);
 			if (player == null) {
 				continue;
@@ -475,9 +475,9 @@ public class CastleWars {
 	}
 
 	public static void respawn() {
-		Iterator<Client> iterator = waitingRoom.keySet().iterator();
+		Iterator<Player> iterator = waitingRoom.keySet().iterator();
 		while (iterator.hasNext()) {
-			Client player = (Client) iterator.next();
+			Player player = (Player) iterator.next();
 			int team = waitingRoom.get(player);
 			if (player == null) {
 				continue;
@@ -495,9 +495,9 @@ public class CastleWars {
 	 * Method we use to end an ongoing cw game.
 	 */
 	public static void endGame() {
-		Iterator<Client> iterator = gameRoom.keySet().iterator();
+		Iterator<Player> iterator = gameRoom.keySet().iterator();
 		while (iterator.hasNext()) {
-			Client player = (Client) iterator.next();
+			Player player = (Player) iterator.next();
 			int team = gameRoom.get(player);
 			if (player == null) {
 				continue;
@@ -554,7 +554,7 @@ public class CastleWars {
 	 * @param player
 	 *            the player we want to be removed
 	 */
-	public static void removePlayerFromCw(Client player) {
+	public static void removePlayerFromCw(Player player) {
 		if (player == null) {
 			System.out.println("Error removing player from castle wars [REASON = null]");
 			return;
@@ -592,7 +592,7 @@ public class CastleWars {
 	 * @param capeId
 	 *            the capeId
 	 */
-	public static void addCapes(Client player, int capeId) {
+	public static void addCapes(Player player, int capeId) {
 		player.playerEquipment[EquipmentListener.CAPE_SLOT.getSlot()] = capeId;
 		player.playerEquipmentN[EquipmentListener.CAPE_SLOT.getSlot()] = 1;
 		player.getItems().updateSlot(EquipmentListener.CAPE_SLOT.getSlot());
@@ -607,7 +607,7 @@ public class CastleWars {
 	 * @param player
 	 *            the player who want the game items deleted from.
 	 */
-	public static void deleteGameItems(Client player) {
+	public static void deleteGameItems(Player player) {
 		switch (player.playerEquipment[3]) {
 		case 4037:
 		case 4039:
@@ -671,7 +671,7 @@ public class CastleWars {
 	 *            player who will be checking
 	 * @return
 	 */
-	public static boolean isInCw(Client player) {
+	public static boolean isInCw(Player player) {
 		return gameRoom.containsKey(player);
 	}
 
@@ -682,7 +682,7 @@ public class CastleWars {
 	 *            player who will be checking
 	 * @return
 	 */
-	public static boolean isInCwWait(Client player) {
+	public static boolean isInCwWait(Player player) {
 		return waitingRoom.containsKey(player);
 	}
 
@@ -714,9 +714,9 @@ public class CastleWars {
 	 *            the team of the player
 	 */
 	public static void changeFlagObject(int objectId, int team) {
-		Iterator<Client> iterator = gameRoom.keySet().iterator();
+		Iterator<Player> iterator = gameRoom.keySet().iterator();
 		while (iterator.hasNext()) {
-			Client teamPlayer = (Client) iterator.next();
+			Player teamPlayer = (Player) iterator.next();
 			teamPlayer.getPA().object(objectId, FLAG_STANDS[team][0], FLAG_STANDS[team][1], 0, 10);
 		}
 	}

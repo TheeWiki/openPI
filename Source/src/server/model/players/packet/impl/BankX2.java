@@ -1,13 +1,13 @@
 package server.model.players.packet.impl;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.packet.PacketType;
 /**
  * Bank X Items
  **/
 public class BankX2 implements PacketType {
 	@Override
-	public void processPacket(Client c, int packetType, int packetSize) {
+	public void processPacket(Player c, int packetType, int packetSize) {
 		int Xamount = c.getInStream().readDWord();
 		if (Xamount == 0)
 			Xamount = 1;

@@ -4,11 +4,11 @@ import java.util.HashMap;
 
 import server.Server;
 import server.model.npcs.impl.FlockleaderGerin;
-import server.model.players.Client;
+import server.model.players.Player;
 
 public abstract class SpecialNPC {
 
-	public abstract void execute(Client client, NPC n);
+	public abstract void execute(Player Player, NPC n);
 
 	private static HashMap<Integer, SpecialNPC> npcMap = new HashMap<Integer, SpecialNPC>();
 
@@ -20,28 +20,28 @@ public abstract class SpecialNPC {
 		return npcMap.get(npcType);
 	}
 
-	public static void executeAttack(Client client, int i) {
+	public static void executeAttack(Player Player, int i) {
 		SpecialNPC n = SpecialNPC.forId(NPCHandler.npcs[i].npcType);
-		if (n == null || client == null) {
+		if (n == null || Player == null) {
 			return;
 		}
-		if (client.isDead || client.getLevel()[3] <= 0 || NPCHandler.npcs[i].isDead || NPCHandler.npcs[i].HP <= 0) {
+		if (Player.isDead || Player.getLevel()[3] <= 0 || NPCHandler.npcs[i].isDead || NPCHandler.npcs[i].HP <= 0) {
 			return;
 		}
-		if (client.distanceToPoint(NPCHandler.npcs[i].getX(), NPCHandler.npcs[i].getY()) > Server.npcHandler
+		if (Player.distanceToPoint(NPCHandler.npcs[i].getX(), NPCHandler.npcs[i].getY()) > Server.npcHandler
 				.followDistance(i)) {
 			return;
 		}
-		if (client.playerIndex <= 0 && client.npcIndex <= 0)
-			if (client.autoRet == 1)
-				client.npcIndex = i;
-		client.getPA().removeAllWindows();
-		NPCHandler.npcs[i].facePlayer(client.playerId);
-		client.logoutDelay = System.currentTimeMillis();
-		client.underAttackBy2 = NPCHandler.npcs[i].npcId;
-		client.singleCombatDelay = System.currentTimeMillis();
-		NPCHandler.npcs[i].killerId = client.playerId;
-		n.execute(client, NPCHandler.npcs[i]);
-		client.getPA().removeAllWindows();
+		if (Player.playerIndex <= 0 && Player.npcIndex <= 0)
+			if (Player.autoRet == 1)
+				Player.npcIndex = i;
+		Player.getPA().removeAllWindows();
+		NPCHandler.npcs[i].facePlayer(Player.playerId);
+		Player.logoutDelay = System.currentTimeMillis();
+		Player.underAttackBy2 = NPCHandler.npcs[i].npcId;
+		Player.singleCombatDelay = System.currentTimeMillis();
+		NPCHandler.npcs[i].killerId = Player.playerId;
+		n.execute(Player, NPCHandler.npcs[i]);
+		Player.getPA().removeAllWindows();
 	}
 }

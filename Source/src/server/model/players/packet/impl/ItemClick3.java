@@ -1,6 +1,6 @@
 package server.model.players.packet.impl;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.packet.PacketType;
 import server.model.players.skills.runecrafting.TalismanHandler;
 import server.model.players.skills.runecrafting.TalismanHandler.talismanData;
@@ -17,7 +17,7 @@ import server.util.Misc;
 public class ItemClick3 implements PacketType {
 
 	@Override
-	public void processPacket(Client c, int packetType, int packetSize) {
+	public void processPacket(Player c, int packetType, int packetSize) {
 		int itemId11 = c.getInStream().readSignedWordBigEndianA();
 		int itemId1 = c.getInStream().readSignedWordA();
 		int itemId = c.getInStream().readSignedWordA();

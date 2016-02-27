@@ -1,7 +1,7 @@
 package server.event.impl;
 
 import server.Server;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.util.Misc;
 
 public class SpiritTree  {
@@ -15,7 +15,7 @@ public class SpiritTree  {
 		{111, 	138, 	443, 	150, 	7},
 	};
 
-	public static void spawnSpiritTree(Client c) {
+	public static void spawnSpiritTree(Player c) {
 		if(c.combatLevel <= 4)
 			return;
 		for (int[] aSpiritTree : spiritTree) {

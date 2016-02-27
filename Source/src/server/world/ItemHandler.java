@@ -14,7 +14,7 @@ import server.Server;
 import server.model.items.GroundItem;
 import server.model.items.Item;
 import server.model.items.ItemList;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.Player;
 import server.model.players.PlayerHandler;
 import server.util.Misc;
@@ -78,7 +78,7 @@ public class ItemHandler {
 	/**
 	* Reloads any items if you enter a new region
 	**/
-	public void reloadItems(Client c) {
+	public void reloadItems(Player c) {
 		for(GroundItem i : items) {
 			if(c != null){
 				if (c.getItems().tradeable(i.getItemId()) || i.getName().equalsIgnoreCase(c.playerName)) {
@@ -155,7 +155,7 @@ public class ItemHandler {
 	{4720,4896},{4718,4890},{4720,4896},{4722,4902},{4732,4932},{4734,4938},{4736,4944},{4738,4950},
 	{4724,4908},{4726,4914},{4728,4920},{4730,4926},{4745,4956},{4747,4926},{4749,4968},{4751,4994},
 	{4753,4980},{4755,4986},{4757,4992},{4759,4998}};
-	public void createGroundItem(Client c, int itemId, int itemX, int itemY, int itemAmount, int playerId) {
+	public void createGroundItem(Player c, int itemId, int itemX, int itemY, int itemAmount, int playerId) {
 		if(itemId > 0) {
 			if (itemId >= 2412 && itemId <= 2414) {
 				return;
@@ -190,7 +190,7 @@ public class ItemHandler {
 	public void createGlobalItem(GroundItem i) {
 		for (Player p : Server.playerHandler.players){
 			if(p != null) {
-			Client person = (Client)p;
+			Player person = (Player)p;
 				if(person != null){
 					if(person.playerId != i.getItemController()) {
 						if (!person.getItems().tradeable(i.getItemId()) && person.playerId != i.getItemController())
@@ -210,7 +210,7 @@ public class ItemHandler {
 	* Removing the ground item
 	**/
 	
-	public void removeGroundItem(Client c, int itemId, int itemX, int itemY, boolean add){
+	public void removeGroundItem(Player c, int itemId, int itemX, int itemY, boolean add){
 		for(GroundItem i : items) {
 			if(i.getItemId() == itemId && i.getItemX() == itemX && i.getItemY() == itemY) {
 				if(i.hideTicks > 0 && i.getName().equalsIgnoreCase(c.playerName)) {
@@ -248,7 +248,7 @@ public class ItemHandler {
 	* Remove item for just the item controller (item not global yet)
 	**/
 	
-	public void removeControllersItem(GroundItem i, Client c, int itemId, int itemX, int itemY, int itemAmount) {
+	public void removeControllersItem(GroundItem i, Player c, int itemId, int itemX, int itemY, int itemAmount) {
 		c.getItems().removeGroundItem(itemId, itemX, itemY, itemAmount);
 		removeItem(i);
 	}
@@ -261,7 +261,7 @@ public class ItemHandler {
 	public void removeGlobalItem(GroundItem i, int itemId, int itemX, int itemY, int itemAmount) {
 		for (Player p : Server.playerHandler.players){
 			if(p != null) {
-			Client person = (Client)p;
+			Player person = (Player)p;
 				if(person != null){
 					if (person.distanceToPoint(itemX, itemY) <= 60) {
 						person.getItems().removeGroundItem(itemId, itemX, itemY, itemAmount);

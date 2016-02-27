@@ -1,15 +1,15 @@
 package server.model.dialogues;
 
-import server.model.players.Client;
+import server.model.players.Player;
 
 public abstract class NpcDialogue {
 	private int nextDialogueId = 0;
 
 	private int optionId;
 
-	public abstract void sendDialogue(Client player, int dialogueId);
+	public abstract void sendDialogue(Player player, int dialogueId);
 
-	public abstract void executeOption(Client player, int buttonId);
+	public abstract void executeOption(Player player, int buttonId);
 
 	public int getNextDialogueId() {
 		return nextDialogueId;

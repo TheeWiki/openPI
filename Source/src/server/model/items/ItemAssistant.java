@@ -5,8 +5,9 @@ import server.Server;
 import server.model.minigames.castle_wars.CastleWars;
 import server.model.minigames.duel_arena.Rules;
 import server.model.npcs.NPCHandler;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.EquipmentListener;
+import server.model.players.Player;
 import server.model.players.PlayerHandler;
 import server.util.Misc;
 
@@ -17,10 +18,10 @@ import server.util.Misc;
  */
 public class ItemAssistant {
 
-	private Client c;
+	private Player c;
 
-	public ItemAssistant(Client client) {
-		this.c = client;
+	public ItemAssistant(Player Player) {
+		this.c = Player;
 	}
 
 	/**
@@ -298,7 +299,7 @@ public class ItemAssistant {
 	 * Drops all items for a killer.
 	 **/
 	public void dropAllItems() {
-		Client o = (Client) PlayerHandler.players[c.killerId];
+		Player o = (Player) PlayerHandler.players[c.killerId];
 
 		for (int i = 0; i < c.playerItems.length; i++) {
 			if (o != null) {

@@ -72,7 +72,7 @@ public enum SpawnNpc
 		return headIcon;
 	}
 	
-	SpawnNpc(int npcId,int HP,int maxHit,int att,int def, boolean aggressive, boolean headIcon)
+	private SpawnNpc(int npcId,int HP,int maxHit,int att,int def, boolean aggressive, boolean headIcon)
 	{
 		this.npcId = npcId;
 		this.HP = HP;

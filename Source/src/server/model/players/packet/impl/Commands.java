@@ -3,7 +3,7 @@ package server.model.players.packet.impl;
 import server.Connection;
 import server.Constants;
 import server.Server;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.PlayerHandler;
 import server.model.players.packet.PacketType;
 import server.util.Misc;
@@ -17,7 +17,7 @@ public class Commands implements PacketType {
 
 	@SuppressWarnings("static-access")
 	@Override
-	public void processPacket(Client c, int packetType, int packetSize) {
+	public void processPacket(Player c, int packetType, int packetSize) {
 		String playerCommand = c.getInStream().readString();
 		playerCommand = Misc.getFilteredInput(playerCommand);
 		Misc.println(c.playerName + " playerCommand: " + playerCommand);
@@ -46,7 +46,7 @@ public class Commands implements PacketType {
 						if (PlayerHandler.players[i] != null) {
 							if (PlayerHandler.players[i].playerName
 									.equalsIgnoreCase(player2)) {
-								Client c2 = (Client) PlayerHandler.players[i];
+								Player c2 = (Player) PlayerHandler.players[i];
 								c2.membership().giveMembership(c2);
 							}
 						}
@@ -183,7 +183,7 @@ public class Commands implements PacketType {
 				if (playerCommand.startsWith("yell")) {
 					for (int player = 0; player < Server.playerHandler.players.length; player++) {
 						if (Server.playerHandler.players[player] != null) {
-							Client c2 = (Client) Server.playerHandler.players[player];
+							Player c2 = (Player) Server.playerHandler.players[player];
 							c2.sendMessage("[" + c.playerName + "]: " + playerCommand.substring(7));
 						}
 					}
@@ -225,7 +225,7 @@ public class Commands implements PacketType {
 				if (playerCommand.equals("Vote")) {
 					for (int j = 0; j < Server.playerHandler.players.length; j++)
 						if (Server.playerHandler.players[j] != null) {
-							Client c2 = (Client) Server.playerHandler.players[j];
+							Player c2 = (Player) Server.playerHandler.players[j];
 							c2.getPA().sendFrame126("www.google.ca", 12000);
 						}
 				}
@@ -333,7 +333,7 @@ public class Commands implements PacketType {
 						for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 							if (Server.playerHandler.players[i] != null) {
 								if (Server.playerHandler.players[i].playerName.equalsIgnoreCase(playerToBan)) {
-									Client c2 = (Client) Server.playerHandler.players[i];
+									Player c2 = (Player) Server.playerHandler.players[i];
 									c2.sendMessage("You have been muted by: " + c.playerName);
 									break;
 								}
@@ -352,7 +352,7 @@ public class Commands implements PacketType {
 									Connection.addIpToMuteList(Server.playerHandler.players[i].connectedFrom);
 									c.sendMessage("You have IP Muted the user: "
 											+ Server.playerHandler.players[i].playerName);
-									Client c2 = (Client) Server.playerHandler.players[i];
+									Player c2 = (Player) Server.playerHandler.players[i];
 									c2.sendMessage("You have been muted by: " + c.playerName);
 									break;
 								}

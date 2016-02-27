@@ -1,6 +1,6 @@
 package server.model.dialogues;
 
-import server.model.players.Client;
+import server.model.players.Player;
 
 public class OptionDialogue {
 	private String[] lines;
@@ -9,7 +9,7 @@ public class OptionDialogue {
 		this.lines = lines;
 	}
 
-	public void display(Client c) {
+	public void display(Player c) {
 		c.getPA().showOptions(c, lines);
 	}
 

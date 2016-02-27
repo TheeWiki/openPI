@@ -2,12 +2,12 @@ package server.net;
 
 import org.jboss.netty.channel.Channel;
 
-import server.model.players.Client;
+import server.model.players.Player;
 
 public class Session {
 	
 	private final Channel channel;
-	private Client client;
+	private Player Player;
 	
 	public Session(Channel channel) {
 		this.channel = channel;
@@ -17,12 +17,12 @@ public class Session {
 		return channel;
 	}
 
-	public Client getClient() {
-		return client;
+	public Player getPlayer() {
+		return Player;
 	}
 
-	public void setClient(Client client) {
-		this.client = client;
+	public void setPlayer(Player Player) {
+		this.Player = Player;
 	}
 
 }

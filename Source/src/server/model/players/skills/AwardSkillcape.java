@@ -1,6 +1,6 @@
 package server.model.players.skills;
 
-import server.model.players.Client;
+import server.model.players.Player;
 
 public class AwardSkillcape {
 
@@ -9,13 +9,13 @@ public class AwardSkillcape {
 	 * @param c
 	 * @param arg
 	 */
-	public static void executeAward(Client c) {
+	public static void executeAward(Player c) {
 		for (SkillMasters sm : SkillMasters.values()) {
 			if (c.getItems().freeSlots() < 1 ) {
 				c.sendMessage("You don't have enough space");
 				return;
 			}
-			if (!(c.playerLevel[SkillIndex.getSkills(c.getShops().get99Count())] < 99))
+			if (c.playerLevel[SkillIndex.getSkills(c.getShops().get99Count())] < 99)
 			{
 				c.sendMessage("You need to master all skills first..");
 				return;

@@ -3,28 +3,28 @@ package server.model.dialogues;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import server.model.players.Client;
+import server.model.players.Player;
 
 /**
  * @author Jayden
  */
 
 public class DialogueContainer {
-	private Client c;
+	private Player c;
 	private int optionId;
 	private DialogueAction action;
 	private ArrayList<OptionDialogue> optionDialogues;
 	private int currentDialogueId = 1;
 	private boolean closeInterface = true;
 
-	public static void CreateDialogue(Client c, DialogueAction action, String... lines) {
+	public static void CreateDialogue(Player c, DialogueAction action, String... lines) {
 		if (c.nextChat > 0) {
 			c.nextChat = -1;
 		}
 		c.dialogueContainer = new DialogueContainer(c, action, lines);
 	}
 
-	private DialogueContainer(Client c, DialogueAction action, String... lines) {
+	private DialogueContainer(Player c, DialogueAction action, String... lines) {
 		this.c = c;
 		this.action = action;
 		this.optionDialogues = new ArrayList<OptionDialogue>();

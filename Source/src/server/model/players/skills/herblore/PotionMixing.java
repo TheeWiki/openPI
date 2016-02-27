@@ -1,6 +1,6 @@
 package server.model.players.skills.herblore;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.util.Misc;
 
 /**
@@ -9,9 +9,9 @@ import server.util.Misc;
 
 public class PotionMixing {
 
-	Client c;
+	Player c;
 
-	public PotionMixing(Client c) {
+	public PotionMixing(Player c) {
 		this.c = c;
 	}
 

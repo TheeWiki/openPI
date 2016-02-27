@@ -4,7 +4,7 @@ import server.event.CycleEvent;
 import server.event.CycleEventContainer;
 import server.event.CycleEventHandler;
 import server.model.objects.Doors;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.packet.PacketType;
 import server.util.Misc;
 /**
@@ -14,7 +14,7 @@ public class ClickObject implements PacketType {
 
 	public static final int FIRST_CLICK = 132, SECOND_CLICK = 252, THIRD_CLICK = 70;	
 	@Override
-	public void processPacket(final Client c, int packetType, int packetSize) {		
+	public void processPacket(final Player c, int packetType, int packetSize) {		
 		c.clickObjectType = c.objectX = c.objectId = c.objectY = 0;
 		c.objectYOffset = c.objectXOffset = 0;
 		c.getPA().resetFollow();
@@ -325,7 +325,7 @@ public class ClickObject implements PacketType {
 		}
 
 	}
-	public void handleSpecialCase(Client c, int id, int x, int y) {
+	public void handleSpecialCase(Player c, int id, int x, int y) {
 
 	}
 

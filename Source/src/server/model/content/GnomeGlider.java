@@ -3,7 +3,7 @@ package server.model.content;
 import server.event.CycleEvent;
 import server.event.CycleEventContainer;
 import server.event.CycleEventHandler;
-import server.model.players.Client;
+import server.model.players.Player;
 
 public class GnomeGlider {
 
@@ -16,7 +16,7 @@ public class GnomeGlider {
 		{48054, 2544, 2970, 0, 10}, // TO OGRE AREA
 	};
 
-	public static void flightButtons(Client c, int button) {
+	public static void flightButtons(Player c, int button) {
 		for (int i = 0; i < getLength(); i++) {
 			if (getButton(i) == button) {
 				handleFlight(c, i);
@@ -24,7 +24,7 @@ public class GnomeGlider {
 		}
 	}
 
-	public static void handleFlight(final Client c, final int flightId) {
+	public static void handleFlight(final Player c, final int flightId) {
 		c.getPA().showInterface(802);
 		c.getPA().sendFrame36(153, getMove(flightId));
 		CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {

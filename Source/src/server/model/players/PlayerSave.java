@@ -20,7 +20,7 @@ public class PlayerSave {
 	/**
 	 * Loading
 	 **/
-	public static int loadGame(Client p, String playerName, String playerPass) {
+	public static int loadGame(Player p, String playerName, String playerPass) {
 		String line = "";
 		String token = "";
 		String token2 = "";
@@ -207,7 +207,7 @@ public class PlayerSave {
 	 * Saving
 	 **/
 	@SuppressWarnings("static-access")
-	public static boolean saveGame(Client p) {
+	public static boolean saveGame(Player p) {
 		if (!p.saveFile || p.newPlayer || !p.saveCharacter) {
 			// System.out.println("first");
 			return false;

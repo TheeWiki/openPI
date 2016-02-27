@@ -1,7 +1,7 @@
 package server.model.minigames.tzhaar;
 
 import server.Server;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.util.Misc;
 
 /**
@@ -57,7 +57,7 @@ public class FightPits {
 	public void updateWaitRoom() {
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null) {
-				Client c = (Client) Server.playerHandler.players[j];
+				Player c = (Player) Server.playerHandler.players[j];
 				if (c.getPA().inPitsWait()) {
 					c.getPA().sendFrame126("     Next Game Begins In : " + ((gameStartTimer * 3) + (gameTime * 3)) + " seconds.", 6570);
 					c.getPA().sendFrame126("Champion: " + pitsChampion, 6572);
@@ -76,7 +76,7 @@ public class FightPits {
 		}	
 		for (int player = 0; player < Server.playerHandler.players.length; player++) {
 			if (Server.playerHandler.players[player] != null )  {
-					Client c = (Client)Server.playerHandler.players[player];
+					Player c = (Player)Server.playerHandler.players[player];
 //					Server.npcHandler.spawnNpc(c,2743,2391,5186,0,0,200,0,0,100, true, false);
 //					Server.npcHandler.spawnNpc(c,2743,2385,5145,0,0,200,0,0,100, true, false);
 //					Server.npcHandler.spawnNpc(c,2743,2409,5155,0,0,200,0,0,100, true, false);
@@ -96,7 +96,7 @@ public class FightPits {
 		int count = 0;
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null )  {
-					Client c = (Client)Server.playerHandler.players[j];
+					Player c = (Player)Server.playerHandler.players[j];
 					if (c.getPA().inPitsWait())
 						count++;
 			}	
@@ -108,7 +108,7 @@ public class FightPits {
 	public void removePlayerFromPits(int playerId) {
 		for (int j = 0; j < playerInPits.length; j++) {
 			if (playerInPits[j] == playerId) {
-				Client c = (Client)Server.playerHandler.players[playerInPits[j]];
+				Player c = (Player)Server.playerHandler.players[playerInPits[j]];
 				c.getPA().movePlayer(2399, 5173, 0);
 				playerInPits[j] = -1;
 				playersRemaining--;
@@ -129,7 +129,7 @@ public class FightPits {
 				continue;
 			if (Server.playerHandler.players[playerInPits[j]] == null)
 				continue;
-			Client c = (Client)Server.playerHandler.players[playerInPits[j]];
+			Player c = (Player)Server.playerHandler.players[playerInPits[j]];
 			c.getPA().movePlayer(2399, 5173, 0);
 			c.inPits = false;
 		}
@@ -148,7 +148,7 @@ public class FightPits {
 		if (Server.playerHandler.players[playerId] == null)
 			return;
 		playersRemaining++;
-		Client c = (Client)Server.playerHandler.players[playerId];
+		Player c = (Player)Server.playerHandler.players[playerId];
 		c.getPA().walkableInterface(-1);
 		playerInPits[pitsSlot++] = playerId;
 		c.getPA().movePlayer(2392 + Misc.random(12), 5139 + Misc.random(25), 0);

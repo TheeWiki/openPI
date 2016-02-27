@@ -3,7 +3,7 @@ package server.model.players.skills.cooking;
 import java.util.HashMap;
 
 import server.model.minigames.duel_arena.Rules;
-import server.model.players.Client;
+import server.model.players.Player;
 
 /**
  * @author Sanity
@@ -55,7 +55,7 @@ public class Food {
 		}
 	}
 	
-	public static void eat(Client c, int id, int slot) {
+	public static void eat(Player c, int id, int slot) {
 		if (c.duelRule[Rules.EAT_RULE.getRule()]) {
 			c.sendMessage("You may not eat in this duel.");
 			return;

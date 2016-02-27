@@ -3,7 +3,7 @@ package server.model.players.packet.impl;
 import server.Constants;
 import server.Server;
 import server.model.minigames.duel_arena.Rules;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.EquipmentListener;
 import server.model.players.packet.PacketType;
 import server.model.players.skills.magic.Enchantment;
@@ -17,7 +17,7 @@ public class AttackPlayer implements PacketType {
 
 	@SuppressWarnings("static-access")
 	@Override
-	public void processPacket(Client c, int packetType, int packetSize) {
+	public void processPacket(Player c, int packetType, int packetSize) {
 		c.playerIndex = 0;
 		c.npcIndex = 0;
 		switch (packetType) {

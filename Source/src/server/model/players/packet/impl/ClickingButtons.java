@@ -7,7 +7,7 @@ import server.event.CycleEventContainer;
 import server.event.CycleEventHandler;
 import server.model.items.GameItem;
 import server.model.minigames.duel_arena.Rules;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.EquipmentListener;
 import server.model.players.packet.PacketType;
 import server.model.players.skills.magic.Enchantment;
@@ -22,7 +22,7 @@ public class ClickingButtons implements PacketType {
 
 	@SuppressWarnings({ "static-access", "null" })
 	@Override
-	public void processPacket(final Client c, int packetType, int packetSize) {
+	public void processPacket(final Player c, int packetType, int packetSize) {
 		int actionButtonId = Misc.hexToInt(c.getInStream().buffer, 0, packetSize);
 		// int actionButtonId = c.getInStream().readShort();
 		if (c.isDead)
@@ -396,7 +396,7 @@ public class ClickingButtons implements PacketType {
 				return;
 			}
 			if (c.inDuelArena()) {
-				Client o = (Client) Server.playerHandler.players[c.duelingWith];
+				Player o = (Player) Server.playerHandler.players[c.duelingWith];
 				if (o == null) {
 					c.getTradeAndDuel().declineDuel();
 					o.getTradeAndDuel().declineDuel();
@@ -426,7 +426,7 @@ public class ClickingButtons implements PacketType {
 					o.getTradeAndDuel().confirmDuel();
 				}
 			} else {
-				Client o = (Client) Server.playerHandler.players[c.duelingWith];
+				Player o = (Player) Server.playerHandler.players[c.duelingWith];
 				c.getTradeAndDuel().declineDuel();
 				o.getTradeAndDuel().declineDuel();
 				c.sendMessage("You can't stake out of Duel Arena.");
@@ -447,7 +447,7 @@ public class ClickingButtons implements PacketType {
 				if (c.duelStatus == 5) {
 					break;
 				}
-				Client o1 = (Client) Server.playerHandler.players[c.duelingWith];
+				Player o1 = (Player) Server.playerHandler.players[c.duelingWith];
 				if (o1 == null) {
 					c.getTradeAndDuel().declineDuel();
 					return;
@@ -466,7 +466,7 @@ public class ClickingButtons implements PacketType {
 					o1.getPA().sendFrame126("Other player has accepted", 6571);
 				}
 			} else {
-				Client o = (Client) Server.playerHandler.players[c.duelingWith];
+				Player o = (Player) Server.playerHandler.players[c.duelingWith];
 				c.getTradeAndDuel().declineDuel();
 				o.getTradeAndDuel().declineDuel();
 				c.sendMessage("You can't stake out of Duel Arena.");
@@ -615,7 +615,7 @@ public class ClickingButtons implements PacketType {
 			break;
 
 		case 13092:
-			Client ot = (Client) Server.playerHandler.players[c.tradeWith];
+			Player ot = (Player) Server.playerHandler.players[c.tradeWith];
 			if (ot == null) {
 				c.getTradeAndDuel().declineTrade();
 				c.sendMessage("Trade declined as the other player has disconnected.");
@@ -711,7 +711,7 @@ public class ClickingButtons implements PacketType {
 			break;
 		case 13218:
 			c.tradeAccepted = true;
-			Client ot1 = (Client) Server.playerHandler.players[c.tradeWith];
+			Player ot1 = (Player) Server.playerHandler.players[c.tradeWith];
 			if (ot1 == null) {
 				c.getTradeAndDuel().declineTrade();
 				c.sendMessage("Trade declined as the other player has disconnected.");
@@ -751,7 +751,7 @@ public class ClickingButtons implements PacketType {
 			}
 			break;
 		case 125006:// Decline
-			c.sendMessage("You have chosen to decline, Client will be disconnected from the server.");
+			c.sendMessage("You have chosen to decline, Player will be disconnected from the server.");
 			break;
 		/* End Rules Interface Buttons */
 		/* Player Options */

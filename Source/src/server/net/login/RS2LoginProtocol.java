@@ -12,7 +12,7 @@ import org.jboss.netty.handler.codec.frame.FrameDecoder;
 import server.Connection;
 import server.Constants;
 import server.Server;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.PlayerHandler;
 import server.model.players.PlayerSave;
 import server.net.PacketBuilder;
@@ -64,9 +64,9 @@ public class RS2LoginProtocol extends FrameDecoder {
 			buffer.readByte();
 			
 			@SuppressWarnings("unused")
-			int clientVersion = buffer.readShort();
-			/*if (clientVersion != 317) {
-				System.out.println("Invalid client version: " + clientVersion);
+			int PlayerVersion = buffer.readShort();
+			/*if (PlayerVersion != 317) {
+				System.out.println("Invalid Player version: " + PlayerVersion);
 				channel.close();
 				return null;
 			}*/
@@ -86,9 +86,9 @@ public class RS2LoginProtocol extends FrameDecoder {
 				return null;
 			}
 			
-			final long clientHalf = buffer.readLong();
+			final long PlayerHalf = buffer.readLong();
 			final long serverHalf = buffer.readLong();
-			final int[] isaacSeed = { (int) (clientHalf >> 32), (int) clientHalf, (int) (serverHalf >> 32), (int) serverHalf };
+			final int[] isaacSeed = { (int) (PlayerHalf >> 32), (int) PlayerHalf, (int) (serverHalf >> 32), (int) serverHalf };
 			final ISAACCipher inCipher = new ISAACCipher(isaacSeed);
 			for (int seed = 0; seed < isaacSeed.length; seed++)
 				isaacSeed[seed] += 50;
@@ -102,7 +102,7 @@ public class RS2LoginProtocol extends FrameDecoder {
 		return null;
 	}
 
-	private static Client login(Channel channel, ISAACCipher inCipher, ISAACCipher outCipher, int version, String name, String pass) {
+	private static Player login(Channel channel, ISAACCipher inCipher, ISAACCipher outCipher, int version, String name, String pass) {
 		int returnCode = 2;
 		if (!name.matches("[A-Za-z0-9 ]+")) {
 			returnCode = 4;
@@ -110,7 +110,7 @@ public class RS2LoginProtocol extends FrameDecoder {
 		if (name.length() > 12) {
 			returnCode = 8;
 		}
-		Client requester = new Client(channel, -1);
+		Player requester = new Player(channel, -1);
 		requester.playerName = name;
 		requester.playerName2 = requester.playerName;
 		requester.playerPass = pass;
@@ -148,7 +148,7 @@ public class RS2LoginProtocol extends FrameDecoder {
 						requester.playerEquipmentN[i] = 0;
 					}
 				}
-				if (!Server.playerHandler.newPlayerClient(requester)) {
+				if (!Server.playerHandler.newPlayerPlayer(requester)) {
 					returnCode = 7;
 					requester.saveFile = false;
 				} else {

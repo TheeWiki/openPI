@@ -1,6 +1,6 @@
 package server.world.sound;
 
-import server.model.players.Client;
+import server.model.players.Player;
  
 /*
  * TODO: Fix playersaving,
@@ -36,7 +36,7 @@ public class Music {
          * 
          * @param c
          */
-        public static void playMusic(Client c) {
+        public static void playMusic(Player c) {
                 Music song = getMusicId(c);
                 if(c.auto == 0)
                 	return;
@@ -64,7 +64,7 @@ public class Music {
          * @param c
          * @param id
          */
-        public static void updateList(Client c, int id) {
+        public static void updateList(Player c, int id) {
                c.getPA().sendColor(id, 0 << 10 | 255 << 5 | 0);
         }
          
@@ -75,7 +75,7 @@ public class Music {
          * @param c
          * @return
          */
-        private static Music getMusicId(Client c) {
+        private static Music getMusicId(Player c) {
                 int x = c.absX, y = c.absY;
                 for (int i = 0; i < songs.length; i++) {
                         if (x >= songs[i].swX && x <= songs[i].neX && y >= songs[i].swY && y <= songs[i].neY) {

@@ -1,6 +1,6 @@
 package server.world.locations;
 
-import server.model.players.Client;
+import server.model.players.Player;
 /**
  * Handles the region actions based on the location class.
  * This system allows the developer to find and edit faster based on the regional class name.
@@ -37,7 +37,7 @@ public final class LocationController {
 			tzhaar = new Tzhaar(), taverlyDungeon = new TaverlyDungeon(), wilderness = new Wilderness(),
 			pestControl = new PestControl(), mageBank = new MageBank(), slayerTower = new SlayerTower();
 
-	public static void sendFirstClickObject(Client c, int object) {
+	public static void sendFirstClickObject(Player c, int object) {
 		barrows.sendFirstClickObject(c, object);
 		home.sendFirstClickObject(c, object);
 		pestControl.sendFirstClickObject(c, object);
@@ -49,25 +49,25 @@ public final class LocationController {
 		slayerTower.sendFirstClickObject(c, object);
 	}
 
-	public static void sendSecondClickObject(Client c, int object) {
+	public static void sendSecondClickObject(Player c, int object) {
 		tzhaar.sendSecondClickObject(c, object);
 	}
 
-	public static void sendThirdClickObject(Client c, int object) {
+	public static void sendThirdClickObject(Player c, int object) {
 
 	}
 
-	public static void sendFirstClickNpc(Client c, int npc) {
+	public static void sendFirstClickNpc(Player c, int npc) {
 		duelArena.sendFirstClickNpc(c, npc);
 		home.sendFirstClickNpc(c, npc);
 	}
 
-	public static void sendSecondClickNpc(Client c, int npc) {
+	public static void sendSecondClickNpc(Player c, int npc) {
 		pestControl.sendSecondClickNpc(c, npc);
 		duelArena.sendSecondClickNpc(c, npc);
 	}
 
-	public static void sendThirdClickNpc(Client c, int npc) {
+	public static void sendThirdClickNpc(Player c, int npc) {
 
 	}
 }

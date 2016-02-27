@@ -1,7 +1,7 @@
 package server.event.impl;
 
 import server.Server;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.util.Misc;
 
 public class Zombie {
@@ -15,7 +15,7 @@ public class Zombie {
 		{111, 	138, 	424, 	150, 	7},
 	};
 
-	public static void spawnZombie(Client c) {
+	public static void spawnZombie(Player c) {
 		if(c.combatLevel <= 4)
 			return;
 		for (int[] aZombie : zombie) {

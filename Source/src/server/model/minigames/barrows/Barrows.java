@@ -1,6 +1,6 @@
 package server.model.minigames.barrows;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.util.Misc;
 
 
@@ -35,7 +35,7 @@ public class Barrows {
 	 * Selects the coffin and shows the interface if coffin ID matches random
 	 * coffin.
 	 **/
-	public static boolean selectCoffin(Client c, int coffinId) {
+	public static boolean selectCoffin(Player c, int coffinId) {
 		if (c.randomCoffin == 0) {
 			c.randomCoffin = getRandomCoffin();
 		}

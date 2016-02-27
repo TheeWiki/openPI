@@ -7,7 +7,7 @@ import server.Server;
 import server.event.CycleEvent;
 import server.event.CycleEventContainer;
 import server.event.CycleEventHandler;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.util.Misc;
 
 public class Picking {
@@ -16,7 +16,7 @@ public class Picking {
 
 	public static ArrayList <int[]> flaxRemoved = new ArrayList<int[]>();
 	
-	public static void pickup(Client c, int object,  final int x, final int y) {
+	public static void pickup(Player c, int object,  final int x, final int y) {
 		if (System.currentTimeMillis() - c.buryDelay > Constants.TICK) {
 			CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
 				@Override

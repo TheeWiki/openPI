@@ -1,6 +1,6 @@
 package server.model.players.packet.impl;
 import server.Server;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.packet.PacketType;
 import server.model.players.skills.magic.Enchantment;
 
@@ -11,7 +11,7 @@ import server.model.players.skills.magic.Enchantment;
 public class MagicOnFloorItems implements PacketType {
 
 	@Override
-	public void processPacket(Client c, int packetType, int packetSize) {
+	public void processPacket(Player c, int packetType, int packetSize) {
 		int itemY = c.getInStream().readSignedWordBigEndian();
 		int itemId = c.getInStream().readUnsignedWord();
 		int itemX = c.getInStream().readSignedWordBigEndian();

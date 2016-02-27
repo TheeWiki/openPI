@@ -3,7 +3,7 @@ package server.model.players.packet.impl;
 import server.Connection;
 import server.Constants;
 import server.Server;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.packet.PacketType;
 import server.util.Misc;
 
@@ -16,7 +16,7 @@ public class PrivateMessaging implements PacketType {
 	
 	@SuppressWarnings("static-access")
 	@Override
-	public void processPacket(Client c, int packetType, int packetSize) {
+	public void processPacket(Player c, int packetType, int packetSize) {
 		switch(packetType) {
 		
 			case ADD_FRIEND:
@@ -36,7 +36,7 @@ public class PrivateMessaging implements PacketType {
 						c.friends[i1] = friendToAdd;
 						for (int i2 = 1; i2 < Constants.MAX_PLAYERS; i2++) {
 							if (Server.playerHandler.players[i2] != null && Server.playerHandler.players[i2].isActive && Misc.playerNameToInt64(Server.playerHandler.players[i2].playerName)== friendToAdd) {
-								Client o = (Client)Server.playerHandler.players[i2];
+								Player o = (Player)Server.playerHandler.players[i2];
 								if(o != null) {
 									if (Server.playerHandler.players[i2].privateChat == 0 || (Server.playerHandler.players[i2].privateChat == 1 && o.getPA().isInPM(Misc.playerNameToInt64(c.playerName)))) {
 										c.getPA().loadPM(friendToAdd, 1);
@@ -64,7 +64,7 @@ public class PrivateMessaging implements PacketType {
 
                     for (int i2 = 1; i2 < Constants.MAX_PLAYERS; i2++) {
                         if (Server.playerHandler.players[i2] != null && Server.playerHandler.players[i2].isActive && Misc.playerNameToInt64(Server.playerHandler.players[i2].playerName)== sendMessageToFriendId) {
-                            Client o = (Client)Server.playerHandler.players[i2];
+                            Player o = (Player)Server.playerHandler.players[i2];
 							if(o != null) {
 								if (Server.playerHandler.players[i2].privateChat == 0 || (Server.playerHandler.players[i2].privateChat == 1 && o.getPA().isInPM(Misc.playerNameToInt64(c.playerName)))) {
 									o.getPA().sendPM(Misc.playerNameToInt64(c.playerName), c.playerRights, pmchatText, pmchatTextSize);
@@ -90,7 +90,7 @@ public class PrivateMessaging implements PacketType {
             for (int i1 = 0; i1 < c.friends.length; i1++) {
                 if (c.friends[i1] == friendToRemove) {
 					for (int i2 = 1; i2 < Constants.MAX_PLAYERS; i2++) {
-						Client o = (Client)Server.playerHandler.players[i2];		
+						Player o = (Player)Server.playerHandler.players[i2];		
 						if(o != null) {
 							if(c.friends[i1] == Misc.playerNameToInt64(Server.playerHandler.players[i2].playerName)){
 								o.getPA().updatePM(c.playerId, 0);
@@ -120,7 +120,7 @@ public class PrivateMessaging implements PacketType {
 			int publicChat = c.getInStream().readUnsignedByte();
             for (int i1 = 1; i1 < Constants.MAX_PLAYERS; i1++) {
 			   if (Server.playerHandler.players[i1] != null && Server.playerHandler.players[i1].isActive == true) {
-                    Client o = (Client)Server.playerHandler.players[i1];
+                    Player o = (Player)Server.playerHandler.players[i1];
 					if(o != null) {
 						o.getPA().updatePM(c.playerId, 1);
 					}

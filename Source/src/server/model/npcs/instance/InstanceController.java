@@ -2,7 +2,7 @@ package server.model.npcs.instance;
 
 import server.Server;
 import server.model.players.ActionHandler;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.util.Misc;
 
 /**
@@ -35,7 +35,7 @@ public class InstanceController {
 	 * @param player
 	 * @param object
 	 */
-	public static void executeInstance(Client player, int object) {
+	public static void executeInstance(Player player, int object) {
 		if (!player.membership)
 		{
 			player.getDH().sendStatement("You need to be a member to purchase instances.");

@@ -1,7 +1,7 @@
 package server.event.impl;
 
 import server.Server;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.util.Misc;
 
 public class RiverTroll {
@@ -15,7 +15,7 @@ public class RiverTroll {
 		{111, 	138, 	396, 	150, 	7},
 	};
 
-	public static void spawnRiverTroll(Client c) {
+	public static void spawnRiverTroll(Player c) {
 		if(c.combatLevel <= 4)
 			return;
 		for (int[] aRiverTroll : riverTroll) {

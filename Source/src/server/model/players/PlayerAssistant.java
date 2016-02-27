@@ -15,10 +15,10 @@ import server.util.Misc;
 
 public class PlayerAssistant {
 
-	private Client c;
+	private Player c;
 
-	public PlayerAssistant(Client Client) {
-		this.c = Client;
+	public PlayerAssistant(Player Player) {
+		this.c = Player;
 	}
 
 	public int CraftInt, Dcolor, FletchInt;
@@ -68,7 +68,7 @@ public class PlayerAssistant {
 	public void objectAnim(int X, int Y, int animationID, int tileObjectType, int orientation) {
 		for (Player p : PlayerHandler.players) {
 			if (p != null) {
-				Client players = (Client) p;
+				Player players = (Player) p;
 				if (players.distanceToPoint(X, Y) <= 25) {
 					players.getPA().createPlayersObjectAnim(X, Y, animationID, tileObjectType, orientation);
 				}
@@ -93,7 +93,7 @@ public class PlayerAssistant {
 	}
 
 	/**
-	 * Sends some information to the client about screen fading.
+	 * Sends some information to the Player about screen fading.
 	 * 
 	 * @param text
 	 *            the text that will be displayed in the center of the screen
@@ -181,22 +181,23 @@ public class PlayerAssistant {
 	public int absX, absY;
 	public int heightLevel;
 
-	public static void showInterface(Client client, int i) {
-		client.getOutStream().createFrame(97);
-		client.getOutStream().writeWord(i);
-		client.flushOutStream();
+	public static void showInterface(Player Player, int i) {
+		Player.getOutStream().createFrame(97);
+		Player.getOutStream().writeWord(i);
+		Player.flushOutStream();
 	}
 
-	public static void sendQuest(Client client, String s, int i) {
-		client.getOutStream().createFrameVarSizeWord(126);
-		client.getOutStream().writeString(s);
-		client.getOutStream().writeWordA(i);
-		client.getOutStream().endFrameVarSizeWord();
-		client.flushOutStream();
+	public static void sendQuest(Player Player, String s, int i) {
+		Player.getOutStream().createFrameVarSizeWord(126);
+		Player.getOutStream().writeString(s);
+		Player.getOutStream().writeWordA(i);
+		Player.getOutStream().endFrameVarSizeWord();
+		Player.flushOutStream();
 	}
+
 	private static int[] optionIds = { 2460, 2470, 2481, 2493, 2493 };
 
-	public void showOptions(Client c, String... lines) {
+	public void showOptions(Player c, String... lines) {
 		if (lines == null || lines.length < 2 || lines.length > 5) {
 			return;
 		}
@@ -207,6 +208,7 @@ public class PlayerAssistant {
 		}
 		c.getPA().sendFrame164(optionIds[lines.length - 2] - 1);
 	}
+
 	public void sendStillGraphics(int id, int heightS, int y, int x, int timeBCS) {
 		c.getOutStream().createFrame(85);
 		c.getOutStream().writeByteC(y - (c.mapRegionY * 8));
@@ -273,6 +275,21 @@ public class PlayerAssistant {
 
 	}
 
+	public void puzzleBarrow(Player c) {
+		c.getPA().sendFrame246(4545, 250, 6833);
+		c.getPA().sendFrame126("1.", 4553);
+		c.getPA().sendFrame246(4546, 250, 6832);
+		c.getPA().sendFrame126("2.", 4554);
+		c.getPA().sendFrame246(4547, 250, 6830);
+		c.getPA().sendFrame126("3.", 4555);
+		c.getPA().sendFrame246(4548, 250, 6829);
+		c.getPA().sendFrame126("4.", 4556);
+		c.getPA().sendFrame246(4550, 250, 3454);
+		c.getPA().sendFrame246(4551, 250, 8746);
+		c.getPA().sendFrame246(4552, 250, 6830);
+		c.getPA().showInterface(4543);
+	}
+
 	public void setSkillLevel(int skillNum, int currentLevel, int XP) {
 		synchronized (c) {
 			if (c.getOutStream() != null && c != null) {
@@ -284,6 +301,7 @@ public class PlayerAssistant {
 			}
 		}
 	}
+
 	/**
 	 * Play sounds
 	 * 
@@ -316,8 +334,9 @@ public class PlayerAssistant {
 
 		}
 	}
+
 	public int soundVolume = 10;
-	
+
 	public void sendString(final String s, final int id) {
 		if (c.getOutStream() != null && c != null) {
 			c.getOutStream().createFrameVarSizeWord(126);
@@ -335,6 +354,7 @@ public class PlayerAssistant {
 			c.getOutStream().writeWordBigEndian(id);
 		}
 	}
+
 	/**
 	 * Sends a player a sound effect
 	 */
@@ -360,19 +380,19 @@ public class PlayerAssistant {
 	}
 
 	/**
-	 * TODO: No sounds plays
-	 * Sends a player a sound effect
+	 * TODO: No sounds plays Sends a player a sound effect
 	 */
 	public void sendSound2(int i1, int i2, int i3) {
 		c.outStream.createFrame(174);
 		c.outStream.writeWord(i1); // id
 		c.outStream.writeByte(i2); // volume, just set it to 100 unless you play
-									// around with your client after this
+									// around with your Player after this
 		c.outStream.writeWord(i3); // delay
 		c.updateRequired = true;
 		c.appearanceUpdateRequired = true;
 		c.flushOutStream();
 	}
+
 	public void sendQuickSong(int id, int songDelay) {
 		if (c.getOutStream() != null && c != null) {
 			c.getOutStream().createFrame(121);
@@ -673,7 +693,7 @@ public class PlayerAssistant {
 		// }
 	}
 
-	public void sendCrashFrame() { // used for crashing cheat clients
+	public void sendCrashFrame() { // used for crashing cheat Players
 		synchronized (c) {
 			if (c.getOutStream() != null && c != null) {
 				c.getOutStream().createFrame(123);
@@ -690,7 +710,7 @@ public class PlayerAssistant {
 		// synchronized(c) {
 		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 			if (PlayerHandler.players[i] != null) {
-				Client person = (Client) PlayerHandler.players[i];
+				Player person = (Player) PlayerHandler.players[i];
 				if (person != null) {
 					if (person.getOutStream() != null && !person.disconnected) {
 						if (c.distanceToPoint(person.getX(), person.getY()) <= 25) {
@@ -783,7 +803,7 @@ public class PlayerAssistant {
 		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 			Player p = PlayerHandler.players[i];
 			if (p != null) {
-				Client person = (Client) p;
+				Player person = (Player) p;
 				if (person != null) {
 					if (person.getOutStream() != null) {
 						if (person.distanceToPoint(x, y) <= 25) {
@@ -804,7 +824,7 @@ public class PlayerAssistant {
 		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 			Player p = PlayerHandler.players[i];
 			if (p != null) {
-				Client person = (Client) p;
+				Player person = (Player) p;
 				if (person != null) {
 					if (person.getOutStream() != null) {
 						if (person.distanceToPoint(x, y) <= 25) {
@@ -824,7 +844,7 @@ public class PlayerAssistant {
 		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 			Player p = PlayerHandler.players[i];
 			if (p != null) {
-				Client person = (Client) p;
+				Player person = (Player) p;
 				if (person != null) {
 					if (person.getOutStream() != null) {
 						if (person.distanceToPoint(x, y) <= 25) {
@@ -862,7 +882,7 @@ public class PlayerAssistant {
 		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 			Player p = PlayerHandler.players[i];
 			if (p != null) {
-				Client person = (Client) p;
+				Player person = (Player) p;
 				if (person != null) {
 					if (person.getOutStream() != null) {
 						if (person.distanceToPoint(x, y) <= 25) {
@@ -969,7 +989,7 @@ public class PlayerAssistant {
 		for (int i1 = 0; i1 < Constants.MAX_PLAYERS; i1++) {
 			Player p = PlayerHandler.players[i1];
 			if (p != null && p.isActive) {
-				Client o = (Client) p;
+				Player o = (Player) p;
 				if (o != null) {
 					o.getPA().updatePM(c.playerId, 1);
 				}
@@ -982,7 +1002,7 @@ public class PlayerAssistant {
 				for (int i2 = 1; i2 < Constants.MAX_PLAYERS; i2++) {
 					Player p = PlayerHandler.players[i2];
 					if (p != null && p.isActive && Misc.playerNameToInt64(p.playerName) == c.friends[i]) {
-						Client o = (Client) p;
+						Player o = (Player) p;
 						if (o != null) {
 							if (c.playerRights >= 2 || p.privateChat == 0
 									|| (p.privateChat == 1 && o.getPA().isInPM(Misc.playerNameToInt64(c.playerName)))) {
@@ -1001,7 +1021,7 @@ public class PlayerAssistant {
 			for (int i1 = 1; i1 < Constants.MAX_PLAYERS; i1++) {
 				Player p = PlayerHandler.players[i1];
 				if (p != null && p.isActive) {
-					Client o = (Client) p;
+					Player o = (Player) p;
 					if (o != null) {
 						o.getPA().updatePM(c.playerId, 1);
 					}
@@ -1016,7 +1036,7 @@ public class PlayerAssistant {
 		if (p == null || p.playerName == null || p.playerName.equals("null")) {
 			return;
 		}
-		Client o = (Client) p;
+		Player o = (Player) p;
 		if (o == null) {
 			return;
 		}
@@ -1144,7 +1164,8 @@ public class PlayerAssistant {
 				c.gfx100(Enchantment.MAGIC_SPELLS[49][3]);
 				c.alchDelay = System.currentTimeMillis();
 				sendFrame106(6);
-				addSkillXP(Enchantment.MAGIC_SPELLS[49][7] * SkillIndex.MAGIC.getExpRatio(), SkillIndex.MAGIC.getSkillId());
+				addSkillXP(Enchantment.MAGIC_SPELLS[49][7] * SkillIndex.MAGIC.getExpRatio(),
+						SkillIndex.MAGIC.getSkillId());
 				refreshSkill(6);
 			}
 			break;
@@ -1164,7 +1185,8 @@ public class PlayerAssistant {
 				c.gfx100(Enchantment.MAGIC_SPELLS[50][3]);
 				c.alchDelay = System.currentTimeMillis();
 				sendFrame106(6);
-				addSkillXP(Enchantment.MAGIC_SPELLS[50][7] * SkillIndex.MAGIC.getExpRatio(), SkillIndex.MAGIC.getSkillId());
+				addSkillXP(Enchantment.MAGIC_SPELLS[50][7] * SkillIndex.MAGIC.getExpRatio(),
+						SkillIndex.MAGIC.getSkillId());
 				refreshSkill(6);
 			}
 			break;
@@ -1185,7 +1207,7 @@ public class PlayerAssistant {
 		if (c.duelStatus != 6) {
 			// c.killerId = c.getCombat().getKillerId(c.playerId);
 			c.killerId = findKiller();
-			Client o = (Client) PlayerHandler.players[c.killerId];
+			Player o = (Player) PlayerHandler.players[c.killerId];
 			if (o != null) {
 				if (c.killerId != c.playerId)
 					o.sendMessage("You have defeated " + c.playerName + "!");
@@ -1196,21 +1218,21 @@ public class PlayerAssistant {
 			}
 		}
 		if (weapon == CastleWars.SARA_BANNER || weapon == CastleWars.ZAMMY_BANNER) {
-            c.getItems().removeItem(weapon, 3);
-            c.getItems().deleteItem2(weapon, 1);
-            CastleWars.dropFlag(c, weapon);
-        }
+			c.getItems().removeItem(weapon, 3);
+			c.getItems().deleteItem2(weapon, 1);
+			CastleWars.dropFlag(c, weapon);
+		}
 		c.faceUpdate(0);
 		c.npcIndex = 0;
 		c.playerIndex = 0;
 		c.stopMovement();
 		if (c.duelStatus <= 4) {
 			c.sendMessage(Constants.DEATH_MESSAGE);
-			 if (CastleWars.isInCw(c)) {
-	            	Client o = (Client) PlayerHandler.players[c.killerId];
-	                c.cwDeaths += 1;
-	                o.cwKills += 1;
-	            }
+			if (CastleWars.isInCw(c)) {
+				Player o = (Player) PlayerHandler.players[c.killerId];
+				c.cwDeaths += 1;
+				o.cwKills += 1;
+			}
 		} else if (c.duelStatus != 6) {
 			c.sendMessage("You have lost the duel!");
 		}
@@ -1268,7 +1290,7 @@ public class PlayerAssistant {
 		for (int j = 0; j < PlayerHandler.players.length; j++) {
 			if (PlayerHandler.players[j] != null) {
 				if (PlayerHandler.players[j].followId == c.playerId) {
-					Client c = (Client) PlayerHandler.players[j];
+					Player c = (Player) PlayerHandler.players[j];
 					c.getPA().resetFollow();
 				}
 			}
@@ -1334,7 +1356,7 @@ public class PlayerAssistant {
 		} else if (c.inFightCaves()) {
 			c.getPA().resetTzhaar();
 		} else { // we are in a duel, respawn outside of arena
-			Client o = (Client) PlayerHandler.players[c.duelingWith];
+			Player o = (Player) PlayerHandler.players[c.duelingWith];
 			if (o != null) {
 				o.getPA().createPlayerHints(10, -1);
 				if (o.duelStatus == 6) {
@@ -1365,34 +1387,33 @@ public class PlayerAssistant {
 	}
 
 	/**
-	 * Location change for digging, levers etc
-	 * TODO: Fix barrows dig coordinates
+	 * Location change for digging, levers etc TODO: Fix barrows dig coordinates
 	 **/
 
 	public void changeLocation() {
 		switch (c.newLocation) {
 		case 1:
-//			sendFrame99(2);
+			// sendFrame99(2);
 			movePlayer(3578, 9706, -1);
 			break;
 		case 2:
-//			sendFrame99(2);
+			// sendFrame99(2);
 			movePlayer(3568, 9683, -1);
 			break;
 		case 3:
-//			sendFrame99(2);
+			// sendFrame99(2);
 			movePlayer(3557, 9703, -1);
 			break;
 		case 4:
-//			sendFrame99(2);
+			// sendFrame99(2);
 			movePlayer(3556, 9718, -1);
 			break;
 		case 5:
-//			sendFrame99(2);
+			// sendFrame99(2);
 			movePlayer(3534, 9704, -1);
 			break;
 		case 6:
-//			sendFrame99(2);
+			// sendFrame99(2);
 			movePlayer(3546, 9684, -1);
 			break;
 		}
@@ -2236,10 +2257,14 @@ public class PlayerAssistant {
 	/**
 	 * Show an arrow icon on the selected player.
 	 * 
-	 * @param i - Either 0 or 1; 1 is arrow, 0 is none.
-	 * @param j - The player/Npc that the arrow will be displayed above.
-	 * @param k - Keep this set as 0
-	 * @param l - Keep this set as 0
+	 * @param i
+	 *            - Either 0 or 1; 1 is arrow, 0 is none.
+	 * @param j
+	 *            - The player/Npc that the arrow will be displayed above.
+	 * @param k
+	 *            - Keep this set as 0
+	 * @param l
+	 *            - Keep this set as 0
 	 */
 	public void drawHeadicon(int i, int j, int k, int l) {
 		// synchronized(c) {
@@ -2397,7 +2422,7 @@ public class PlayerAssistant {
 		CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
 			@Override
 			public void execute(CycleEventContainer event) {
-				Server.fightCaves.spawnNextWave((Client) PlayerHandler.players[c.playerId]);
+				Server.fightCaves.spawnNextWave((Player) PlayerHandler.players[c.playerId]);
 				c.sendMessage("@blu@Wave: " + wave);
 				event.stop();
 			}
@@ -2407,7 +2432,8 @@ public class PlayerAssistant {
 
 			}
 		}, 20);
-//		c.getDH().sendNpcChat1("Prepare for the fight of your life!", 2617, "Tk-nub");
+		// c.getDH().sendNpcChat1("Prepare for the fight of your life!", 2617,
+		// "Tk-nub");
 	}
 
 	public void appendPoison(int damage) {
@@ -2454,34 +2480,34 @@ public class PlayerAssistant {
 	public void handleLoginText() {
 		c.getPA().sendFrame126("Home Teleport", 1300);
 		c.getPA().sendFrame126("Teleport to Home", 1301);
-		
+
 		c.getPA().sendFrame126("Training", 1325);
 		c.getPA().sendFrame126("Go fight some monsters", 1326);
-		
+
 		c.getPA().sendFrame126("Minigames", 1350);
 		c.getPA().sendFrame126("Play various minigames", 1351);
-		
+
 		c.getPA().sendFrame126("Skilling", 1382);
 		c.getPA().sendFrame126("Train your non-combat skills here", 1383);
-		
+
 		c.getPA().sendFrame126("PVP", 1415);
 		c.getPA().sendFrame126("Fight to be the best", 1416);
-		
+
 		c.getPA().sendFrame126("Members Zone", 1454);
 		c.getPA().sendFrame126("Special Members only area", 1455);
-//		c.getPA().sendFrame126("Lumbridge Teleport", 1325);
-//		c.getPA().sendFrame126("Falador Teleport", 1350);
-//		c.getPA().sendFrame126("Camelot Teleport", 1382);
-//		c.getPA().sendFrame126("Ardougne Teleport", 1415);
-		
+		// c.getPA().sendFrame126("Lumbridge Teleport", 1325);
+		// c.getPA().sendFrame126("Falador Teleport", 1350);
+		// c.getPA().sendFrame126("Camelot Teleport", 1382);
+		// c.getPA().sendFrame126("Ardougne Teleport", 1415);
+
 		c.sendMessage(Constants.WELCOME_MESSAGE);
 		if (c.membership) {
 			c.membership().checkDate(c);
-		} else if (c.membership == false)
-		{
+		} else if (c.membership == false) {
 			c.sendMessage("@blu@Your account isn't a member, visit ::donate for more details!");
 		}
 	}
+
 	/**
 	 * Shakes the player's screen. Parameters 1, 0, 0, 0 to reset.
 	 * 
@@ -2501,12 +2527,14 @@ public class PlayerAssistant {
 		c.outStream.writeByte(horizontalAmount);
 		c.outStream.writeByte(horizontalSpeed);
 	}
+
 	/*
 	 * Resets the shaking of the player's screen.
 	 */
 	public void resetShaking() {
 		shakeScreen(1, 0, 0, 0);
 	}
+
 	public void itemOnInterface(int interfaceChild, int zoom, int itemId) {
 		if (c.getOutStream() != null && c != null) {
 			c.getOutStream().createFrame(246);
@@ -2516,6 +2544,7 @@ public class PlayerAssistant {
 			c.flushOutStream();
 		}
 	}
+
 	public void handleWeaponStyle() {
 		if (c.fightMode == 0) {
 			c.getPA().sendFrame36(43, c.fightMode);

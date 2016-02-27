@@ -1,13 +1,13 @@
 package server.world.locations.impl;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.world.locations.AbstractLocations;
 
 public class MageBank extends AbstractLocations
 {
 
 	@Override
-	public void sendFirstClickObject(Client c, int object) {
+	public void sendFirstClickObject(Player c, int object) {
 		switch(object)
 		{
 		case 2873:
@@ -35,31 +35,31 @@ public class MageBank extends AbstractLocations
 	}
 
 	@Override
-	public void sendSecondClickObject(Client c, int object) {
+	public void sendSecondClickObject(Player c, int object) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendThirdClickObject(Client c, int object) {
+	public void sendThirdClickObject(Player c, int object) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendFirstClickNpc(Client c, int npc) {
+	public void sendFirstClickNpc(Player c, int npc) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendSecondClickNpc(Client c, int npc) {
+	public void sendSecondClickNpc(Player c, int npc) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendThirdClickNpc(Client c, int npc) {
+	public void sendThirdClickNpc(Player c, int npc) {
 		// TODO Auto-generated method stub
 		
 	}

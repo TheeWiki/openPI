@@ -1,7 +1,7 @@
 package server.model.players.packet.impl;
 
 import server.Server;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.packet.PacketType;
 
 /**
@@ -11,7 +11,7 @@ public class ChallengePlayer implements PacketType {
 
 	@SuppressWarnings("static-access")
 	@Override
-	public void processPacket(Client c, int packetType, int packetSize) {		
+	public void processPacket(Player c, int packetType, int packetSize) {		
 		switch(packetType) {
 			case 128:
 			int answerPlayer = c.getInStream().readUnsignedWord();

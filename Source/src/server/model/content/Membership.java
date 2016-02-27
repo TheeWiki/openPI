@@ -3,12 +3,12 @@ package server.model.content;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.PlayerSave;
 
 public class Membership {
 
-	private int getTodayDate(Client c) {
+	private int getTodayDate(Player c) {
 		Calendar cal = new GregorianCalendar();
 		@SuppressWarnings("unused")
 		int day = cal.get(Calendar.DAY_OF_MONTH);
@@ -18,7 +18,7 @@ public class Membership {
 		return (month);
 	}
 
-	public void giveMembership(Client c) {
+	public void giveMembership(Player c) {
 		c.startDate = getTodayDate(c);
 		c.membership = true;
 		PlayerSave.saveGame(c);
@@ -28,7 +28,7 @@ public class Membership {
 	 * TODO: Fix printout
 	 * @param c
 	 */
-	public void checkDate(Client c) {
+	public void checkDate(Player c) {
 		if (c.membership = true)
 		{
 			c.sendMessage("@blu@You have "+getDaysLeft(c) + " days of membership left.");
@@ -44,7 +44,7 @@ public class Membership {
 		}
 	}
 
-	public int getDaysLeft(Client c) {
+	public int getDaysLeft(Player c) {
 		return (31 - (getTodayDate(c) - c.startDate));
 	}
 }

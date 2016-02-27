@@ -3,7 +3,7 @@ package server.model.players.skills.magic;
 import java.util.HashMap;
 import java.util.Map;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.skills.SkillIndex;
 
 public class Enchantment {
@@ -149,7 +149,7 @@ public class Enchantment {
 
 	}
 
-	private static boolean hasRunes(Client c, int spellID) {
+	private static boolean hasRunes(Player c, int spellID) {
 		EnchantSpell ens = EnchantSpell.forId(spellID);
 		if (ens.getReq3() == 0) {
 			if (c.getCombat().wearingStaff(ens.getReq1())
@@ -202,7 +202,7 @@ public class Enchantment {
 		return 0;
 	}
 
-	public static void enchantItem(Client c, int itemID, int spellID) {
+	public static void enchantItem(Player c, int itemID, int spellID) {
 		Enchant enc = Enchant.forId(itemID);
 		EnchantSpell ens = EnchantSpell.forId(spellID);
 		if (enc == null || ens == null) {
@@ -242,7 +242,7 @@ public class Enchantment {
 			{ 1165, 880, 29, 9238 }, { 1165, 9338, 37, 9241 }, { 1176, 9336, 39, 9239 }, { 1176, 9339, 59, 9242 },
 			{ 1180, 9340, 67, 9243 }, { 1187, 9341, 78, 9244 }, { 6003, 9342, 97, 9245 } };
 
-	public static void enchantBolt(Client c, int spell, int bolt, int amount) {
+	public static void enchantBolt(Player c, int spell, int bolt, int amount) {
 		EnchantSpell ens = EnchantSpell.forId(spell);
 		for (int i = 0; i < boltData.length; i++) {
 			if (spell == boltData[i][0]) {

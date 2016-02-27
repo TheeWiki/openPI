@@ -3,7 +3,7 @@ package server.model.players.skills.herblore;
 import java.util.HashMap;
 import java.util.Map;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.skills.SkillIndex;
 
 public class Cleaning {
@@ -65,7 +65,7 @@ public class Cleaning {
 		}
 	}
 
-	public static boolean handleCleaning(Client player, int itemId, int itemSlot) {
+	public static boolean handleCleaning(Player player, int itemId, int itemSlot) {
 		CleanData herbloring = CleanData.forId(itemId);
 		if (herbloring != null) {
 			if (player.playerLevel[SkillIndex.HERBLORE.getSkillId()] < herbloring.getLevel()) {

@@ -2,14 +2,14 @@ package server.model.players.packet.impl;
 
 import server.Server;
 import server.model.items.UseItem;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.packet.PacketType;
 
 
 public class ItemOnNpc implements PacketType {
 
 	@Override
-	public void processPacket(Client c, int packetType, int packetSize) {
+	public void processPacket(Player c, int packetType, int packetSize) {
 		int itemId = c.getInStream().readSignedWordA();
 		int i = c.getInStream().readSignedWordA();
 		int slot = c.getInStream().readSignedWordBigEndian();

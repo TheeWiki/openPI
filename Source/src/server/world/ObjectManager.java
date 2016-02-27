@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import server.Server;
 import server.model.objects.Object;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.util.Misc;
 
 /**
@@ -41,7 +41,7 @@ public class ObjectManager {
 	public void removeObject(int x, int y) {
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null) {
-				Client c = (Client)Server.playerHandler.players[j];
+				Player c = (Player)Server.playerHandler.players[j];
 				c.getPA().object(-1, x, y, 0, 10);			
 			}	
 		}	
@@ -51,7 +51,7 @@ public class ObjectManager {
 	public void updateObject(Object o) {
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null) {
-				Client c = (Client)Server.playerHandler.players[j];
+				Player c = (Player)Server.playerHandler.players[j];
 				c.getPA().object(o.newId, o.objectX, o.objectY, o.face, o.type);			
 			}	
 		}	
@@ -61,7 +61,7 @@ public class ObjectManager {
 	public void placeObject(Object o) {
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null) {
-				Client c = (Client)Server.playerHandler.players[j];
+				Player c = (Player)Server.playerHandler.players[j];
 				if (c.distanceToPoint(o.objectX, o.objectY) <= 60)
 					c.getPA().object(o.objectId, o.objectX, o.objectY, o.face, o.type);
 			}	
@@ -76,7 +76,7 @@ public class ObjectManager {
 		return null;
 	}
 	
-	public void loadObjects(Client c) {
+	public void loadObjects(Player c) {
 		if (c == null)
 			return;
 		for (Object o : objects) {
@@ -87,7 +87,7 @@ public class ObjectManager {
 		loadCustomSpawns(c);
 	}
 	
-	public void loadCustomSpawns(Client c) {
+	public void loadCustomSpawns(Player c) {
 		c.getPA().checkObjectSpawn(-1, 2950, 3450, 0, 10);
 		c.getPA().checkObjectSpawn(1596, 3008, 3850, 1, 0);
 		c.getPA().checkObjectSpawn(1596, 3008, 3849, -1, 0);
@@ -152,7 +152,7 @@ public class ObjectManager {
 		}
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null) {
-				Client c = (Client)Server.playerHandler.players[j];
+				Player c = (Player)Server.playerHandler.players[j];
 				int xOffset = c.absX - obeliskCoords[port][0];
 				int yOffset = c.absY - obeliskCoords[port][1];
 				if (c.goodDistance(c.getX(), c.getY(), obeliskCoords[port][0] + 2, obeliskCoords[port][1] + 2, 1)) {
@@ -162,7 +162,7 @@ public class ObjectManager {
 		}
 	}
 	
-	public boolean loadForPlayer(Object o, Client c) {
+	public boolean loadForPlayer(Object o, Player c) {
 		if (o == null || c == null)
 			return false;
 		return c.distanceToPoint(o.objectX, o.objectY) <= 60 && c.heightLevel == o.height;

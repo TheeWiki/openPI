@@ -2,7 +2,7 @@ package server.model.players.packet.impl;
 
 import server.Constants;
 import server.Server;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.packet.PacketType;
 
 /**
@@ -11,7 +11,7 @@ import server.model.players.packet.PacketType;
 public class DropItem implements PacketType {
 
 	@Override
-	public void processPacket(Client c, int packetType, int packetSize) {
+	public void processPacket(Player c, int packetType, int packetSize) {
 		int itemId = c.getInStream().readUnsignedWordA();
 		c.getInStream().readUnsignedByte();
 		c.getInStream().readUnsignedByte();

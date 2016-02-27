@@ -7,7 +7,7 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.handler.timeout.ReadTimeoutException;
 
-import server.model.players.Client;
+import server.model.players.Player;
 
 public class ChannelHandler extends SimpleChannelHandler {
 	
@@ -16,8 +16,8 @@ public class ChannelHandler extends SimpleChannelHandler {
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
 	if (e.getCause() instanceof ReadTimeoutException) {
-			if (session.getClient() != null) {
-				System.out.println("Player " + session.getClient().playerName + " timed out!");
+			if (session.getPlayer() != null) {
+				System.out.println("Player " + session.getPlayer().playerName + " timed out!");
 			}
 		} else if(!(e.getCause() instanceof java.io.IOException)){
 			e.getCause().printStackTrace();
@@ -27,11 +27,11 @@ public class ChannelHandler extends SimpleChannelHandler {
 	
 	@Override
 	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-		if (e.getMessage() instanceof Client) {
-			session.setClient((Client) e.getMessage());
+		if (e.getMessage() instanceof Player) {
+			session.setPlayer((Player) e.getMessage());
 		} else if (e.getMessage() instanceof Packet) {
-			if (session.getClient() != null) {
-				session.getClient().queueMessage((Packet) e.getMessage());
+			if (session.getPlayer() != null) {
+				session.getPlayer().queueMessage((Packet) e.getMessage());
 			}
 		}
 	}
@@ -45,9 +45,9 @@ public class ChannelHandler extends SimpleChannelHandler {
 	@Override
 	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
 		if (session != null) {
-			Client client = session.getClient();
-			if (client != null) {
-				client.disconnected = true;
+			Player Player = session.getPlayer();
+			if (Player != null) {
+				Player.disconnected = true;
 			}
 			session = null;
 		}

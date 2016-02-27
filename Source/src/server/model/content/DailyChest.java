@@ -1,6 +1,6 @@
 package server.model.content;
 
-import server.model.players.Client;
+import server.model.players.Player;
 import server.util.Misc;
 
 /**
@@ -52,7 +52,7 @@ public class DailyChest {
 	 * 
 	 * @param c
 	 */
-	public static void checkChest(Client c) {
+	public static void checkChest(Player c) {
 		int chance = Misc.random(2);
 		if (System.currentTimeMillis() - c.foodDelay < DAY) {
 			c.sendMessage("Come back tomorrow to loot again.");

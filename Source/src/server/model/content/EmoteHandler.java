@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import server.model.Animation;
 import server.model.Graphic;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.EquipmentListener;
 
 public class EmoteHandler {
@@ -81,7 +81,7 @@ public class EmoteHandler {
 		public int buttonID;
 	}
 
-	public static void startEmote(Client player, int buttonId) {
+	public static void startEmote(Player player, int buttonId) {
 		Emotes EMOTES = Emotes.loadEmote(buttonId);
 		if (EMOTES != null) {
 			if (EMOTES.animID != 1) {
@@ -101,7 +101,7 @@ public class EmoteHandler {
 			{ 9789, 820, 4953 }, { 9792, 814, 4941 }, { 9795, 815, 4943 }, { 9798, 819, 4951 }, { 9801, 821, 4955 },
 			{ 9804, 831, 4975 }, { 9807, 822, 4957 }, { 9810, 825, 4963 }, { 9948, 907, 5158 }, { 9813, 816, 4945 }, };
 
-	public static void doSkillcapeEmote(Client c) {
+	public static void doSkillcapeEmote(Player c) {
 		if (c.playerEquipment[EquipmentListener.CAPE_SLOT.getSlot()] == 9768 || c.playerEquipment[EquipmentListener.CAPE_SLOT.getSlot()] == 9769) {
 			c.playGraphic(Graphic.create(c.playerAppearance[0] == 0 ? 833 : 834, 0, 0));
 			c.playAnimation(Animation.create(4971));

@@ -1,7 +1,7 @@
 package server.model.players.skills.herblore;
 
 import server.model.minigames.duel_arena.Rules;
-import server.model.players.Client;
+import server.model.players.Player;
 
 /**
  * @author Sanity
@@ -9,9 +9,9 @@ import server.model.players.Client;
 
 public class Potions {
 
-	private Client c;
+	private Player c;
 
-	public Potions(Client c) {
+	public Potions(Player c) {
 		this.c = c;
 	}
 

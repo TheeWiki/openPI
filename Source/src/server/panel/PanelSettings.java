@@ -9,7 +9,7 @@ import server.Constants;
 import server.Server;
 import server.model.npcs.NPC;
 import server.model.npcs.NPCHandler;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.PlayerHandler;
 import server.model.shops.ShopHandler;
 
@@ -70,11 +70,11 @@ public class PanelSettings {
 		}
 		return "@bla@";
 	}
-	public Client getClient(String name) {
+	public Player getPlayer(String name) {
 		name = name.toLowerCase();
 		for(int i = 0; i < Constants.MAX_PLAYERS; i++) {
-			if(validClient(i)) {
-				Client c = getClient(i);
+			if(validPlayer(i)) {
+				Player c = getPlayer(i);
 				if(c.playerName.toLowerCase().equalsIgnoreCase(name)) {
 					return c;
 				}
@@ -82,18 +82,18 @@ public class PanelSettings {
 		}
 		return null;
 	}
-	public Client getClient(int id) {
-		return (Client) PlayerHandler.players[id];
+	public Player getPlayer(int id) {
+		return (Player) PlayerHandler.players[id];
 	}
-	public boolean validClient(int id) {
+	public boolean validPlayer(int id) {
 		if(id < 0 || id > Constants.MAX_PLAYERS)
 			return false;
-		return validClient(getClient(id));
+		return validPlayer(getPlayer(id));
 	}
-	public boolean validClient(String name) {
-		return validClient(getClient(name));
+	public boolean validPlayer(String name) {
+		return validPlayer(getPlayer(name));
 	}
-	public boolean validClient(Client c) {
+	public boolean validPlayer(Player c) {
 		return (c != null && !c.disconnected);
 	}
 	public boolean validNpc(int index) {
@@ -108,7 +108,7 @@ public class PanelSettings {
 	}
 	
 	public int getEntity(String name) {
-		Client c = getClient(name);
+		Player c = getPlayer(name);
 		if(c != null)
 			return c.playerId;
 		return -1;
@@ -153,8 +153,8 @@ public class PanelSettings {
 
 			// Sending the message
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
-				if (validClient(i)) {
-					Client c = getClient(i);
+				if (validPlayer(i)) {
+					Player c = getPlayer(i);
 					c.sendMessage(SelectedName + p.MESSAGE_ALL_TEXT.getText());
 				}
 			}
@@ -167,8 +167,8 @@ public class PanelSettings {
 		}
 		if (cmd.equalsIgnoreCase("Players to Npcs")) {
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
-				if (validClient(i)) {
-					Client c = getClient(i);
+				if (validPlayer(i)) {
+					Player c = getPlayer(i);
 					try {
 						int newNPC = getInt(cmd, "Enter an Npc ID:");
 						if (newNPC <= 3871 && newNPC >= 0) {
@@ -189,8 +189,8 @@ public class PanelSettings {
 		}
 		if (cmd.equalsIgnoreCase("Update Players")) {
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
-				if (validClient(i)) {
-					Client c = getClient(i);
+				if (validPlayer(i)) {
+					Player c = getPlayer(i);
 					c.isNpc = false;
 					c.updateRequired = true;
 					c.appearanceUpdateRequired = true;
@@ -217,8 +217,8 @@ public class PanelSettings {
 				z = tele.getZ();
 			}
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
-				if (validClient(i)) {
-					Client c = getClient(i);
+				if (validPlayer(i)) {
+					Player c = getPlayer(i);
 					c.getPA().spellTeleport(x, y, z);
 				}
 			}
@@ -232,16 +232,16 @@ public class PanelSettings {
 				return;
 			}
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
-				if (validClient(i)) {
-					Client c = getClient(i);
+				if (validPlayer(i)) {
+					Player c = getPlayer(i);
 					c.forcedChat(msg);
 				}
 			}
 		}
 		if (cmd.equalsIgnoreCase("Disconnect All")) {
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
-				if (validClient(i)) {
-					Client c = getClient(i);
+				if (validPlayer(i)) {
+					Player c = getPlayer(i);
 					c.disconnected = true;
 				}
 			}
@@ -333,8 +333,8 @@ public class PanelSettings {
 			String color = p.MESSAGE_ALL_COLOR_BOX.getSelectedItem().toString();
 			SelectedName = SelectedName + getColor(color);
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
-				if (validClient(i)) {
-					getClient(i).sendMessage(SelectedName + "Npcs have been reset.");
+				if (validPlayer(i)) {
+					getPlayer(i).sendMessage(SelectedName + "Npcs have been reset.");
 				}
 			}
 			return;
@@ -352,8 +352,8 @@ public class PanelSettings {
 			Constants.DOUBLE_EXP = p.DOUBLE_EXPERIENCE.isSelected();
 
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
-				if (validClient(i)) {
-					Client c2 = getClient(i);
+				if (validPlayer(i)) {
+					Player c2 = getPlayer(i);
 					c2.getPA().sendFrame126(Constants.LOGOUT_MESSAGE, 2458);
 				}
 			}
@@ -366,11 +366,11 @@ public class PanelSettings {
 		 */
 		if (p.ENTITY_LIST.getSelectedValue() != null) {
 			int entity = getEntity(getSelectedPlayer());
-			if (!validClient(entity)) {
+			if (!validPlayer(entity)) {
 				p.displayMessage("This player is not valid..", "Error", 0);
 				return;
 			}
-			Client c = getClient(entity);
+			Player c = getPlayer(entity);
 
 			if (cmd.equalsIgnoreCase("Ban Player")) {
 				Connection.addNameToBanList(c.playerName);
@@ -560,7 +560,7 @@ public class PanelSettings {
 		System.out.println("[Console]: No such command: " + cmd);
 	}
 	
-	public void playerCommand(String cmd, Client c) {
+	public void playerCommand(String cmd, Player c) {
 		String SKILL_NAME[] = {
 				"Attack", "Defence", "Strength", "Constitution",
 				"Ranged", "Prayer", "Magic", "Cooking", "Woodcutting", "Fletching",

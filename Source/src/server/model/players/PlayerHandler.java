@@ -7,7 +7,7 @@ import server.util.Misc;
 import server.util.Stream;
 
 public class PlayerHandler {
-	
+
 	public static Player players[] = new Player[Constants.MAX_PLAYERS];
 
 	public static boolean updateAnnounced;
@@ -21,7 +21,7 @@ public class PlayerHandler {
 			players[count] = null;
 	}
 
-	public boolean newPlayerClient(Client client1) {
+	public boolean newPlayerPlayer(Player Player1) {
 		int slot = -1;
 		for (int i = 1; i < Constants.MAX_PLAYERS; i++) {
 			if ((players[i] == null) || players[i].disconnected) {
@@ -32,22 +32,13 @@ public class PlayerHandler {
 
 		if (slot == -1)
 			return false;
-		client1.handler = this;
-		client1.playerId = slot;
-		players[slot] = client1;
+		Player1.handler = this;
+		Player1.playerId = slot;
+		players[slot] = Player1;
 		players[slot].isActive = true;
 		if (Constants.SERVER_DEBUG)
 			Misc.println("Player Slot " + slot + " slot 0 " + players[0] + " Player Hit " + players[slot]);
 		return true;
-	}
-
-	public void destruct() {
-		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
-			if (players[i] == null)
-				continue;
-			players[i].destruct();
-			players[i] = null;
-		}
 	}
 
 	public static int getPlayerCount() {
@@ -74,87 +65,86 @@ public class PlayerHandler {
 	}
 
 	public void process() {
-//		synchronized (lock) {
-			if (kickAllPlayers) {
-				for (int i = 1; i < Constants.MAX_PLAYERS; i++) {
-					if (players[i] != null) {
-						players[i].disconnected = true;
+		// synchronized (lock) {
+		if (kickAllPlayers) {
+			for (int i = 1; i < Constants.MAX_PLAYERS; i++) {
+				if (players[i] != null) {
+					players[i].disconnected = true;
+				}
+			}
+		}
+		/*
+		 * for (int i = 0; i < Config.MAX_PLAYERS; i++) { if (players[i] == null
+		 * || !players[i].isActive) continue; if (!players[i].initialized) {
+		 * players[i].initialize(); players[i].initialized = true; } }
+		 */
+		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
+			if (players[i] == null || !players[i].isActive || !players[i].initialized)
+				continue;
+			try {
+				if (players[i].disconnected && (System.currentTimeMillis() - players[i].logoutDelay > 10000
+						|| players[i].properLogout || kickAllPlayers)) {
+					if (players[i].inTrade) {
+						Player o = (Player) PlayerHandler.players[players[i].tradeWith];
+						if (o != null) {
+							o.getTradeAndDuel().declineTrade();
+						}
 					}
-				}
-			}
-			/*
-			 * for (int i = 0; i < Config.MAX_PLAYERS; i++) { if (players[i] ==
-			 * null || !players[i].isActive) continue; if
-			 * (!players[i].initialized) { players[i].initialize();
-			 * players[i].initialized = true; } }
-			 */
-			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
-				if (players[i] == null || !players[i].isActive || !players[i].initialized)
-					continue;
-				try {
-					if (players[i].disconnected && (System.currentTimeMillis() - players[i].logoutDelay > 10000
-							|| players[i].properLogout || kickAllPlayers)) {
-						if (players[i].inTrade) {
-							Client o = (Client) PlayerHandler.players[players[i].tradeWith];
-							if (o != null) {
-								o.getTradeAndDuel().declineTrade();
-							}
+					if (players[i].duelStatus == 5) {
+						Player o = (Player) PlayerHandler.players[players[i].duelingWith];
+						if (o != null) {
+							o.getTradeAndDuel().duelVictory();
 						}
-						if (players[i].duelStatus == 5) {
-							Client o = (Client) PlayerHandler.players[players[i].duelingWith];
-							if (o != null) {
-								o.getTradeAndDuel().duelVictory();
-							}
-						} else if (players[i].duelStatus <= 4 && players[i].duelStatus >= 1) {
-							Client o = (Client) PlayerHandler.players[players[i].duelingWith];
-							if (o != null) {
-								o.getTradeAndDuel().declineDuel();
-							}
+					} else if (players[i].duelStatus <= 4 && players[i].duelStatus >= 1) {
+						Player o = (Player) PlayerHandler.players[players[i].duelingWith];
+						if (o != null) {
+							o.getTradeAndDuel().declineDuel();
 						}
-						Client o = (Client) PlayerHandler.players[i];
-						if (PlayerSave.saveGame(o)) {
-							System.out.println("Game saved for player " + players[i].playerName);
-						} else {
-							System.out.println("Could not save for " + players[i].playerName);
-						}
-						removePlayer(players[i]);
-						players[i] = null;
-						continue;
 					}
-					players[i].preProcessing();
-					players[i].processQueuedPackets();
-					players[i].process();
-					players[i].postProcessing();
-					players[i].getNextPlayerMovement();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
-				if (players[i] == null || !players[i].isActive || !players[i].initialized)
+					Player o = (Player) PlayerHandler.players[i];
+					if (PlayerSave.saveGame(o)) {
+						System.out.println("Game saved for player " + players[i].playerName);
+					} else {
+						System.out.println("Could not save for " + players[i].playerName);
+					}
+					removePlayer(players[i]);
+					players[i] = null;
 					continue;
-				try {
-					players[i].update();
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
+				players[i].preProcessing();
+				players[i].processQueuedPackets();
+				players[i].process();
+				players[i].postProcessing();
+				players[i].getNextPlayerMovement();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
-				if (players[i] == null || !players[i].isActive || !players[i].initialized)
-					continue;
-				try {
-					players[i].clearUpdateFlags();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		}
+		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
+			if (players[i] == null || !players[i].isActive || !players[i].initialized)
+				continue;
+			try {
+				players[i].update();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			if (updateRunning && !updateAnnounced) {
-				updateAnnounced = true;
-				Server.UpdateServer = true;
+		}
+		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
+			if (players[i] == null || !players[i].isActive || !players[i].initialized)
+				continue;
+			try {
+				players[i].clearUpdateFlags();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			if (updateRunning && (System.currentTimeMillis() - updateStartTime > (updateSeconds * 1000))) {
-				kickAllPlayers = true;
-//			}
+		}
+		if (updateRunning && !updateAnnounced) {
+			updateAnnounced = true;
+			Server.UpdateServer = true;
+		}
+		if (updateRunning && (System.currentTimeMillis() - updateStartTime > (updateSeconds * 1000))) {
+			kickAllPlayers = true;
+			// }
 		}
 	}
 
@@ -209,7 +199,7 @@ public class PlayerHandler {
 
 	private Stream updateBlock = new Stream(new byte[Constants.BUFFER_SIZE]);
 
-	public void updatePlayer(Client plr, Stream str) {
+	public void updatePlayer(Player plr, Stream str) {
 		// synchronized(plr) {
 		updateBlock.currentOffset = 0;
 		if (updateRunning && !updateAnnounced) {
@@ -266,7 +256,7 @@ public class PlayerHandler {
 			for (int i = 1; i < Constants.MAX_PLAYERS; i++) {
 				if (players[i] == null || players[i].isActive == false)
 					continue;
-				Client o = (Client) PlayerHandler.players[i];
+				Player o = (Player) PlayerHandler.players[i];
 				if (o != null) {
 					o.getPA().updatePM(plr.playerId, 0);
 				}
@@ -274,5 +264,4 @@ public class PlayerHandler {
 		}
 		plr.destruct();
 	}
-
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 import server.Server;
 import server.model.objects.Objects;
-import server.model.players.Client;
+import server.model.players.Player;
 import server.model.players.Player;
 import server.model.players.PlayerHandler;
 import server.util.Misc;
@@ -74,7 +74,7 @@ public class ObjectHandler {
 	/**
 	 * Update objects when entering a new region or logging in
 	 **/
-	public void updateObjects(Client c) {
+	public void updateObjects(Player c) {
 		for (Objects o : globalObjects) {
 			if (c != null) {
 				if (c.heightLevel == o.getObjectHeight() && o.objectTicks == 0) {
@@ -111,7 +111,7 @@ public class ObjectHandler {
 		globalObjects.add(o);
 		for (Player p : PlayerHandler.players) {
 			if (p != null) {
-				Client person = (Client) p;
+				Player person = (Player) p;
 				if (person != null) {
 					if (person.heightLevel == o.getObjectHeight()
 							&& o.objectTicks == 0) {
@@ -241,7 +241,7 @@ public class ObjectHandler {
 				}
 				for (Player p : PlayerHandler.players) {
 					if (p != null) {
-						Client person = (Client) p;
+						Player person = (Player) p;
 						if (person != null) {
 							if (person.heightLevel == doorHeight) {
 								if (person.distanceToPoint(doorX, doorY) <= 60) {

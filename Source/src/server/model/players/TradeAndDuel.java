@@ -11,10 +11,10 @@ import server.util.Misc;
 
 public class TradeAndDuel {
 
-	private Client c;
+	private Player c;
 
-	public TradeAndDuel(Client Client) {
-		this.c = Client;
+	public TradeAndDuel(Player Player) {
+		this.c = Player;
 	}
 
 	/**
@@ -32,7 +32,7 @@ public class TradeAndDuel {
 	public void requestTrade(int id) {
 		try {
 			@SuppressWarnings("static-access")
-			Client o = (Client) Server.playerHandler.players[id];
+			Player o = (Player) Server.playerHandler.players[id];
 			if (id == c.playerId)
 				return;
 			c.tradeWith = id;
@@ -52,7 +52,7 @@ public class TradeAndDuel {
 
 	public void openTrade() {
 		@SuppressWarnings("static-access")
-		Client o = (Client) Server.playerHandler.players[c.tradeWith];
+		Player o = (Player) Server.playerHandler.players[c.tradeWith];
 
 		if (o == null) {
 			return;
@@ -108,7 +108,7 @@ public class TradeAndDuel {
 
 	public boolean fromTrade(int itemID, int fromSlot, int amount) {
 		@SuppressWarnings("static-access")
-		Client o = (Client) Server.playerHandler.players[c.tradeWith];
+		Player o = (Player) Server.playerHandler.players[c.tradeWith];
 		if (o == null) {
 			return false;
 		}
@@ -194,7 +194,7 @@ public class TradeAndDuel {
 
 	public boolean tradeItem(int itemID, int fromSlot, int amount) {
 		@SuppressWarnings("static-access")
-		Client o = (Client) Server.playerHandler.players[c.tradeWith];
+		Player o = (Player) Server.playerHandler.players[c.tradeWith];
 		if (o == null) {
 			return false;
 		}
@@ -283,7 +283,7 @@ public class TradeAndDuel {
 	public void declineTrade(boolean tellOther) {
 		c.getPA().removeAllWindows();
 		@SuppressWarnings("static-access")
-		Client o = (Client) Server.playerHandler.players[c.tradeWith];
+		Player o = (Player) Server.playerHandler.players[c.tradeWith];
 		if (o == null) {
 			return;
 		}
@@ -316,7 +316,7 @@ public class TradeAndDuel {
 	public void resetOTItems(int WriteFrame) {
 		synchronized (c) {
 			@SuppressWarnings("static-access")
-			Client o = (Client) Server.playerHandler.players[c.tradeWith];
+			Player o = (Player) Server.playerHandler.players[c.tradeWith];
 			if (o == null) {
 				return;
 			}
@@ -350,7 +350,7 @@ public class TradeAndDuel {
 
 	public void confirmScreen() {
 		@SuppressWarnings("static-access")
-		Client o = (Client) Server.playerHandler.players[c.tradeWith];
+		Player o = (Player) Server.playerHandler.players[c.tradeWith];
 		if (o == null) {
 			return;
 		}
@@ -416,7 +416,7 @@ public class TradeAndDuel {
 
 	public void giveItems() {
 		@SuppressWarnings("static-access")
-		Client o = (Client) Server.playerHandler.players[c.tradeWith];
+		Player o = (Player) Server.playerHandler.players[c.tradeWith];
 		if (o == null) {
 			return;
 		}
@@ -448,7 +448,7 @@ public class TradeAndDuel {
 			resetDuelItems();
 			c.duelingWith = id;
 			@SuppressWarnings("static-access")
-			Client o = (Client) Server.playerHandler.players[id];
+			Player o = (Player) Server.playerHandler.players[id];
 			if (o == null) {
 				return;
 			}
@@ -473,7 +473,7 @@ public class TradeAndDuel {
 
 	public void openDuel() {
 		@SuppressWarnings("static-access")
-		Client o = (Client) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[c.duelingWith];
 		if (o == null) {
 			return;
 		}
@@ -521,7 +521,7 @@ public class TradeAndDuel {
 	public void refreshDuelScreen() {
 		synchronized (c) {
 			@SuppressWarnings("static-access")
-			Client o = (Client) Server.playerHandler.players[c.duelingWith];
+			Player o = (Player) Server.playerHandler.players[c.duelingWith];
 			if (o == null) {
 				return;
 			}
@@ -593,7 +593,7 @@ public class TradeAndDuel {
 		if (amount <= 0)
 			return false;
 		@SuppressWarnings("static-access")
-		Client o = (Client) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[c.duelingWith];
 		if (o == null) {
 			declineDuel();
 			return false;
@@ -656,7 +656,7 @@ public class TradeAndDuel {
 
 	public boolean fromDuel(int itemID, int fromSlot, int amount) {
 		@SuppressWarnings("static-access")
-		Client o = (Client) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[c.duelingWith];
 		if (o == null) {
 			declineDuel();
 			return false;
@@ -757,7 +757,7 @@ public class TradeAndDuel {
 
 	public void confirmDuel() {
 		@SuppressWarnings("static-access")
-		Client o = (Client) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[c.duelingWith];
 		if (o == null) {
 			declineDuel();
 			return;
@@ -810,7 +810,7 @@ public class TradeAndDuel {
 
 	public void startDuel() {
 		@SuppressWarnings("static-access")
-		Client o = (Client) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[c.duelingWith];
 		if (o == null) {
 			duelVictory();
 		}
@@ -893,7 +893,7 @@ public class TradeAndDuel {
 
 	public void duelVictory() {
 		@SuppressWarnings("static-access")
-		Client o = (Client) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[c.duelingWith];
 		if (o != null) {
 			c.getPA().sendFrame126("" + o.combatLevel, 6839);
 			c.getPA().sendFrame126(o.playerName, 6840);
@@ -1028,7 +1028,7 @@ public class TradeAndDuel {
 
 	public void changeDuelStuff() {
 		@SuppressWarnings("static-access")
-		Client o = (Client) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[c.duelingWith];
 		if (o == null) {
 			return;
 		}
@@ -1040,7 +1040,7 @@ public class TradeAndDuel {
 
 	public void selectRule(int i) { // rules
 		@SuppressWarnings("static-access")
-		Client o = (Client) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[c.duelingWith];
 		if (o == null) {
 			return;
 		}
