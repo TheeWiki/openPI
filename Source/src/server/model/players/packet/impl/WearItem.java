@@ -19,20 +19,8 @@ public class WearItem implements PacketType {
 		int oldCombatTimer = c.attackTimer;
 		if (c.playerIndex > 0 || c.npcIndex > 0)
 			c.getCombat().resetPlayerAttack();
-		if (c.wearId >= 5509 && c.wearId <= 5515) {
-			int pouch = -1;
-			int a = c.wearId;
-			if (a == 5509)
-				pouch = 0;
-			if (a == 5510)
-				pouch = 1;
-			if (a == 5512)
-				pouch = 2;
-			if (a == 5514)
-				pouch = 3;
-			c.getPA().emptyPouch(pouch);
-			return;
-		}
+	
+//		Pouches.emptyRCPouch(c, c.wearId);
 			//c.attackTimer = oldCombatTimer;
 		c.getItems().wearItem(c.wearId, c.wearSlot);
 	}
