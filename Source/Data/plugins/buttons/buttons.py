@@ -5,8 +5,8 @@ from server.model.content import GnomeGlider
 from server.model.content import EmoteHandler
 
 # Handles Statically called methods in java and renders the actions here
-def buttons(c, actionButtonId):
-		PestControlRewards.handlePestButtons(c, actionButtonId)
-		MusicTab.handleClick(c, actionButtonId)
-		EmoteHandler.startEmote(c, actionButtonId)
-		GnomeGlider.flightButtons(c, actionButtonId)
+def buttons(player, actionButtonId):
+		PestControlRewards.handlePestButtons(player, actionButtonId)
+		MusicTab.handleClick(player, actionButtonId)
+		EmoteHandler.startEmote(player, actionButtonId)
+		GnomeGlider.flightButtons(player, actionButtonId)
