@@ -1,63 +1,55 @@
 package server.model.items;
 
-
 /**
  * Handles Globally Spawned Items
- * @author Sanity
- * Revised by Shawn
- * Notes by Shawn
+ * 
+ * @author Sanity Revised by Shawn Notes by Shawn
  */
 public class GroundItem {
-	
-	
+
 	/**
 	 * The Item ID.
 	 */
 	public int itemId;
-	
-	
+
 	/**
 	 * The coordinates of the item.
 	 */
 	public int itemX;
 	public int itemY;
-	
-	
+
 	/**
 	 * The amount of the item.
 	 */
 	public int itemAmount;
-	
-	
+
 	/**
 	 * Controls the ground item(s).
 	 */
 	public int itemController;
-	
-	
+
 	/**
 	 * Tick usage when re-spawning ground items.
 	 */
 	public int hideTicks;
 	public int removeTicks;
-	
-	
+
 	/**
 	 * Name of item.
 	 */
 	public String ownerName;
-	
-	
-    /**
-     * Handles the usage of ground items.
-     * @param id
-     * @param x
-     * @param y
-     * @param amount
-     * @param controller
-     * @param hideTicks
-     * @param name
-     */
+
+	/**
+	 * Handles the usage of ground items.
+	 * 
+	 * @param id
+	 * @param x
+	 * @param y
+	 * @param amount
+	 * @param controller
+	 * @param hideTicks
+	 * @param name
+	 */
 	public GroundItem(int id, int x, int y, int amount, int controller, int hideTicks, String name) {
 		this.itemId = id;
 		this.itemX = x;
@@ -67,64 +59,60 @@ public class GroundItem {
 		this.hideTicks = hideTicks;
 		this.ownerName = name;
 	}
-	
+
 	/**
 	 * Item ID.
+	 * 
 	 * @return item
 	 */
-	
+
 	public int getItemId() {
 		return this.itemId;
 	}
-	
-	
+
 	/**
 	 * Item coordinate X.
+	 * 
 	 * @return Coordinate X
 	 */
-	public int getItemX(){
+	public int getItemX() {
 		return this.itemX;
 	}
-	
-	
+
 	/**
 	 * Item coordinate Y.
+	 * 
 	 * @return Coordinate Y
 	 */
-	public int getItemY(){
+	public int getItemY() {
 		return this.itemY;
 	}
-	
-	
+
 	/**
 	 * Item amount.
+	 * 
 	 * @return Amount of item
 	 */
-	public int getItemAmount(){
+	public int getItemAmount() {
 		return this.itemAmount;
 	}
-	
-	
+
 	/**
 	 * Controls ground item.
-	 * @return 
+	 * 
+	 * @return itemController
 	 */
-	public int getItemController(){
+	public int getItemController() {
 		return this.itemController;
 	}
-	
-	
+
 	/**
 	 * Item name.
-	 * @return
+	 * 
+	 * @return ownerName
 	 */
 	public String getName() {
 		return this.ownerName;
 	}
-	
-	
 
-	
-
-	
 }

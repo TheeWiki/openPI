@@ -2,6 +2,7 @@ package server.model.players.packet.impl;
 import server.Server;
 import server.model.players.Client;
 import server.model.players.packet.PacketType;
+import server.model.players.skills.magic.Enchantment;
 
 
 /**
@@ -35,11 +36,11 @@ public class MagicOnFloorItems implements PacketType {
 			c.teleGrabItem = itemId;
 			c.turnPlayerTo(itemX, itemY);
 			c.teleGrabDelay = System.currentTimeMillis();
-			c.startAnimation(c.MAGIC_SPELLS[51][2]);
-			c.gfx100(c.MAGIC_SPELLS[51][3]);
+			c.startAnimation(Enchantment.MAGIC_SPELLS[51][2]);
+			c.gfx100(Enchantment.MAGIC_SPELLS[51][3]);
 			c.getPA().createPlayersStillGfx(144, itemX, itemY, 0, 72);
-			c.getPA().createPlayersProjectile(c.getX(), c.getY(), offX, offY, 50, 70, c.MAGIC_SPELLS[51][4], 50, 10, 0, 50);
-			c.getPA().addSkillXP(c.MAGIC_SPELLS[51][7], 6);
+			c.getPA().createPlayersProjectile(c.getX(), c.getY(), offX, offY, 50, 70, Enchantment.MAGIC_SPELLS[51][4], 50, 10, 0, 50);
+			c.getPA().addSkillXP(Enchantment.MAGIC_SPELLS[51][7], 6);
 			c.getPA().refreshSkill(6);
 			c.stopMovement();
 		}

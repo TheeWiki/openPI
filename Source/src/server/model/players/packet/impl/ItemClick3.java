@@ -2,6 +2,8 @@ package server.model.players.packet.impl;
 
 import server.model.players.Client;
 import server.model.players.packet.PacketType;
+import server.model.players.skills.runecrafting.TalismanHandler;
+import server.model.players.skills.runecrafting.TalismanHandler.talismanData;
 import server.util.Misc;
 
 /**
@@ -20,19 +22,16 @@ public class ItemClick3 implements PacketType {
 		int itemId1 = c.getInStream().readSignedWordA();
 		int itemId = c.getInStream().readSignedWordA();
 		
-
+		for (talismanData t : talismanData.values()) {
+			if (itemId == t.getTalisman()) {
+				TalismanHandler.handleTalisman(c, itemId);
+			}
+		}
 		switch (itemId) {
-
-		case 1712:
-			c.getPA().handleGlory(itemId);
-			break;
-			
 		default:
 			if (c.playerRights == 3)
 				Misc.println(c.playerName+ " - Item3rdOption: "+itemId+" : "+itemId11+" : "+itemId1);
 			break;
 		}
-
 	}
-
 }

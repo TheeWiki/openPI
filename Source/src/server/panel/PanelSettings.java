@@ -11,7 +11,7 @@ import server.model.npcs.NPC;
 import server.model.npcs.NPCHandler;
 import server.model.players.Client;
 import server.model.players.PlayerHandler;
-import server.world.ShopHandler;
+import server.model.shops.ShopHandler;
 
 public class PanelSettings {
 
@@ -97,7 +97,7 @@ public class PanelSettings {
 		return (c != null && !c.disconnected);
 	}
 	public boolean validNpc(int index) {
-		if (index < 0 || index > Constants.MAX_NPCS) {
+		if (index < 0 || index > NPCHandler.maxNPCs) {
 			return false;
 		}
 		NPC n = getNpc(index);
@@ -249,7 +249,7 @@ public class PanelSettings {
 		}
 		if (cmd.equalsIgnoreCase("Send")) {
 			if (p.NPC_CHECKBOX.isSelected()) {
-				for (int i = 0; i < Constants.MAX_NPCS; i++) {
+				for (int i = 0; i < NPCHandler.maxNPCs; i++) {
 					if (validNpc(i)) {
 						NPC n = getNpc(i);
 						if(inList(""+n.npcType))
@@ -257,7 +257,7 @@ public class PanelSettings {
 					}
 				}
 			} else {
-				for (int i = 0; i < Constants.MAX_NPCS; i++) {
+				for (int i = 0; i < NPCHandler.maxNPCs; i++) {
 					if (validNpc(i)) {
 						getNpc(i).forceChat(p.FORCE_NPCS_CHAT_TEXT.getText());
 					}
@@ -268,7 +268,7 @@ public class PanelSettings {
 		}
 		if (cmd.equalsIgnoreCase("Animate")) {
 			if (p.NPC_CHECKBOX.isSelected()) {
-				for (int i = 0; i < Constants.MAX_NPCS; i++) {
+				for (int i = 0; i < NPCHandler.maxNPCs; i++) {
 					if (validNpc(i)) {
 						NPC n = getNpc(i);
 						if (inList(""+n.npcType)) {
@@ -278,7 +278,7 @@ public class PanelSettings {
 					}
 				}
 			} else {
-				for (int i = 0; i < Constants.MAX_NPCS; i++) {
+				for (int i = 0; i < NPCHandler.maxNPCs; i++) {
 					if (validNpc(i)) {
 						NPC n = getNpc(i);
 						n.animNumber = Integer.parseInt(p.NPC_ANIMATION_TEXT.getText());
@@ -313,7 +313,7 @@ public class PanelSettings {
 		}
 		if (cmd.equalsIgnoreCase("Reset")) {
 			int[] SKIP_NPCS = {2627, 2630,  2743,  2745,  2746,  2738,  3500,  3491,  3493,  3494,  3495,  3496};
-			for (int i = 0; i < Constants.MAX_NPCS; i++) {
+			for (int i = 0; i < NPCHandler.maxNPCs; i++) {
 				boolean skip = false;
 				NPC n = NPCHandler.npcs[i];
 				if (n != null) {
@@ -605,9 +605,9 @@ public class PanelSettings {
 		if (cmd.equals("Force Chat")) {
 			c.forcedChat(getInput(cmd, "Enter a message for the player to say."));
 		}
-		if (cmd.equals("Give Master")) {
-			for(int i = 0; i < 21; i++)
-				c.getPA().addSkillXP((15000000), i);
+		if (cmd.equals("give master")) {
+			for(int skill = 0; skill < 21; skill++)
+				c.getPA().addSkillXP((15000000), skill);
 			c.playerXP[3] = c.getPA().getXPForLevel(99)+5;
 			c.playerLevel[3] = c.getPA().getLevelForXP(c.playerXP[3]);
 		}

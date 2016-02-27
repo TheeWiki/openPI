@@ -58,9 +58,9 @@ public class Draining {
 	public static void handlePrayerDrain(Client c) {
 		c.usingPrayer = false;
 		double toRemove = 0.0;
-		for (int i = 0; i < PRAYER_DRAIN.length; i++) {
-			if (c.prayerActive[i]) {
-				toRemove += PRAYER_DRAIN[i] / 10;
+		for (int rate = 0; rate < PRAYER_DRAIN.length; rate++) {
+			if (c.prayerActive[rate]) {
+				toRemove += PRAYER_DRAIN[rate] / 10;
 				c.usingPrayer = true;
 			}
 		}
@@ -76,9 +76,9 @@ public class Draining {
 	public static void handleCurseDrain(Client c) {
 		c.usingPrayer = false;
 		double toRemove = 0.0;
-		for(int i = 0; i < CURSE_DRAIN.length; i++) {
-			if(c.curseActive[i]) { 
-				toRemove += CURSE_DRAIN[i]/10;
+		for(int rate = 0; rate < CURSE_DRAIN.length; rate++) {
+			if(c.curseActive[rate]) { 
+				toRemove += CURSE_DRAIN[rate]/10;
 				c.usingPrayer = true;
 			}
 		}
