@@ -6,7 +6,7 @@ import server.event.CycleEventHandler;
 import server.model.npcs.NPC;
 import server.model.npcs.SpecialNPC;
 import server.model.players.Client;
-import server.model.players.skills.Skill;
+import server.model.players.skills.SkillIndex;
 import server.util.Misc;
 
 public class FlockleaderGerin extends SpecialNPC {
@@ -30,8 +30,8 @@ public class FlockleaderGerin extends SpecialNPC {
 				if (Misc.random(10 + client.getCombat().calculateRangeDefence()) > Misc.random(n.attack + 10)) {
 					damage = 0;
 				}
-				if (damage > client.getLevel()[Skill.HITPOINTS]) {
-					damage = client.getLevel()[Skill.HITPOINTS];
+				if (damage > client.getLevel()[SkillIndex.HITPOINTS.getSkillId()]) {
+					damage = client.getLevel()[SkillIndex.HITPOINTS.getSkillId()];
 				}
 				client.dealDamage(damage);
 				client.handleHitMask(damage);
