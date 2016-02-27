@@ -1,4 +1,4 @@
-package server.model.minigames;
+package server.model.minigames.barrows;
 
 import server.model.players.Client;
 import server.util.Misc;
@@ -13,12 +13,12 @@ import server.util.Misc;
 public class Barrows {
 
 	public static final int[][] COFFIN_AND_BROTHERS = {
-	{6823, 2030},
-	{6772, 2029},
-	{6822, 2028},
-	{6773, 2027},
-	{6771, 2026},
-	{6821, 2025}
+			{6823, 2030},
+			{6772, 2029},
+			{6822, 2028},
+			{6773, 2027},
+			{6771, 2026},
+			{6821, 2025}
 	
 	};
 
