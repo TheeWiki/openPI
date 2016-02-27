@@ -23,32 +23,6 @@ public final class EntityDef {
 		stream.currentOffset = streamIndices[i];
 		entityDef.type = i;
 		entityDef.readValues(stream);
-//		if(i == ####) {
-//			stream.currentOffset = streamIndices[630]; 
-//		entityDef.aByte68 = 3;
-//		entityDef.readValues(stream); // Collect original NPC data
-//			entityDef.name = "llolwut";
-//			entityDef.description = "Why?".getBytes();
-//			entityDef.combatLevel = 138;
-//			entityDef.actions = new String[5];
-//			entityDef.actions[0] = "Stare";
-//	                entityDef.actions[1] = "Stare";
-//	                entityDef.actions[2] = "Stare";
-//	                entityDef.actions[3] = "Stare";
-//	                entityDef.actions[4] = "Stare";
-//		entityDef.anIntArray94 = new int[10];
-//		entityDef.anIntArray94[0] = 62575;//Npc's Cape
-//		entityDef.anIntArray94[1] = 62738;//Npc's Head
-//		entityDef.anIntArray94[2] = 62746;//Npc's Plate
-//		entityDef.anIntArray94[3] = 62743;//Npc's Legs
-//		entityDef.anIntArray94[4] = 56227;//Npc's Weapon
-//		entityDef.anIntArray94[5] = 55728;//Npc's Gloves
-//		entityDef.anIntArray94[6] = 53327;//Npc's Boots
-//		entityDef.anIntArray94[7] = 17461;//Npc's Shadow
-//		entityDef.anIntArray94[8] = 20147;//Npc's Arms (don't edit)
-//		entityDef.anIntArray94[9] = 40939;//Npc's Off hand
-//		entityDef.walkAnim = 1146;
-//		entityDef.standAnim = 12010;
 		//entityDef.readValues(true, aClass30_Sub2_Sub2_60); // Collect original NPC data
 	/*if(i == 2550) { // NPC ID 
     entityDef.actions = new String[5];
@@ -415,216 +389,7 @@ public final class EntityDef {
 	entityDef.combatLevel = 82;
 	entityDef.description = "Lesser, but still Scary".getBytes();
 	}*/
-		switch (i)
-		{
-		case 4000:
-			entityDef.name = "King Black Dragon";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {17414, 17415, 17429, 17422};
-			entityDef.combatLevel = 276;
-			entityDef.standAnim = 90;
-			entityDef.walkAnim = 4635;
-			entityDef.anInt86 = 50;
-			entityDef.anInt91 = 50;
-		break;
 		
-		case 4001:
-			entityDef.name = "General Graardor";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {27785, 27789};
-			entityDef.combatLevel = 624;
-			entityDef.standAnim = 7059;
-			entityDef.walkAnim = 7058;
-			entityDef.anInt86 = 40;
-			entityDef.anInt91 = 40;
-		break;	
-		
-		case 4002:
-			entityDef.name = "TzTok-Jad";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {34131};
-			entityDef.combatLevel = 702;
-			entityDef.standAnim = 9274;
-			entityDef.walkAnim = 9273;
-			entityDef.anInt86 = 40;
-			entityDef.anInt91 = 40;
-		break;
-		
-		case 4003:
-			entityDef.name = "Chaos Elemental";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {11216};
-			entityDef.combatLevel = 305;
-			entityDef.standAnim = 3144;
-			entityDef.walkAnim = 3145;
-			entityDef.anInt86 = 40;
-			entityDef.anInt91 = 40;
-		break;
-		
-		case 4004:
-			entityDef.name = "Corporeal Beast";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {40955};
-			entityDef.combatLevel = 785;
-			entityDef.standAnim = 10056;
-			entityDef.walkAnim = 10055;
-			entityDef.anInt86 = 40;
-			entityDef.anInt91 = 40;
-		break;
-		
-		case 4005:
-			entityDef.name = "Kree Arra";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {28003, 28004};
-			entityDef.combatLevel = 580;
-			entityDef.standAnim = 6972;
-			entityDef.walkAnim = 6973;
-			entityDef.anInt86 = 40;
-			entityDef.anInt91 = 40;
-		break;
-		
-		case 4006:
-			entityDef.name = "K'ril Tsutsaroth";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {27768, 27773, 27764, 27765, 27770};
-			entityDef.combatLevel = 650;
-			entityDef.standAnim = 6943;
-			entityDef.walkAnim = 6942;
-			entityDef.anInt86 = 40;
-			entityDef.anInt91 = 40;
-		break;
-		
-		case 4007:
-			entityDef.name = "Commander Zilyana";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {28057, 28071, 28078, 28056};
-			entityDef.combatLevel = 596;
-			entityDef.standAnim = 6963;
-			entityDef.walkAnim = 6962;
-			entityDef.anInt86 = 70;
-			entityDef.anInt91 = 70;
-		break;
-		
-		case 4008:
-			entityDef.name = "Dagannoth Supreme";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {9941, 9943};
-			entityDef.combatLevel = 303;
-			entityDef.standAnim = 2850;
-			entityDef.walkAnim = 2849;
-			entityDef.anInt86 = 70;
-			entityDef.anInt91 = 70;
-		break;
-		
-		case 4009:
-			entityDef.name = "Dagannoth Prime"; //9940, 9943, 9942
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {9940, 9943, 9942};
-			entityDef.originalModelColors = new int[]{11930, 27144, 16536, 16540};
-			entityDef.modifiedModelColors = new int[]{5931, 1688, 21530, 21534};
-			entityDef.combatLevel = 303;
-			entityDef.standAnim = 2850;
-			entityDef.walkAnim = 2849;
-			entityDef.anInt86 = 70;
-			entityDef.anInt91 = 70;
-		break;
-		
-		case 4010:
-			entityDef.name = "Dagannoth Rex";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {9941};
-			entityDef.originalModelColors = new int[]{16536, 16540, 27144, 2477};
-			entityDef.modifiedModelColors = new int[]{7322, 7326, 10403, 2595};
-			entityDef.combatLevel = 303;
-			entityDef.standAnim = 2850;
-			entityDef.walkAnim = 2849;
-			entityDef.anInt86 = 70;
-			entityDef.anInt91 = 70;
-		break;
-		
-		case 4011:
-			entityDef.name = "Ahrim the Blighted";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {6668};
-			entityDef.combatLevel = 98;
-			entityDef.standAnim = 813;
-			entityDef.walkAnim = 1205;
-			entityDef.anInt86 = 100;
-			entityDef.anInt91 = 100;
-		break;
-		
-		case 4012:
-			entityDef.name = "Dharok the Wretched";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {6652, 6671, 6640, 6661, 6703, 6679};
-			entityDef.combatLevel = 115;
-			entityDef.standAnim = 2065;
-			entityDef.walkAnim = 2064;
-			entityDef.anInt86 = 100;
-			entityDef.anInt91 = 100;
-		break;
-		
-		case 4013:
-			entityDef.name = "Guthan the Infested";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {6654, 6673, 6642, 6666, 6679, 6710};
-			entityDef.standAnim = 813;
-			entityDef.walkAnim = 1205;
-			entityDef.combatLevel = 115;
-			entityDef.anInt86 = 100;
-			entityDef.anInt91 = 100;
-		break;
-		
-		case 4014:
-			entityDef.name = "Karil the Tainted";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {6675};
-			entityDef.standAnim = 2074;
-			entityDef.walkAnim = 2076;
-			entityDef.combatLevel = 98;
-			entityDef.anInt86 = 100;
-			entityDef.anInt91 = 100;
-		break;
-		
-		case 4015:
-			entityDef.name = "Torag the Corrupted";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {6657, 6677, 6645, 6663, 6708, 6679};
-			entityDef.standAnim = 808;
-			entityDef.walkAnim = 819;
-			entityDef.combatLevel = 115;
-			entityDef.anInt86 = 100;
-			entityDef.anInt91 = 100;
-		break;
-		
-		case 4016:
-			entityDef.name = "Verac the Defiled";
-			entityDef.actions = new String[5];
-			entityDef.actions[0] = "Pick-up";
-			entityDef.models = new int[] {6678, 6705};
-			entityDef.standAnim = 2061;
-			entityDef.walkAnim = 2060;
-			entityDef.combatLevel = 115;
-			entityDef.anInt86 = 100;
-			entityDef.anInt91 = 100;
-		break;
-		}
 		return entityDef;
 	}
 	
@@ -807,7 +572,7 @@ public final class EntityDef {
 			int k = varBit.anInt648;
 			int l = varBit.anInt649;
 			int i1 = varBit.anInt650;
-			int j1 = client.anIntArray1232[i1 - l];
+			int j1 = Client.anIntArray1232[i1 - l];
 			j = clientInstance.variousSettings[k] >> l & j1;
 		} else
 		if(anInt59 != -1)
@@ -1064,7 +829,7 @@ public final class EntityDef {
 	public long type;
 	public int anInt79;
 	private static EntityDef[] cache;
-	public static client clientInstance;
+	public static Client clientInstance;
 	public int anInt83;
 	public boolean aBoolean84;
 	private int anInt85;
