@@ -20,7 +20,7 @@ import server.util.Misc;
  * Credits to Sir Raxim because of his release. I had forgotten some
  * important parts in my initial release.
  *
- * @author Nouish <admin@nouish.com>
+ * @author Nouish
  *
  */
 public final class Report implements PacketType {
@@ -43,7 +43,7 @@ public final class Report implements PacketType {
 		 * Gets the last time we filed an abuse report. If the client didn't file
 		 * one this session, the default 0L will be returned (to allow them to file it).
 		 */
-		long lastReport = Long.valueOf(c.getAttribute("lastReport", 0L).toString());
+		long lastReport = Long.valueOf(c.getAttributes().getAttribute("lastReport", 0L).toString());
 
 		/*
 		 * Make sure we received a valid {@link brokenRuleIdent}.
@@ -198,14 +198,14 @@ public final class Report implements PacketType {
 		 * Required to prevent people from spamming this function, by default they have to wait
 		 * at least 60 seconds.
 		 */
-		c.setAttribute("lastReport", System.currentTimeMillis());
+		c.getAttributes().setAttribute("lastReport", System.currentTimeMillis());
 
 	}
 
 	/**
 	 * Logs an message sent by clients via public chat.
 	 *
-	 * @param username
+	 * @param name
 	 *		The name of the client who spoke.
 	 * @param text
 	 *		The message (what they said) in {@link byte}-form.
