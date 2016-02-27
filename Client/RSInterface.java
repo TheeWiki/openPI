@@ -122,7 +122,7 @@ public final class RSInterface {
 				rsInterface.textShadow = stream.readUnsignedByte() == 1;
 			}
 			if(rsInterface.type == 4) {
-								rsInterface.message = stream.readString().replaceAll("RuneScape", "PI");
+				rsInterface.message = stream.readString().replaceAll("RuneScape", "openPI");
 				rsInterface.aString228 = stream.readString();
 			}
 			if(rsInterface.type == 1 || rsInterface.type == 3 || rsInterface.type == 4)
@@ -1372,7 +1372,7 @@ public final class RSInterface {
 		if(i == 2)
 			model = EntityDef.forID(j).method160();
 		if(i == 3)
-			model = client.myPlayer.method453();
+			model = Client.myPlayer.method453();
 		if(i == 4)
 			model = ItemDef.forID(j).method202(50);
 		if(i == 5)
