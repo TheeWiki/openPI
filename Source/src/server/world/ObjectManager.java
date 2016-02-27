@@ -83,6 +83,7 @@ public class ObjectManager {
 			if (loadForPlayer(o,c))
 				c.getPA().object(o.objectId, o.objectX, o.objectY, o.face, o.type);
 		}
+		c.getItems().createGroundItem(952, 3571, 3312, 1); // TODO: pickupable
 		loadCustomSpawns(c);
 	}
 	
@@ -97,7 +98,7 @@ public class ObjectManager {
 		c.getPA().checkObjectSpawn(1596, 3044, 10341, -1, 0);
 		c.getPA().checkObjectSpawn(1596, 3044, 10342, 1, 0);
 		c.getPA().checkObjectSpawn(6552, 3094, 3506, 2, 10);
-		c.getPA().checkObjectSpawn(409, 3091, 3506, 2, 10);
+		c.getPA().checkObjectSpawn(409, 2610, 3098, 2, 10);
 		c.getPA().checkObjectSpawn(2213, 3047, 9779, 1, 10);
 		c.getPA().checkObjectSpawn(2213, 3080, 9502, 1, 10);
 		

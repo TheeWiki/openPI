@@ -16,7 +16,7 @@ import server.model.players.Client;
  */
 public class PlayerManager {
 
-	private static PlayerManager singleton = null;
+	private static PlayerManager singleton = new PlayerManager();
 	private Map<Integer, Queue<Client> > playersByRegion = new HashMap<Integer, Queue<Client>>();;
 	public final int areaSize = 26;
 	

@@ -11,7 +11,6 @@ import server.model.players.packet.impl.ChallengePlayer;
 import server.model.players.packet.impl.ChangeAppearance;
 import server.model.players.packet.impl.ChangeRegions;
 import server.model.players.packet.impl.Chat;
-import server.model.players.packet.impl.ClanChat;
 import server.model.players.packet.impl.ClickItem;
 import server.model.players.packet.impl.ClickNPC;
 import server.model.players.packet.impl.ClickObject;
@@ -24,6 +23,7 @@ import server.model.players.packet.impl.DropItem;
 import server.model.players.packet.impl.FollowPlayer;
 import server.model.players.packet.impl.IdleLogout;
 import server.model.players.packet.impl.ItemClick2;
+import server.model.players.packet.impl.ItemClick2OnGroundItem;
 import server.model.players.packet.impl.ItemClick3;
 import server.model.players.packet.impl.ItemOnGroundItem;
 import server.model.players.packet.impl.ItemOnItem;
@@ -32,6 +32,7 @@ import server.model.players.packet.impl.ItemOnObject;
 import server.model.players.packet.impl.MagicOnFloorItems;
 import server.model.players.packet.impl.MagicOnItems;
 import server.model.players.packet.impl.MoveItems;
+import server.model.players.packet.impl.MusicPacket;
 import server.model.players.packet.impl.PickupItem;
 import server.model.players.packet.impl.PrivateMessaging;
 import server.model.players.packet.impl.RemoveItem;
@@ -70,6 +71,7 @@ public class PacketHandler{
 		packetId[165] = u;
 		packetId[238] = u;
 		packetId[150] = u;
+		packetId[253] = new ItemClick2OnGroundItem();
 		packetId[40] = new Dialogue();
 		ClickObject co = new ClickObject();
 		packetId[132] = co;
@@ -128,7 +130,8 @@ public class PacketHandler{
 		ChangeRegions cr = new ChangeRegions();
 		packetId[121] = cr;
 		packetId[210] = cr;
-		packetId[60] = new ClanChat();
+//		packetId[60] = new ClanChat();
+		packetId[74] = new MusicPacket();
 	}
 
 

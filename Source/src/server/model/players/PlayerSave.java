@@ -11,8 +11,7 @@ import server.Server;
 import server.util.Misc;
 
 /**
- * TODO: Add better saving (Json prefered)
- * scf = server character file
+ * TODO: Add better saving (Json preferred) scf = server character file
  * 
  * @author Dennis
  */
@@ -38,7 +37,6 @@ public class PlayerSave {
 		}
 
 		if (File1) {
-			// new File ("./characters/"+playerName+".txt");
 		} else {
 			Misc.println(playerName + ": character file not found.");
 			p.newPlayer = false;
@@ -84,6 +82,16 @@ public class PlayerSave {
 						p.skullTimer = Integer.parseInt(token2);
 					} else if (token.equals("magic-book")) {
 						p.playerMagicBook = Integer.parseInt(token2);
+					} else if (token.equals("pc-points")) {
+						p.points = Integer.parseInt(token2);
+					} else if (token.equals("kills")) {
+						for (int j = 0; j < token3.length; j++) {
+							p.loggedKills[j] = Integer.parseInt(token3[j]);
+					}
+					} else if (token.equals("membership")) {
+						p.membership = Boolean.parseBoolean(token2);
+					} else if (token.equals("startdate")) {
+						p.startDate = Integer.parseInt(token2);
 					} else if (token.equals("brother-info")) {
 						p.barrowsNpcs[Integer.parseInt(token3[0])][1] = Integer.parseInt(token3[1]);
 					} else if (token.equals("special-amount")) {
@@ -92,6 +100,14 @@ public class PlayerSave {
 						p.randomCoffin = Integer.parseInt(token2);
 					} else if (token.equals("pk-points")) {
 						p.pkPoints = Integer.parseInt(token2);
+						// java.lang.ArrayIndexOutOfBoundsException: 384
+//					} else if (token.equals("music-unlocked")) {
+//                        for (int music = 0; music < token3.length; music++) {
+//                        	Music.unlocked[music] = Boolean.parseBoolean(token3[music]); 
+//                        }
+//					}
+					} else if(token.equals("character-energy")) {
+						p.runEnergy = Integer.parseInt(token2);
 					} else if (token.equals("teleblock-length")) {
 						p.teleBlockDelay = System.currentTimeMillis();
 						p.teleBlockLength = Integer.parseInt(token2);
@@ -150,18 +166,6 @@ public class PlayerSave {
 						p.bankItemsN[Integer.parseInt(token3[0])] = Integer.parseInt(token3[2]);
 					}
 					break;
-				case 8:
-					if (token.equals("character-friend")) {
-						p.friends[Integer.parseInt(token3[0])] = Long.parseLong(token3[1]);
-					}
-					break;
-				case 9:
-					/*
-					 * if (token.equals("character-ignore")) {
-					 * ignores[Integer.parseInt(token3[0])] =
-					 * Long.parseLong(token3[1]); }
-					 */
-					break;
 				}
 			} else {
 				if (line.equals("[ACCOUNT]")) {
@@ -178,10 +182,6 @@ public class PlayerSave {
 					ReadMode = 6;
 				} else if (line.equals("[BANK]")) {
 					ReadMode = 7;
-				} else if (line.equals("[FRIENDS]")) {
-					ReadMode = 8;
-				} else if (line.equals("[IGNORES]")) {
-					ReadMode = 9;
 				} else if (line.equals("[EOF]")) {
 					try {
 						characterfile.close();
@@ -233,10 +233,8 @@ public class PlayerSave {
 			characterfile.write(p.playerName, 0, p.playerName.length());
 			characterfile.newLine();
 			characterfile.write("character-password = ", 0, 21);
-			// p.playerPass = Misc.basicEncrypt(p.playerPass);
 			characterfile.write(p.playerPass, 0, p.playerPass.length());
-			// characterfile.write(Misc.basicEncrypt(p.playerPass).toString(),
-			// 0, Misc.basicEncrypt(p.playerPass).toString().length());
+//			characterfile.write(Misc.basicEncrypt(p.playerPass).toString(),  0, Misc.basicEncrypt(p.playerPass).toString().length());
 			characterfile.newLine();
 			characterfile.newLine();
 
@@ -256,8 +254,7 @@ public class PlayerSave {
 			characterfile.write(Integer.toString(p.playerRights), 0, Integer.toString(p.playerRights).length());
 			characterfile.newLine();
 			characterfile.write("crystal-bow-shots = ", 0, 20);
-			characterfile.write(Integer.toString(p.crystalBowArrowCount), 0,
-					Integer.toString(p.crystalBowArrowCount).length());
+			characterfile.write(Integer.toString(p.crystalBowArrowCount), 0, Integer.toString(p.crystalBowArrowCount).length());
 			characterfile.newLine();
 			characterfile.write("skull-timer = ", 0, 14);
 			characterfile.write(Integer.toString(p.skullTimer), 0, Integer.toString(p.skullTimer).length());
@@ -265,15 +262,32 @@ public class PlayerSave {
 			characterfile.write("magic-book = ", 0, 13);
 			characterfile.write(Integer.toString(p.playerMagicBook), 0, Integer.toString(p.playerMagicBook).length());
 			characterfile.newLine();
-//			for (int b = 0; b < p.barrowsNpcs.length; b++) {
-//				characterfile.write("brother-info = ", 0, 15);
-//				characterfile.write(Integer.toString(b), 0, Integer.toString(b).length());
-//				characterfile.write("	", 0, 1);
-//				characterfile.write(
-//						p.barrowsNpcs[b][1] <= 1 ? Integer.toString(0) : Integer.toString(p.barrowsNpcs[b][1]), 0,
-//						Integer.toString(p.barrowsNpcs[b][1]).length());
-//				characterfile.newLine();
-//			}
+			characterfile.write("pc-points = ", 0, 12);
+			characterfile.write(Integer.toString(p.points), 0, Integer.toString(p.points).length());
+			characterfile.newLine();
+			characterfile.write("kills = ", 0, 8);
+			final String killWrite = p.loggedKills[0] + "\t" + p.loggedKills[1]
+					+ "\t" + p.loggedKills[2] + "\t" + p.loggedKills[3] + "\t"
+					+ p.loggedKills[4] + "\t" + p.loggedKills[5] + "\t"
+					+ p.loggedKills[6] + "\t" + p.loggedKills[7] + "\t"
+					+ p.loggedKills[8] + "\t" + p.loggedKills[9] + "\t"
+					+ p.loggedKills[10] + "\t" + p.loggedKills[11] + "\t"
+					+ p.loggedKills[12] + "\t" + p.loggedKills[13] + "\t"
+					+ p.loggedKills[14] + "\t" + p.loggedKills[15] + "\t"
+					+ p.loggedKills[16] + "\t" + p.loggedKills[17] + "\t"
+					+ p.loggedKills[18] + "\t" + p.loggedKills[19] + "\t"
+					+ p.loggedKills[20] + "\t" + p.loggedKills[21] + "\t"
+					+ p.loggedKills[22] + "\t" + p.loggedKills[23] + "\t"
+					+ p.loggedKills[24] + "\t" + p.loggedKills[25] + "\t";
+			characterfile.write(killWrite);
+			characterfile.newLine();
+			characterfile.write("membership = ", 0, 13);
+			characterfile.write(Boolean.toString(p.membership), 0, Boolean.toString(p.membership).length());
+			characterfile.newLine();
+			characterfile.write("startdate = ", 0, 12);
+			characterfile.write(Integer.toString(p.startDate), 0, Integer
+					.toString(p.startDate).length());
+			characterfile.newLine();
 			characterfile.write("special-amount = ", 0, 17);
 			characterfile.write(Double.toString(p.specAmount), 0, Double.toString(p.specAmount).length());
 			characterfile.newLine();
@@ -285,6 +299,9 @@ public class PlayerSave {
 			characterfile.newLine();
 			characterfile.write("teleblock-length = ", 0, 19);
 			characterfile.write(Integer.toString(tbTime), 0, Integer.toString(tbTime).length());
+			characterfile.newLine();
+			characterfile.write("character-energy = ", 0, 19);
+			characterfile.write(Integer.toString(p.runEnergy), 0, Integer.toString(p.runEnergy).length());
 			characterfile.newLine();
 			characterfile.write("pc-points = ", 0, 12);
 			characterfile.write(Integer.toString(p.pcPoints), 0, Integer.toString(p.pcPoints).length());
@@ -298,6 +315,13 @@ public class PlayerSave {
 			characterfile.write("magePoints = ", 0, 13);
 			characterfile.write(Integer.toString(p.magePoints), 0, Integer.toString(p.magePoints).length());
 			characterfile.newLine();
+//			characterfile.write("music-unlocked = ", 0, 17);
+//		        String music = "";
+//		        for(int i = 0; i < Music.unlocked.length; i++) {
+//		        	music += Music.unlocked[i] + "\t";
+//		        	characterfile.write(music);
+//		        }
+		    characterfile.newLine();
 			characterfile.write("autoRet = ", 0, 10);
 			characterfile.write(Integer.toString(p.autoRet), 0, Integer.toString(p.autoRet).length());
 			characterfile.newLine();
@@ -317,8 +341,7 @@ public class PlayerSave {
 			characterfile.write(Integer.toString(p.fightMode), 0, Integer.toString(p.fightMode).length());
 			characterfile.newLine();
 			characterfile.write("void = ", 0, 7);
-			String toWrite = p.voidStatus[0] + "\t" + p.voidStatus[1] + "\t" + p.voidStatus[2] + "\t" + p.voidStatus[3]
-					+ "\t" + p.voidStatus[4];
+			String toWrite = p.voidStatus[0] + "\t" + p.voidStatus[1] + "\t" + p.voidStatus[2] + "\t" + p.voidStatus[3] + "\t" + p.voidStatus[4];
 			characterfile.write(toWrite);
 			characterfile.newLine();
 			characterfile.newLine();
@@ -401,36 +424,8 @@ public class PlayerSave {
 				}
 			}
 			characterfile.newLine();
-
-			/* FRIENDS */
-			characterfile.write("[FRIENDS]", 0, 9);
-			characterfile.newLine();
-			for (int i = 0; i < p.friends.length; i++) {
-				if (p.friends[i] > 0) {
-					characterfile.write("character-friend = ", 0, 19);
-					characterfile.write(Integer.toString(i), 0, Integer.toString(i).length());
-					characterfile.write("	", 0, 1);
-					characterfile.write("" + p.friends[i]);
-					characterfile.newLine();
-				}
-			}
-			characterfile.newLine();
-
-			/* IGNORES */
-			/*
-			 * characterfile.write("[IGNORES]", 0, 9); characterfile.newLine();
-			 * for (int i = 0; i < ignores.length; i++) { if (ignores[i] > 0) {
-			 * characterfile.write("character-ignore = ", 0, 19);
-			 * characterfile.write(Integer.toString(i), 0,
-			 * Integer.toString(i).length()); characterfile.write("	", 0, 1);
-			 * characterfile.write(Long.toString(ignores[i]), 0,
-			 * Long.toString(ignores[i]).length()); characterfile.newLine(); } }
-			 * characterfile.newLine();
-			 */
-			/* EOF */
+			
 			characterfile.write("[EOF]", 0, 5);
-			characterfile.newLine();
-			characterfile.newLine();
 			characterfile.close();
 		} catch (IOException ioexception) {
 			Misc.println(p.playerName + ": error writing file.");

@@ -1,4 +1,4 @@
-package server.world;
+package server.model.shops;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

@@ -8,13 +8,18 @@ import java.util.ArrayList;
 
 import server.Constants;
 import server.Server;
+import server.model.content.KillLog;
 import server.model.items.GameItem;
 import server.model.items.Item;
+import server.model.minigames.tzhaar.FightCaves;
 import server.model.npcs.drops.Drop;
 import server.model.npcs.drops.NPCDrops;
 import server.model.players.Client;
+import server.model.players.EquipmentListener;
 import server.model.players.PlayerHandler;
+import server.model.players.skills.SkillIndex;
 import server.util.Misc;
+import server.world.sound.Sounds;
 
 public class NPCHandler {
 	public static int maxNPCs = 10000;
@@ -148,7 +153,8 @@ public class NPCHandler {
 	public int getCloseRandomPlayer(int i) {
 		ArrayList<Integer> players = new ArrayList<Integer>();
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
-			if (Server.playerHandler.players[j] != null && (System.currentTimeMillis() - Server.playerHandler.players[j].toleranceTimer < 1500000)) {
+			if (Server.playerHandler.players[j] != null
+					&& (System.currentTimeMillis() - Server.playerHandler.players[j].toleranceTimer < 1500000)) {
 				if (goodDistance(Server.playerHandler.players[j].absX, Server.playerHandler.players[j].absY,
 						npcs[i].absX, npcs[i].absY, 2 + distanceRequired(i) + followDistance(i)) || isFightCaveNpc(i)) {
 					if ((Server.playerHandler.players[j].underAttackBy <= 0
@@ -218,7 +224,32 @@ public class NPCHandler {
 
 	/**
 	 * Summon npc, barrows, etc
-	 **/
+	 * 
+	 * @param c
+	 *            player
+	 * @param npcType
+	 *            npc ID
+	 * @param x
+	 *            location x
+	 * @param y
+	 *            location y
+	 * @param heightLevel
+	 *            height level spawning
+	 * @param WalkingType
+	 *            is it walking
+	 * @param HP
+	 *            hp values
+	 * @param maxHit
+	 *            max hit of npc
+	 * @param attack
+	 *            attack bonus
+	 * @param defence
+	 *            defence bonus
+	 * @param attackPlayer
+	 *            aggressive?
+	 * @param headIcon
+	 *            has head icon?
+	 */
 	public void spawnNpc(Client c, int npcType, int x, int y, int heightLevel, int WalkingType, int HP, int maxHit,
 			int attack, int defence, boolean attackPlayer, boolean headIcon) {
 		// first, search for a free slot
@@ -251,13 +282,13 @@ public class NPCHandler {
 		if (attackPlayer) {
 			newNPC.underAttack = true;
 			if (c != null) {
-				if (server.model.minigames.Barrows.COFFIN_AND_BROTHERS[c.randomCoffin][1] != newNPC.npcType) {
+				if (server.model.minigames.barrows.Barrows.COFFIN_AND_BROTHERS[c.randomCoffin][1] != newNPC.npcType) {
 					if (newNPC.npcType == 2025 || newNPC.npcType == 2026 || newNPC.npcType == 2027
 							|| newNPC.npcType == 2028 || newNPC.npcType == 2029 || newNPC.npcType == 2030) {
 						newNPC.forceChat("You dare disturb my rest!");
 					}
 				}
-				if (server.model.minigames.Barrows.COFFIN_AND_BROTHERS[c.randomCoffin][1] == newNPC.npcType) {
+				if (server.model.minigames.barrows.Barrows.COFFIN_AND_BROTHERS[c.randomCoffin][1] == newNPC.npcType) {
 					newNPC.forceChat("You dare steal from us!");
 				}
 
@@ -267,6 +298,18 @@ public class NPCHandler {
 		npcs[slot] = newNPC;
 	}
 
+	/**
+	 * 
+	 * @param npcType
+	 * @param x
+	 * @param y
+	 * @param heightLevel
+	 * @param WalkingType
+	 * @param HP
+	 * @param maxHit
+	 * @param attack
+	 * @param defence
+	 */
 	public void spawnNpc2(int npcType, int x, int y, int heightLevel, int WalkingType, int HP, int maxHit, int attack,
 			int defence) {
 		// first, search for a free slot
@@ -301,17 +344,236 @@ public class NPCHandler {
 	 * Emotes
 	 **/
 
+	/**
+	 * 
+	 * @param i
+	 * @return
+	 */
 	@SuppressWarnings("static-access")
 	public static int getAttackEmote(int i) {
 		switch (Server.npcHandler.npcs[i].npcType) {
+		case 13457: // ancient range
+		case 13459: // ancient mage
+		case 13456: // ancient melee
+			if (npcs[i].attackType == 1) {
+				return 426;
+			} else if (npcs[i].attackType == 2) {
+				return 1979;
+			} else {
+				return 7041;
+			}
+
+		case 8281:// Ballance Elemental
+			return 10680;
+
+		case 8282:// Ballance Elemental
+			return 10669;
+
+		case 8283:// Ballance Elemental
+			return 10681;
+		case 5902:
+		case 5903:
+		case 5904:
+		case 5905:
+			return 0;
+		// case 13447:
+		// if (npcs[i].nexStage == 1 || npcs[i].nexStage == 2) {
+		// switch (npcs[i].glod) {
+		// case 1:
+		// return 6987;
+		// case 2:
+		// return 6986;
+		// }
+		// } else if (npcs[i].nexStage == 3 || npcs[i].nexStage == 4) {
+		// switch (npcs[i].glod) {
+		// case 1:
+		// return 6987;
+		// case 2:
+		// return 6355;
+		// case 3:
+		// return 6984;
+		// }
+		// } else if (npcs[i].nexStage == 5 || npcs[i].nexStage == 6) {
+		// switch (npcs[i].glod) {
+		// case 1:
+		// case 2:
+		// return 6987;
+		// case 3:
+		// return 6948;
+		// }
+		// } else if (npcs[i].nexStage == 7 || npcs[i].nexStage == 8) {
+		// switch (npcs[i].glod) {
+		// case 1:
+		// case 2:
+		// case 3:
+		// return 6987;
+		// }
+		// } else if (npcs[i].nexStage == 9) {
+		// switch (npcs[i].glod) {
+		// case 1:
+		// return 6987;
+		// }
+		// }
+		// return 6354;
+		case 8776:
+		case 8777:
+			return 12177;
+		case 8596:// Avatar Of Destruction
+			return 11197;
+		case 8597:// Avatar Of Creation
+			return 11202;
+		case 8528:
+			return 12696;
+		case 8133:// corp beast
+			if (npcs[i].attackType == 2)
+				return 10053;
+			else if (npcs[i].attackType == 1)
+				return 10059;
+			else if (npcs[i].attackType == 0)
+				return 10057;
+		case 8349:// tormented demon
+			if (npcs[i].attackType == 2)
+				return 10917;
+			else if (npcs[i].attackType == 1)
+				return 10918;
+			else if (npcs[i].attackType == 0)
+				return 10922;
+		case 112:
+			return 4652;
+		case 1640: // jelly attack
+			return 8575;
+		case 1613:
+			return 9487; // nechryael attack
+
+		case 63: // deadly red spider attack
+		case 134: // poison spider attack
+			return 143;
+
+		case 111:
+			return 4652; // Ice Giant attack
+		case 110:
+
+			return 4666;
+
+		case 13480:// Revenant Knight
+			return 7441;
+
+		case 13473:// Revenant Vampire
+			return 7441;
+
+		case 13471:// Revenant Icefiend
+		case 13470:// Revenant Pyrefiend
+			return 7481;
+
+		case 13745:// Revenant Cyclops
+			return 7453;
+
+		case 13476:// Revenant Hellhound
+			return 7460;
+
+		case 13477:// Revenant Demon
+			return 7474;
+
+		case 13479:// Revenant Dark Beast
+			return 7476;
+
+		case 13481:// Revenant Dragon
+			return 8589;
+
+		case 13478:// Revenant Ork
+			return 7411;
+
+		case 1382:
+			return 9955;
+		case 6213:
+		case 6212:
+			return 6547;
+		case 6219:
+		case 6254:
+		case 6255:
+		case 6256:
+		case 6257:
+		case 6258:
+		case 6214:
+			return 806;
+		case 6216:
+			return 1582;
+		case 6218:
+			return 4300;
+		case 6221:
+			return 811;
+		case 6229:
+		case 6230:
+		case 6231:
+		case 6232:
+		case 6233:
+		case 6234:
+		case 6235:
+		case 6236:
+		case 6237:
+		case 6238:
+		case 6239:
+		case 6240:
+		case 6241:
+		case 6242:
+		case 6243:
+		case 6244:
+		case 6245:
+		case 6246:
+			return 6953;
+		case 6210:
+			return 6581;
+		case 6211:
+			return 169;
+		case 6268:
+			return 2935;
+		case 6269:
+		case 6270:
+			return 4652;
+		case 6271:
+		case 6272:
+		case 6274:
+			return 4320;
+		case 6279:
+		case 6280:
+		case 6283:
+			return 6184;
+		case 6276:
+		case 6277:
+			return 4320;
+		case 6275:
+			return 164;
+		case 6282:
+			return 6188;
+		case 6260:
+			return 7060;
+		/** BORK **/
+		case 7133:
+			if (npcs[i].attackType == 0)
+				return 8754; // Melee
+			else if (npcs[i].attackType == 1)
+				return 8757; // Magic
+			/** END BORK **/
 		case 2550:
 			if (npcs[i].attackType == 0)
 				return 7060;
 			else
 				return 7063;
+		case 7159:
+		case 7160:
+			return 8799;
+		case 3819:
+			return 3957;
 		case 2892:
 		case 2894:
 			return 2868;
+		case 90:
+		case 94:
+			return 5485;
+		case 5996: // glod
+			return 6501;
+		case 5529:
+			return 5782;
 		case 2627:
 			return 2621;
 		case 2630:
@@ -366,13 +628,10 @@ public class NPCHandler {
 			return 1590;
 
 		case 2783: // dark beast
-			return 2733;
+			return 2731;
 
 		case 1615: // abby demon
 			return 1537;
-
-		case 1613: // nech
-			return 1528;
 
 		case 1610:
 		case 1611: // garg
@@ -380,9 +639,6 @@ public class NPCHandler {
 
 		case 1616: // basilisk
 			return 1546;
-
-		case 90: // skele
-			return 260;
 
 		case 50:// drags
 		case 53:
@@ -392,8 +648,6 @@ public class NPCHandler {
 		case 1590:
 		case 1591:
 		case 1592:
-			return 80;
-
 		case 124: // earth warrior
 			return 390;
 
@@ -408,10 +662,9 @@ public class NPCHandler {
 		case 60: // Giant Spider
 		case 61: // Spider
 		case 62: // Jungle Spider
-		case 63: // Deadly Red Spider
 		case 64: // Ice Spider
-		case 134:
-			return 143;
+		case 10500:
+			return 5327;
 
 		case 105: // Bear
 		case 106: // Bear
@@ -444,19 +697,15 @@ public class NPCHandler {
 		case 20: // paladin
 			return 451;
 
-		case 1338: // dagannoth
+		case 1338:
 		case 1340:
+		case 1341:
 		case 1342:
+		case 2455:
 			return 1341;
 
 		case 19: // white knight
 			return 406;
-
-		case 110:
-		case 111: // ice giant
-		case 112:
-		case 117:
-			return 128;
 
 		case 2452:
 			return 1312;
@@ -477,6 +726,8 @@ public class NPCHandler {
 		case 1267:
 		case 1265:
 			return 1312;
+		case 1883:
+			return 13049;
 
 		case 125: // ice warrior
 		case 178:
@@ -530,17 +781,223 @@ public class NPCHandler {
 				return 2652;
 			else if (npcs[i].attackType == 0)
 				return 2655;
-
+		case 11000:
+			return 5540;
+		case 10650:
+			return 5499;
+		case 10775:
+			return 13151;
+		case 10575:
+		case 10600:
+			return 711;
+		case 10800:
+			return 13061;
+		case 10475:
+			return 5499;
+		case 10675:
+			return 5485;
+		case 10725:
+			return 64;
+		case 10325:
+			return 426;
+		case 10825:
+			return 5532;
+		case 9775:
+			return 13706;
+		case 9911:
+			return 14380;
+		case 9964:
+			return 13717;
+		case 10156:
+			return 13016;
+		case 10039:
+			return 14375;
+		case 10057:
+			return 10816;
+		case 10105:
+			return 13001;
+		case 8833:
+			return 12204;
+		case 8834:
+			return 12205;
+		case 8832:
+			return 12196;
 		default:
-			return 0x326;
+			return 390;
 		}
 	}
 
+	/**
+	 * 
+	 * @param i
+	 * @return
+	 */
 	public int getDeadEmote(int i) {
 		switch (npcs[i].npcType) {
+		case 8281:// Ballance Elemental
+		case 8282:// Ballance Elemental
+		case 8283:// Ballance Elemental
+			return 10679;
+		case 5902:
+		case 5903:
+		case 5904:
+		case 5905:
+			return 0;
+		case 8833:
+			return 12206;
+		case 8776:
+		case 8777:
+			return 12181;
+		case 13745:// Revenant Cyclops
+			return 7454;
+
+		case 13481:// Revenant Dragon
+			return 8593;
+
+		case 13479:// Revenant Dark Beast
+			return 7468;
+
+		case 13477:// Revenant Demon
+			return 7475;
+
+		case 13476:// Revenant Hellhound
+			return 7461;
+
+		case 13471:// Revenant Pyrefiend
+		case 13470:// Revenant Icefiend
+			return 7484;
+
+		case 13473:// Revenant Vampire
+			return 7428;
+
+		case 13480:// Revenant Knight
+			return 7442;
+
+		case 13478:// Revenant Ork
+			return 7416;
+
+		case 13447:
+			return 6951;
+		case 8528: // nomad
+			return 12694;
+		case 8133: // corp beast
+			return 10059;
+		case 10141:
+			return 13602;
+		case 9900:
+			return 13605;
+		case 7133:// Bork
+			return 8756;
+		case 3622:
+			return 5572;
+		case 10110:
+			return 13002;
+		case 10542:
+			return 2304;
+		case 10127:
+			return 13171;
+		case 8349: // torm demon
+			return 10924;
+		case 1613:
+			return 1530; // nechryael death
+
+		case 111:
+			return 4653; // Ice Giant death
+
+		case 63: // deadly red spider death
+		case 134: // poison spider
+			return 146;
+		case 82:
+			return 67;
+		case 112:
+			return 4653;
+		case 110:
+			return 4668;
+		case 1382:
+			return 9961;
+		case 6203:
+			return 6946;
+		case 6204:
+		case 6206:
+		case 6208:
+			return 67;
+		case 6282:
+			return 6182;
+		case 6275:
+			return 167;
+		case 6276:
+		case 6277:
+			return 4321;
+		case 6279:
+		case 6280:
+		case 6283:
+			return 6182;
+		case 6211:
+			return 172;
+		case 6212:
+			return 6537;
+		case 6219:
+		case 6221:
+		case 6254:
+		case 6255:
+		case 6256:
+		case 6257:
+		case 6258:
+		case 6214:
+			return 0x900;
+		case 6216:
+			return 1580;
+		case 6218:
+			return 4302;
+		case 6268:
+			return 2938;
+		case 6269:
+		case 6270:
+			return 4653;
+		case 6229:
+		case 6230:
+		case 6231:
+		case 6232:
+		case 6233:
+		case 6234:
+		case 6235:
+		case 6236:
+		case 6237:
+		case 6238:
+		case 6239:
+		case 6240:
+		case 6241:
+		case 6242:
+		case 6243:
+		case 6244:
+		case 6245:
+		case 6246:
+			return 6956;
+		case 6210:
+			return 6576;
+		case 6271:
+		case 6272:
+		case 6274:
+			return 4321;
+		case 6260:
+			return 7062;
+		case 7159:
+		case 7160:
+			return 8790;
+		case 3819:
+			return 3962;
+		case 90:
+		case 94:
+			return 5491;
+		case 5996:
+			return 6502;
 		// sara gwd
 		case 2562:
 			return 6965;
+		case 5529:
+			return 5784;
+		case 1265:
+			return 1314;
 		case 2563:
 			return 6377;
 		case 2564:
@@ -611,18 +1068,17 @@ public class NPCHandler {
 		case 41: // chicken
 			return 57;
 
-		case 1338: // dagannoth
+		case 1338:
 		case 1340:
+		case 1341:
 		case 1342:
+		case 2455:
 			return 1342;
 
 		case 2881:
 		case 2882:
 		case 2883:
 			return 2856;
-
-		case 111: // ice giant
-			return 131;
 
 		case 125: // ice warrior
 			return 843;
@@ -645,11 +1101,6 @@ public class NPCHandler {
 		case 1653: // hand
 			return 1590;
 
-		case 82:// demons
-		case 83:
-		case 84:
-			return 67;
-
 		case 1605:// abby spec
 			return 1508;
 
@@ -664,6 +1115,7 @@ public class NPCHandler {
 			return 1518;
 
 		case 1618:
+		case 7642:
 		case 1619:
 			return 1553;
 
@@ -679,9 +1131,6 @@ public class NPCHandler {
 
 		case 1624:
 			return 1558;
-
-		case 1613:
-			return 1530;
 
 		case 1633:
 		case 1634:
@@ -721,9 +1170,7 @@ public class NPCHandler {
 		case 60:
 		case 61:
 		case 62:
-		case 63:
 		case 64:
-		case 134:
 			return 146;
 
 		case 1153:
@@ -741,7 +1188,6 @@ public class NPCHandler {
 		case 119:
 			return 102;
 
-		case 50:// drags
 		case 53:
 		case 54:
 		case 55:
@@ -749,8 +1195,40 @@ public class NPCHandler {
 		case 1590:
 		case 1591:
 		case 1592:
-			return 92;
-
+		case 5363:// Dragons
+			return 28;
+		case 10475:
+			return 5491;
+		case 10500:
+			return 5329;
+		case 11000:
+			return 5541;
+		case 10675:
+			return 5491;
+		case 10725:
+			return 67;
+		case 10825:
+			return 5537;
+		case 10775:
+			return 13153;
+		case 9775:
+			return 13702;
+		case 9911:
+			return 14378;
+		case 9964:
+			return 13715;
+		case 10156:
+			return 13017;
+		case 10039:
+			return 14378;
+		case 10057:
+			return 10815;
+		case 10105:
+			return 13005;
+		case 8834:
+			return 12206;
+		case 8832:
+			return 12199;
 		default:
 			return 2304;
 		}
@@ -758,7 +1236,10 @@ public class NPCHandler {
 
 	/**
 	 * Attack delays
-	 **/
+	 * 
+	 * @param i
+	 * @return
+	 */
 	public int getNpcDelay(int i) {
 		switch (npcs[i].npcType) {
 		case 2025:
@@ -785,7 +1266,10 @@ public class NPCHandler {
 
 	/**
 	 * Hit delays
-	 **/
+	 * 
+	 * @param i
+	 * @return
+	 */
 	public int getHitDelay(int i) {
 		switch (npcs[i].npcType) {
 		case 2881:
@@ -844,7 +1328,7 @@ public class NPCHandler {
 		case 3780:
 			return 500;
 		default:
-			return 25;
+			return 100;
 		}
 	}
 
@@ -1113,6 +1597,7 @@ public class NPCHandler {
 						npcs[i].needRespawn = true;
 						npcs[i].actionTimer = getRespawnTime(i); // respawn time
 						dropItems(i); // npc drops items!
+						tzhaarDeathHandler(i);
 						appendSlayerExperience(i);
 						appendKillCount(i);
 						// appendJailKc(i);
@@ -1126,7 +1611,7 @@ public class NPCHandler {
 							Server.objectManager.removeObject(npcs[i].absX, npcs[i].absY);
 						}
 						if (npcs[i].npcType == 2745) {
-							// handleJadDeath(i);
+							handleJadDeath(i);
 						}
 					} else if (npcs[i].actionTimer == 0 && npcs[i].needRespawn == true) {
 						Client player = (Client) Server.playerHandler.players[npcs[i].spawnedBy];
@@ -1218,16 +1703,19 @@ public class NPCHandler {
 		}
 	}
 
-	@SuppressWarnings({ "static-access", "unused" })
+	@SuppressWarnings({ "static-access" })
 	private void killedTzhaar(int i) {
 		final Client c2 = (Client) Server.playerHandler.players[npcs[i].spawnedBy];
 		c2.tzhaarKilled++;
 		if (c2.tzhaarKilled == c2.tzhaarToKill) {
-			c2.sendMessage("STARTING EVENT");
 			c2.waveId++;
 
 			if (c2 != null) {
 				Server.fightCaves.spawnNextWave(c2);
+				c2.getPA().wave += 1;
+				c2.waveId++;
+
+				c2.sendMessage("@blu@Wave: " + c2.getPA().wave);
 			}
 
 		}
@@ -1236,10 +1724,11 @@ public class NPCHandler {
 	@SuppressWarnings("static-access")
 	public void handleJadDeath(int i) {
 		Client c = (Client) Server.playerHandler.players[npcs[i].spawnedBy];
-		c.getItems().addItem(6570, 1);
-		c.sendMessage("Congratulations on completing the fight caves minigame!");
+		c.getItems().addItem(c.fightForOnyx == true ? 6571 : 6570, 1);
+		c.getItems().addItem(6529, c.fightForOnyx == true ? 32_000 / 2 + Misc.random(999) : 32_000 + Misc.random(999));
 		c.getPA().resetTzhaar();
-		c.waveId = 300;
+		c.getDH().sendNpcChat2("Congratulations warrior, you've defeated Jad!", "Take your reward and get out of my sight.", 2617, "Tk-nub");
+		c.sendMessage("Congratulations on completing the fight caves minigame!");
 	}
 
 	public void sendDrop(Client player, Drop drop, int i) {
@@ -1272,6 +1761,7 @@ public class NPCHandler {
 			return;
 		Client c = (Client) PlayerHandler.players[npcs[i].killedBy];
 		if (c != null) {
+			KillLog.handleKill(c, npcs[i].npcType);
 			if (npcs[i].npcType == 912 || npcs[i].npcType == 913 || npcs[i].npcType == 914)
 				c.magePoints += 1;
 			Drop[] possibleDrops = new Drop[drops.length];
@@ -1279,7 +1769,12 @@ public class NPCHandler {
 			for (Drop drop : drops) {
 				if (drop.getRate() == 100)
 					sendDrop(killer, drop, i);
-				else {
+				// TODO: test
+				if (c.playerEquipment[EquipmentListener.RING_SLOT.getSlot()] == 2572) {
+					if (drop.isRare()) {
+						possibleDropsCount = (int) (drop.getRate() / 2);
+					}
+				} else {
 					if ((Misc.random(99) + 1) <= drop.getRate() * 1.0)
 						possibleDrops[possibleDropsCount++] = drop;
 				}
@@ -1445,10 +1940,12 @@ public class NPCHandler {
 		return 1;
 	}
 
-	/**
-	 * Slayer Experience
-	 **/
 	@SuppressWarnings("static-access")
+	/**
+	 * slayer exp
+	 * 
+	 * @param i
+	 */
 	public void appendSlayerExperience(int i) {
 		@SuppressWarnings("unused")
 		int npc = 0;
@@ -1456,9 +1953,10 @@ public class NPCHandler {
 		if (c != null) {
 			if (c.slayerTask == npcs[i].npcType) {
 				c.taskAmount--;
-				c.getPA().addSkillXP(npcs[i].MaxHP * Constants.SLAYER_EXPERIENCE, 18);
+				c.getPA().addSkillXP(npcs[i].MaxHP * SkillIndex.SLAYER.getExpRatio(), SkillIndex.SLAYER.getSkillId());
 				if (c.taskAmount <= 0) {
-					c.getPA().addSkillXP((npcs[i].MaxHP * 8) * Constants.SLAYER_EXPERIENCE, 18);
+					c.getPA().addSkillXP((npcs[i].MaxHP * 8) * SkillIndex.SLAYER.getExpRatio(),
+							SkillIndex.SLAYER.getSkillId());
 					c.slayerTask = -1;
 					c.sendMessage("You completed your slayer task. Please see a slayer master to get a new one.");
 				}
@@ -1466,11 +1964,12 @@ public class NPCHandler {
 		}
 	}
 
+	@SuppressWarnings({ "static-access" })
 	/**
 	 * Resets players in combat
+	 * 
+	 * @param i
 	 */
-
-	@SuppressWarnings({ "static-access" })
 	public void resetPlayersInCombat(int i) {
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null)
@@ -1479,11 +1978,13 @@ public class NPCHandler {
 		}
 	}
 
+	@SuppressWarnings("static-access")
 	/**
 	 * Npc names
-	 **/
-
-	@SuppressWarnings("static-access")
+	 * 
+	 * @param npcId
+	 * @return npcId
+	 */
 	public String getNpcName(int npcId) {
 		for (int i = 0; i < maxNPCs; i++) {
 			if (Server.npcHandler.NpcList[i] != null) {
@@ -1497,8 +1998,11 @@ public class NPCHandler {
 
 	/**
 	 * Npc Follow Player
-	 **/
-
+	 * 
+	 * @param Place1
+	 * @param Place2
+	 * @return 0
+	 */
 	public int GetMove(int Place1, int Place2) {
 		if ((Place1 - Place2) == 0) {
 			return 0;
@@ -1622,7 +2126,9 @@ public class NPCHandler {
 
 	/**
 	 * load spell
-	 **/
+	 * 
+	 * @param i
+	 */
 	public void loadSpell2(int i) {
 		npcs[i].attackType = 3;
 		int random = Misc.random(3);
@@ -1830,7 +2336,10 @@ public class NPCHandler {
 
 	/**
 	 * Distanced required to attack
-	 **/
+	 * 
+	 * @param i
+	 * @return
+	 */
 	public int distanceRequired(int i) {
 		switch (npcs[i].npcType) {
 		case 2025:
@@ -1909,11 +2418,13 @@ public class NPCHandler {
 		}
 	}
 
+	@SuppressWarnings("static-access")
 	/**
 	 * NPC Attacking Player
-	 **/
-
-	@SuppressWarnings("static-access")
+	 * 
+	 * @param c
+	 * @param i
+	 */
 	public void attackPlayer(Client c, int i) {
 		if (npcs[i] != null) {
 			if (npcs[i].isDead)
@@ -1938,7 +2449,7 @@ public class NPCHandler {
 					npcs[i].attackTimer = getNpcDelay(i);
 					if (SpecialNPC.forId(npcs[i].npcType) != null) {
 						SpecialNPC.executeAttack(c, i);
-						return;
+						// return;
 					}
 					npcs[i].hitDelayTimer = getHitDelay(i);
 					npcs[i].attackType = 0;
@@ -1951,9 +2462,11 @@ public class NPCHandler {
 					if (multiAttacks(i)) {
 						multiAttackGfx(i, npcs[i].projectileId);
 						startAnimation(getAttackEmote(i), i);
+						c.getPA().sendSound(Sounds.getNpcAttackSounds(npcs[i].npcId));
 						npcs[i].oldIndex = c.playerId;
 						return;
 					}
+
 					if (SpecialNPC.forId(npcs[i].npcType) != null) {
 						SpecialNPC.executeAttack(c, i);
 						return;
@@ -2006,8 +2519,8 @@ public class NPCHandler {
 
 	@SuppressWarnings("static-access")
 	public void applyDamage(int i) {
-		if(npcs[i] != null) {
-			if(Server.playerHandler.players[npcs[i].oldIndex] == null) {
+		if (npcs[i] != null) {
+			if (Server.playerHandler.players[npcs[i].oldIndex] == null) {
 				return;
 			}
 			if (npcs[i].isDead)
@@ -2020,60 +2533,62 @@ public class NPCHandler {
 			if (c.playerIndex <= 0 && c.npcIndex <= 0)
 				if (c.autoRet == 1)
 					c.npcIndex = i;
-			
-			if(c.respawnTimer <= 0) {	
+
+			if (c.respawnTimer <= 0) {
 				int damage = 0;
-				if(npcs[i].attackType == 0) {
+				if (npcs[i].attackType == 0) {
 					damage = Misc.random(npcs[i].maxHit);
-					if (10 + Misc.random(c.getCombat().calculateMeleeDefence()) > Misc.random(Server.npcHandler.npcs[i].attack)) {
+					if (10 + Misc.random(c.getCombat().calculateMeleeDefence()) > Misc
+							.random(Server.npcHandler.npcs[i].attack)) {
 						damage = 0;
-					}				
-					if(c.prayerActive[18]) { // protect from melee
-						if (npcs[i].npcType == 2030) 
+					}
+					if (c.prayerActive[18]) { // protect from melee
+						if (npcs[i].npcType == 2030)
 							damage = (damage / 2);
 						else
 							damage = 0;
-					}				
-					if (c.playerLevel[3] - damage < 0) { 
+					}
+					if (c.playerLevel[3] - damage < 0) {
 						damage = c.playerLevel[3];
 					}
 				}
-				
-				if(npcs[i].attackType == 1) { // range
+
+				if (npcs[i].attackType == 1) { // range
 					damage = Misc.random(npcs[i].maxHit);
-					if (10 + Misc.random(c.getCombat().calculateRangeDefence()) > Misc.random(Server.npcHandler.npcs[i].attack)) {
+					if (10 + Misc.random(c.getCombat().calculateRangeDefence()) > Misc
+							.random(Server.npcHandler.npcs[i].attack)) {
 						damage = 0;
-					}					
-					if(c.prayerActive[17]) { // protect from range
+					}
+					if (c.prayerActive[17]) { // protect from range
 						damage = 0;
-					}				
-					if (c.playerLevel[3] - damage < 0) { 
+					}
+					if (c.playerLevel[3] - damage < 0) {
 						damage = c.playerLevel[3];
 					}
 				}
-				
-				if(npcs[i].attackType == 2) { // magic
+
+				if (npcs[i].attackType == 2) { // magic
 					damage = Misc.random(npcs[i].maxHit);
 					boolean magicFailed = false;
 					if (10 + Misc.random(c.getCombat().mageDef()) > Misc.random(Server.npcHandler.npcs[i].attack)) {
 						damage = 0;
 						magicFailed = true;
-					}				
-					if(c.prayerActive[16]) { // protect from magic
+					}
+					if (c.prayerActive[16]) { // protect from magic
 						damage = 0;
 						magicFailed = true;
-					}				
-					if (c.playerLevel[3] - damage < 0) { 
+					}
+					if (c.playerLevel[3] - damage < 0) {
 						damage = c.playerLevel[3];
 					}
-					if(npcs[i].endGfx > 0 && (!magicFailed || isFightCaveNpc(i))) {
+					if (npcs[i].endGfx > 0 && (!magicFailed || isFightCaveNpc(i))) {
 						c.gfx100(npcs[i].endGfx);
 					} else {
 						c.gfx100(85);
 					}
 				}
-				
-				if (npcs[i].attackType == 3) { //fire breath
+
+				if (npcs[i].attackType == 3) { // fire breath
 					int anti = c.getPA().antiFire();
 					if (anti == 0) {
 						damage = Misc.random(30) + 10;
@@ -2086,14 +2601,16 @@ public class NPCHandler {
 						damage = c.playerLevel[3];
 					c.gfx100(npcs[i].endGfx);
 				}
+
 				handleSpecialEffects(c, i, damage);
 				c.logoutDelay = System.currentTimeMillis(); // logout delay
-				//c.setHitDiff(damage);
+				// c.setHitDiff(damage);
 				c.handleHitMask(damage);
 				c.playerLevel[3] -= damage;
 				c.getPA().refreshSkill(3);
 				c.updateRequired = true;
-				//c.setHitUpdateRequired(true);	
+				FightCaves.tzKihEffect(c, i, damage);
+				// c.setHitUpdateRequired(true);
 			}
 		}
 	}
@@ -2290,4 +2807,27 @@ public class NPCHandler {
 		return false;
 	}
 
+	private void tzhaarDeathHandler(int i) {
+		if (isFightCaveNpc(i) && npcs[i].npcType != FightCaves.TZ_KEK) {
+			killedTzhaar(i);
+		}
+		if (npcs[i].npcType == FightCaves.TZ_KEK_SPAWN) {
+			int p = npcs[i].killerId;
+			if (PlayerHandler.players[p] != null) {
+				Client c = (Client) PlayerHandler.players[p];
+				c.tzKekSpawn += 1;
+				if (c.tzKekSpawn == 2) {
+					killedTzhaar(i);
+					c.tzKekSpawn = 0;
+				}
+			}
+		}
+		if (npcs[i].npcType == FightCaves.TZ_KEK) {
+			int p = npcs[i].killerId;
+			if (PlayerHandler.players[p] != null) {
+				Client c = (Client) PlayerHandler.players[p];
+				FightCaves.tzKekEffect(c, i);
+			}
+		}
+	}
 }

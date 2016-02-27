@@ -2,7 +2,6 @@ package server;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.text.DecimalFormat;
 import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
@@ -12,24 +11,24 @@ import org.jboss.netty.util.HashedWheelTimer;
 import server.event.CycleEventHandler;
 import server.event.Task;
 import server.event.TaskScheduler;
-import server.model.minigames.CastleWars;
-import server.model.minigames.FightCaves;
-import server.model.minigames.FightPits;
-import server.model.minigames.PestControl;
+import server.model.minigames.castle_wars.CastleWars;
+import server.model.minigames.pest_control.PestControl;
+import server.model.minigames.tzhaar.FightCaves;
+import server.model.minigames.tzhaar.FightPits;
 import server.model.npcs.NPCHandler;
 import server.model.npcs.drops.NPCDrops;
 import server.model.objects.Doors;
 import server.model.objects.DoubleDoors;
 import server.model.players.PlayerHandler;
+import server.model.shops.ShopHandler;
 import server.net.PipelineFactory;
 import server.panel.ControlPanel;
 import server.util.Logger;
-import server.world.ClanChatHandler;
+import server.util.Plugin;
 import server.world.ItemHandler;
 import server.world.ObjectHandler;
 import server.world.ObjectManager;
 import server.world.PlayerManager;
-import server.world.ShopHandler;
 
 /**
  */
@@ -38,12 +37,7 @@ public class Server {
 	/**
 	 * Calls to manage the players on the server.
 	 */
-	public static PlayerManager playerManager = null;
-
-	/**
-	 * Sleep mode of the server.
-	 */
-	public static boolean sleeping;
+	public static PlayerManager playerManager = new PlayerManager();
 
 	/**
 	 * Calls the rate in which an event cycles.
@@ -56,27 +50,9 @@ public class Server {
 	public static boolean UpdateServer = false;
 
 	/**
-	 * Calls in which the server was last saved.
-	 */
-	public static long lastMassSave = System.currentTimeMillis();
-
-	/**
-	 * Calls the usage of CycledEvents.
-	 */
-	@SuppressWarnings("unused")
-	private static long cycleTime, cycles, totalCycleTime, sleepTime;
-
-	/**
-	 * Used for debugging the server.
-	 */
-	@SuppressWarnings("unused")
-	private static DecimalFormat debugPercentFormat;
-
-	/**
 	 * Forced shutdowns.
 	 */
 	public static boolean shutdownServer = false;
-	public static boolean shutdownClientHandler;
 
 	public static ControlPanel panel = new ControlPanel(true); // false if you
 																// want it off
@@ -133,11 +109,6 @@ public class Server {
 	public static FightCaves fightCaves = new FightCaves();
 
 	/**
-	 * Handles the clan chat.
-	 */
-	public static ClanChatHandler clanChat = new ClanChatHandler();
-
-	/**
 	 * Handles the task scheduler.
 	 */
 	private static final TaskScheduler scheduler = new TaskScheduler();
@@ -150,15 +121,10 @@ public class Server {
 	}
 
 	static {
-		if (!Constants.SERVER_DEBUG) {
-			serverlistenerPort = 43594;
-		} else {
-			serverlistenerPort = 43594;
-		}
+		serverlistenerPort = 43594;
+		
 		cycleRate = 600;
 		shutdownServer = false;
-		sleepTime = 0;
-		debugPercentFormat = new DecimalFormat("0.0#%");
 	}
 
 	/**
@@ -169,7 +135,8 @@ public class Server {
 		long startTime = System.currentTimeMillis();
 		System.setOut(new Logger(System.out));
 		System.setErr(new Logger(System.err));
-
+		Plugin.load();
+	
 		NPCDrops.init();
 		bind();
 
@@ -179,7 +146,6 @@ public class Server {
 		Doors.getSingleton().load();
 		DoubleDoors.getSingleton().load();
 		Connection.initialize();
-
 		/**
 		 * Successfully loaded the server.
 		 */
@@ -199,24 +165,26 @@ public class Server {
 				shopHandler.process();
 				CycleEventHandler.getSingleton().process();
 				objectManager.process();
+			}
+		});
+		
+		/**
+		 * Minigame tick
+		 */
+		scheduler.schedule(new Task() {
+			@Override
+			protected void execute() {
+				CastleWars.process();
 				fightPits.process();
 				pestControl.process();
 			}
 		});
-
 	}
 
 	/**
 	 * Logging execution.
 	 */
 	public static boolean playerExecuted = false;
-
-	/**
-	 * Gets the sleep mode timer and puts the server into sleep mode.
-	 */
-	public static long getSleepTimer() {
-		return sleepTime;
-	}
 
 	/**
 	 * Gets the Player manager.
@@ -236,10 +204,8 @@ public class Server {
 	 * Java connection. Ports.
 	 */
 	private static void bind() {
-		ServerBootstrap serverBootstrap = new ServerBootstrap(
-				new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
+		ServerBootstrap serverBootstrap = new ServerBootstrap( new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
 		serverBootstrap.setPipelineFactory(new PipelineFactory(new HashedWheelTimer()));
 		serverBootstrap.bind(new InetSocketAddress(serverlistenerPort));
 	}
-
 }
