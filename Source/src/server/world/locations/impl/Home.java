@@ -1,6 +1,7 @@
 package server.world.locations.impl;
 
 import server.model.players.Client;
+import server.model.players.skills.AwardSkillcape;
 import server.util.Misc;
 import server.world.locations.AbstractLocations;
 
@@ -34,8 +35,8 @@ public class Home extends AbstractLocations
 				break;
 			}
 			break;
-		case 2213:
-			c.getPA().openUpBank();
+		case 6836:
+				AwardSkillcape.executeAward(c);
 			break;
 		case ANCIENT_ALTER:
 			if (c.playerMagicBook == 0) {
@@ -80,8 +81,16 @@ public class Home extends AbstractLocations
 
 	@Override
 	public void sendFirstClickNpc(Client c, int npc) {
-		// TODO Auto-generated method stub
-		
+		switch(npc)
+		{
+		case 599:
+			c.getPA().showInterface(3559);
+			c.canChangeAppearance = true;
+			break;
+		case 2566:
+			c.getShops().openSkillCape();
+			break;
+		}
 	}
 
 	@Override

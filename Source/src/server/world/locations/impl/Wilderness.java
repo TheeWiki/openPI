@@ -28,6 +28,21 @@ public class Wilderness extends AbstractLocations
 		case 14831:
 			Server.objectManager.startObelisk(object);
 			break;
+		case 2566:
+		case 2567:
+		case 2568:
+			// chest in pirate house
+			break;
+		case 411:
+			if (c.playerLevel[5] < c.getPA().getLevelForXP(c.playerXP[5])) {
+				c.startAnimation(645);
+				c.playerLevel[5] = c.getPA().getLevelForXP(c.playerXP[5]);
+				c.sendMessage("You recharge your prayer points.");
+				c.getPA().refreshSkill(5);
+			} else {
+				c.sendMessage("You already have full prayer points.");
+			}
+			break;
 		}
 	}
 

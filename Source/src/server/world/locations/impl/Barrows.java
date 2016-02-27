@@ -16,7 +16,7 @@ public class Barrows extends AbstractLocations
 		switch(object)
 		{
 		case 6772:
-			if(server.model.minigames.Barrows.selectCoffin(c, object)) {
+			if(server.model.minigames.barrows.Barrows.selectCoffin(c, object)) {
 				return;
 			}
 			if(c.barrowsNpcs[1][1] == 0) {
@@ -32,7 +32,7 @@ public class Barrows extends AbstractLocations
 			break;
 			
 		case 6823:
-			if(server.model.minigames.Barrows.selectCoffin(c, object)) {
+			if(server.model.minigames.barrows.Barrows.selectCoffin(c, object)) {
 				return;
 			}
 			if(c.barrowsNpcs[0][1] == 0) {
@@ -51,7 +51,7 @@ public class Barrows extends AbstractLocations
 			c.getPA().movePlayer(3565, 3276, 0);
 			break;
 		case 6822:
-			if(server.model.minigames.Barrows.selectCoffin(c, object)) {
+			if(server.model.minigames.barrows.Barrows.selectCoffin(c, object)) {
 				return;
 			}
 			if(c.barrowsNpcs[2][1] == 0) {
@@ -66,7 +66,7 @@ public class Barrows extends AbstractLocations
 			c.getPA().movePlayer(3578, 3284, 0);
 			break;
 		case 6773:
-			if(server.model.minigames.Barrows.selectCoffin(c, object)) {
+			if(server.model.minigames.barrows.Barrows.selectCoffin(c, object)) {
 				return;
 			}
 			if(c.barrowsNpcs[3][1] == 0) {
@@ -81,7 +81,7 @@ public class Barrows extends AbstractLocations
 			c.getPA().movePlayer(3574, 3298, 0);
 			break;
 		case 6771:
-			if(server.model.minigames.Barrows.selectCoffin(c, object)) {
+			if(server.model.minigames.barrows.Barrows.selectCoffin(c, object)) {
 				return;
 			}
 			if(c.barrowsNpcs[4][1] == 0) {
@@ -96,7 +96,7 @@ public class Barrows extends AbstractLocations
 			c.getPA().movePlayer(3565, 3290, 0);
 			break;
 		case 6821:
-			if(server.model.minigames.Barrows.selectCoffin(c, object)) {
+			if(server.model.minigames.barrows.Barrows.selectCoffin(c, object)) {
 				return;
 			}
 			if(c.barrowsNpcs[5][1] == 0) {
@@ -126,7 +126,7 @@ public class Barrows extends AbstractLocations
 				c.getItems().addItem(c.getPA().randomRunes(), Misc.random(150) + 100);
 				if (Misc.random(2) == 1)
 					c.getItems().addItem(c.getPA().randomBarrows(), 1);
-				c.shakeScreen(3, 2, 3, 2);
+				c.getPA().shakeScreen(3, 2, 3, 2);
 				CycleEventHandler.getSingleton().addEvent(this, new CycleEvent() {
 					@Override
 					public void execute(CycleEventContainer container) {
