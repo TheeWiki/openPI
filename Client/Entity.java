@@ -50,16 +50,12 @@ public class Entity extends Animable {
 		for(int i1 = 0; i1 < 4; i1++)
 			if(hitsLoopCycle[i1] <= l)
 			{
-				hitArray[i1] = k * ((client.newDamage == true && k > 0) ? 10 : 1);
-				if (client.newDamage && k > 0) {
-					hitArray[i1] += new java.util.Random().nextInt(9);
-				}
+				hitArray[i1] = k;
 				hitMarkTypes[i1] = j;
 				hitsLoopCycle[i1] = l + 70;
 				return;
 			}
 	}
-
 	public final void moveInDir(boolean flag, int i)
 	{
 		int j = smallX[0];
