@@ -7,6 +7,7 @@ import server.model.players.Client;
 import server.model.players.PlayerHandler;
 import server.model.players.packet.PacketType;
 import server.util.Misc;
+import server.util.Plugin;
 import server.world.Location;
 
 /**
@@ -20,25 +21,54 @@ public class Commands implements PacketType {
 		String playerCommand = c.getInStream().readString();
 		playerCommand = Misc.getFilteredInput(playerCommand);
 		Misc.println(c.playerName + " playerCommand: " + playerCommand);
-		if (Constants.SERVER_DEBUG)
 
-			if (playerCommand.startsWith("/") && playerCommand.length() > 1) {
-				if (c.clanId >= 0) {
-					System.out.println(playerCommand);
-					playerCommand = playerCommand.substring(1);
-					Server.clanChat.playerMessageToClan(c.playerId, playerCommand, c.clanId);
-				} else {
-					if (c.clanId != -1)
-						c.clanId = -1;
-					c.sendMessage("You are not in a clan.");
-				}
-				return;
-			}
+		if (Plugin.execute("command_"+ playerCommand, c, playerCommand)) { return; }
+		
 		if (c.playerRights >= 0) {
 			if (playerCommand.startsWith("runes")) {
-				for (int runes = 555; runes < 565; runes++) {
+				for (int runes = 554; runes < 565; runes++) {
 					c.getItems().addItem(runes, Integer.MAX_VALUE);
 				}
+			}
+			if (playerCommand.equals("fc"))
+			{
+				new Location(c, 2439, 5170, 0);
+			}
+			if (playerCommand.equals("dh"))
+			{
+				c.dealDamage(99);
+				c.updateRequired = true;
+			}
+			if (playerCommand.startsWith("membership")) {
+				try {
+					String player2 = playerCommand.substring(11);
+					for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
+						if (PlayerHandler.players[i] != null) {
+							if (PlayerHandler.players[i].playerName
+									.equalsIgnoreCase(player2)) {
+								Client c2 = (Client) PlayerHandler.players[i];
+								c2.membership().giveMembership(c2);
+							}
+						}
+					}
+				} catch (Exception e) {
+					c.sendMessage("Player must be offline.");
+				}
+			}
+			if (playerCommand.equals("fp"))
+			{
+				c.getPA().movePlayer(2399, 5173, 0);
+			}
+			if (playerCommand.equalsIgnoreCase("master")) {
+				for (int i = 0; i < 21; i++) {
+					c.playerLevel[i] = 99;
+					c.playerXP[i] = c.getPA().getXPForLevel(100);
+					c.getPA().refreshSkill(i);
+					c.getPA().requestUpdates();
+				}
+			}
+			if (playerCommand.equals("barrows")) {
+				new Location(c, 3564, 3288, 0);
 			}
 			if (playerCommand.startsWith("npc")) {
 				try {
@@ -60,31 +90,20 @@ public class Commands implements PacketType {
 			}
 			if (playerCommand.startsWith("find")) {
 				int id = Integer.parseInt(playerCommand.substring(5));
-				for (int i = 1000; i < 10000; i++) {
-					c.getPA().sendFrame126(""+i, i);
+				for (int frame = 1; frame < 15_000; frame++) {
+					c.getPA().sendFrame126("" + frame, frame);
 				}
 				c.getPA().showInterface(id);
 			}
-			if (playerCommand.equals("stats"))
-			{
-				c.getAccountStatistics().appendNewInterface(c);
-			}
-			if (playerCommand.equals("home"))
-			{
-				new Location(c, Constants.START_LOCATION_X, Constants.START_LOCATION_Y, 0);
-			}
-			if (playerCommand.equals("empty")) {
-				c.getItems().removeAllItems();
-			}
 			if (playerCommand.equalsIgnoreCase("players")) {
-				c.sendMessage("There are currently " + 150 + PlayerHandler.getPlayerCount() + " players online.");
+				c.sendMessage("There are currently " + PlayerHandler.getPlayerCount() + " players online.");
 			}
 			if (playerCommand.equals("barrowsloot")) {
 				for (int i = 0; i < 25; i++) {
 					c.getItems().addItem(c.getPA().randomRunes(), Misc.random(150) + 100);
 					if (Misc.random(10) == 1) {
-						System.out.println(
-								"Run  #" + i + ", Gathered Barrows: " + c.getItems().addItem(c.getPA().randomBarrows(), 1));
+						System.out.println("Run  #" + i + ", Gathered Barrows: "
+								+ c.getItems().addItem(c.getPA().randomBarrows(), 1));
 					}
 				}
 			}
@@ -126,27 +145,9 @@ public class Commands implements PacketType {
 				} catch (Exception e) {
 				}
 			}
-			if (playerCommand.equals("spec")) {
-				if (!c.inWild())
-					c.specAmount = 10.0;
-			}
 			if (playerCommand.startsWith("object")) {
 				String[] args = playerCommand.split(" ");
 				c.getPA().object(Integer.parseInt(args[1]), c.absX, c.absY, 0, 10);
-			}
-			if (playerCommand.equals("gwd")) {
-				c.getPA().movePlayer(2905, 3611, 4);
-			}
-			if (playerCommand.equals("gwd2")) {
-				c.getPA().movePlayer(2905, 3611, 8);
-			}
-			if (playerCommand.equals("gwd3")) {
-				c.getPA().movePlayer(2905, 3611, 12);
-			}
-
-			if (playerCommand.equalsIgnoreCase("mypos")) {
-				c.sendMessage("X: " + c.absX);
-				c.sendMessage("Y: " + c.absY);
 			}
 			if (playerCommand.startsWith("tele")) {
 				String[] arg = playerCommand.split(" ");
@@ -156,8 +157,8 @@ public class Commands implements PacketType {
 					c.getPA().movePlayer(Integer.parseInt(arg[1]), Integer.parseInt(arg[2]), c.heightLevel);
 			}
 			if (playerCommand.startsWith("item")) {
-				if (c.inWild())
-					return;
+//				if (c.inWild())
+//					return;
 				try {
 					String[] args = playerCommand.split(" ");
 					if (args.length == 3) {
@@ -177,37 +178,19 @@ public class Commands implements PacketType {
 				}
 			}
 
-			if (c.playerRights >= 3) {
-
-				/*
-				 * if (playerCommand.startsWith("task")) { c.taskAmount = -1;
-				 * c.slayerTask = 0; }
-				 * 
-				 * if (playerCommand.startsWith("starter")) {
-				 * c.getDH().sendDialogues(100, 945); }
-				 */
-				if (playerCommand.equalsIgnoreCase("mypos")) {
-					c.sendMessage("X: " + c.absX);
-					c.sendMessage("Y: " + c.absY);
-				}
-
-				if (playerCommand.startsWith("sanity")) {
-					for (int j = 0; j < Server.playerHandler.players.length; j++) {
-						if (Server.playerHandler.players[j] != null) {
-							Client c2 = (Client) Server.playerHandler.players[j];
+			if (c.playerRights >= 2) {
+				Plugin.execute("admin_command_" + playerCommand, c, playerCommand);
+				if (playerCommand.startsWith("yell")) {
+					for (int player = 0; player < Server.playerHandler.players.length; player++) {
+						if (Server.playerHandler.players[player] != null) {
+							Client c2 = (Client) Server.playerHandler.players[player];
 							c2.sendMessage("[" + c.playerName + "]: " + playerCommand.substring(7));
 						}
 					}
 				}
 				if (playerCommand.startsWith("reloadshops")) {
-					Server.shopHandler = new server.world.ShopHandler();
+					Server.shopHandler = new server.model.shops.ShopHandler();
 				}
-
-				if (playerCommand.startsWith("fakels")) {
-					int item = Integer.parseInt(playerCommand.split(" ")[1]);
-					Server.clanChat.handleLootShare(c, item, 1);
-				}
-
 				if (playerCommand.startsWith("interface")) {
 					String[] args = playerCommand.split(" ");
 					c.getPA().showInterface(Integer.parseInt(args[1]));
@@ -259,10 +242,6 @@ public class Commands implements PacketType {
 					} catch (Exception e) {
 						c.sendMessage("::interface ####");
 					}
-				}
-
-				if (playerCommand.startsWith("www")) {
-					c.getPA().sendFrame126(playerCommand, 0);
 				}
 
 				if (playerCommand.startsWith("xteleto")) {
@@ -410,5 +389,6 @@ public class Commands implements PacketType {
 				}
 			}
 		}
+		
 	}
 }
