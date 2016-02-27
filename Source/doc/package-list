@@ -23,6 +23,7 @@ server.model.players.packet
 server.model.players.packet.impl
 server.model.players.skills
 server.model.players.skills.cooking
+server.model.players.skills.guilds
 server.model.players.skills.herblore
 server.model.players.skills.magic
 server.model.players.skills.mining
