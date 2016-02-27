@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Handles all of our cycle based events
  * 
- * @author Stuart <RogueX>
+ * @author Stuart 
  * @author Null++
  * 
  */

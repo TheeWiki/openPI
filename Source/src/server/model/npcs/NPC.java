@@ -85,8 +85,8 @@ public class NPC {
 
 	/**
 	 * Text update
-	 **/
-
+	 * @param text updating
+	 */
 	public void forceChat(String text) {
 		forcedText = text;
 		forcedChatRequired = true;

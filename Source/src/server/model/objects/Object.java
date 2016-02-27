@@ -26,10 +26,6 @@ public class Object {
 		this.type = type;
 		this.newId = newId;
 		this.tick = ticks;
-		
-//		this.absX = absX;
-//		this.absY = absY;
-//		this.heightLevel = heightLevel;
 		Server.objectManager.addObject(this);
 	}
 

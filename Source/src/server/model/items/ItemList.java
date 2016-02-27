@@ -1,11 +1,9 @@
 package server.model.items;
 
-
 /**
  * Gets Items From The Item List
- * @author Sanity
- * Revised by Shawn
- * Notes by Shawn
+ * 
+ * @author Sanity Revised by Shawn Notes by Shawn
  */
 public class ItemList {
 	public int itemId;
@@ -16,9 +14,9 @@ public class ItemList {
 	public double HighAlch;
 	public int[] Bonuses = new int[100];
 
-	
 	/**
 	 * Gets the item ID.
+	 * 
 	 * @param _itemId
 	 */
 	public ItemList(int _itemId) {
