@@ -1,5 +1,7 @@
 package server.net.login;
 
+import java.util.HashMap;
+
 /**
  * Alternative for loading side bar interfaces.
  * @author Dennis
@@ -18,7 +20,7 @@ public enum SideBars
 		ADD_FRIEND_TAB(8, 5065),
 		ADD_IGNORE_TAB(9, 5715),
 		LOGOUT_TAB(10, 2449),
-		OPTIONS_TAB(11, 4445),
+		OPTIONS_TAB(11, 904),
 		RUN_TAB(12, 147),
 		MUSIC_TAB(13, 962);
 	
@@ -52,20 +54,13 @@ public enum SideBars
 		this.sideBar = sideBar;
 		this.interfaceId = interfaceId;
 	}
+	private static HashMap<Integer, SideBars> sidebarsMap = new HashMap<Integer, SideBars>();
 	
-	/**
-	 * Checked to see if the values are only from the @enum SideBars, returns a result
-	 * @param sidebarId
-	 * @return sidebars
-	 */
-	public static SideBars getOrdinal(int sidebarId)
+	static
 	{
-		for (SideBars sidebars : values()) {
-			if (sidebarId == sidebars.getSideBar())
-			{
-				return sidebars;
-			}
+		for (SideBars sb : values()) {
+			sidebarsMap.put(sb.getSideBar(), sb);
+			sidebarsMap.put(sb.getInterfaceId(), sb);
 		}
-		return null;
 	}
 }
