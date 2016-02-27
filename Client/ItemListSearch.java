@@ -1,21 +1,16 @@
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 /**
  * 
@@ -31,8 +26,7 @@ public class ItemListSearch implements ActionListener, KeyListener {
 
 	public ItemListSearch() {
 		JFrame.setDefaultLookAndFeelDecorated(true);
-		JFrame localJFrame = new JFrame(
-				"openPI - Item Search");
+		JFrame localJFrame = new JFrame("openPI - Item Search");
 		localJFrame.setDefaultCloseOperation(2);
 		localJFrame.getContentPane().setLayout(new BorderLayout());
 		this.namePanel = new JTextArea();
