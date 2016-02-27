@@ -5,16 +5,11 @@ import java.util.HashMap;
 
 import server.Constants;
 import server.model.players.Client;
+import server.model.players.skills.SkillIndex;
 
 public class BuryBones {
-	
-	Client c;
 
-	public BuryBones(Client c) {
-		this.c = c;
-	}
-	
-	enum BonesData {
+	private enum BonesData {
 
 		/* Starter Bones */
 		REGULAR(526, 50, "Bones"),
@@ -62,8 +57,10 @@ public class BuryBones {
 		private String boneName;
 
 		static {
-			for (final BonesData bones : BoneInfo.values())
-				BonesData.BoneInfo.put(bones.boneXP, bones);
+			for (BonesData bones : values()) {
+				BoneInfo.put(bones.getboneID(), bones);
+				BoneInfo.put(bones.getboneXP(), bones);
+			}
 		}
 
 		BonesData(final int boneID, final int boneXP, final String boneName) {
@@ -71,7 +68,6 @@ public class BuryBones {
 			this.boneXP = boneXP;
 			this.boneName = boneName;
 		}
-
 		public int getboneID() {
 			return boneID;
 		}
@@ -85,26 +81,19 @@ public class BuryBones {
 		}
 	}
 
-	public boolean readBone(int boneID) {
-		for (final BonesData bones : BonesData.values()) {
-			if (c.getItems().playerHasItem(bones.getboneID(), 1));
-			if (boneID == bones.getboneID()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public void boneOnGround(int boneID) {
-		if (System.currentTimeMillis() - c.buryDelay > Constants.BONE_BURY_TIME) {
+	public static void boneOnGround(Client c, int itemId, int itemSlot) {
+		if (System.currentTimeMillis() - c.buryDelay > Constants.TICK) {
 			for (final BonesData bones : BonesData.values()) {
-				if (boneID == bones.getboneID()) {
-					c.getItems().deleteItem(boneID, 1);
+				if (itemId == bones.getboneID()) {
+					c.getAttributes().setAttribute("boneBurying", true);
+					c.getItems().deleteItem(itemId, itemSlot, 1);
 					c.sendMessage("You bury some " + bones.getboneName() + ".");
-					c.getPA().addSkillXP(bones.getboneXP() * Constants.PRAYER_EXPERIENCE, 5);
-					c.buryDelay = System.currentTimeMillis();
-					c.startAnimation(827);
+					c.getPA().addSkillXP(bones.getboneXP() * SkillIndex.PRAYER.getExpRatio(), SkillIndex.PRAYER.getSkillId());
+
 				}
+				c.buryDelay = System.currentTimeMillis();
+				c.startAnimation(827);
+				c.getAttributes().removeAttribute("boneBurying");
 			}
 		}
 	}
