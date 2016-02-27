@@ -5,8 +5,8 @@
 public final class ObjectDef {
 
 	public static ObjectDef forID(int i) {
-		for(int j = 0; j < 20; j++)
-			if(cache[j].type == i)
+		for (int j = 0; j < 20; j++)
+			if (cache[j].type == i)
 				return cache[j];
 
 		cacheIndex = (cacheIndex + 1) % 20;
@@ -15,12 +15,11 @@ public final class ObjectDef {
 		objectDef.type = i;
 		objectDef.setDefaults();
 		objectDef.readValues(stream);
-		
+
 		return objectDef;
 	}
 
-	private void setDefaults()
-	{
+	private void setDefaults() {
 		anIntArray773 = null;
 		anIntArray776 = null;
 		name = null;
@@ -59,16 +58,14 @@ public final class ObjectDef {
 		childrenIDs = null;
 	}
 
-	public void method574(OnDemandFetcher class42_sub1)
-	{
-		if(anIntArray773 == null)
+	public void method574(OnDemandFetcher class42_sub1) {
+		if (anIntArray773 == null)
 			return;
-		for(int j = 0; j < anIntArray773.length; j++)
+		for (int j = 0; j < anIntArray773.length; j++)
 			class42_sub1.method560(anIntArray773[j] & 0xffff, 0);
 	}
 
-	public static void nullLoader()
-	{
+	public static void nullLoader() {
 		mruNodes1 = null;
 		mruNodes2 = null;
 		streamIndices = null;
@@ -76,56 +73,49 @@ public final class ObjectDef {
 		stream = null;
 	}
 
-	public static void unpackConfig(StreamLoader streamLoader)
-	{
+	public static void unpackConfig(StreamLoader streamLoader) {
 		stream = new Stream(streamLoader.getDataForName("loc.dat"));
 		Stream stream = new Stream(streamLoader.getDataForName("loc.idx"));
 		int totalObjects = stream.readUnsignedWord();
 		streamIndices = new int[totalObjects];
 		int i = 2;
-		for(int j = 0; j < totalObjects; j++)
-		{
+		for (int j = 0; j < totalObjects; j++) {
 			streamIndices[j] = i;
 			i += stream.readUnsignedWord();
 		}
 		cache = new ObjectDef[20];
-		for(int k = 0; k < 20; k++)
+		for (int k = 0; k < 20; k++)
 			cache[k] = new ObjectDef();
 	}
 
-	public boolean method577(int i)
-	{
-		if(anIntArray776 == null)
-		{
-			if(anIntArray773 == null)
+	public boolean method577(int i) {
+		if (anIntArray776 == null) {
+			if (anIntArray773 == null)
 				return true;
-			if(i != 10)
+			if (i != 10)
 				return true;
 			boolean flag1 = true;
-			for(int k = 0; k < anIntArray773.length; k++)
+			for (int k = 0; k < anIntArray773.length; k++)
 				flag1 &= Model.method463(anIntArray773[k] & 0xffff);
 
 			return flag1;
 		}
-		for(int j = 0; j < anIntArray776.length; j++)
-			if(anIntArray776[j] == i)
+		for (int j = 0; j < anIntArray776.length; j++)
+			if (anIntArray776[j] == i)
 				return Model.method463(anIntArray773[j] & 0xffff);
 
 		return true;
 	}
 
-	public Model method578(int i, int j, int k, int l, int i1, int j1, int k1)
-	{
+	public Model method578(int i, int j, int k, int l, int i1, int j1, int k1) {
 		Model model = method581(i, k1, j);
-		if(model == null)
+		if (model == null)
 			return null;
-		if(aBoolean762 || aBoolean769)
+		if (aBoolean762 || aBoolean769)
 			model = new Model(aBoolean762, aBoolean769, model);
-		if(aBoolean762)
-		{
+		if (aBoolean762) {
 			int l1 = (k + l + i1 + j1) / 4;
-			for(int i2 = 0; i2 < model.anInt1626; i2++)
-			{
+			for (int i2 = 0; i2 < model.anInt1626; i2++) {
 				int j2 = model.anIntArray1627[i2];
 				int k2 = model.anIntArray1629[i2];
 				int l2 = k + ((l - k) * (j2 + 64)) / 128;
@@ -139,101 +129,90 @@ public final class ObjectDef {
 		return model;
 	}
 
-	public boolean method579()
-	{
-		if(anIntArray773 == null)
+	public boolean method579() {
+		if (anIntArray773 == null)
 			return true;
 		boolean flag1 = true;
-		for(int i = 0; i < anIntArray773.length; i++)
+		for (int i = 0; i < anIntArray773.length; i++)
 			flag1 &= Model.method463(anIntArray773[i] & 0xffff);
-			return flag1;
+		return flag1;
 	}
 
-	public ObjectDef method580()
-	{
+	public ObjectDef method580() {
 		int i = -1;
-		if(anInt774 != -1)
-		{
+		if (anInt774 != -1) {
 			VarBit varBit = VarBit.cache[anInt774];
 			int j = varBit.anInt648;
 			int k = varBit.anInt649;
 			int l = varBit.anInt650;
-			int i1 = client.anIntArray1232[l - k];
+			int i1 = Client.anIntArray1232[l - k];
 			i = clientInstance.variousSettings[j] >> k & i1;
-		} else
-		if(anInt749 != -1)
+		} else if (anInt749 != -1)
 			i = clientInstance.variousSettings[anInt749];
-		if(i < 0 || i >= childrenIDs.length || childrenIDs[i] == -1)
+		if (i < 0 || i >= childrenIDs.length || childrenIDs[i] == -1)
 			return null;
 		else
 			return forID(childrenIDs[i]);
 	}
 
-	private Model method581(int j, int k, int l)
-	{
+	private Model method581(int j, int k, int l) {
 		Model model = null;
 		long l1;
-		if(anIntArray776 == null)
-		{
-			if(j != 10)
+		if (anIntArray776 == null) {
+			if (j != 10)
 				return null;
-			l1 = (long)((type << 6) + l) + ((long)(k + 1) << 32);
+			l1 = (long) ((type << 6) + l) + ((long) (k + 1) << 32);
 			Model model_1 = (Model) mruNodes2.insertFromCache(l1);
-			if(model_1 != null)
+			if (model_1 != null)
 				return model_1;
-			if(anIntArray773 == null)
+			if (anIntArray773 == null)
 				return null;
 			boolean flag1 = aBoolean751 ^ (l > 3);
 			int k1 = anIntArray773.length;
-			for(int i2 = 0; i2 < k1; i2++)
-			{
+			for (int i2 = 0; i2 < k1; i2++) {
 				int l2 = anIntArray773[i2];
-				if(flag1)
+				if (flag1)
 					l2 += 0x10000;
 				model = (Model) mruNodes1.insertFromCache(l2);
-				if(model == null)
-				{
+				if (model == null) {
 					model = Model.method462(l2 & 0xffff);
-					if(model == null)
+					if (model == null)
 						return null;
-					if(flag1)
+					if (flag1)
 						model.method477();
 					mruNodes1.removeFromCache(model, l2);
 				}
-				if(k1 > 1)
+				if (k1 > 1)
 					aModelArray741s[i2] = model;
 			}
 
-			if(k1 > 1)
+			if (k1 > 1)
 				model = new Model(k1, aModelArray741s);
-		} else
-		{
+		} else {
 			int i1 = -1;
-			for(int j1 = 0; j1 < anIntArray776.length; j1++)
-			{
-				if(anIntArray776[j1] != j)
+			for (int j1 = 0; j1 < anIntArray776.length; j1++) {
+				if (anIntArray776[j1] != j)
 					continue;
 				i1 = j1;
 				break;
 			}
 
-			if(i1 == -1)
+			if (i1 == -1)
 				return null;
-			l1 = (long)((type << 6) + (i1 << 3) + l) + ((long)(k + 1) << 32);
+			l1 = (long) ((type << 6) + (i1 << 3) + l) + ((long) (k + 1) << 32);
 			Model model_2 = (Model) mruNodes2.insertFromCache(l1);
-			if(model_2 != null)
+			if (model_2 != null)
 				return model_2;
 			int j2 = anIntArray773[i1];
 			boolean flag3 = aBoolean751 ^ (l > 3);
-			if(flag3)
+			if (flag3)
 				j2 += 0x10000;
 			model = (Model) mruNodes1.insertFromCache(j2);
-			if(model == null)
-			{
+			if (model == null) {
 				model = Model.method462(j2 & 0xffff);
-				if(model == null)
+				if (model == null)
 					return null;
-				if(flag3)
+				if (flag3)
 					model.method477();
 				mruNodes1.removeFromCache(model, j2);
 			}
@@ -242,228 +221,178 @@ public final class ObjectDef {
 		flag = anInt748 != 128 || anInt772 != 128 || anInt740 != 128;
 		boolean flag2;
 		flag2 = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
-		Model model_3 = new Model(modifiedModelColors == null, Class36.method532(k), l == 0 && k == -1 && !flag && !flag2, model);
-		if(k != -1)
-		{
+		Model model_3 = new Model(modifiedModelColors == null, Class36.method532(k),
+				l == 0 && k == -1 && !flag && !flag2, model);
+		if (k != -1) {
 			model_3.method469();
 			model_3.method470(k);
 			model_3.anIntArrayArray1658 = null;
 			model_3.anIntArrayArray1657 = null;
 		}
-		while(l-- > 0) 
+		while (l-- > 0)
 			model_3.method473();
-		if(modifiedModelColors != null)
-		{
-			for(int k2 = 0; k2 < modifiedModelColors.length; k2++)
+		if (modifiedModelColors != null) {
+			for (int k2 = 0; k2 < modifiedModelColors.length; k2++)
 				model_3.method476(modifiedModelColors[k2], originalModelColors[k2]);
 
 		}
-		if(flag)
+		if (flag)
 			model_3.method478(anInt748, anInt740, anInt772);
-		if(flag2)
+		if (flag2)
 			model_3.method475(anInt738, anInt745, anInt783);
-		model_3.method479(64 + aByte737, 768 + aByte742 * 5, -50, -10, -50, !aBoolean769);
-		if(anInt760 == 1)
+		if (ToggleOptions.HD_CHARACTERS.isToggled())
+			model_3.method479(74 + aByte737, 1000 + aByte742 * 5, -90, -580, -90, !aBoolean769);
+		else
+			model_3.method479(64 + aByte737, 768 + aByte742 * 5, -50, -10, -50, !aBoolean769);
+		if (anInt760 == 1)
 			model_3.anInt1654 = model_3.modelHeight;
 		mruNodes2.removeFromCache(model_3, l1);
 		return model_3;
 	}
 
-	private void readValues(Stream stream)
-	{
+	private void readValues(Stream stream) {
 		int i = -1;
-label0:
-		do
-		{
+		label0: do {
 			int j;
-			do
-			{
+			do {
 				j = stream.readUnsignedByte();
-				if(j == 0)
+				if (j == 0)
 					break label0;
-				if(j == 1)
-				{
+				if (j == 1) {
 					int k = stream.readUnsignedByte();
-					if(k > 0)
-						if(anIntArray773 == null || lowMem)
-						{
+					if (k > 0)
+						if (anIntArray773 == null || lowMem) {
 							anIntArray776 = new int[k];
 							anIntArray773 = new int[k];
-							for(int k1 = 0; k1 < k; k1++)
-							{
+							for (int k1 = 0; k1 < k; k1++) {
 								anIntArray773[k1] = stream.readUnsignedWord();
 								anIntArray776[k1] = stream.readUnsignedByte();
 							}
 
-						} else
-						{
+						} else {
 							stream.currentOffset += k * 3;
 						}
-				} else
-				if(j == 2)
+				} else if (j == 2)
 					name = stream.readString();
-				else
-				if(j == 3)
+				else if (j == 3)
 					description = stream.readBytes();
-				else
-				if(j == 5)
-				{
+				else if (j == 5) {
 					int l = stream.readUnsignedByte();
-					if(l > 0)
-						if(anIntArray773 == null || lowMem)
-						{
+					if (l > 0)
+						if (anIntArray773 == null || lowMem) {
 							anIntArray776 = null;
 							anIntArray773 = new int[l];
-							for(int l1 = 0; l1 < l; l1++)
+							for (int l1 = 0; l1 < l; l1++)
 								anIntArray773[l1] = stream.readUnsignedWord();
 
-						} else
-						{
+						} else {
 							stream.currentOffset += l * 2;
 						}
-				} else
-				if(j == 14)
+				} else if (j == 14)
 					anInt744 = stream.readUnsignedByte();
-				else
-				if(j == 15)
+				else if (j == 15)
 					anInt761 = stream.readUnsignedByte();
-				else
-				if(j == 17)
+				else if (j == 17)
 					aBoolean767 = false;
-				else
-				if(j == 18)
+				else if (j == 18)
 					aBoolean757 = false;
-				else
-				if(j == 19)
-				{
+				else if (j == 19) {
 					i = stream.readUnsignedByte();
-					if(i == 1)
+					if (i == 1)
 						hasActions = true;
-				} else
-				if(j == 21)
+				} else if (j == 21)
 					aBoolean762 = true;
-				else
-				if(j == 22)
+				else if (j == 22)
 					aBoolean769 = true;
-				else
-				if(j == 23)
+				else if (j == 23)
 					aBoolean764 = true;
-				else
-				if(j == 24)
-				{
+				else if (j == 24) {
 					anInt781 = stream.readUnsignedWord();
-					if(anInt781 == 65535)
+					if (anInt781 == 65535)
 						anInt781 = -1;
-				} else
-				if(j == 28)
+				} else if (j == 28)
 					anInt775 = stream.readUnsignedByte();
-				else
-				if(j == 29)
+				else if (j == 29)
 					aByte737 = stream.readSignedByte();
-				else
-				if(j == 39)
+				else if (j == 39)
 					aByte742 = stream.readSignedByte();
-				else
-				if(j >= 30 && j < 39)
-				{
-					if(actions == null)
+				else if (j >= 30 && j < 39) {
+					if (actions == null)
 						actions = new String[5];
 					actions[j - 30] = stream.readString();
-					if(actions[j - 30].equalsIgnoreCase("hidden"))
+					if (actions[j - 30].equalsIgnoreCase("hidden"))
 						actions[j - 30] = null;
-				} else
-				if(j == 40)
-				{
+				} else if (j == 40) {
 					int i1 = stream.readUnsignedByte();
 					modifiedModelColors = new int[i1];
 					originalModelColors = new int[i1];
-					for(int i2 = 0; i2 < i1; i2++)
-					{
+					for (int i2 = 0; i2 < i1; i2++) {
 						modifiedModelColors[i2] = stream.readUnsignedWord();
 						originalModelColors[i2] = stream.readUnsignedWord();
 					}
 
-				} else
-				if(j == 60)
+				} else if (j == 60)
 					anInt746 = stream.readUnsignedWord();
-				else
-				if(j == 62)
+				else if (j == 62)
 					aBoolean751 = true;
-				else
-				if(j == 64)
+				else if (j == 64)
 					aBoolean779 = false;
-				else
-				if(j == 65)
+				else if (j == 65)
 					anInt748 = stream.readUnsignedWord();
-				else
-				if(j == 66)
+				else if (j == 66)
 					anInt772 = stream.readUnsignedWord();
-				else
-				if(j == 67)
+				else if (j == 67)
 					anInt740 = stream.readUnsignedWord();
-				else
-				if(j == 68)
+				else if (j == 68)
 					anInt758 = stream.readUnsignedWord();
-				else
-				if(j == 69)
+				else if (j == 69)
 					anInt768 = stream.readUnsignedByte();
-				else
-				if(j == 70)
+				else if (j == 70)
 					anInt738 = stream.readSignedWord();
-				else
-				if(j == 71)
+				else if (j == 71)
 					anInt745 = stream.readSignedWord();
-				else
-				if(j == 72)
+				else if (j == 72)
 					anInt783 = stream.readSignedWord();
-				else
-				if(j == 73)
+				else if (j == 73)
 					aBoolean736 = true;
-				else
-				if(j == 74)
-				{
+				else if (j == 74) {
 					aBoolean766 = true;
-				} else
-				{
-					if(j != 75)
+				} else {
+					if (j != 75)
 						continue;
 					anInt760 = stream.readUnsignedByte();
 				}
 				continue label0;
-			} while(j != 77);
+			} while (j != 77);
 			anInt774 = stream.readUnsignedWord();
-			if(anInt774 == 65535)
+			if (anInt774 == 65535)
 				anInt774 = -1;
 			anInt749 = stream.readUnsignedWord();
-			if(anInt749 == 65535)
+			if (anInt749 == 65535)
 				anInt749 = -1;
 			int j1 = stream.readUnsignedByte();
 			childrenIDs = new int[j1 + 1];
-			for(int j2 = 0; j2 <= j1; j2++)
-			{
+			for (int j2 = 0; j2 <= j1; j2++) {
 				childrenIDs[j2] = stream.readUnsignedWord();
-				if(childrenIDs[j2] == 65535)
+				if (childrenIDs[j2] == 65535)
 					childrenIDs[j2] = -1;
 			}
 
-		} while(true);
-		if(i == -1)
-		{
+		} while (true);
+		if (i == -1) {
 			hasActions = anIntArray773 != null && (anIntArray776 == null || anIntArray776[0] == 10);
-			if(actions != null)
+			if (actions != null)
 				hasActions = true;
 		}
-		if(aBoolean766)
-		{
+		if (aBoolean766) {
 			aBoolean767 = false;
 			aBoolean757 = false;
 		}
-		if(anInt760 == -1)
+		if (anInt760 == -1)
 			anInt760 = aBoolean767 ? 1 : 0;
 	}
 
-	private ObjectDef()
-	{
+	private ObjectDef() {
 		type = -1;
 	}
 
@@ -492,7 +421,7 @@ label0:
 	public int anInt761;
 	public boolean aBoolean762;
 	public boolean aBoolean764;
-	public static client clientInstance;
+	public static Client clientInstance;
 	private boolean aBoolean766;
 	public boolean aBoolean767;
 	public int anInt768;
