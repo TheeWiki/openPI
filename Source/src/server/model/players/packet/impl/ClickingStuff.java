@@ -3,7 +3,6 @@ package server.model.players.packet.impl;
 import server.Server;
 import server.model.players.Client;
 import server.model.players.packet.PacketType;
-import server.util.Misc;
 
 
 /**
