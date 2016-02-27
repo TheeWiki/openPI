@@ -9,6 +9,7 @@ import server.event.CycleEventContainer;
 import server.event.CycleEventHandler;
 import server.model.Animation;
 import server.model.Graphic;
+import server.model.dialogues.DialogueContainer;
 import server.model.items.Item;
 import server.model.npcs.NPC;
 import server.model.npcs.NPCHandler;
@@ -27,31 +28,42 @@ public abstract class Player {
 			acceptAid = false, nextDialogue = false, autocasting = false, usedSpecial = false, mageFollow = false,
 			dbowSpec = false, craftingLeather = false, properLogout = false, secDbow = false, maxNextHit = false,
 			ssSpec = false, vengOn = false, addStarter = false, accountFlagged = false, msbSpec = false,
-			disableAttEvt = false, AttackEventRunning = false, npcindex, spawned = false;
+			disableAttEvt = false, AttackEventRunning = false, npcindex, spawned = false, teleporting;
 
-	public boolean teleporting;
-
-	public int
-
-	saveDelay, playerKilled, pkPoints, totalPlayerDamageDealt, killedBy, lastChatId = 1, privateChat, friendSlot = 0,
-			dialogueId, randomCoffin, newLocation, specEffect, specBarId, attackLevelReq, defenceLevelReq,
-			strengthLevelReq, rangeLevelReq, magicLevelReq, followId, skullTimer, votingPoints, nextChat = 0,
+	public int saveDelay, playerKilled, pkPoints, totalPlayerDamageDealt, killedBy, lastChatId = 1, privateChat,
+			friendSlot = 0, dialogueId, randomCoffin, newLocation, specEffect, specBarId, attackLevelReq,
+			defenceLevelReq, strengthLevelReq, rangeLevelReq, magicLevelReq, followId, skullTimer, votingPoints,
 			talkingNpc = -1, dialogueAction = 0, autocastId, followDistance, followId2, barrageCount = 0,
 			delayedDamage = 0, delayedDamage2 = 0, pcPoints = 0, magePoints = 0, lastArrowUsed = -1, clanId = -1,
 			autoRet = 0, pcDamage = 0, xInterfaceId = 0, xRemoveId = 0, xRemoveSlot = 0, tzhaarToKill = 0,
 			tzhaarKilled = 0, waveId, frozenBy = 0, poisonDamage = 0, teleAction = 0, bonusAttack = 0,
-			lastNpcAttacked = 0, killCount = 0,
+			lastNpcAttacked = 0, killCount = 0;
 
-			actionTimer, height = 0, rfdRound = 0, roundNpc = 0, desertTreasure = 0, horrorFromDeep = 0,
-			QuestPoints = 0, doricQuest = 0;
+	public boolean settingUpCannon, hasCannon, cannonIsShooting, setUpBase, setUpStand, setUpBarrels, setUpFurnace;
+	public int cannonBalls, cannonBaseX, cannonBaseY, cannonBaseH, rotation, cannonID;
+	public server.model.objects.Objects oldCannon;
 
+	public int tzKekSpawn = 0, caveWave, tzhaarNpcs;
+	public int tzKekTimer;
+	public int startDate;
+	public boolean membership = false;
 	public String clanName, properName;
 	public int[] voidStatus = new int[5];
 	public int[] itemKeptId = new int[4];
 	public int[] pouches = new int[4];
 	public final int[] POUCH_SIZE = { 3, 6, 9, 12 };
 	public boolean[] invSlot = new boolean[28], equipSlot = new boolean[14];
-	public long ignores[], friends[] = new long[200];
+	public long friends[] = new long[200];
+	public int[] loggedKills = new int[30];
+	public int[] unlockedPets = new int[30];
+
+	public DialogueContainer dialogueContainer;
+
+	/**
+	 * Music
+	 */
+	public boolean isLoopingMusic = true;
+	public int auto = 1;
 
 	public double specAmount = 0;
 	public double specAccuracy = 1;
@@ -60,24 +72,17 @@ public abstract class Player {
 	public double prayerPoint = 1.0;
 	public int teleGrabItem, teleGrabX, teleGrabY, duelCount, underAttackBy, underAttackBy2, wildLevel, teleTimer,
 			respawnTimer, saveTimer = 0, teleBlockLength, poisonDelay;
-	public long lastPlayerMove, lastPoison, lastPoisonSip, poisonImmune, lastSpear, lastProtItem, dfsDelay, lastVeng,
-			lastYell, teleGrabDelay, protMageDelay, protMeleeDelay, protRangeDelay, lastAction, lastThieve,
-			lastLockPick, alchDelay, specDelay = System.currentTimeMillis(), duelDelay, teleBlockDelay, godSpellDelay,
-			singleCombatDelay, singleCombatDelay2, reduceStat, restoreStatsDelay, logoutDelay, buryDelay, foodDelay,
-			potDelay;
+	public long lastVeng, lastProtItem, lastSpear, lastPoisonSip, teleGrabDelay, poisonImmune, protMageDelay,
+			protMeleeDelay, protRangeDelay, lastAction, lastThieve, lastLockPick, alchDelay,
+			specDelay = System.currentTimeMillis(), duelDelay, teleBlockDelay, godSpellDelay, singleCombatDelay,
+			singleCombatDelay2, reduceStat, restoreStatsDelay, logoutDelay, buryDelay, foodDelay, potDelay;
 	public boolean canChangeAppearance = false;
 	public boolean mageAllowed;
 	public byte poisonMask = 0;
 	public boolean[] curseActive = { false, false, false, false, false, false, false, false, false, false, false, false,
 			false, false, false, false, false, false, false, false };
 	public int focusPointX = -1, focusPointY = -1;
-	public int questPoints = 0;
-	public int cooksA;
-	public int lastDtKill = 0;
-	public int dtHp = 0, dtMax = 0, dtAtk = 0, dtDef = 0;
-	public int desertT;
-	public long lastChat, lastRandom, lastCaught = 0, lastAttacked, homeTeleTime, lastDagChange = -1, reportDelay,
-			lastPlant, objectTimer, npcTimer, lastEss, lastClanMessage;
+
 	public int DirectionCount = 0;
 	public boolean appearanceUpdateRequired = true;
 	public int hitDiff2;
@@ -85,11 +90,6 @@ public abstract class Player {
 	public boolean hitUpdateRequired2;
 	public boolean hitUpdateRequired = false;
 	public boolean isDead = false;
-	public boolean randomEvent = false;
-	public boolean FirstClickRunning = false;
-	/*
-	 * End*
-	 */
 
 	public void faceNPC(int index) {
 		faceNPC = index;
@@ -115,112 +115,6 @@ public abstract class Player {
 	public final int[] OTHER_RANGE_WEAPONS = { 863, 864, 865, 866, 867, 868, 869, 806, 807, 808, 809, 810, 811, 825,
 			826, 827, 828, 829, 830, 800, 801, 802, 803, 804, 805, 6522 };
 
-	public final int[][] MAGIC_SPELLS = {
-			// example {magicId, level req, animation, startGFX, projectile Id,
-			// endGFX, maxhit, exp gained, rune 1, rune 1 amount, rune 2, rune 2
-			// amount, rune 3, rune 3 amount, rune 4, rune 4 amount}
-
-			// Modern Spells
-			{ 1152, 1, 711, 90, 91, 92, 2, 5, 556, 1, 558, 1, 0, 0, 0, 0 }, // wind
-																			// strike
-			{ 1154, 5, 711, 93, 94, 95, 4, 7, 555, 1, 556, 1, 558, 1, 0, 0 }, // water
-																				// strike
-			{ 1156, 9, 711, 96, 97, 98, 6, 9, 557, 2, 556, 1, 558, 1, 0, 0 }, // earth
-																				// strike
-			{ 1158, 13, 711, 99, 100, 101, 8, 11, 554, 3, 556, 2, 558, 1, 0, 0 }, // fire
-																					// strike
-			{ 1160, 17, 711, 117, 118, 119, 9, 13, 556, 2, 562, 1, 0, 0, 0, 0 }, // wind
-																					// bolt
-			{ 1163, 23, 711, 120, 121, 122, 10, 16, 556, 2, 555, 2, 562, 1, 0, 0 }, // water
-																					// bolt
-			{ 1166, 29, 711, 123, 124, 125, 11, 20, 556, 2, 557, 3, 562, 1, 0, 0 }, // earth
-																					// bolt
-			{ 1169, 35, 711, 126, 127, 128, 12, 22, 556, 3, 554, 4, 562, 1, 0, 0 }, // fire
-																					// bolt
-			{ 1172, 41, 711, 132, 133, 134, 13, 25, 556, 3, 560, 1, 0, 0, 0, 0 }, // wind
-																					// blast
-			{ 1175, 47, 711, 135, 136, 137, 14, 28, 556, 3, 555, 3, 560, 1, 0, 0 }, // water
-																					// blast
-			{ 1177, 53, 711, 138, 139, 140, 15, 31, 556, 3, 557, 4, 560, 1, 0, 0 }, // earth
-																					// blast
-			{ 1181, 59, 711, 129, 130, 131, 16, 35, 556, 4, 554, 5, 560, 1, 0, 0 }, // fire
-																					// blast
-			{ 1183, 62, 711, 158, 159, 160, 17, 36, 556, 5, 565, 1, 0, 0, 0, 0 }, // wind
-																					// wave
-			{ 1185, 65, 711, 161, 162, 163, 18, 37, 556, 5, 555, 7, 565, 1, 0, 0 }, // water
-																					// wave
-			{ 1188, 70, 711, 164, 165, 166, 19, 40, 556, 5, 557, 7, 565, 1, 0, 0 }, // earth
-																					// wave
-			{ 1189, 75, 711, 155, 156, 157, 20, 42, 556, 5, 554, 7, 565, 1, 0, 0 }, // fire
-																					// wave
-			{ 1153, 3, 716, 102, 103, 104, 0, 13, 555, 3, 557, 2, 559, 1, 0, 0 }, // confuse
-			{ 1157, 11, 716, 105, 106, 107, 0, 20, 555, 3, 557, 2, 559, 1, 0, 0 }, // weaken
-			{ 1161, 19, 716, 108, 109, 110, 0, 29, 555, 2, 557, 3, 559, 1, 0, 0 }, // curse
-			{ 1542, 66, 729, 167, 168, 169, 0, 76, 557, 5, 555, 5, 566, 1, 0, 0 }, // vulnerability
-			{ 1543, 73, 729, 170, 171, 172, 0, 83, 557, 8, 555, 8, 566, 1, 0, 0 }, // enfeeble
-			{ 1562, 80, 729, 173, 174, 107, 0, 90, 557, 12, 555, 12, 556, 1, 0, 0 }, // stun
-			{ 1572, 20, 711, 177, 178, 181, 0, 30, 557, 3, 555, 3, 561, 2, 0, 0 }, // bind
-			{ 1582, 50, 711, 177, 178, 180, 2, 60, 557, 4, 555, 4, 561, 3, 0, 0 }, // snare
-			{ 1592, 79, 711, 177, 178, 179, 4, 90, 557, 5, 555, 5, 561, 4, 0, 0 }, // entangle
-			{ 1171, 39, 724, 145, 146, 147, 15, 25, 556, 2, 557, 2, 562, 1, 0, 0 }, // crumble
-																					// undead
-			{ 1539, 50, 708, 87, 88, 89, 25, 42, 554, 5, 560, 1, 0, 0, 0, 0 }, // iban
-																				// blast
-			{ 12037, 50, 1576, 327, 328, 329, 19, 30, 560, 1, 558, 4, 0, 0, 0, 0 }, // magic
-																					// dart
-			{ 1190, 60, 811, 0, 0, 76, 20, 60, 554, 2, 565, 2, 556, 4, 0, 0 }, // sara
-																				// strike
-			{ 1191, 60, 811, 0, 0, 77, 20, 60, 554, 1, 565, 2, 556, 4, 0, 0 }, // cause
-																				// of
-																				// guthix
-			{ 1192, 60, 811, 0, 0, 78, 20, 60, 554, 4, 565, 2, 556, 1, 0, 0 }, // flames
-																				// of
-																				// zammy
-			{ 12445, 85, 1819, 0, 344, 345, 0, 65, 563, 1, 562, 1, 560, 1, 0, 0 }, // teleblock
-
-			// Ancient Spells
-			{ 12939, 50, 1978, 0, 384, 385, 13, 30, 560, 2, 562, 2, 554, 1, 556, 1 }, // smoke
-																						// rush
-			{ 12987, 52, 1978, 0, 378, 379, 14, 31, 560, 2, 562, 2, 566, 1, 556, 1 }, // shadow
-																						// rush
-			{ 12901, 56, 1978, 0, 0, 373, 15, 33, 560, 2, 562, 2, 565, 1, 0, 0 }, // blood
-																					// rush
-			{ 12861, 58, 1978, 0, 360, 361, 16, 34, 560, 2, 562, 2, 555, 2, 0, 0 }, // ice
-																					// rush
-			{ 12963, 62, 1979, 0, 0, 389, 19, 36, 560, 2, 562, 4, 556, 2, 554, 2 }, // smoke
-																					// burst
-			{ 13011, 64, 1979, 0, 0, 382, 20, 37, 560, 2, 562, 4, 556, 2, 566, 2 }, // shadow
-																					// burst
-			{ 12919, 68, 1979, 0, 0, 376, 21, 39, 560, 2, 562, 4, 565, 2, 0, 0 }, // blood
-																					// burst
-			{ 12881, 70, 1979, 0, 0, 363, 22, 40, 560, 2, 562, 4, 555, 4, 0, 0 }, // ice
-																					// burst
-			{ 12951, 74, 1978, 0, 386, 387, 23, 42, 560, 2, 554, 2, 565, 2, 556, 2 }, // smoke
-																						// blitz
-			{ 12999, 76, 1978, 0, 380, 381, 24, 43, 560, 2, 565, 2, 556, 2, 566, 2 }, // shadow
-																						// blitz
-			{ 12911, 80, 1978, 0, 374, 375, 25, 45, 560, 2, 565, 4, 0, 0, 0, 0 }, // blood
-																					// blitz
-			{ 12871, 82, 1978, 366, 0, 367, 26, 46, 560, 2, 565, 2, 555, 3, 0, 0 }, // ice
-																					// blitz
-			{ 12975, 86, 1979, 0, 0, 391, 27, 48, 560, 4, 565, 2, 556, 4, 554, 4 }, // smoke
-																					// barrage
-			{ 13023, 88, 1979, 0, 0, 383, 28, 49, 560, 4, 565, 2, 556, 4, 566, 3 }, // shadow
-																					// barrage
-			{ 12929, 92, 1979, 0, 0, 377, 29, 51, 560, 4, 565, 4, 566, 1, 0, 0 }, // blood
-																					// barrage
-			{ 12891, 94, 1979, 0, 0, 369, 30, 52, 560, 4, 565, 2, 555, 6, 0, 0 }, // ice
-																					// barrage
-
-			{ -1, 80, 811, 301, 0, 0, 0, 0, 554, 3, 565, 3, 556, 3, 0, 0 }, // charge
-			{ -1, 21, 712, 112, 0, 0, 0, 10, 554, 3, 561, 1, 0, 0, 0, 0 }, // low
-																			// alch
-			{ -1, 55, 713, 113, 0, 0, 0, 20, 554, 5, 561, 1, 0, 0, 0, 0 }, // high
-																			// alch
-			{ -1, 33, 728, 142, 143, 144, 0, 35, 556, 1, 563, 1, 0, 0, 0, 0 } // telegrab
-
-	};
-
 	public boolean isAutoButton(int button) {
 		for (int j = 0; j < autocastIds.length; j += 2) {
 			if (autocastIds[j] == button)
@@ -229,6 +123,8 @@ public abstract class Player {
 		return false;
 	}
 
+	public int squaresRan = 0, runEnergy = 100;
+	public long runEnergyTime;
 	public int[] autocastIds = { 51133, 32, 51185, 33, 51091, 34, 24018, 35, 51159, 36, 51211, 37, 51111, 38, 51069, 39,
 			51146, 40, 51198, 41, 51102, 42, 51058, 43, 51172, 44, 51224, 45, 51122, 46, 51080, 47, 7038, 0, 7039, 1,
 			7040, 2, 7041, 3, 7042, 4, 7043, 5, 7044, 6, 7045, 7, 7046, 8, 7047, 9, 7048, 10, 7049, 11, 7050, 12, 7051,
@@ -253,9 +149,10 @@ public abstract class Player {
 		}
 	}
 
+	// statistics
 	public int duelWins = 0, duelLoses = 0, teleHome = 0, specsUsed = 0, foodEaten = 0, potsDrank = 0,
 			emotesPerformed = 0, timesVoted = 0, votesClaimed = 0, timesMuted = 0, timesBanned = 0, prayersAcivated = 0,
-			mbOpened = 0, itemsUpgraded = 0;
+			mbOpened = 0, itemsUpgraded = 0, kills = 0, deaths = 0;
 
 	public String getSpellName(int id) {
 		switch (id) {
@@ -331,14 +228,14 @@ public abstract class Player {
 	public int[] playerEquipment = new int[14];
 
 	public int[] getEquipment() {
-		return this.playerEquipment;
+		return playerEquipment;
 	}
 
 	public int[] playerEquipmentN = new int[14];
 	public int[] playerLevel = new int[25];
 
 	public int[] getLevel() {
-		return this.playerLevel;
+		return playerLevel;
 	}
 
 	public int[] playerXP = new int[25];
@@ -348,18 +245,24 @@ public abstract class Player {
 	}
 
 	public boolean fullVoidRange() {
-		return playerEquipment[playerHat] == 11664 && playerEquipment[playerLegs] == 8840
-				&& playerEquipment[playerChest] == 8839 && playerEquipment[playerHands] == 8842;
+		return playerEquipment[EquipmentListener.HAT_SLOT.getSlot()] == 11664
+				&& playerEquipment[EquipmentListener.LEGS_SLOT.getSlot()] == 8840
+				&& playerEquipment[EquipmentListener.CHEST_SLOT.getSlot()] == 8839
+				&& playerEquipment[EquipmentListener.GLOVES_SLOT.getSlot()] == 8842;
 	}
 
 	public boolean fullVoidMage() {
-		return playerEquipment[playerHat] == 11663 && playerEquipment[playerLegs] == 8840
-				&& playerEquipment[playerChest] == 8839 && playerEquipment[playerHands] == 8842;
+		return playerEquipment[EquipmentListener.HAT_SLOT.getSlot()] == 11663
+				&& playerEquipment[EquipmentListener.LEGS_SLOT.getSlot()] == 8840
+				&& playerEquipment[EquipmentListener.CHEST_SLOT.getSlot()] == 8839
+				&& playerEquipment[EquipmentListener.GLOVES_SLOT.getSlot()] == 8842;
 	}
 
 	public boolean fullVoidMelee() {
-		return playerEquipment[playerHat] == 11665 && playerEquipment[playerLegs] == 8840
-				&& playerEquipment[playerChest] == 8839 && playerEquipment[playerHands] == 8842;
+		return playerEquipment[EquipmentListener.HAT_SLOT.getSlot()] == 11665
+				&& playerEquipment[EquipmentListener.LEGS_SLOT.getSlot()] == 8840
+				&& playerEquipment[EquipmentListener.CHEST_SLOT.getSlot()] == 8839
+				&& playerEquipment[EquipmentListener.GLOVES_SLOT.getSlot()] == 8842;
 	}
 
 	public int[][] barrowsNpcs = { { 2030, 0 }, // verac
@@ -372,17 +275,7 @@ public abstract class Player {
 	public int barrowsKillCount;
 
 	public int reduceSpellId;
-	public final int[] REDUCE_SPELL_TIME = { 250000, 250000, 250000, 500000, 500000, 500000 }; // how
-																								// long
-																								// does
-																								// the
-																								// other
-																								// player
-																								// stay
-																								// immune
-																								// to
-																								// the
-																								// spell
+	public final int[] REDUCE_SPELL_TIME = { 250000, 250000, 250000, 500000, 500000, 500000 };
 	public long[] reduceSpellDelay = new long[6];
 	public final int[] REDUCE_SPELLS = { 1153, 1157, 1161, 1542, 1543, 1562 };
 	public boolean[] canUseReducingSpell = { true, true, true, true, true, true };
@@ -413,9 +306,6 @@ public abstract class Player {
 
 	public boolean[] prayerActive = { false, false, false, false, false, false, false, false, false, false, false,
 			false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
-
-	public int Bonetype, Boneamount;
-	public boolean isPraying;
 
 	public int duelTimer, duelTeleX, duelTeleY, duelSlot, duelSpaceReq, duelOption, duelingWith, duelStatus;
 	public int headIconPk = -1, headIconHints;
@@ -450,22 +340,7 @@ public abstract class Player {
 	public int actionID;
 	public int wearItemTimer, wearId, wearSlot, interfaceId;
 	public int XremoveSlot, XinterfaceID, XremoveID, Xamount;
-
-	public int tutorial = 15;
-	public boolean usingGlory = false;
-	public int[] woodcut = new int[3];
-	public int wcTimer = 0;
-	public int[] mining = new int[3];
-	public int miningTimer = 0;
-	public boolean fishing = false;
-	public int fishTimer = 0;
-	public int smeltType; // 1 = bronze, 2 = iron, 3 = steel, 4 = gold, 5 =
-							// mith, 6 = addy, 7 = rune
-	public int smeltAmount;
-	public int smeltTimer = 0;
-	public boolean smeltInterface;
-	public boolean patchCleared;
-	public int[] farm = new int[2];
+	public boolean isAttackingGate = false;
 
 	public boolean antiFirePot = false;
 
@@ -558,7 +433,6 @@ public abstract class Player {
 	}
 
 	public String connectedFrom = "";
-	public String globalMessage = "";
 
 	public abstract void initialize();
 
@@ -569,7 +443,7 @@ public abstract class Player {
 	public String playerName2 = null;
 	public String playerPass = null;
 	public int playerRights;
-	public PlayerHandler handler = null;
+	public PlayerHandler handler = new PlayerHandler();
 	public int playerItems[] = new int[28];
 	public int playerItemsN[] = new int[28];
 	public int bankItems[] = new int[Constants.BANK_SIZE];
@@ -584,53 +458,7 @@ public abstract class Player {
 	public int playerTurn90CCWIndex = 0x336;
 	public int playerRunIndex = 0x338;
 
-	public int playerHat = 0;
-	public int playerCape = 1;
-	public int playerAmulet = 2;
-	public int playerWeapon = 3;
-	public int playerChest = 4;
-	public int playerShield = 5;
-	public int playerLegs = 7;
-	public int playerHands = 9;
-	public int playerFeet = 10;
-	public int playerRing = 12;
-	public int playerArrows = 13;
-
-	public int playerAttack = 0;
-	public int playerDefence = 1;
-	public int playerStrength = 2;
-	public int playerHitpoints = 3;
-	public int playerRanged = 4;
-	public int playerPrayer = 5;
-	public int playerMagic = 6;
-	public int playerCooking = 7;
-	public int playerWoodcutting = 8;
-	public int playerFletching = 9;
-	public int playerFishing = 10;
-	public int playerFiremaking = 11;
-	public int playerCrafting = 12;
-	public int playerSmithing = 13;
-	public int playerMining = 14;
-	public int playerHerblore = 15;
-	public int playerAgility = 16;
-	public int playerThieving = 17;
-	public int playerSlayer = 18;
-	public int playerFarming = 19;
-	public int playerRunecrafting = 20;
-
-	private int[] hits = new int[100];
-
-	public int[] getHits() {
-		return hits;
-	}
-
-	public int[] damage = new int[3];
-
-	public int[] getDamage() {
-		return this.damage;
-	}
-
-	public int combatStyle = 0;
+	public int cwKills, cwDeaths, cwGames;
 
 	@SuppressWarnings("static-access")
 	public void updateshop(int i) {
@@ -662,12 +490,6 @@ public abstract class Player {
 		updateRequired = true;
 	}
 
-	public int getFace() {
-		return this.playerId + '\u8000';
-	}
-
-	public long attackableTimer;
-
 	public boolean inSafeZone() {
 		if (this.inDuelArena()) {
 			return true;
@@ -686,31 +508,6 @@ public abstract class Player {
 		}
 		return false;
 	}
-
-	public long stofdDelay;
-
-	public int dbowIndex, dbowIndex1, dbowTimer;
-
-	public boolean withinRange(Client otherPlayer) {
-		int highRange = otherPlayer.combatLevel + calculatePVPLevel();
-		int lowRange = otherPlayer.combatLevel - calculatePVPLevel();
-		if (combatLevel >= lowRange && combatLevel <= highRange) {
-			return true;
-		}
-		return false;
-	}
-
-	public int calculatePVPLevel() {
-		return (int) (0.1 * this.combatLevel) + 5 + this.wildLevel;
-	}
-
-	private int[] combatBonus = new int[12];
-
-	public int[] getCombatBonus() {
-		return this.combatBonus;
-	}
-
-	public boolean armadylSpecial = false;
 
 	public Player(int _playerId) {
 		playerId = _playerId;
@@ -763,17 +560,17 @@ public abstract class Player {
 		apset = 0;
 		actionID = 0;
 
-		playerEquipment[playerHat] = -1;
-		playerEquipment[playerCape] = -1;
-		playerEquipment[playerAmulet] = -1;
-		playerEquipment[playerChest] = -1;
-		playerEquipment[playerShield] = -1;
-		playerEquipment[playerLegs] = -1;
-		playerEquipment[playerHands] = -1;
-		playerEquipment[playerFeet] = -1;
-		playerEquipment[playerRing] = -1;
-		playerEquipment[playerArrows] = -1;
-		playerEquipment[playerWeapon] = -1;
+		playerEquipment[EquipmentListener.HAT_SLOT.getSlot()] = -1;
+		playerEquipment[EquipmentListener.CAPE_SLOT.getSlot()] = -1;
+		playerEquipment[EquipmentListener.AMULET_SLOT.getSlot()] = -1;
+		playerEquipment[EquipmentListener.CHEST_SLOT.getSlot()] = -1;
+		playerEquipment[EquipmentListener.SHIELD_SLOT.getSlot()] = -1;
+		playerEquipment[EquipmentListener.LEGS_SLOT.getSlot()] = -1;
+		playerEquipment[EquipmentListener.GLOVES_SLOT.getSlot()] = -1;
+		playerEquipment[EquipmentListener.BOOTS_SLOT.getSlot()] = -1;
+		playerEquipment[EquipmentListener.RING_SLOT.getSlot()] = -1;
+		playerEquipment[EquipmentListener.ARROWS_SLOT.getSlot()] = -1;
+		playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] = -1;
 
 		heightLevel = 0;
 
@@ -786,7 +583,7 @@ public abstract class Player {
 		resetWalkingQueue();
 	}
 
-	void destruct() {
+	public void destruct() {
 		playerListSize = 0;
 		for (int i = 0; i < maxPlayerListSize; i++)
 			playerList[i] = null;
@@ -822,19 +619,6 @@ public abstract class Player {
 			return false;
 		int deltaX = npc.absX - absX, deltaY = npc.absY - absY;
 		return deltaX <= 15 && deltaX >= -16 && deltaY <= 15 && deltaY >= -16;
-	}
-
-	public boolean withinDistance(int absX, int getY, int getHeightLevel) {
-		if (this.getHeightLevel() != getHeightLevel)
-			return false;
-		int deltaX = this.getX() - absX, deltaY = this.getY() - getY;
-		return deltaX <= 15 && deltaX >= -16 && deltaY <= 15 && deltaY >= -16;
-	}
-
-	public int getHeightLevel;
-
-	public int getHeightLevel() {
-		return getHeightLevel;
 	}
 
 	public int distanceToPoint(int pointX, int pointY) {
@@ -880,27 +664,33 @@ public abstract class Player {
 	}
 
 	public boolean goodDistance(int objectX, int objectY, int playerX, int playerY, int distance) {
-		return ((objectX-playerX <= distance && objectX-playerX >= -distance) && (objectY-playerY <= distance && objectY-playerY >= -distance));
+		return ((objectX - playerX <= distance && objectX - playerX >= -distance)
+				&& (objectY - playerY <= distance && objectY - playerY >= -distance));
 	}
-//	public boolean goodDistance(int objectX, int objectY, int playerX, int playerY, int distance) {
-//		for (int i = 0; i <= distance; i++) {
-//			for (int j = 0; j <= distance; j++) {
-//				if ((objectX + i) == playerX
-//						&& ((objectY + j) == playerY || (objectY - j) == playerY || objectY == playerY)) {
-//					return true;
-//				} else if ((objectX - i) == playerX
-//						&& ((objectY + j) == playerY || (objectY - j) == playerY || objectY == playerY)) {
-//					return true;
-//				} else if (objectX == playerX
-//						&& ((objectY + j) == playerY || (objectY - j) == playerY || objectY == playerY)) {
-//					return true;
-//				}
-//			}
-//		}
-//		return false;
-//	}
+
+	// public boolean goodDistance(int objectX, int objectY, int playerX, int
+	// playerY, int distance) {
+	// for (int i = 0; i <= distance; i++) {
+	// for (int j = 0; j <= distance; j++) {
+	// if ((objectX + i) == playerX
+	// && ((objectY + j) == playerY || (objectY - j) == playerY || objectY ==
+	// playerY)) {
+	// return true;
+	// } else if ((objectX - i) == playerX
+	// && ((objectY + j) == playerY || (objectY - j) == playerY || objectY ==
+	// playerY)) {
+	// return true;
+	// } else if (objectX == playerX
+	// && ((objectY + j) == playerY || (objectY - j) == playerY || objectY ==
+	// playerY)) {
+	// return true;
+	// }
+	// }
+	// }
+	// return false;
+	// }
 	public long toleranceTimer;
-	
+
 	public int getNextWalkingDirection() {
 		if (wQueueReadPtr == wQueueWritePtr)
 			return -1;
@@ -961,6 +751,20 @@ public abstract class Player {
 				return;
 			if (isRunning2) {
 				dir2 = getNextWalkingDirection();
+				if (runEnergy > 0) {
+					squaresRan++;
+					if (squaresRan == Constants.RUN_SQUARE_DECREASE) {
+						runEnergy--;
+						Client c = (Client) PlayerHandler.players[playerId];
+						c.getPA().sendFrame126(runEnergy + "%", 149);
+						squaresRan = 0;
+						if (runEnergy == 0) {
+							isRunning = false;
+							isRunning2 = false;
+							c.getPA().sendFrame36(173, 0);
+						}
+					}
+				}
 			}
 			@SuppressWarnings("unused")
 			Client c = (Client) this;
@@ -1167,73 +971,74 @@ public abstract class Player {
 		// playerProps.writeByte(headIconHints);
 		// playerProps.writeByte(bountyIcon);
 
-		if (playerEquipment[playerHat] > 1) {
-			playerProps.writeWord(0x200 + playerEquipment[playerHat]);
+		if (playerEquipment[EquipmentListener.HAT_SLOT.getSlot()] > 1) {
+			playerProps.writeWord(0x200 + playerEquipment[EquipmentListener.HAT_SLOT.getSlot()]);
 		} else {
 			playerProps.writeByte(0);
 		}
 
-		if (playerEquipment[playerCape] > 1) {
-			playerProps.writeWord(0x200 + playerEquipment[playerCape]);
+		if (playerEquipment[EquipmentListener.CAPE_SLOT.getSlot()] > 1) {
+			playerProps.writeWord(0x200 + playerEquipment[EquipmentListener.CAPE_SLOT.getSlot()]);
 		} else {
 			playerProps.writeByte(0);
 		}
 
-		if (playerEquipment[playerAmulet] > 1) {
-			playerProps.writeWord(0x200 + playerEquipment[playerAmulet]);
+		if (playerEquipment[EquipmentListener.AMULET_SLOT.getSlot()] > 1) {
+			playerProps.writeWord(0x200 + playerEquipment[EquipmentListener.AMULET_SLOT.getSlot()]);
 		} else {
 			playerProps.writeByte(0);
 		}
 
-		if (playerEquipment[playerWeapon] > 1) {
-			playerProps.writeWord(0x200 + playerEquipment[playerWeapon]);
+		if (playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] > 1) {
+			playerProps.writeWord(0x200 + playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]);
 		} else {
 			playerProps.writeByte(0);
 		}
 
-		if (playerEquipment[playerChest] > 1) {
-			playerProps.writeWord(0x200 + playerEquipment[playerChest]);
+		if (playerEquipment[EquipmentListener.CHEST_SLOT.getSlot()] > 1) {
+			playerProps.writeWord(0x200 + playerEquipment[EquipmentListener.CHEST_SLOT.getSlot()]);
 		} else {
 			playerProps.writeWord(0x100 + playerAppearance[2]);
 		}
 
-		if (playerEquipment[playerShield] > 1) {
-			playerProps.writeWord(0x200 + playerEquipment[playerShield]);
+		if (playerEquipment[EquipmentListener.SHIELD_SLOT.getSlot()] > 1) {
+			playerProps.writeWord(0x200 + playerEquipment[EquipmentListener.SHIELD_SLOT.getSlot()]);
 		} else {
 			playerProps.writeByte(0);
 		}
 
-		if (!Item.isFullBody(playerEquipment[playerChest])) {
+		if (!Item.isFullBody(playerEquipment[EquipmentListener.CHEST_SLOT.getSlot()])) {
 			playerProps.writeWord(0x100 + playerAppearance[3]);
 		} else {
 			playerProps.writeByte(0);
 		}
 
-		if (playerEquipment[playerLegs] > 1) {
-			playerProps.writeWord(0x200 + playerEquipment[playerLegs]);
+		if (playerEquipment[EquipmentListener.LEGS_SLOT.getSlot()] > 1) {
+			playerProps.writeWord(0x200 + playerEquipment[EquipmentListener.LEGS_SLOT.getSlot()]);
 		} else {
 			playerProps.writeWord(0x100 + playerAppearance[5]);
 		}
 
-		if (!Item.isFullHelm(playerEquipment[playerHat]) && !Item.isFullMask(playerEquipment[playerHat])) {
+		if (!Item.isFullHelm(playerEquipment[EquipmentListener.HAT_SLOT.getSlot()])
+				&& !Item.isFullMask(playerEquipment[EquipmentListener.HAT_SLOT.getSlot()])) {
 			playerProps.writeWord(0x100 + playerAppearance[1]);
 		} else {
 			playerProps.writeByte(0);
 		}
 
-		if (playerEquipment[playerHands] > 1) {
-			playerProps.writeWord(0x200 + playerEquipment[playerHands]);
+		if (playerEquipment[EquipmentListener.GLOVES_SLOT.getSlot()] > 1) {
+			playerProps.writeWord(0x200 + playerEquipment[EquipmentListener.GLOVES_SLOT.getSlot()]);
 		} else {
 			playerProps.writeWord(0x100 + playerAppearance[4]);
 		}
 
-		if (playerEquipment[playerFeet] > 1) {
-			playerProps.writeWord(0x200 + playerEquipment[playerFeet]);
+		if (playerEquipment[EquipmentListener.BOOTS_SLOT.getSlot()] > 1) {
+			playerProps.writeWord(0x200 + playerEquipment[EquipmentListener.BOOTS_SLOT.getSlot()]);
 		} else {
 			playerProps.writeWord(0x100 + playerAppearance[6]);
 		}
 
-		if (playerAppearance[0] != 1 && !Item.isFullMask(playerEquipment[playerHat])) {
+		if (playerAppearance[0] != 1 && !Item.isFullMask(playerEquipment[EquipmentListener.HAT_SLOT.getSlot()])) {
 			playerProps.writeWord(0x100 + playerAppearance[7]);
 		} else {
 			playerProps.writeByte(0);
@@ -1275,7 +1080,7 @@ public abstract class Player {
 		str.writeByteC(playerProps.currentOffset);
 		str.writeBytes(playerProps.buffer, playerProps.currentOffset, 0);
 	}
-
+	public boolean fightForOnyx = false;
 	public int getLevelForXP(int exp) {
 		int points = 0;
 		int output = 0;
@@ -1349,10 +1154,10 @@ public abstract class Player {
 
 	public boolean wearing2h() {
 		Client c = (Client) this;
-		String s = c.getItems().getItemName(c.playerEquipment[c.playerWeapon]);
-		if (s.contains("2h"))
+		String name = c.getItems().getItemName(c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]);
+		if (name.contains("2h"))
 			return true;
-		else if (s.contains("godsword"))
+		else if (name.contains("godsword"))
 			return true;
 		return false;
 	}
@@ -1385,9 +1190,9 @@ public abstract class Player {
 	 * Face Update
 	 **/
 
-	protected boolean faceUpdateRequired = false;
-	public int face = -1;
-	public int FocusPointX = -1, FocusPointY = -1;
+	private boolean faceUpdateRequired = false;
+	private int face = -1;
+	private int FocusPointX = -1, FocusPointY = -1;
 
 	public void faceUpdate(int index) {
 		face = index;
@@ -1546,6 +1351,19 @@ public abstract class Player {
 	private int speed2 = -1;
 	private int direction = -1;
 
+	/**
+	 * TODO: Fix bug where when you finish route and click away you restart from
+	 * Original tile and walk to the tile selected after event.
+	 * 
+	 * @param x2
+	 * @param y2
+	 * @param x1
+	 * @param y1
+	 * @param speed1
+	 * @param speed2
+	 * @param direction
+	 * @param emote
+	 */
 	public void setForceMovement(final int x2, final int y2, boolean x1, boolean y1, final int speed1, final int speed2,
 			final int direction, final int emote) {
 		canWalk = false;
@@ -1562,13 +1380,14 @@ public abstract class Player {
 		CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
 			@Override
 			public void execute(CycleEventContainer container) {
-				c.getCombat().getPlayerAnimIndex(c.getItems().getItemName(playerEquipment[playerWeapon]).toLowerCase());
-				c.getPA().movePlayer(c.absX, c.absY - 7, c.heightLevel);
+				c.getCombat().getPlayerAnimIndex(c.getItems()
+						.getItemName(playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]).toLowerCase());
+				c.getPA().walkTo(x2, y2);
 
 				updateRequired = true;
 				forceMovementUpdateRequired = false;
 				canWalk = true;
-
+				c.getPA().requestUpdates();
 				// TODO: add a reset movement after event is done (when u
 				// finished being force moved, and click the tile you're under
 				// the character will run back to original tile to force
@@ -1627,9 +1446,9 @@ public abstract class Player {
 	private int newWalkCmdY[] = new int[walkingQueueSize];
 	public int newWalkCmdSteps = 0;
 	private boolean newWalkCmdIsRunning = false;
-	protected int travelBackX[] = new int[walkingQueueSize];
-	protected int travelBackY[] = new int[walkingQueueSize];
-	protected int numTravelBackSteps = 0;
+	private int travelBackX[] = new int[walkingQueueSize];
+	private int travelBackY[] = new int[walkingQueueSize];
+	private int numTravelBackSteps = 0;
 
 	public void preProcessing() {
 		newWalkCmdSteps = 0;
@@ -1723,11 +1542,10 @@ public abstract class Player {
 				}
 
 			}
-
-			isRunning = isNewWalkCmdIsRunning() || isRunning2;
+			isRunning = runEnergy > 0 ? isRunning2 : false;
+			// isRunning = isNewWalkCmdIsRunning() || isRunning2;
 		}
 	}
-
 	public int getMapRegionX() {
 		return mapRegionX;
 	}
@@ -1886,12 +1704,7 @@ public abstract class Player {
 		return false;
 	}
 
-	public void putInCombat(int attacker) {
-		underAttackBy = attacker;
-		logoutDelay = System.currentTimeMillis();
-		singleCombatDelay = System.currentTimeMillis();
-	}
-
+	public int questPoints = 14;
 	public void dealDamage(int damage) {
 		if (teleTimer <= 0)
 			playerLevel[3] -= damage;
@@ -1905,7 +1718,6 @@ public abstract class Player {
 	}
 
 	public int[] damageTaken = new int[Constants.MAX_PLAYERS];
-	public int starter;
 
 	public void handleHitMask(int damage) {
 		if (!hitUpdateRequired) {
@@ -1917,5 +1729,4 @@ public abstract class Player {
 		}
 		updateRequired = true;
 	}
-
 }

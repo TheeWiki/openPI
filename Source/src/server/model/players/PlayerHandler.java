@@ -7,10 +7,8 @@ import server.util.Misc;
 import server.util.Stream;
 
 public class PlayerHandler {
-
-	public static Object lock = new Object();
+	
 	public static Player players[] = new Player[Constants.MAX_PLAYERS];
-	public static String messageToAll = "";
 
 	public static boolean updateAnnounced;
 	public static boolean updateRunning;
@@ -19,8 +17,8 @@ public class PlayerHandler {
 	private boolean kickAllPlayers = false;
 
 	static {
-		for (int i = 0; i < Constants.MAX_PLAYERS; i++)
-			players[i] = null;
+		for (int count = 0; count < Constants.MAX_PLAYERS; count++)
+			players[count] = null;
 	}
 
 	public boolean newPlayerClient(Client client1) {
@@ -31,7 +29,7 @@ public class PlayerHandler {
 				break;
 			}
 		}
-		
+
 		if (slot == -1)
 			return false;
 		client1.handler = this;
@@ -76,7 +74,7 @@ public class PlayerHandler {
 	}
 
 	public void process() {
-		synchronized (lock) {
+//		synchronized (lock) {
 			if (kickAllPlayers) {
 				for (int i = 1; i < Constants.MAX_PLAYERS; i++) {
 					if (players[i] != null) {
@@ -156,7 +154,7 @@ public class PlayerHandler {
 			}
 			if (updateRunning && (System.currentTimeMillis() - updateStartTime > (updateSeconds * 1000))) {
 				kickAllPlayers = true;
-			}
+//			}
 		}
 	}
 
@@ -211,7 +209,7 @@ public class PlayerHandler {
 
 	private Stream updateBlock = new Stream(new byte[Constants.BUFFER_SIZE]);
 
-	public void updatePlayer(Player plr, Stream str) {
+	public void updatePlayer(Client plr, Stream str) {
 		// synchronized(plr) {
 		updateBlock.currentOffset = 0;
 		if (updateRunning && !updateAnnounced) {
