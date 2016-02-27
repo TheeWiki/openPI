@@ -16,21 +16,21 @@ public class GnomeGlider {
 		{48054, 2544, 2970, 0, 10}, // TO OGRE AREA
 	};
 
-	public static void flightButtons(Player c, int button) {
+	public static void flightButtons(Player player, int button) {
 		for (int i = 0; i < getLength(); i++) {
 			if (getButton(i) == button) {
-				handleFlight(c, i);
+				handleFlight(player, i);
 			}
 		}
 	}
 
-	public static void handleFlight(final Player c, final int flightId) {
-		c.getPA().showInterface(802);
-		c.getPA().sendFrame36(153, getMove(flightId));
-		CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
+	public static void handleFlight(final Player player, final int flightId) {
+		player.getPA().showInterface(802);
+		player.getActionSender().sendConfig(153, getMove(flightId));
+		CycleEventHandler.getSingleton().addEvent(player, new CycleEvent() {
 			@Override
 			public void execute(CycleEventContainer container) {
-				c.getPA().movePlayer(getX(flightId), getY(flightId),
+				player.getPA().movePlayer(getX(flightId), getY(flightId),
 						getH(flightId));
 				container.stop();
 			}
@@ -39,11 +39,11 @@ public class GnomeGlider {
 
 			}
 		}, 3);
-		CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
+		CycleEventHandler.getSingleton().addEvent(player, new CycleEvent() {
 			@Override
 			public void execute(CycleEventContainer container) {
-				c.getPA().closeAllWindows();
-				c.getPA().sendFrame36(153, -1);
+				player.getPA().closeAllWindows();
+				player.getActionSender().sendConfig(153, -1);
 				container.stop();
 			}
 			@Override

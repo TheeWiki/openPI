@@ -11,40 +11,40 @@ import server.model.players.packet.PacketType;
 public class ClickingStuff implements PacketType {
 
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
-		if (c.inTrade) {
-			if (!c.acceptedTrade) {
+	public void processPacket(Player player, int packetType, int packetSize) {
+		if (player.inTrade) {
+			if (!player.acceptedTrade) {
 				@SuppressWarnings("static-access")
-				Player o = (Player) Server.playerHandler.players[c.tradeWith];
+				Player o = (Player) Server.playerHandler.players[player.tradeWith];
 				o.tradeAccepted = false;
-				c.tradeAccepted = false;
+				player.tradeAccepted = false;
 				o.tradeStatus = 0;
-				c.tradeStatus = 0;
-				c.tradeConfirmed = false;
-				c.tradeConfirmed2 = false;
-				c.sendMessage("@blu@You have declined the trade.");
-				o.sendMessage(c.playerName2 + "@blu@ has declined the trade.");
-				c.getTradeAndDuel().declineTrade();
+				player.tradeStatus = 0;
+				player.tradeConfirmed = false;
+				player.tradeConfirmed2 = false;
+				player.getActionSender().sendMessage("@blu@You have declined the trade.");
+				o.getActionSender().sendMessage(player.playerName2 + "@blu@ has declined the trade.");
+				player.getTradeAndDuel().declineTrade();
 			}
 		}
 		//if (c.isBanking)
 		//c.isBanking = false;
 
 		@SuppressWarnings("static-access")
-		Player o = (Player) Server.playerHandler.players[c.duelingWith];
-			if (c.duelStatus == 5) {
+		Player o = (Player) Server.playerHandler.players[player.duelingWith];
+			if (player.duelStatus == 5) {
 				//c.sendMessage("This glitch has been fixed by Ardi, sorry sir.");
 				return;
 			}
 		if(o != null) {
-			if(c.duelStatus >= 1 && c.duelStatus <= 4) {
-				c.getTradeAndDuel().declineDuel();
+			if(player.duelStatus >= 1 && player.duelStatus <= 4) {
+				player.getTradeAndDuel().declineDuel();
 				o.getTradeAndDuel().declineDuel();
 			}
 		}
 		
-		if(c.duelStatus == 6) {
-			c.getTradeAndDuel().claimStakedItems();		
+		if(player.duelStatus == 6) {
+			player.getTradeAndDuel().claimStakedItems();		
 		}
 	}		
 }

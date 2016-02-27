@@ -9,22 +9,22 @@ import server.model.players.Player;
 
 public class Potions {
 
-	private Player c;
+	private Player player;
 
-	public Potions(Player c) {
-		this.c = c;
+	public Potions(Player player) {
+		this.player = player;
 	}
 
 	public void handlePotion(int itemId, int slot) {
-		if (c.duelRule[Rules.DRINK_RULE.getRule()]) {
-			c.sendMessage("You may not drink potions in this duel.");
+		if (player.duelRule[Rules.DRINK_RULE.getRule()]) {
+			player.getActionSender().sendMessage("You may not drink potions in this duel.");
 			return;
 		}
-		if (System.currentTimeMillis() - c.potDelay >= 1500) {
-			c.potDelay = System.currentTimeMillis();
-			c.foodDelay = c.potDelay;
-			c.getCombat().resetPlayerAttack();
-			c.attackTimer++;
+		if (System.currentTimeMillis() - player.potDelay >= 1500) {
+			player.potDelay = System.currentTimeMillis();
+			player.foodDelay = player.potDelay;
+			player.getCombat().resetPlayerAttack();
+			player.attackTimer++;
 			switch (itemId) {
 			case 6685: // brews
 				doTheBrew(itemId, 6687, slot);
@@ -191,35 +191,35 @@ public class Potions {
 	}
 
 	public void drinkAntiPoison(int itemId, int replaceItem, int slot, long delay) {
-		c.startAnimation(829);
-		c.playerItems[slot] = replaceItem + 1;
-		c.getItems().resetItems(3214);
+		player.startAnimation(829);
+		player.playerItems[slot] = replaceItem + 1;
+		player.getItems().resetItems(3214);
 		curePoison(delay);
 	}
 
 	public void curePoison(long delay) {
-		c.poisonDamage = 0;
-		c.poisonImmune = delay;
-		c.lastPoisonSip = System.currentTimeMillis();
+		player.poisonDamage = 0;
+		player.poisonImmune = delay;
+		player.lastPoisonSip = System.currentTimeMillis();
 	}
 
 	public void drinkStatPotion(int itemId, int replaceItem, int slot, int stat, boolean sup) {
-		c.startAnimation(829);
-		c.playerItems[slot] = replaceItem + 1;
-		c.getItems().resetItems(3214);
+		player.startAnimation(829);
+		player.playerItems[slot] = replaceItem + 1;
+		player.getItems().resetItems(3214);
 		enchanceStat(stat, sup);
 	}
 
 	public void drinkPrayerPot(int itemId, int replaceItem, int slot, boolean rest) {
-		c.startAnimation(829);
-		c.playerItems[slot] = replaceItem + 1;
-		c.getItems().resetItems(3214);
-		c.playerLevel[5] += (c.getLevelForXP(c.playerXP[5]) * .33);
+		player.startAnimation(829);
+		player.playerItems[slot] = replaceItem + 1;
+		player.getItems().resetItems(3214);
+		player.playerLevel[5] += (player.getLevelForXP(player.playerXP[5]) * .33);
 		if (rest)
-			c.playerLevel[5] += 1;
-		if (c.playerLevel[5] > c.getLevelForXP(c.playerXP[5]))
-			c.playerLevel[5] = c.getLevelForXP(c.playerXP[5]);
-		c.getPA().refreshSkill(5);
+			player.playerLevel[5] += 1;
+		if (player.playerLevel[5] > player.getLevelForXP(player.playerXP[5]))
+			player.playerLevel[5] = player.getLevelForXP(player.playerXP[5]);
+		player.getPA().refreshSkill(5);
 		if (rest)
 			restoreStats();
 	}
@@ -228,72 +228,72 @@ public class Potions {
 		for (int j = 0; j <= 6; j++) {
 			if (j == 5 || j == 3)
 				continue;
-			if (c.playerLevel[j] < c.getLevelForXP(c.playerXP[j])) {
-				c.playerLevel[j] += (c.getLevelForXP(c.playerXP[j]) * .33);
-				if (c.playerLevel[j] > c.getLevelForXP(c.playerXP[j])) {
-					c.playerLevel[j] = c.getLevelForXP(c.playerXP[j]);
+			if (player.playerLevel[j] < player.getLevelForXP(player.playerXP[j])) {
+				player.playerLevel[j] += (player.getLevelForXP(player.playerXP[j]) * .33);
+				if (player.playerLevel[j] > player.getLevelForXP(player.playerXP[j])) {
+					player.playerLevel[j] = player.getLevelForXP(player.playerXP[j]);
 				}
-				c.getPA().refreshSkill(j);
-				c.getPA().setSkillLevel(j, c.playerLevel[j], c.playerXP[j]);
+				player.getPA().refreshSkill(j);
+				player.getPA().setSkillLevel(j, player.playerLevel[j], player.playerXP[j]);
 			}
 		}
 	}
 
 	public void doTheBrew(int itemId, int replaceItem, int slot) {
-		if (c.duelRule[Rules.EAT_RULE.getRule()]) {
-			c.sendMessage("You may not eat in this duel.");
+		if (player.duelRule[Rules.EAT_RULE.getRule()]) {
+			player.getActionSender().sendMessage("You may not eat in this duel.");
 			return;
 		}
-		c.startAnimation(829);
-		c.playerItems[slot] = replaceItem + 1;
-		c.getItems().resetItems(3214);
+		player.startAnimation(829);
+		player.playerItems[slot] = replaceItem + 1;
+		player.getItems().resetItems(3214);
 		int[] toDecrease = { 0, 2, 4, 6 };
 
 		@SuppressWarnings("unused")
 		int[] toIncrease = { 1, 3 };
 		for (int tD : toDecrease) {
-			c.playerLevel[tD] -= getBrewStat(tD, .10);
-			if (c.playerLevel[tD] < 0)
-				c.playerLevel[tD] = 1;
-			c.getPA().refreshSkill(tD);
-			c.getPA().setSkillLevel(tD, c.playerLevel[tD], c.playerXP[tD]);
+			player.playerLevel[tD] -= getBrewStat(tD, .10);
+			if (player.playerLevel[tD] < 0)
+				player.playerLevel[tD] = 1;
+			player.getPA().refreshSkill(tD);
+			player.getPA().setSkillLevel(tD, player.playerLevel[tD], player.playerXP[tD]);
 		}
-		c.playerLevel[1] += getBrewStat(1, .20);
-		if (c.playerLevel[1] > (c.getLevelForXP(c.playerXP[1]) * 1.2 + 1)) {
-			c.playerLevel[1] = (int) (c.getLevelForXP(c.playerXP[1]) * 1.2);
+		player.playerLevel[1] += getBrewStat(1, .20);
+		if (player.playerLevel[1] > (player.getLevelForXP(player.playerXP[1]) * 1.2 + 1)) {
+			player.playerLevel[1] = (int) (player.getLevelForXP(player.playerXP[1]) * 1.2);
 		}
-		c.getPA().refreshSkill(1);
+		player.getPA().refreshSkill(1);
 
-		c.playerLevel[3] += getBrewStat(3, .15);
-		if (c.playerLevel[3] > (c.getLevelForXP(c.playerXP[3]) * 1.17 + 1)) {
-			c.playerLevel[3] = (int) (c.getLevelForXP(c.playerXP[3]) * 1.17);
+		player.playerLevel[3] += getBrewStat(3, .15);
+		if (player.playerLevel[3] > (player.getLevelForXP(player.playerXP[3]) * 1.17 + 1)) {
+			player.playerLevel[3] = (int) (player.getLevelForXP(player.playerXP[3]) * 1.17);
 		}
-		c.getPA().refreshSkill(3);
+		player.getPA().refreshSkill(3);
 	}
 
 	public void enchanceStat(int skillID, boolean sup) {
-		c.playerLevel[skillID] += getBoostedStat(skillID, sup);
-		c.getPA().refreshSkill(skillID);
+		player.playerLevel[skillID] += getBoostedStat(skillID, sup);
+		player.getPA().refreshSkill(skillID);
 	}
 
 	public int getBrewStat(int skill, double amount) {
-		return (int) (c.getLevelForXP(c.playerXP[skill]) * amount);
+		return (int) (player.getLevelForXP(player.playerXP[skill]) * amount);
 	}
 
 	public int getBoostedStat(int skill, boolean sup) {
 		int increaseBy = 0;
 		if (sup)
-			increaseBy = (int) (c.getLevelForXP(c.playerXP[skill]) * .20);
+			increaseBy = (int) (player.getLevelForXP(player.playerXP[skill]) * .20);
 		else
-			increaseBy = (int) (c.getLevelForXP(c.playerXP[skill]) * .13) + 1;
-		if (c.playerLevel[skill] + increaseBy > c.getLevelForXP(c.playerXP[skill]) + increaseBy + 1) {
-			return c.getLevelForXP(c.playerXP[skill]) + increaseBy - c.playerLevel[skill];
+			increaseBy = (int) (player.getLevelForXP(player.playerXP[skill]) * .13) + 1;
+		if (player.playerLevel[skill] + increaseBy > player.getLevelForXP(player.playerXP[skill]) + increaseBy + 1) {
+			return player.getLevelForXP(player.playerXP[skill]) + increaseBy - player.playerLevel[skill];
 		}
 		return increaseBy;
 	}
 
 	public boolean isPotion(int itemId) {
-		String name = c.getItems().getItemName(itemId);
+		String name = player.getItems().getItemName(itemId);
 		return name.contains("(4)") || name.contains("(3)") || name.contains("(2)") || name.contains("(1)");
 	}
 }

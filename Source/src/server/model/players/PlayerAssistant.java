@@ -15,10 +15,10 @@ import server.util.Misc;
 
 public class PlayerAssistant {
 
-	private Player c;
+	private Player player;
 
 	public PlayerAssistant(Player Player) {
-		this.c = Player;
+		this.player = Player;
 	}
 
 	public int CraftInt, Dcolor, FletchInt;
@@ -31,35 +31,27 @@ public class PlayerAssistant {
 	 */
 	public void multiWay(int i1) {
 		// synchronized(c) {
-		c.outStream.createFrame(61);
-		c.outStream.writeByte(i1);
-		c.updateRequired = true;
-		c.setAppearanceUpdateRequired(true);
+		player.outStream.createFrame(61);
+		player.outStream.writeByte(i1);
+		player.updateRequired = true;
+		player.setAppearanceUpdateRequired(true);
 
-	}
-
-	public void clearClanChat() {
-		c.clanId = -1;
-		c.getPA().sendFrame126("Talking in: ", 18139);
-		c.getPA().sendFrame126("Owner: ", 18140);
-		for (int j = 18144; j < 18244; j++)
-			c.getPA().sendFrame126("", j);
 	}
 
 	public void createPlayersObjectAnim(int X, int Y, int animationID, int tileObjectType, int orientation) {
 		try {
-			c.getOutStream().createFrame(85);
-			c.getOutStream().writeByteC(Y - (c.mapRegionY * 8));
-			c.getOutStream().writeByteC(X - (c.mapRegionX * 8));
+			player.getOutStream().createFrame(85);
+			player.getOutStream().writeByteC(Y - (player.mapRegionY * 8));
+			player.getOutStream().writeByteC(X - (player.mapRegionX * 8));
 			int x = 0;
 			int y = 0;
-			c.getOutStream().createFrame(160);
-			c.getOutStream().writeByteS(((x & 7) << 4) + (y & 7));// tiles away
+			player.getOutStream().createFrame(160);
+			player.getOutStream().writeByteS(((x & 7) << 4) + (y & 7));// tiles away
 																	// - could
 																	// just send
 																	// 0
-			c.getOutStream().writeByteS((tileObjectType << 2) + (orientation & 3));
-			c.getOutStream().writeWordA(animationID);// animation id
+			player.getOutStream().writeByteS((tileObjectType << 2) + (orientation & 3));
+			player.getOutStream().writeWordA(animationID);// animation id
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -83,54 +75,24 @@ public class PlayerAssistant {
 		 * -1 : id, StreamBuffer.ByteOrder.LITTLE); out.writeShort(zoom);
 		 * out.writeShort(model); player.send(out.getBuffer());
 		 */
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(246);
-			c.getOutStream().writeWordBigEndian(id == 0 ? -1 : id);
-			c.getOutStream().writeWord(zoom);
-			c.getOutStream().writeWord(model);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(246);
+			player.getOutStream().writeWordBigEndian(id == 0 ? -1 : id);
+			player.getOutStream().writeWord(zoom);
+			player.getOutStream().writeWord(model);
+			player.flushOutStream();
 		}
-	}
-
-	/**
-	 * Sends some information to the Player about screen fading.
-	 * 
-	 * @param text
-	 *            the text that will be displayed in the center of the screen
-	 * @param state
-	 *            the state should be either 0, -1, or 1.
-	 * @param seconds
-	 *            the amount of time in seconds it takes for the fade to
-	 *            transition.
-	 *            <p>
-	 *            If the state is -1 then the screen fades from black to
-	 *            transparent. When the state is +1 the screen fades from
-	 *            transparent to black. If the state is 0 all drawing is
-	 *            stopped.
-	 */
-	public void sendScreenFade(String text, int state, int seconds) {
-		if (c == null || c.getOutStream() == null) {
-			return;
-		}
-		if (seconds < 1) {
-			throw new IllegalArgumentException("The amount of seconds cannot be less than one.");
-		}
-		c.getOutStream().createFrameVarSize(9);
-		c.getOutStream().writeString(text);
-		c.getOutStream().writeByte(state);
-		c.getOutStream().writeByte(seconds);
-		c.getOutStream().endFrameVarSize();
 	}
 
 	public void resetAutocast() {
-		c.autocastId = 0;
-		c.autocasting = false;
-		c.getPA().sendFrame36(108, 0);
+		player.autocastId = 0;
+		player.autocasting = false;
+		player.getActionSender().sendConfig(108, 0);
 	}
 
 	public int getItemSlot(int itemID) {
-		for (int i = 0; i < c.playerItems.length; i++) {
-			if ((c.playerItems[i] - 1) == itemID) {
+		for (int i = 0; i < player.playerItems.length; i++) {
+			if ((player.playerItems[i] - 1) == itemID) {
 				return i;
 			}
 		}
@@ -138,8 +100,8 @@ public class PlayerAssistant {
 	}
 
 	public boolean isItemInBag(int itemID) {
-		for (int i = 0; i < c.playerItems.length; i++) {
-			if ((c.playerItems[i] - 1) == itemID) {
+		for (int i = 0; i < player.playerItems.length; i++) {
+			if ((player.playerItems[i] - 1) == itemID) {
 				return true;
 			}
 		}
@@ -148,8 +110,8 @@ public class PlayerAssistant {
 
 	public int freeSlots() {
 		int freeS = 0;
-		for (int i = 0; i < c.playerItems.length; i++) {
-			if (c.playerItems[i] <= 0) {
+		for (int i = 0; i < player.playerItems.length; i++) {
+			if (player.playerItems[i] <= 0) {
 				freeS++;
 			}
 		}
@@ -157,16 +119,16 @@ public class PlayerAssistant {
 	}
 
 	public void turnTo(int pointX, int pointY) {
-		c.focusPointX = 2 * pointX + 1;
-		c.focusPointY = 2 * pointY + 1;
-		c.updateRequired = true;
+		player.focusPointX = 2 * pointX + 1;
+		player.focusPointY = 2 * pointY + 1;
+		player.updateRequired = true;
 	}
 
 	public void movePlayer(int x, int y, int h) {
-		c.resetWalkingQueue();
-		c.teleportToX = x;
-		c.teleportToY = y;
-		c.heightLevel = h;
+		player.resetWalkingQueue();
+		player.teleportToX = x;
+		player.teleportToY = y;
+		player.heightLevel = h;
 		requestUpdates();
 	}
 
@@ -197,107 +159,92 @@ public class PlayerAssistant {
 
 	private static int[] optionIds = { 2460, 2470, 2481, 2493, 2493 };
 
-	public void showOptions(Player c, String... lines) {
+	public void showOptions(Player player, String... lines) {
 		if (lines == null || lines.length < 2 || lines.length > 5) {
 			return;
 		}
 		int id = optionIds[lines.length - 2];
-		c.getPA().sendFrame126("Select an Option", id++);
+		player.getPA().sendFrame126("Select an Option", id++);
 		for (int i = 0; i < 5; i++) {
-			c.getPA().sendFrame126(i >= lines.length ? "" : lines[i], id++);
+			player.getPA().sendFrame126(i >= lines.length ? "" : lines[i], id++);
 		}
-		c.getPA().sendFrame164(optionIds[lines.length - 2] - 1);
+		player.getPA().sendFrame164(optionIds[lines.length - 2] - 1);
 	}
 
 	public void sendStillGraphics(int id, int heightS, int y, int x, int timeBCS) {
-		c.getOutStream().createFrame(85);
-		c.getOutStream().writeByteC(y - (c.mapRegionY * 8));
-		c.getOutStream().writeByteC(x - (c.mapRegionX * 8));
-		c.getOutStream().createFrame(4);
-		c.getOutStream().writeByte(0);// Tiles away (X >> 4 + Y & 7)
+		player.getOutStream().createFrame(85);
+		player.getOutStream().writeByteC(y - (player.mapRegionY * 8));
+		player.getOutStream().writeByteC(x - (player.mapRegionX * 8));
+		player.getOutStream().createFrame(4);
+		player.getOutStream().writeByte(0);// Tiles away (X >> 4 + Y & 7)
 										// //Tiles away from
 		// absX and absY.
-		c.getOutStream().writeWord(id); // Graphic ID.
-		c.getOutStream().writeByte(heightS); // Height of the graphic when
+		player.getOutStream().writeWord(id); // Graphic ID.
+		player.getOutStream().writeByte(heightS); // Height of the graphic when
 												// cast.
-		c.getOutStream().writeWord(timeBCS); // Time before the graphic
+		player.getOutStream().writeWord(timeBCS); // Time before the graphic
 												// plays.
-		c.flushOutStream();
+		player.flushOutStream();
 	}
 
 	public void createArrow(int type, int id) {
-		if (c != null) {
-			c.getOutStream().createFrame(254); // The packet ID
-			c.getOutStream().writeByte(type); // 1=NPC, 10=Player
-			c.getOutStream().writeWord(id); // NPC/Player ID
-			c.getOutStream().write3Byte(0); // Junk
+		if (player != null) {
+			player.getOutStream().createFrame(254); // The packet ID
+			player.getOutStream().writeByte(type); // 1=NPC, 10=Player
+			player.getOutStream().writeWord(id); // NPC/Player ID
+			player.getOutStream().write3Byte(0); // Junk
 		}
 	}
 
 	public void createArrow(int x, int y, int height, int pos) {
-		if (c != null) {
-			c.getOutStream().createFrame(254); // The packet ID
-			c.getOutStream().writeByte(pos); // Position on Square(2 = middle, 3
+		if (player != null) {
+			player.getOutStream().createFrame(254); // The packet ID
+			player.getOutStream().writeByte(pos); // Position on Square(2 = middle, 3
 												// = west, 4 = east, 5 = south,
 												// 6 = north)
-			c.getOutStream().writeWord(x); // X-Coord of Object
-			c.getOutStream().writeWord(y); // Y-Coord of Object
-			c.getOutStream().writeByte(height); // Height off Ground
+			player.getOutStream().writeWord(x); // X-Coord of Object
+			player.getOutStream().writeWord(y); // Y-Coord of Object
+			player.getOutStream().writeByte(height); // Height off Ground
 		}
 	}
 
 	public void sendQuest(String s, int i) {
-		c.getOutStream().createFrameVarSizeWord(126);
-		c.getOutStream().writeString(s);
-		c.getOutStream().writeWordA(i);
-		c.getOutStream().endFrameVarSizeWord();
-		c.flushOutStream();
+		player.getOutStream().createFrameVarSizeWord(126);
+		player.getOutStream().writeString(s);
+		player.getOutStream().writeWordA(i);
+		player.getOutStream().endFrameVarSizeWord();
+		player.flushOutStream();
 	}
 
 	public void sendFrame126(String s, int id) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrameVarSizeWord(126);
-			c.getOutStream().writeString(s);
-			c.getOutStream().writeWordA(id);
-			c.getOutStream().endFrameVarSizeWord();
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrameVarSizeWord(126);
+			player.getOutStream().writeString(s);
+			player.getOutStream().writeWordA(id);
+			player.getOutStream().endFrameVarSizeWord();
+			player.flushOutStream();
 		}
 
 	}
 
 	public void sendLink(String s) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrameVarSizeWord(187);
-			c.getOutStream().writeString(s);
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrameVarSizeWord(187);
+			player.getOutStream().writeString(s);
 		}
 
 	}
-
-	public void puzzleBarrow(Player c) {
-		c.getPA().sendFrame246(4545, 250, 6833);
-		c.getPA().sendFrame126("1.", 4553);
-		c.getPA().sendFrame246(4546, 250, 6832);
-		c.getPA().sendFrame126("2.", 4554);
-		c.getPA().sendFrame246(4547, 250, 6830);
-		c.getPA().sendFrame126("3.", 4555);
-		c.getPA().sendFrame246(4548, 250, 6829);
-		c.getPA().sendFrame126("4.", 4556);
-		c.getPA().sendFrame246(4550, 250, 3454);
-		c.getPA().sendFrame246(4551, 250, 8746);
-		c.getPA().sendFrame246(4552, 250, 6830);
-		c.getPA().showInterface(4543);
-	}
-
+	
 	public void setSkillLevel(int skillNum, int currentLevel, int XP) {
-		synchronized (c) {
-			if (c.getOutStream() != null && c != null) {
-				c.getOutStream().createFrame(134);
-				c.getOutStream().writeByte(skillNum);
-				c.getOutStream().writeDWord_v1(XP);
-				c.getOutStream().writeByte(currentLevel);
-				c.flushOutStream();
+		synchronized (player) {
+			if (player.getOutStream() != null && player != null) {
+				player.getOutStream().createFrame(134);
+				player.getOutStream().writeByte(skillNum);
+				player.getOutStream().writeDWord_v1(XP);
+				player.getOutStream().writeByte(currentLevel);
+				player.flushOutStream();
 			}
 		}
 	}
@@ -319,15 +266,15 @@ public class PlayerAssistant {
 			 * Deal with regions We dont need to play this again because you are
 			 * in the current region
 			 */
-			if (c != null) {
+			if (player != null) {
 				if (soundVolume >= 0) {
-					if (c.goodDistance(c.absX, c.absY, this.absX, this.absY, 2)) {
+					if (player.goodDistance(player.absX, player.absY, this.absX, this.absY, 2)) {
 						System.out.println(
-								"Playing sound " + c.playerName + ", Id: " + SOUNDID + ", Vol: " + soundVolume);
-						c.getOutStream().createFrame(174);
-						c.getOutStream().writeWord(SOUNDID);
-						c.getOutStream().writeByte(soundVolume);
-						c.getOutStream().writeWord(/* delay */0);
+								"Playing sound " + player.playerName + ", Id: " + SOUNDID + ", Vol: " + soundVolume);
+						player.getOutStream().createFrame(174);
+						player.getOutStream().writeWord(SOUNDID);
+						player.getOutStream().writeByte(soundVolume);
+						player.getOutStream().writeWord(/* delay */0);
 					}
 				}
 			}
@@ -338,20 +285,20 @@ public class PlayerAssistant {
 	public int soundVolume = 10;
 
 	public void sendString(final String s, final int id) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrameVarSizeWord(126);
-			c.getOutStream().writeString(s);
-			c.getOutStream().writeWordA(id);
-			c.getOutStream().endFrameVarSizeWord();
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrameVarSizeWord(126);
+			player.getOutStream().writeString(s);
+			player.getOutStream().writeWordA(id);
+			player.getOutStream().endFrameVarSizeWord();
+			player.flushOutStream();
 		}
 
 	}
 
 	public void sendSong(int id) {
-		if (c.getOutStream() != null && c != null && id != -1) {
-			c.getOutStream().createFrame(74);
-			c.getOutStream().writeWordBigEndian(id);
+		if (player.getOutStream() != null && player != null && id != -1) {
+			player.getOutStream().createFrame(74);
+			player.getOutStream().writeWordBigEndian(id);
 		}
 	}
 
@@ -359,11 +306,11 @@ public class PlayerAssistant {
 	 * Sends a player a sound effect
 	 */
 	public void sendSound(int soundId) {
-		if (soundId > 0 & c != null && c.outStream != null) {
-			c.outStream.createFrame(174);
-			c.outStream.writeWord(soundId);
-			c.outStream.writeByte(100);
-			c.outStream.writeWord(5);
+		if (soundId > 0 & player != null && player.outStream != null) {
+			player.outStream.createFrame(174);
+			player.outStream.writeWord(soundId);
+			player.outStream.writeByte(100);
+			player.outStream.writeWord(5);
 		}
 	}
 
@@ -371,11 +318,11 @@ public class PlayerAssistant {
 	 * Sends a player a sound effect
 	 */
 	public void sound(int soundId) {
-		if (soundId > 0 && c.outStream != null) {
-			c.outStream.createFrame(174);
-			c.outStream.writeWord(soundId);
-			c.outStream.writeByte(100);
-			c.outStream.writeWord(5);
+		if (soundId > 0 && player.outStream != null) {
+			player.outStream.createFrame(174);
+			player.outStream.writeWord(soundId);
+			player.outStream.writeByte(100);
+			player.outStream.writeWord(5);
 		}
 	}
 
@@ -383,197 +330,186 @@ public class PlayerAssistant {
 	 * TODO: No sounds plays Sends a player a sound effect
 	 */
 	public void sendSound2(int i1, int i2, int i3) {
-		c.outStream.createFrame(174);
-		c.outStream.writeWord(i1); // id
-		c.outStream.writeByte(i2); // volume, just set it to 100 unless you play
+		player.outStream.createFrame(174);
+		player.outStream.writeWord(i1); // id
+		player.outStream.writeByte(i2); // volume, just set it to 100 unless you play
 									// around with your Player after this
-		c.outStream.writeWord(i3); // delay
-		c.updateRequired = true;
-		c.appearanceUpdateRequired = true;
-		c.flushOutStream();
+		player.outStream.writeWord(i3); // delay
+		player.updateRequired = true;
+		player.appearanceUpdateRequired = true;
+		player.flushOutStream();
 	}
 
 	public void sendQuickSong(int id, int songDelay) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(121);
-			c.getOutStream().writeWordBigEndian(id);
-			c.getOutStream().writeWordBigEndian(songDelay);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(121);
+			player.getOutStream().writeWordBigEndian(id);
+			player.getOutStream().writeWordBigEndian(songDelay);
+			player.flushOutStream();
 		}
 	}
 
 	public void sendColor(int id, int color) {
-		if (c.getOutStream() != null && c != null) {
-			c.outStream.createFrame(122);
-			c.outStream.writeWordBigEndianA(id);
-			c.outStream.writeWordBigEndianA(color);
+		if (player.getOutStream() != null && player != null) {
+			player.outStream.createFrame(122);
+			player.outStream.writeWordBigEndianA(id);
+			player.outStream.writeWordBigEndianA(color);
 		}
 	}
 
 	public void sendSound(int id, int type, int delay) {
-		if (c.getOutStream() != null && c != null && id != -1) {
-			c.getOutStream().createFrame(174);
-			c.getOutStream().writeWordBigEndian(id);
-			c.getOutStream().writeByte(type);
-			c.getOutStream().writeWordBigEndian(delay);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null && id != -1) {
+			player.getOutStream().createFrame(174);
+			player.getOutStream().writeWordBigEndian(id);
+			player.getOutStream().writeByte(type);
+			player.getOutStream().writeWordBigEndian(delay);
+			player.flushOutStream();
 		}
 	}
 
 	public void sendFrame106(int sideIcon) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(106);
-			c.getOutStream().writeByteC(sideIcon);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(106);
+			player.getOutStream().writeByteC(sideIcon);
+			player.flushOutStream();
 			requestUpdates();
 		}
 	}
 
 	public void sendFrame107() {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(107);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(107);
+			player.flushOutStream();
 		}
-	}
-
-	public void sendFrame36(int id, int state) {
-		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(36);
-			c.getOutStream().writeWordBigEndian(id);
-			c.getOutStream().writeByte(state);
-			c.flushOutStream();
-		}
-
 	}
 
 	public void sendFrame185(int Frame) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(185);
-			c.getOutStream().writeWordBigEndianA(Frame);
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(185);
+			player.getOutStream().writeWordBigEndianA(Frame);
 		}
 
 	}
 
 	public void showInterface(int interfaceid) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(97);
-			c.getOutStream().writeWord(interfaceid);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(97);
+			player.getOutStream().writeWord(interfaceid);
+			player.flushOutStream();
 
 		}
 	}
 
 	public void sendFrame248(int MainFrame, int SubFrame) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(248);
-			c.getOutStream().writeWordA(MainFrame);
-			c.getOutStream().writeWord(SubFrame);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(248);
+			player.getOutStream().writeWordA(MainFrame);
+			player.getOutStream().writeWord(SubFrame);
+			player.flushOutStream();
 
 		}
 	}
 
 	public void sendFrame246(int MainFrame, int SubFrame, int SubFrame2) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(246);
-			c.getOutStream().writeWordBigEndian(MainFrame);
-			c.getOutStream().writeWord(SubFrame);
-			c.getOutStream().writeWord(SubFrame2);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(246);
+			player.getOutStream().writeWordBigEndian(MainFrame);
+			player.getOutStream().writeWord(SubFrame);
+			player.getOutStream().writeWord(SubFrame2);
+			player.flushOutStream();
 
 		}
 	}
 
 	public void sendFrame171(int MainFrame, int SubFrame) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(171);
-			c.getOutStream().writeByte(MainFrame);
-			c.getOutStream().writeWord(SubFrame);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(171);
+			player.getOutStream().writeByte(MainFrame);
+			player.getOutStream().writeWord(SubFrame);
+			player.flushOutStream();
 
 		}
 	}
 
 	public void sendFrame200(int MainFrame, int SubFrame) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(200);
-			c.getOutStream().writeWord(MainFrame);
-			c.getOutStream().writeWord(SubFrame);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(200);
+			player.getOutStream().writeWord(MainFrame);
+			player.getOutStream().writeWord(SubFrame);
+			player.flushOutStream();
 		}
 	}
 
 	public void sendFrame70(int i, int o, int id) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(70);
-			c.getOutStream().writeWord(i);
-			c.getOutStream().writeWordBigEndian(o);
-			c.getOutStream().writeWordBigEndian(id);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(70);
+			player.getOutStream().writeWord(i);
+			player.getOutStream().writeWordBigEndian(o);
+			player.getOutStream().writeWordBigEndian(id);
+			player.flushOutStream();
 		}
 
 	}
 
 	public void sendFrame75(int MainFrame, int SubFrame) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(75);
-			c.getOutStream().writeWordBigEndianA(MainFrame);
-			c.getOutStream().writeWordBigEndianA(SubFrame);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(75);
+			player.getOutStream().writeWordBigEndianA(MainFrame);
+			player.getOutStream().writeWordBigEndianA(SubFrame);
+			player.flushOutStream();
 		}
 
 	}
 
 	public void sendFrame164(int Frame) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(164);
-			c.getOutStream().writeWordBigEndian_dup(Frame);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(164);
+			player.getOutStream().writeWordBigEndian_dup(Frame);
+			player.flushOutStream();
 		}
 
 	}
 
 	public void setPrivateMessaging(int i) { // friends and ignore list status
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(221);
-			c.getOutStream().writeByte(i);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(221);
+			player.getOutStream().writeByte(i);
+			player.flushOutStream();
 		}
 
 	}
 
 	public void setChatOptions(int publicChat, int privateChat, int tradeBlock) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(206);
-			c.getOutStream().writeByte(publicChat);
-			c.getOutStream().writeByte(privateChat);
-			c.getOutStream().writeByte(tradeBlock);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(206);
+			player.getOutStream().writeByte(publicChat);
+			player.getOutStream().writeByte(privateChat);
+			player.getOutStream().writeByte(tradeBlock);
+			player.flushOutStream();
 		}
 
 	}
 
 	public void sendFrame87(int id, int state) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(87);
-			c.getOutStream().writeWordBigEndian_dup(id);
-			c.getOutStream().writeDWord_v1(state);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(87);
+			player.getOutStream().writeWordBigEndian_dup(id);
+			player.getOutStream().writeDWord_v1(state);
+			player.flushOutStream();
 		}
 
 	}
@@ -581,14 +517,14 @@ public class PlayerAssistant {
 	@SuppressWarnings("unused")
 	public void sendPM(long name, int rights, byte[] chatmessage, int messagesize) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrameVarSize(196);
-			c.getOutStream().writeQWord(name);
-			c.getOutStream().writeDWord(c.lastChatId++);
-			c.getOutStream().writeByte(rights);
-			c.getOutStream().writeBytes(chatmessage, messagesize, 0);
-			c.getOutStream().endFrameVarSize();
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrameVarSize(196);
+			player.getOutStream().writeQWord(name);
+			player.getOutStream().writeDWord(player.lastChatId++);
+			player.getOutStream().writeByte(rights);
+			player.getOutStream().writeBytes(chatmessage, messagesize, 0);
+			player.getOutStream().endFrameVarSize();
+			player.flushOutStream();
 			String chatmessagegot = Misc.textUnpack(chatmessage, messagesize);
 			String target = Misc.longToPlayerName(name);
 		}
@@ -597,83 +533,83 @@ public class PlayerAssistant {
 
 	public void createPlayerHints(int type, int id) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(254);
-			c.getOutStream().writeByte(type);
-			c.getOutStream().writeWord(id);
-			c.getOutStream().write3Byte(0);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(254);
+			player.getOutStream().writeByte(type);
+			player.getOutStream().writeWord(id);
+			player.getOutStream().write3Byte(0);
+			player.flushOutStream();
 		}
 
 	}
 
 	public void createObjectHints(int x, int y, int height, int pos) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(254);
-			c.getOutStream().writeByte(pos);
-			c.getOutStream().writeWord(x);
-			c.getOutStream().writeWord(y);
-			c.getOutStream().writeByte(height);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(254);
+			player.getOutStream().writeByte(pos);
+			player.getOutStream().writeWord(x);
+			player.getOutStream().writeWord(y);
+			player.getOutStream().writeByte(height);
+			player.flushOutStream();
 		}
 
 	}
 
 	public void loadPM(long playerName, int world) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
+		if (player.getOutStream() != null && player != null) {
 			if (world != 0) {
 				world += 9;
 			} else if (!Constants.WORLD_LIST_FIX) {
 				world += 1;
 			}
-			c.getOutStream().createFrame(50);
-			c.getOutStream().writeQWord(playerName);
-			c.getOutStream().writeByte(world);
-			c.flushOutStream();
+			player.getOutStream().createFrame(50);
+			player.getOutStream().writeQWord(playerName);
+			player.getOutStream().writeByte(world);
+			player.flushOutStream();
 		}
 
 	}
 
 	public void removeAllWindows() {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(219);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(219);
+			player.flushOutStream();
 		}
 
 	}
 
 	public void closeAllWindows() {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(219);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(219);
+			player.flushOutStream();
 		}
 
 	}
 
 	public void sendFrame34(int id, int slot, int column, int amount) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.outStream.createFrameVarSizeWord(34); // init item to smith screen
-			c.outStream.writeWord(column); // Column Across Smith Screen
-			c.outStream.writeByte(4); // Total Rows?
-			c.outStream.writeDWord(slot); // Row Down The Smith Screen
-			c.outStream.writeWord(id + 1); // item
-			c.outStream.writeByte(amount); // how many there are?
-			c.outStream.endFrameVarSizeWord();
+		if (player.getOutStream() != null && player != null) {
+			player.outStream.createFrameVarSizeWord(34); // init item to smith screen
+			player.outStream.writeWord(column); // Column Across Smith Screen
+			player.outStream.writeByte(4); // Total Rows?
+			player.outStream.writeDWord(slot); // Row Down The Smith Screen
+			player.outStream.writeWord(id + 1); // item
+			player.outStream.writeByte(amount); // how many there are?
+			player.outStream.endFrameVarSizeWord();
 		}
 
 	}
 
 	public void walkableInterface(int id) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(208);
-			c.getOutStream().writeWordBigEndian_dup(id);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(208);
+			player.getOutStream().writeWordBigEndian_dup(id);
+			player.flushOutStream();
 		}
 
 	}
@@ -694,10 +630,10 @@ public class PlayerAssistant {
 	}
 
 	public void sendCrashFrame() { // used for crashing cheat Players
-		synchronized (c) {
-			if (c.getOutStream() != null && c != null) {
-				c.getOutStream().createFrame(123);
-				c.flushOutStream();
+		synchronized (player) {
+			if (player.getOutStream() != null && player != null) {
+				player.getOutStream().createFrame(123);
+				player.flushOutStream();
 			}
 		}
 	}
@@ -713,7 +649,7 @@ public class PlayerAssistant {
 				Player person = (Player) PlayerHandler.players[i];
 				if (person != null) {
 					if (person.getOutStream() != null && !person.disconnected) {
-						if (c.distanceToPoint(person.getX(), person.getY()) <= 25) {
+						if (player.distanceToPoint(person.getX(), person.getY()) <= 25) {
 							person.getOutStream().createFrame(1);
 							person.flushOutStream();
 							person.getPA().requestUpdates();
@@ -731,69 +667,69 @@ public class PlayerAssistant {
 	public void createProjectile(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving, int startHeight,
 			int endHeight, int lockon, int time) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(85);
-			c.getOutStream().writeByteC((y - (c.getMapRegionY() * 8)) - 2);
-			c.getOutStream().writeByteC((x - (c.getMapRegionX() * 8)) - 3);
-			c.getOutStream().createFrame(117);
-			c.getOutStream().writeByte(angle);
-			c.getOutStream().writeByte(offY);
-			c.getOutStream().writeByte(offX);
-			c.getOutStream().writeWord(lockon);
-			c.getOutStream().writeWord(gfxMoving);
-			c.getOutStream().writeByte(startHeight);
-			c.getOutStream().writeByte(endHeight);
-			c.getOutStream().writeWord(time);
-			c.getOutStream().writeWord(speed);
-			c.getOutStream().writeByte(16);
-			c.getOutStream().writeByte(64);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(85);
+			player.getOutStream().writeByteC((y - (player.getMapRegionY() * 8)) - 2);
+			player.getOutStream().writeByteC((x - (player.getMapRegionX() * 8)) - 3);
+			player.getOutStream().createFrame(117);
+			player.getOutStream().writeByte(angle);
+			player.getOutStream().writeByte(offY);
+			player.getOutStream().writeByte(offX);
+			player.getOutStream().writeWord(lockon);
+			player.getOutStream().writeWord(gfxMoving);
+			player.getOutStream().writeByte(startHeight);
+			player.getOutStream().writeByte(endHeight);
+			player.getOutStream().writeWord(time);
+			player.getOutStream().writeWord(speed);
+			player.getOutStream().writeByte(16);
+			player.getOutStream().writeByte(64);
+			player.flushOutStream();
 		}
 	}
 
 	public void createProjectile2(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving,
 			int startHeight, int endHeight, int lockon, int time, int slope) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(85);
-			c.getOutStream().writeByteC((y - (c.getMapRegionY() * 8)) - 2);
-			c.getOutStream().writeByteC((x - (c.getMapRegionX() * 8)) - 3);
-			c.getOutStream().createFrame(117);
-			c.getOutStream().writeByte(angle);
-			c.getOutStream().writeByte(offY);
-			c.getOutStream().writeByte(offX);
-			c.getOutStream().writeWord(lockon);
-			c.getOutStream().writeWord(gfxMoving);
-			c.getOutStream().writeByte(startHeight);
-			c.getOutStream().writeByte(endHeight);
-			c.getOutStream().writeWord(time);
-			c.getOutStream().writeWord(speed);
-			c.getOutStream().writeByte(slope);
-			c.getOutStream().writeByte(64);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(85);
+			player.getOutStream().writeByteC((y - (player.getMapRegionY() * 8)) - 2);
+			player.getOutStream().writeByteC((x - (player.getMapRegionX() * 8)) - 3);
+			player.getOutStream().createFrame(117);
+			player.getOutStream().writeByte(angle);
+			player.getOutStream().writeByte(offY);
+			player.getOutStream().writeByte(offX);
+			player.getOutStream().writeWord(lockon);
+			player.getOutStream().writeWord(gfxMoving);
+			player.getOutStream().writeByte(startHeight);
+			player.getOutStream().writeByte(endHeight);
+			player.getOutStream().writeWord(time);
+			player.getOutStream().writeWord(speed);
+			player.getOutStream().writeByte(slope);
+			player.getOutStream().writeByte(64);
+			player.flushOutStream();
 		}
 	}
 
 	public void createProjectile(int x, int y, int offX, int offY, int angle, int speed, int gfxMoving, int startHeight,
 			int endHeight, int lockon, int time, int slope) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(85);
-			c.getOutStream().writeByteC((y - (c.getMapRegionY() * 8)) - 2);
-			c.getOutStream().writeByteC((x - (c.getMapRegionX() * 8)) - 3);
-			c.getOutStream().createFrame(117);
-			c.getOutStream().writeByte(angle);
-			c.getOutStream().writeByte(offY);
-			c.getOutStream().writeByte(offX);
-			c.getOutStream().writeWord(lockon);
-			c.getOutStream().writeWord(gfxMoving);
-			c.getOutStream().writeByte(startHeight);
-			c.getOutStream().writeByte(endHeight);
-			c.getOutStream().writeWord(time);
-			c.getOutStream().writeWord(speed);
-			c.getOutStream().writeByte(slope);
-			c.getOutStream().writeByte(64);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(85);
+			player.getOutStream().writeByteC((y - (player.getMapRegionY() * 8)) - 2);
+			player.getOutStream().writeByteC((x - (player.getMapRegionX() * 8)) - 3);
+			player.getOutStream().createFrame(117);
+			player.getOutStream().writeByte(angle);
+			player.getOutStream().writeByte(offY);
+			player.getOutStream().writeByte(offX);
+			player.getOutStream().writeWord(lockon);
+			player.getOutStream().writeWord(gfxMoving);
+			player.getOutStream().writeByte(startHeight);
+			player.getOutStream().writeByte(endHeight);
+			player.getOutStream().writeWord(time);
+			player.getOutStream().writeWord(speed);
+			player.getOutStream().writeByte(slope);
+			player.getOutStream().writeByte(64);
+			player.flushOutStream();
 		}
 	}
 
@@ -807,7 +743,7 @@ public class PlayerAssistant {
 				if (person != null) {
 					if (person.getOutStream() != null) {
 						if (person.distanceToPoint(x, y) <= 25) {
-							if (p.heightLevel == c.heightLevel)
+							if (p.heightLevel == player.heightLevel)
 								person.getPA().createProjectile(x, y, offX, offY, angle, speed, gfxMoving, startHeight,
 										endHeight, lockon, time, slope);
 						}
@@ -828,7 +764,7 @@ public class PlayerAssistant {
 				if (person != null) {
 					if (person.getOutStream() != null) {
 						if (person.distanceToPoint(x, y) <= 25) {
-							if (p.heightLevel == c.heightLevel)
+							if (p.heightLevel == player.heightLevel)
 								person.getPA().createProjectile(x, y, offX, offY, angle, speed, gfxMoving, startHeight,
 										endHeight, lockon, time);
 						}
@@ -862,16 +798,16 @@ public class PlayerAssistant {
 	 **/
 	public void stillGfx(int id, int x, int y, int height, int time) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(85);
-			c.getOutStream().writeByteC(y - (c.getMapRegionY() * 8));
-			c.getOutStream().writeByteC(x - (c.getMapRegionX() * 8));
-			c.getOutStream().createFrame(4);
-			c.getOutStream().writeByte(0);
-			c.getOutStream().writeWord(id);
-			c.getOutStream().writeByte(height);
-			c.getOutStream().writeWord(time);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(85);
+			player.getOutStream().writeByteC(y - (player.getMapRegionY() * 8));
+			player.getOutStream().writeByteC(x - (player.getMapRegionX() * 8));
+			player.getOutStream().createFrame(4);
+			player.getOutStream().writeByte(0);
+			player.getOutStream().writeWord(id);
+			player.getOutStream().writeByte(height);
+			player.getOutStream().writeWord(time);
+			player.flushOutStream();
 		}
 
 	}
@@ -900,44 +836,44 @@ public class PlayerAssistant {
 	 **/
 	public void object(int objectId, int objectX, int objectY, int face, int objectType) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(85);
-			c.getOutStream().writeByteC(objectY - (c.getMapRegionY() * 8));
-			c.getOutStream().writeByteC(objectX - (c.getMapRegionX() * 8));
-			c.getOutStream().createFrame(101);
-			c.getOutStream().writeByteC((objectType << 2) + (face & 3));
-			c.getOutStream().writeByte(0);
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(85);
+			player.getOutStream().writeByteC(objectY - (player.getMapRegionY() * 8));
+			player.getOutStream().writeByteC(objectX - (player.getMapRegionX() * 8));
+			player.getOutStream().createFrame(101);
+			player.getOutStream().writeByteC((objectType << 2) + (face & 3));
+			player.getOutStream().writeByte(0);
 
 			if (objectId != -1) { // removing
-				c.getOutStream().createFrame(151);
-				c.getOutStream().writeByteS(0);
-				c.getOutStream().writeWordBigEndian(objectId);
-				c.getOutStream().writeByteS((objectType << 2) + (face & 3));
+				player.getOutStream().createFrame(151);
+				player.getOutStream().writeByteS(0);
+				player.getOutStream().writeWordBigEndian(objectId);
+				player.getOutStream().writeByteS((objectType << 2) + (face & 3));
 			}
-			c.flushOutStream();
+			player.flushOutStream();
 		}
 
 	}
 
 	public void checkObjectSpawn(int objectId, int objectX, int objectY, int face, int objectType) {
-		if (c.distanceToPoint(objectX, objectY) > 60)
+		if (player.distanceToPoint(objectX, objectY) > 60)
 			return;
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(85);
-			c.getOutStream().writeByteC(objectY - (c.getMapRegionY() * 8));
-			c.getOutStream().writeByteC(objectX - (c.getMapRegionX() * 8));
-			c.getOutStream().createFrame(101);
-			c.getOutStream().writeByteC((objectType << 2) + (face & 3));
-			c.getOutStream().writeByte(0);
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(85);
+			player.getOutStream().writeByteC(objectY - (player.getMapRegionY() * 8));
+			player.getOutStream().writeByteC(objectX - (player.getMapRegionX() * 8));
+			player.getOutStream().createFrame(101);
+			player.getOutStream().writeByteC((objectType << 2) + (face & 3));
+			player.getOutStream().writeByte(0);
 
 			if (objectId != -1) { // removing
-				c.getOutStream().createFrame(151);
-				c.getOutStream().writeByteS(0);
-				c.getOutStream().writeWordBigEndian(objectId);
-				c.getOutStream().writeByteS((objectType << 2) + (face & 3));
+				player.getOutStream().createFrame(151);
+				player.getOutStream().writeByteS(0);
+				player.getOutStream().writeWordBigEndian(objectId);
+				player.getOutStream().writeByteS((objectType << 2) + (face & 3));
 			}
-			c.flushOutStream();
+			player.flushOutStream();
 		}
 
 	}
@@ -949,15 +885,15 @@ public class PlayerAssistant {
 
 	public void showOption(int i, int l, String s, int a) {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
+		if (player.getOutStream() != null && player != null) {
 			if (!optionType.equalsIgnoreCase(s)) {
 				optionType = s;
-				c.getOutStream().createFrameVarSize(104);
-				c.getOutStream().writeByteC(i);
-				c.getOutStream().writeByteA(l);
-				c.getOutStream().writeString(s);
-				c.getOutStream().endFrameVarSize();
-				c.flushOutStream();
+				player.getOutStream().createFrameVarSize(104);
+				player.getOutStream().writeByteC(i);
+				player.getOutStream().writeByteA(l);
+				player.getOutStream().writeString(s);
+				player.getOutStream().endFrameVarSize();
+				player.flushOutStream();
 			}
 
 		}
@@ -968,15 +904,15 @@ public class PlayerAssistant {
 	 **/
 	public void openUpBank() {
 		// synchronized(c) {
-		if (c.getOutStream() != null && c != null) {
-			c.getItems().resetItems(5064);
-			c.getItems().rearrangeBank();
-			c.getItems().resetBank();
-			c.getItems().resetTempItems();
-			c.getOutStream().createFrame(248);
-			c.getOutStream().writeWordA(5292);
-			c.getOutStream().writeWord(5063);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getItems().resetItems(5064);
+			player.getItems().rearrangeBank();
+			player.getItems().resetBank();
+			player.getItems().resetTempItems();
+			player.getOutStream().createFrame(248);
+			player.getOutStream().writeWordA(5292);
+			player.getOutStream().writeWord(5063);
+			player.flushOutStream();
 		}
 
 	}
@@ -991,22 +927,22 @@ public class PlayerAssistant {
 			if (p != null && p.isActive) {
 				Player o = (Player) p;
 				if (o != null) {
-					o.getPA().updatePM(c.playerId, 1);
+					o.getPA().updatePM(player.playerId, 1);
 				}
 			}
 		}
 		boolean pmLoaded = false;
 
-		for (int i = 0; i < c.friends.length; i++) {
-			if (c.friends[i] != 0) {
+		for (int i = 0; i < player.friends.length; i++) {
+			if (player.friends[i] != 0) {
 				for (int i2 = 1; i2 < Constants.MAX_PLAYERS; i2++) {
 					Player p = PlayerHandler.players[i2];
-					if (p != null && p.isActive && Misc.playerNameToInt64(p.playerName) == c.friends[i]) {
+					if (p != null && p.isActive && Misc.playerNameToInt64(p.playerName) == player.friends[i]) {
 						Player o = (Player) p;
 						if (o != null) {
-							if (c.playerRights >= 2 || p.privateChat == 0
-									|| (p.privateChat == 1 && o.getPA().isInPM(Misc.playerNameToInt64(c.playerName)))) {
-								loadPM(c.friends[i], 1);
+							if (player.playerRights >= 2 || p.privateChat == 0
+									|| (p.privateChat == 1 && o.getPA().isInPM(Misc.playerNameToInt64(player.playerName)))) {
+								loadPM(player.friends[i], 1);
 								pmLoaded = true;
 							}
 							break;
@@ -1014,7 +950,7 @@ public class PlayerAssistant {
 					}
 				}
 				if (!pmLoaded) {
-					loadPM(c.friends[i], 0);
+					loadPM(player.friends[i], 0);
 				}
 				pmLoaded = false;
 			}
@@ -1023,7 +959,7 @@ public class PlayerAssistant {
 				if (p != null && p.isActive) {
 					Player o = (Player) p;
 					if (o != null) {
-						o.getPA().updatePM(c.playerId, 1);
+						o.getPA().updatePM(player.playerId, 1);
 					}
 				}
 			}
@@ -1043,19 +979,19 @@ public class PlayerAssistant {
 		long l = Misc.playerNameToInt64(PlayerHandler.players[pID].playerName);
 
 		if (p.privateChat == 0) {
-			for (int i = 0; i < c.friends.length; i++) {
-				if (c.friends[i] != 0) {
-					if (l == c.friends[i]) {
+			for (int i = 0; i < player.friends.length; i++) {
+				if (player.friends[i] != 0) {
+					if (l == player.friends[i]) {
 						loadPM(l, world);
 						return;
 					}
 				}
 			}
 		} else if (p.privateChat == 1) {
-			for (int i = 0; i < c.friends.length; i++) {
-				if (c.friends[i] != 0) {
-					if (l == c.friends[i]) {
-						if (o.getPA().isInPM(Misc.playerNameToInt64(c.playerName))) {
+			for (int i = 0; i < player.friends.length; i++) {
+				if (player.friends[i] != 0) {
+					if (l == player.friends[i]) {
+						if (o.getPA().isInPM(Misc.playerNameToInt64(player.playerName))) {
 							loadPM(l, world);
 							return;
 						} else {
@@ -1066,9 +1002,9 @@ public class PlayerAssistant {
 				}
 			}
 		} else if (p.privateChat == 2) {
-			for (int i = 0; i < c.friends.length; i++) {
-				if (c.friends[i] != 0) {
-					if (l == c.friends[i] && c.playerRights < 2) {
+			for (int i = 0; i < player.friends.length; i++) {
+				if (player.friends[i] != 0) {
+					if (l == player.friends[i] && player.playerRights < 2) {
 						loadPM(l, 0);
 						return;
 					}
@@ -1078,9 +1014,9 @@ public class PlayerAssistant {
 	}
 
 	public boolean isInPM(long l) {
-		for (int i = 0; i < c.friends.length; i++) {
-			if (c.friends[i] != 0) {
-				if (l == c.friends[i]) {
+		for (int i = 0; i < player.friends.length; i++) {
+			if (player.friends[i] != 0) {
+				if (l == player.friends[i]) {
 					return true;
 				}
 			}
@@ -1101,25 +1037,25 @@ public class PlayerAssistant {
 	 *            The type of poison it heals
 	 */
 	public void potionPoisonHeal(int itemId, int itemSlot, int newItemId, int healType) {
-		c.attackTimer = c.getCombat().getAttackDelay(
-				c.getItems().getItemName(c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]).toLowerCase());
-		if (c.duelRule[Rules.DRINK_RULE.getRule()]) {
-			c.sendMessage("Potions has been disabled in this duel!");
+		player.attackTimer = player.getCombat().getAttackDelay(
+				player.getItems().getItemName(player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]).toLowerCase());
+		if (player.duelRule[Rules.DRINK_RULE.getRule()]) {
+			player.getActionSender().sendMessage("Potions has been disabled in this duel!");
 			return;
 		}
-		if (!c.isDead && System.currentTimeMillis() - c.foodDelay > 2000) {
-			if (c.getItems().playerHasItem(itemId, 1, itemSlot)) {
-				c.sendMessage("You drink the " + c.getItems().getItemName(itemId).toLowerCase() + ".");
-				c.foodDelay = System.currentTimeMillis();
+		if (!player.isDead && System.currentTimeMillis() - player.foodDelay > 2000) {
+			if (player.getItems().playerHasItem(itemId, 1, itemSlot)) {
+				player.getActionSender().sendMessage("You drink the " + player.getItems().getItemName(itemId).toLowerCase() + ".");
+				player.foodDelay = System.currentTimeMillis();
 				// Actions
 				if (healType == 1) {
 					// Cures The Poison
 				} else if (healType == 2) {
 					// Cures The Poison + protects from getting poison again
 				}
-				c.startAnimation(0x33D);
-				c.getItems().deleteItem(itemId, itemSlot, 1);
-				c.getItems().addItem(newItemId, 1);
+				player.startAnimation(0x33D);
+				player.getItems().deleteItem(itemId, itemSlot, 1);
+				player.getItems().addItem(newItemId, 1);
 				requestUpdates();
 			}
 		}
@@ -1143,26 +1079,26 @@ public class PlayerAssistant {
 		case 6003: // Lvl-6 enchant onyx
 			for (int i = 0; i < boltData.length; i++) {
 				if (itemId == boltData[i][1]) {
-					Enchantment.enchantBolt(c, spellId, itemId, 28);
+					Enchantment.enchantBolt(player, spellId, itemId, 28);
 				} else {
-					Enchantment.enchantItem(c, itemId, spellId);
+					Enchantment.enchantItem(player, itemId, spellId);
 				}
 			}
 			break;
 		case 1162: // low alch
-			if (System.currentTimeMillis() - c.alchDelay > 1000) {
-				if (!c.getCombat().checkMagicReqs(49)) {
+			if (System.currentTimeMillis() - player.alchDelay > 1000) {
+				if (!player.getCombat().checkMagicReqs(49)) {
 					break;
 				}
 				if (itemId == 995) {
-					c.sendMessage("You can't alch coins");
+					player.getActionSender().sendMessage("You can't alch coins");
 					break;
 				}
-				c.getItems().deleteItem(itemId, slot, 1);
-				c.getItems().addItem(995, c.getShops().getItemShopValue(itemId) / 3);
-				c.startAnimation(Enchantment.MAGIC_SPELLS[49][2]);
-				c.gfx100(Enchantment.MAGIC_SPELLS[49][3]);
-				c.alchDelay = System.currentTimeMillis();
+				player.getItems().deleteItem(itemId, slot, 1);
+				player.getItems().addItem(995, player.getShops().getItemShopValue(itemId) / 3);
+				player.startAnimation(Enchantment.MAGIC_SPELLS[49][2]);
+				player.gfx100(Enchantment.MAGIC_SPELLS[49][3]);
+				player.alchDelay = System.currentTimeMillis();
 				sendFrame106(6);
 				addSkillXP(Enchantment.MAGIC_SPELLS[49][7] * SkillIndex.MAGIC.getExpRatio(),
 						SkillIndex.MAGIC.getSkillId());
@@ -1171,19 +1107,19 @@ public class PlayerAssistant {
 			break;
 
 		case 1178: // high alch
-			if (System.currentTimeMillis() - c.alchDelay > 2000) {
-				if (!c.getCombat().checkMagicReqs(50)) {
+			if (System.currentTimeMillis() - player.alchDelay > 2000) {
+				if (!player.getCombat().checkMagicReqs(50)) {
 					break;
 				}
 				if (itemId == 995) {
-					c.sendMessage("You can't alch coins");
+					player.getActionSender().sendMessage("You can't alch coins");
 					break;
 				}
-				c.getItems().deleteItem(itemId, slot, 1);
-				c.getItems().addItem(995, (int) (c.getShops().getItemShopValue(itemId) * .75));
-				c.startAnimation(Enchantment.MAGIC_SPELLS[50][2]);
-				c.gfx100(Enchantment.MAGIC_SPELLS[50][3]);
-				c.alchDelay = System.currentTimeMillis();
+				player.getItems().deleteItem(itemId, slot, 1);
+				player.getItems().addItem(995, (int) (player.getShops().getItemShopValue(itemId) * .75));
+				player.startAnimation(Enchantment.MAGIC_SPELLS[50][2]);
+				player.gfx100(Enchantment.MAGIC_SPELLS[50][3]);
+				player.alchDelay = System.currentTimeMillis();
 				sendFrame106(6);
 				addSkillXP(Enchantment.MAGIC_SPELLS[50][7] * SkillIndex.MAGIC.getExpRatio(),
 						SkillIndex.MAGIC.getSkillId());
@@ -1198,192 +1134,192 @@ public class PlayerAssistant {
 	 **/
 
 	public void applyDead() {
-		int weapon = c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()];
-		c.respawnTimer = 15;
-		c.isDead = false;
-		if (CastleWars.isInCw(c)) {
+		int weapon = player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()];
+		player.respawnTimer = 15;
+		player.isDead = false;
+		if (CastleWars.isInCw(player)) {
 			CastleWars.respawn();
 		}
-		if (c.duelStatus != 6) {
+		if (player.duelStatus != 6) {
 			// c.killerId = c.getCombat().getKillerId(c.playerId);
-			c.killerId = findKiller();
-			Player o = (Player) PlayerHandler.players[c.killerId];
+			player.killerId = findKiller();
+			Player o = (Player) PlayerHandler.players[player.killerId];
 			if (o != null) {
-				if (c.killerId != c.playerId)
-					o.sendMessage("You have defeated " + c.playerName + "!");
-				c.playerKilled = c.playerId;
+				if (player.killerId != player.playerId)
+					o.getActionSender().sendMessage("You have defeated " + player.playerName + "!");
+				player.playerKilled = player.playerId;
 				if (o.duelStatus == 5) {
 					o.duelStatus++;
 				}
 			}
 		}
 		if (weapon == CastleWars.SARA_BANNER || weapon == CastleWars.ZAMMY_BANNER) {
-			c.getItems().removeItem(weapon, 3);
-			c.getItems().deleteItem2(weapon, 1);
-			CastleWars.dropFlag(c, weapon);
+			player.getItems().removeItem(weapon, 3);
+			player.getItems().deleteItem2(weapon, 1);
+			CastleWars.dropFlag(player, weapon);
 		}
-		c.faceUpdate(0);
-		c.npcIndex = 0;
-		c.playerIndex = 0;
-		c.stopMovement();
-		if (c.duelStatus <= 4) {
-			c.sendMessage(Constants.DEATH_MESSAGE);
-			if (CastleWars.isInCw(c)) {
-				Player o = (Player) PlayerHandler.players[c.killerId];
-				c.cwDeaths += 1;
+		player.faceUpdate(0);
+		player.npcIndex = 0;
+		player.playerIndex = 0;
+		player.stopMovement();
+		if (player.duelStatus <= 4) {
+			player.getActionSender().sendMessage(Constants.DEATH_MESSAGE);
+			if (CastleWars.isInCw(player)) {
+				Player o = (Player) PlayerHandler.players[player.killerId];
+				player.cwDeaths += 1;
 				o.cwKills += 1;
 			}
-		} else if (c.duelStatus != 6) {
-			c.sendMessage("You have lost the duel!");
+		} else if (player.duelStatus != 6) {
+			player.getActionSender().sendMessage("You have lost the duel!");
 		}
 		resetDamageDone();
-		c.specAmount = 10;
-		c.getItems().addSpecialBar(c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]);
-		c.lastVeng = 0;
-		c.vengOn = false;
+		player.specAmount = 10;
+		player.getItems().addSpecialBar(player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]);
+		player.lastVeng = 0;
+		player.vengOn = false;
 		resetFollowers();
-		c.attackTimer = 10;
+		player.attackTimer = 10;
 	}
 
 	public void resetDamageDone() {
 		for (int i = 0; i < PlayerHandler.players.length; i++) {
 			if (PlayerHandler.players[i] != null) {
-				PlayerHandler.players[i].damageTaken[c.playerId] = 0;
+				PlayerHandler.players[i].damageTaken[player.playerId] = 0;
 			}
 		}
 	}
 
 	public void vengMe() {
-		if (System.currentTimeMillis() - c.lastVeng > 30000) {
-			if (c.getItems().playerHasItem(557, 10) && c.getItems().playerHasItem(9075, 4)
-					&& c.getItems().playerHasItem(560, 2)) {
-				c.vengOn = true;
-				c.lastVeng = System.currentTimeMillis();
-				c.startAnimation(4410);
-				c.gfx100(726);
-				c.getItems().deleteItem(557, c.getItems().getItemSlot(557), 10);
-				c.getItems().deleteItem(560, c.getItems().getItemSlot(560), 2);
-				c.getItems().deleteItem(9075, c.getItems().getItemSlot(9075), 4);
+		if (System.currentTimeMillis() - player.lastVeng > 30000) {
+			if (player.getItems().playerHasItem(557, 10) && player.getItems().playerHasItem(9075, 4)
+					&& player.getItems().playerHasItem(560, 2)) {
+				player.vengOn = true;
+				player.lastVeng = System.currentTimeMillis();
+				player.startAnimation(4410);
+				player.gfx100(726);
+				player.getItems().deleteItem(557, player.getItems().getItemSlot(557), 10);
+				player.getItems().deleteItem(560, player.getItems().getItemSlot(560), 2);
+				player.getItems().deleteItem(9075, player.getItems().getItemSlot(9075), 4);
 			} else {
-				c.sendMessage("You do not have the required runes to cast this spell. (9075 for astrals)");
+				player.getActionSender().sendMessage("You do not have the required runes to cast this spell. (9075 for astrals)");
 			}
 		} else {
-			c.sendMessage("You must wait 30 seconds before casting this again.");
+			player.getActionSender().sendMessage("You must wait 30 seconds before casting this again.");
 		}
 	}
 
 	public void resetTb() {
-		c.teleBlockLength = 0;
-		c.teleBlockDelay = 0;
+		player.teleBlockLength = 0;
+		player.teleBlockDelay = 0;
 	}
 
 	public void handleStatus(int i, int i2, int i3) {
 		if (i == 1)
-			c.getItems().addItem(i2, i3);
+			player.getItems().addItem(i2, i3);
 		else if (i == 2) {
-			c.playerXP[i2] = c.getPA().getXPForLevel(i3) + 5;
-			c.playerLevel[i2] = c.getPA().getLevelForXP(c.playerXP[i2]);
+			player.playerXP[i2] = player.getPA().getXPForLevel(i3) + 5;
+			player.playerLevel[i2] = player.getPA().getLevelForXP(player.playerXP[i2]);
 		}
 	}
 
 	public void resetFollowers() {
 		for (int j = 0; j < PlayerHandler.players.length; j++) {
 			if (PlayerHandler.players[j] != null) {
-				if (PlayerHandler.players[j].followId == c.playerId) {
-					Player c = (Player) PlayerHandler.players[j];
-					c.getPA().resetFollow();
+				if (PlayerHandler.players[j].followId == player.playerId) {
+					Player player = (Player) PlayerHandler.players[j];
+					player.getPA().resetFollow();
 				}
 			}
 		}
 	}
 
 	public void giveLife() {
-		c.isDead = false;
-		c.faceUpdate(-1);
-		c.freezeTimer = 0;
-		if (c.duelStatus <= 4 && !c.getPA().inPitsWait()) { // if we are not in
+		player.isDead = false;
+		player.faceUpdate(-1);
+		player.freezeTimer = 0;
+		if (player.duelStatus <= 4 && !player.getPA().inPitsWait()) { // if we are not in
 															// a duel we must be
 															// in wildy so
 															// remove items
-			if (!CastleWars.isInCw(c) && !c.inPits && !c.inFightCaves()) {
-				c.getItems().resetKeepItems();
-				if ((c.playerRights >= 2 && Constants.ADMIN_DROP_ITEMS) || c.playerRights != 2) {
-					if (!c.isSkulled) { // what items to keep
-						c.getItems().keepItem(0, true);
-						c.getItems().keepItem(1, true);
-						c.getItems().keepItem(2, true);
+			if (!CastleWars.isInCw(player) && !player.inPits && !player.inFightCaves()) {
+				player.getItems().resetKeepItems();
+				if ((player.playerRights >= 2 && Constants.ADMIN_DROP_ITEMS) || player.playerRights != 2) {
+					if (!player.isSkulled) { // what items to keep
+						player.getItems().keepItem(0, true);
+						player.getItems().keepItem(1, true);
+						player.getItems().keepItem(2, true);
 					}
-					if (c.prayerActive[10] && System.currentTimeMillis() - c.lastProtItem > 700) {
-						c.getItems().keepItem(3, true);
+					if (player.prayerActive[10] && System.currentTimeMillis() - player.lastProtItem > 700) {
+						player.getItems().keepItem(3, true);
 					}
-					c.getItems().dropAllItems(); // drop all items
-					c.getItems().deleteAllItems(); // delete all items
+					player.getItems().dropAllItems(); // drop all items
+					player.getItems().deleteAllItems(); // delete all items
 
-					if (!c.isSkulled) { // add the kept items once we finish
+					if (!player.isSkulled) { // add the kept items once we finish
 										// deleting and dropping them
 						for (int i1 = 0; i1 < 3; i1++) {
-							if (c.itemKeptId[i1] > 0) {
-								c.getItems().addItem(c.itemKeptId[i1], 1);
+							if (player.itemKeptId[i1] > 0) {
+								player.getItems().addItem(player.itemKeptId[i1], 1);
 							}
 						}
 					}
-					if (c.prayerActive[10]) { // if we have protect items
-						if (c.itemKeptId[3] > 0) {
-							c.getItems().addItem(c.itemKeptId[3], 1);
+					if (player.prayerActive[10]) { // if we have protect items
+						if (player.itemKeptId[3] > 0) {
+							player.getItems().addItem(player.itemKeptId[3], 1);
 						}
 					}
 				}
-				c.getItems().resetKeepItems();
-			} else if (c.inPits) {
-				Server.fightPits.removePlayerFromPits(c.playerId);
-				c.pitsStatus = 1;
+				player.getItems().resetKeepItems();
+			} else if (player.inPits) {
+				Server.fightPits.removePlayerFromPits(player.playerId);
+				player.pitsStatus = 1;
 			}
 		}
-		c.runEnergy = 100;
-		c.getCombat().resetPrayers();
+		player.runEnergy = 100;
+		player.getCombat().resetPrayers();
 		for (int skill = 0; skill < 20; skill++) {
-			c.playerLevel[skill] = getLevelForXP(c.playerXP[skill]);
-			c.getPA().refreshSkill(skill);
+			player.playerLevel[skill] = getLevelForXP(player.playerXP[skill]);
+			player.getPA().refreshSkill(skill);
 		}
-		if (c.pitsStatus == 1) {
+		if (player.pitsStatus == 1) {
 			movePlayer(2399, 5173, 0);
-		} else if (c.duelStatus <= 4) { // if we are not in a duel repawn to
+		} else if (player.duelStatus <= 4) { // if we are not in a duel repawn to
 										// wildy
 			movePlayer(Constants.RESPAWN_X, Constants.RESPAWN_Y, 0);
-			c.isSkulled = false;
-			c.skullTimer = 0;
-			c.attackedPlayers.clear();
-		} else if (c.inFightCaves()) {
-			c.getPA().resetTzhaar();
+			player.isSkulled = false;
+			player.skullTimer = 0;
+			player.attackedPlayers.clear();
+		} else if (player.inFightCaves()) {
+			player.getPA().resetTzhaar();
 		} else { // we are in a duel, respawn outside of arena
-			Player o = (Player) PlayerHandler.players[c.duelingWith];
+			Player o = (Player) PlayerHandler.players[player.duelingWith];
 			if (o != null) {
 				o.getPA().createPlayerHints(10, -1);
 				if (o.duelStatus == 6) {
 					o.getTradeAndDuel().duelVictory();
 				}
 			}
-			c.getPA().movePlayer(Constants.DUELING_RESPAWN_X + (Misc.random(Constants.RANDOM_DUELING_RESPAWN)),
+			player.getPA().movePlayer(Constants.DUELING_RESPAWN_X + (Misc.random(Constants.RANDOM_DUELING_RESPAWN)),
 					Constants.DUELING_RESPAWN_Y + (Misc.random(Constants.RANDOM_DUELING_RESPAWN)), 0);
 			o.getPA().movePlayer(Constants.DUELING_RESPAWN_X + (Misc.random(Constants.RANDOM_DUELING_RESPAWN)),
 					Constants.DUELING_RESPAWN_Y + (Misc.random(Constants.RANDOM_DUELING_RESPAWN)), 0);
-			if (c.duelStatus != 6) { // if we have won but have died, don't
+			if (player.duelStatus != 6) { // if we have won but have died, don't
 										// reset the duel status.
-				c.getTradeAndDuel().resetDuel();
+				player.getTradeAndDuel().resetDuel();
 			}
 		}
-		PlayerSave.saveGame(c);
-		c.getCombat().resetPlayerAttack();
+		PlayerSave.saveGame(player);
+		player.getCombat().resetPlayerAttack();
 		resetAnimation();
-		c.startAnimation(65535);
+		player.startAnimation(65535);
 		frame1();
 		resetTb();
-		c.isSkulled = false;
-		c.attackedPlayers.clear();
-		c.headIconPk = -1;
-		c.skullTimer = -1;
-		c.damageTaken = new int[Constants.MAX_PLAYERS];
-		c.getPA().requestUpdates();
+		player.isSkulled = false;
+		player.attackedPlayers.clear();
+		player.headIconPk = -1;
+		player.skullTimer = -1;
+		player.damageTaken = new int[Constants.MAX_PLAYERS];
+		player.getPA().requestUpdates();
 	}
 
 	/**
@@ -1391,7 +1327,7 @@ public class PlayerAssistant {
 	 **/
 
 	public void changeLocation() {
-		switch (c.newLocation) {
+		switch (player.newLocation) {
 		case 1:
 			// sendFrame99(2);
 			movePlayer(3578, 9706, -1);
@@ -1417,137 +1353,137 @@ public class PlayerAssistant {
 			movePlayer(3546, 9684, -1);
 			break;
 		}
-		c.newLocation = 0;
+		player.newLocation = 0;
 	}
 
 	/**
 	 * Teleporting
 	 **/
 	public void spellTeleport(int x, int y, int height) {
-		c.getPA().startTeleport(x, y, height, c.playerMagicBook == 1 ? "ancient" : "modern");
+		player.getPA().startTeleport(x, y, height, player.playerMagicBook == 1 ? "ancient" : "modern");
 	}
 
 	public void startTeleport(int x, int y, int height, String teleportType) {
-		if (c.duelStatus == 5) {
-			c.sendMessage("You can't teleport during a duel!");
+		if (player.duelStatus == 5) {
+			player.getActionSender().sendMessage("You can't teleport during a duel!");
 			return;
 		}
-		if (c.inWild() && c.wildLevel > Constants.NO_TELEPORT_WILD_LEVEL) {
-			c.sendMessage("You can't teleport above level " + Constants.NO_TELEPORT_WILD_LEVEL + " in the wilderness.");
+		if (player.inWild() && player.wildLevel > Constants.NO_TELEPORT_WILD_LEVEL) {
+			player.getActionSender().sendMessage("You can't teleport above level " + Constants.NO_TELEPORT_WILD_LEVEL + " in the wilderness.");
 			return;
 		}
-		if (System.currentTimeMillis() - c.teleBlockDelay < c.teleBlockLength) {
-			c.sendMessage("You are teleblocked and can't teleport.");
+		if (System.currentTimeMillis() - player.teleBlockDelay < player.teleBlockLength) {
+			player.getActionSender().sendMessage("You are teleblocked and can't teleport.");
 			return;
 		}
-		if (!c.isDead && c.teleTimer == 0 && c.respawnTimer == -6) {
-			if (c.playerIndex > 0 || c.npcIndex > 0)
-				c.getCombat().resetPlayerAttack();
-			c.stopMovement();
+		if (!player.isDead && player.teleTimer == 0 && player.respawnTimer == -6) {
+			if (player.playerIndex > 0 || player.npcIndex > 0)
+				player.getCombat().resetPlayerAttack();
+			player.stopMovement();
 			removeAllWindows();
-			c.teleX = x;
-			c.teleY = y;
-			c.npcIndex = 0;
-			c.playerIndex = 0;
-			c.faceUpdate(0);
-			c.teleHeight = height;
+			player.teleX = x;
+			player.teleY = y;
+			player.npcIndex = 0;
+			player.playerIndex = 0;
+			player.faceUpdate(0);
+			player.teleHeight = height;
 			if (teleportType.equalsIgnoreCase("modern")) {
-				c.startAnimation(714);
-				c.teleTimer = 11;
-				c.teleGfx = 308;
-				c.teleEndAnimation = 715;
+				player.startAnimation(714);
+				player.teleTimer = 11;
+				player.teleGfx = 308;
+				player.teleEndAnimation = 715;
 			}
 			if (teleportType.equalsIgnoreCase("ancient")) {
-				c.startAnimation(1979);
-				c.teleGfx = 0;
-				c.teleTimer = 9;
-				c.teleEndAnimation = 0;
-				c.gfx0(392);
+				player.startAnimation(1979);
+				player.teleGfx = 0;
+				player.teleTimer = 9;
+				player.teleEndAnimation = 0;
+				player.gfx0(392);
 			}
 
 		}
 	}
 
 	public void startTeleport2(int x, int y, int height) {
-		if (c.duelStatus == 5) {
-			c.sendMessage("You can't teleport during a duel!");
+		if (player.duelStatus == 5) {
+			player.getActionSender().sendMessage("You can't teleport during a duel!");
 			return;
 		}
-		if (System.currentTimeMillis() - c.teleBlockDelay < c.teleBlockLength) {
-			c.sendMessage("You are teleblocked and can't teleport.");
+		if (System.currentTimeMillis() - player.teleBlockDelay < player.teleBlockLength) {
+			player.getActionSender().sendMessage("You are teleblocked and can't teleport.");
 			return;
 		}
-		if (!c.isDead && c.teleTimer == 0) {
-			c.stopMovement();
+		if (!player.isDead && player.teleTimer == 0) {
+			player.stopMovement();
 			removeAllWindows();
-			c.teleX = x;
-			c.teleY = y;
-			c.npcIndex = 0;
-			c.playerIndex = 0;
-			c.faceUpdate(0);
-			c.teleHeight = height;
-			c.startAnimation(714);
-			c.teleTimer = 11;
-			c.teleGfx = 308;
-			c.teleEndAnimation = 715;
+			player.teleX = x;
+			player.teleY = y;
+			player.npcIndex = 0;
+			player.playerIndex = 0;
+			player.faceUpdate(0);
+			player.teleHeight = height;
+			player.startAnimation(714);
+			player.teleTimer = 11;
+			player.teleGfx = 308;
+			player.teleEndAnimation = 715;
 
 		}
 	}
 
 	public void processTeleport() {
-		c.teleportToX = c.teleX;
-		c.teleportToY = c.teleY;
-		c.heightLevel = c.teleHeight;
-		if (c.teleEndAnimation > 0) {
-			c.startAnimation(c.teleEndAnimation);
+		player.teleportToX = player.teleX;
+		player.teleportToY = player.teleY;
+		player.heightLevel = player.teleHeight;
+		if (player.teleEndAnimation > 0) {
+			player.startAnimation(player.teleEndAnimation);
 		}
 	}
 
 	public void followPlayer() {
-		if (PlayerHandler.players[c.followId] == null || PlayerHandler.players[c.followId].isDead) {
-			c.followId = 0;
+		if (PlayerHandler.players[player.followId] == null || PlayerHandler.players[player.followId].isDead) {
+			player.followId = 0;
 			return;
 		}
-		if (c.freezeTimer > 0) {
+		if (player.freezeTimer > 0) {
 			return;
 		}
-		if (c.isDead || c.playerLevel[3] <= 0)
+		if (player.isDead || player.playerLevel[3] <= 0)
 			return;
 
-		int otherX = PlayerHandler.players[c.followId].getX();
-		int otherY = PlayerHandler.players[c.followId].getY();
-		boolean withinDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 2);
+		int otherX = PlayerHandler.players[player.followId].getX();
+		int otherY = PlayerHandler.players[player.followId].getY();
+		boolean withinDistance = player.goodDistance(otherX, otherY, player.getX(), player.getY(), 2);
 		@SuppressWarnings("unused")
-		boolean goodDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 1);
-		boolean hallyDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 2);
-		boolean bowDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 8);
-		boolean rangeWeaponDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 4);
-		boolean sameSpot = c.absX == otherX && c.absY == otherY;
-		if (!c.goodDistance(otherX, otherY, c.getX(), c.getY(), 25)) {
-			c.followId = 0;
+		boolean goodDistance = player.goodDistance(otherX, otherY, player.getX(), player.getY(), 1);
+		boolean hallyDistance = player.goodDistance(otherX, otherY, player.getX(), player.getY(), 2);
+		boolean bowDistance = player.goodDistance(otherX, otherY, player.getX(), player.getY(), 8);
+		boolean rangeWeaponDistance = player.goodDistance(otherX, otherY, player.getX(), player.getY(), 4);
+		boolean sameSpot = player.absX == otherX && player.absY == otherY;
+		if (!player.goodDistance(otherX, otherY, player.getX(), player.getY(), 25)) {
+			player.followId = 0;
 			return;
 		}
-		if (c.goodDistance(otherX, otherY, c.getX(), c.getY(), 1)) {
-			if (otherX != c.getX() && otherY != c.getY()) {
+		if (player.goodDistance(otherX, otherY, player.getX(), player.getY(), 1)) {
+			if (otherX != player.getX() && otherY != player.getY()) {
 				stopDiagonal(otherX, otherY);
 				return;
 			}
 		}
 
-		if ((c.usingBow || c.mageFollow || (c.playerIndex > 0 && c.autocastId > 0)) && bowDistance && !sameSpot) {
+		if ((player.usingBow || player.mageFollow || (player.playerIndex > 0 && player.autocastId > 0)) && bowDistance && !sameSpot) {
 			return;
 		}
 
-		if (c.getCombat().usingHally() && hallyDistance && !sameSpot) {
+		if (player.getCombat().usingHally() && hallyDistance && !sameSpot) {
 			return;
 		}
 
-		if (c.usingRangeWeapon && rangeWeaponDistance && !sameSpot) {
+		if (player.usingRangeWeapon && rangeWeaponDistance && !sameSpot) {
 			return;
 		}
 
-		c.faceUpdate(c.followId + 32768);
-		if (otherX == c.absX && otherY == c.absY) {
+		player.faceUpdate(player.followId + 32768);
+		if (otherX == player.absX && otherY == player.absY) {
 			int r = Misc.random(3);
 			switch (r) {
 			case 0:
@@ -1563,95 +1499,95 @@ public class PlayerAssistant {
 				walkTo(-1, 0);
 				break;
 			}
-		} else if (c.isRunning2 && !withinDistance) {
-			if (otherY > c.getY() && otherX == c.getX()) {
-				walkTo(0, getMove(c.getY(), otherY - 1) + getMove(c.getY(), otherY - 1));
-			} else if (otherY < c.getY() && otherX == c.getX()) {
-				walkTo(0, getMove(c.getY(), otherY + 1) + getMove(c.getY(), otherY + 1));
-			} else if (otherX > c.getX() && otherY == c.getY()) {
-				walkTo(getMove(c.getX(), otherX - 1) + getMove(c.getX(), otherX - 1), 0);
-			} else if (otherX < c.getX() && otherY == c.getY()) {
-				walkTo(getMove(c.getX(), otherX + 1) + getMove(c.getX(), otherX + 1), 0);
-			} else if (otherX < c.getX() && otherY < c.getY()) {
-				walkTo(getMove(c.getX(), otherX + 1) + getMove(c.getX(), otherX + 1),
-						getMove(c.getY(), otherY + 1) + getMove(c.getY(), otherY + 1));
-			} else if (otherX > c.getX() && otherY > c.getY()) {
-				walkTo(getMove(c.getX(), otherX - 1) + getMove(c.getX(), otherX - 1),
-						getMove(c.getY(), otherY - 1) + getMove(c.getY(), otherY - 1));
-			} else if (otherX < c.getX() && otherY > c.getY()) {
-				walkTo(getMove(c.getX(), otherX + 1) + getMove(c.getX(), otherX + 1),
-						getMove(c.getY(), otherY - 1) + getMove(c.getY(), otherY - 1));
-			} else if (otherX > c.getX() && otherY < c.getY()) {
-				walkTo(getMove(c.getX(), otherX + 1) + getMove(c.getX(), otherX + 1),
-						getMove(c.getY(), otherY - 1) + getMove(c.getY(), otherY - 1));
+		} else if (player.isRunning2 && !withinDistance) {
+			if (otherY > player.getY() && otherX == player.getX()) {
+				walkTo(0, getMove(player.getY(), otherY - 1) + getMove(player.getY(), otherY - 1));
+			} else if (otherY < player.getY() && otherX == player.getX()) {
+				walkTo(0, getMove(player.getY(), otherY + 1) + getMove(player.getY(), otherY + 1));
+			} else if (otherX > player.getX() && otherY == player.getY()) {
+				walkTo(getMove(player.getX(), otherX - 1) + getMove(player.getX(), otherX - 1), 0);
+			} else if (otherX < player.getX() && otherY == player.getY()) {
+				walkTo(getMove(player.getX(), otherX + 1) + getMove(player.getX(), otherX + 1), 0);
+			} else if (otherX < player.getX() && otherY < player.getY()) {
+				walkTo(getMove(player.getX(), otherX + 1) + getMove(player.getX(), otherX + 1),
+						getMove(player.getY(), otherY + 1) + getMove(player.getY(), otherY + 1));
+			} else if (otherX > player.getX() && otherY > player.getY()) {
+				walkTo(getMove(player.getX(), otherX - 1) + getMove(player.getX(), otherX - 1),
+						getMove(player.getY(), otherY - 1) + getMove(player.getY(), otherY - 1));
+			} else if (otherX < player.getX() && otherY > player.getY()) {
+				walkTo(getMove(player.getX(), otherX + 1) + getMove(player.getX(), otherX + 1),
+						getMove(player.getY(), otherY - 1) + getMove(player.getY(), otherY - 1));
+			} else if (otherX > player.getX() && otherY < player.getY()) {
+				walkTo(getMove(player.getX(), otherX + 1) + getMove(player.getX(), otherX + 1),
+						getMove(player.getY(), otherY - 1) + getMove(player.getY(), otherY - 1));
 			}
 		} else {
-			if (otherY > c.getY() && otherX == c.getX()) {
-				walkTo(0, getMove(c.getY(), otherY - 1));
-			} else if (otherY < c.getY() && otherX == c.getX()) {
-				walkTo(0, getMove(c.getY(), otherY + 1));
-			} else if (otherX > c.getX() && otherY == c.getY()) {
-				walkTo(getMove(c.getX(), otherX - 1), 0);
-			} else if (otherX < c.getX() && otherY == c.getY()) {
-				walkTo(getMove(c.getX(), otherX + 1), 0);
-			} else if (otherX < c.getX() && otherY < c.getY()) {
-				walkTo(getMove(c.getX(), otherX + 1), getMove(c.getY(), otherY + 1));
-			} else if (otherX > c.getX() && otherY > c.getY()) {
-				walkTo(getMove(c.getX(), otherX - 1), getMove(c.getY(), otherY - 1));
-			} else if (otherX < c.getX() && otherY > c.getY()) {
-				walkTo(getMove(c.getX(), otherX + 1), getMove(c.getY(), otherY - 1));
-			} else if (otherX > c.getX() && otherY < c.getY()) {
-				walkTo(getMove(c.getX(), otherX - 1), getMove(c.getY(), otherY + 1));
+			if (otherY > player.getY() && otherX == player.getX()) {
+				walkTo(0, getMove(player.getY(), otherY - 1));
+			} else if (otherY < player.getY() && otherX == player.getX()) {
+				walkTo(0, getMove(player.getY(), otherY + 1));
+			} else if (otherX > player.getX() && otherY == player.getY()) {
+				walkTo(getMove(player.getX(), otherX - 1), 0);
+			} else if (otherX < player.getX() && otherY == player.getY()) {
+				walkTo(getMove(player.getX(), otherX + 1), 0);
+			} else if (otherX < player.getX() && otherY < player.getY()) {
+				walkTo(getMove(player.getX(), otherX + 1), getMove(player.getY(), otherY + 1));
+			} else if (otherX > player.getX() && otherY > player.getY()) {
+				walkTo(getMove(player.getX(), otherX - 1), getMove(player.getY(), otherY - 1));
+			} else if (otherX < player.getX() && otherY > player.getY()) {
+				walkTo(getMove(player.getX(), otherX + 1), getMove(player.getY(), otherY - 1));
+			} else if (otherX > player.getX() && otherY < player.getY()) {
+				walkTo(getMove(player.getX(), otherX - 1), getMove(player.getY(), otherY + 1));
 			}
 		}
-		c.faceUpdate(c.followId + 32768);
+		player.faceUpdate(player.followId + 32768);
 	}
 
 	public void followNpc() {
-		if (NPCHandler.npcs[c.followId2] == null || NPCHandler.npcs[c.followId2].isDead) {
-			c.followId2 = 0;
+		if (NPCHandler.npcs[player.followId2] == null || NPCHandler.npcs[player.followId2].isDead) {
+			player.followId2 = 0;
 			return;
 		}
-		if (c.freezeTimer > 0) {
+		if (player.freezeTimer > 0) {
 			return;
 		}
-		if (c.isDead || c.playerLevel[3] <= 0)
+		if (player.isDead || player.playerLevel[3] <= 0)
 			return;
 
-		int otherX = NPCHandler.npcs[c.followId2].getX();
-		int otherY = NPCHandler.npcs[c.followId2].getY();
-		boolean withinDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 2);
+		int otherX = NPCHandler.npcs[player.followId2].getX();
+		int otherY = NPCHandler.npcs[player.followId2].getY();
+		boolean withinDistance = player.goodDistance(otherX, otherY, player.getX(), player.getY(), 2);
 		@SuppressWarnings("unused")
-		boolean goodDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 1);
-		boolean hallyDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 2);
-		boolean bowDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 8);
-		boolean rangeWeaponDistance = c.goodDistance(otherX, otherY, c.getX(), c.getY(), 4);
-		boolean sameSpot = c.absX == otherX && c.absY == otherY;
-		if (!c.goodDistance(otherX, otherY, c.getX(), c.getY(), 25)) {
-			c.followId2 = 0;
+		boolean goodDistance = player.goodDistance(otherX, otherY, player.getX(), player.getY(), 1);
+		boolean hallyDistance = player.goodDistance(otherX, otherY, player.getX(), player.getY(), 2);
+		boolean bowDistance = player.goodDistance(otherX, otherY, player.getX(), player.getY(), 8);
+		boolean rangeWeaponDistance = player.goodDistance(otherX, otherY, player.getX(), player.getY(), 4);
+		boolean sameSpot = player.absX == otherX && player.absY == otherY;
+		if (!player.goodDistance(otherX, otherY, player.getX(), player.getY(), 25)) {
+			player.followId2 = 0;
 			return;
 		}
-		if (c.goodDistance(otherX, otherY, c.getX(), c.getY(), 1)) {
-			if (otherX != c.getX() && otherY != c.getY()) {
+		if (player.goodDistance(otherX, otherY, player.getX(), player.getY(), 1)) {
+			if (otherX != player.getX() && otherY != player.getY()) {
 				stopDiagonal(otherX, otherY);
 				return;
 			}
 		}
 
-		if ((c.usingBow || c.mageFollow || (c.npcIndex > 0 && c.autocastId > 0)) && bowDistance && !sameSpot) {
+		if ((player.usingBow || player.mageFollow || (player.npcIndex > 0 && player.autocastId > 0)) && bowDistance && !sameSpot) {
 			return;
 		}
 
-		if (c.getCombat().usingHally() && hallyDistance && !sameSpot) {
+		if (player.getCombat().usingHally() && hallyDistance && !sameSpot) {
 			return;
 		}
 
-		if (c.usingRangeWeapon && rangeWeaponDistance && !sameSpot) {
+		if (player.usingRangeWeapon && rangeWeaponDistance && !sameSpot) {
 			return;
 		}
 
-		c.faceUpdate(c.followId2);
-		if (otherX == c.absX && otherY == c.absY) {
+		player.faceUpdate(player.followId2);
+		if (otherX == player.absX && otherY == player.absY) {
 			int r = Misc.random(3);
 			switch (r) {
 			case 0:
@@ -1667,48 +1603,48 @@ public class PlayerAssistant {
 				walkTo(-1, 0);
 				break;
 			}
-		} else if (c.isRunning2 && !withinDistance) {
-			if (otherY > c.getY() && otherX == c.getX()) {
-				walkTo(0, getMove(c.getY(), otherY - 1) + getMove(c.getY(), otherY - 1));
-			} else if (otherY < c.getY() && otherX == c.getX()) {
-				walkTo(0, getMove(c.getY(), otherY + 1) + getMove(c.getY(), otherY + 1));
-			} else if (otherX > c.getX() && otherY == c.getY()) {
-				walkTo(getMove(c.getX(), otherX - 1) + getMove(c.getX(), otherX - 1), 0);
-			} else if (otherX < c.getX() && otherY == c.getY()) {
-				walkTo(getMove(c.getX(), otherX + 1) + getMove(c.getX(), otherX + 1), 0);
-			} else if (otherX < c.getX() && otherY < c.getY()) {
-				walkTo(getMove(c.getX(), otherX + 1) + getMove(c.getX(), otherX + 1),
-						getMove(c.getY(), otherY + 1) + getMove(c.getY(), otherY + 1));
-			} else if (otherX > c.getX() && otherY > c.getY()) {
-				walkTo(getMove(c.getX(), otherX - 1) + getMove(c.getX(), otherX - 1),
-						getMove(c.getY(), otherY - 1) + getMove(c.getY(), otherY - 1));
-			} else if (otherX < c.getX() && otherY > c.getY()) {
-				walkTo(getMove(c.getX(), otherX + 1) + getMove(c.getX(), otherX + 1),
-						getMove(c.getY(), otherY - 1) + getMove(c.getY(), otherY - 1));
-			} else if (otherX > c.getX() && otherY < c.getY()) {
-				walkTo(getMove(c.getX(), otherX + 1) + getMove(c.getX(), otherX + 1),
-						getMove(c.getY(), otherY - 1) + getMove(c.getY(), otherY - 1));
+		} else if (player.isRunning2 && !withinDistance) {
+			if (otherY > player.getY() && otherX == player.getX()) {
+				walkTo(0, getMove(player.getY(), otherY - 1) + getMove(player.getY(), otherY - 1));
+			} else if (otherY < player.getY() && otherX == player.getX()) {
+				walkTo(0, getMove(player.getY(), otherY + 1) + getMove(player.getY(), otherY + 1));
+			} else if (otherX > player.getX() && otherY == player.getY()) {
+				walkTo(getMove(player.getX(), otherX - 1) + getMove(player.getX(), otherX - 1), 0);
+			} else if (otherX < player.getX() && otherY == player.getY()) {
+				walkTo(getMove(player.getX(), otherX + 1) + getMove(player.getX(), otherX + 1), 0);
+			} else if (otherX < player.getX() && otherY < player.getY()) {
+				walkTo(getMove(player.getX(), otherX + 1) + getMove(player.getX(), otherX + 1),
+						getMove(player.getY(), otherY + 1) + getMove(player.getY(), otherY + 1));
+			} else if (otherX > player.getX() && otherY > player.getY()) {
+				walkTo(getMove(player.getX(), otherX - 1) + getMove(player.getX(), otherX - 1),
+						getMove(player.getY(), otherY - 1) + getMove(player.getY(), otherY - 1));
+			} else if (otherX < player.getX() && otherY > player.getY()) {
+				walkTo(getMove(player.getX(), otherX + 1) + getMove(player.getX(), otherX + 1),
+						getMove(player.getY(), otherY - 1) + getMove(player.getY(), otherY - 1));
+			} else if (otherX > player.getX() && otherY < player.getY()) {
+				walkTo(getMove(player.getX(), otherX + 1) + getMove(player.getX(), otherX + 1),
+						getMove(player.getY(), otherY - 1) + getMove(player.getY(), otherY - 1));
 			}
 		} else {
-			if (otherY > c.getY() && otherX == c.getX()) {
-				walkTo(0, getMove(c.getY(), otherY - 1));
-			} else if (otherY < c.getY() && otherX == c.getX()) {
-				walkTo(0, getMove(c.getY(), otherY + 1));
-			} else if (otherX > c.getX() && otherY == c.getY()) {
-				walkTo(getMove(c.getX(), otherX - 1), 0);
-			} else if (otherX < c.getX() && otherY == c.getY()) {
-				walkTo(getMove(c.getX(), otherX + 1), 0);
-			} else if (otherX < c.getX() && otherY < c.getY()) {
-				walkTo(getMove(c.getX(), otherX + 1), getMove(c.getY(), otherY + 1));
-			} else if (otherX > c.getX() && otherY > c.getY()) {
-				walkTo(getMove(c.getX(), otherX - 1), getMove(c.getY(), otherY - 1));
-			} else if (otherX < c.getX() && otherY > c.getY()) {
-				walkTo(getMove(c.getX(), otherX + 1), getMove(c.getY(), otherY - 1));
-			} else if (otherX > c.getX() && otherY < c.getY()) {
-				walkTo(getMove(c.getX(), otherX - 1), getMove(c.getY(), otherY + 1));
+			if (otherY > player.getY() && otherX == player.getX()) {
+				walkTo(0, getMove(player.getY(), otherY - 1));
+			} else if (otherY < player.getY() && otherX == player.getX()) {
+				walkTo(0, getMove(player.getY(), otherY + 1));
+			} else if (otherX > player.getX() && otherY == player.getY()) {
+				walkTo(getMove(player.getX(), otherX - 1), 0);
+			} else if (otherX < player.getX() && otherY == player.getY()) {
+				walkTo(getMove(player.getX(), otherX + 1), 0);
+			} else if (otherX < player.getX() && otherY < player.getY()) {
+				walkTo(getMove(player.getX(), otherX + 1), getMove(player.getY(), otherY + 1));
+			} else if (otherX > player.getX() && otherY > player.getY()) {
+				walkTo(getMove(player.getX(), otherX - 1), getMove(player.getY(), otherY - 1));
+			} else if (otherX < player.getX() && otherY > player.getY()) {
+				walkTo(getMove(player.getX(), otherX + 1), getMove(player.getY(), otherY - 1));
+			} else if (otherX > player.getX() && otherY < player.getY()) {
+				walkTo(getMove(player.getX(), otherX - 1), getMove(player.getY(), otherY + 1));
 			}
 		}
-		c.faceUpdate(c.followId2);
+		player.faceUpdate(player.followId2);
 	}
 
 	public int getRunningMove(int i, int j) {
@@ -1721,94 +1657,94 @@ public class PlayerAssistant {
 	}
 
 	public void resetFollow() {
-		c.followId = 0;
-		c.followId2 = 0;
-		c.mageFollow = false;
-		c.outStream.createFrame(174);
-		c.outStream.writeWord(0);
-		c.outStream.writeByte(0);
-		c.outStream.writeWord(1);
+		player.followId = 0;
+		player.followId2 = 0;
+		player.mageFollow = false;
+		player.outStream.createFrame(174);
+		player.outStream.writeWord(0);
+		player.outStream.writeByte(0);
+		player.outStream.writeWord(1);
 	}
 
 	public void walkTo(int i, int j) {
-		c.newWalkCmdSteps = 0;
-		if (++c.newWalkCmdSteps > 50)
-			c.newWalkCmdSteps = 0;
-		int k = c.getX() + i;
-		k -= c.mapRegionX * 8;
-		c.getNewWalkCmdX()[0] = c.getNewWalkCmdY()[0] = 0;
-		int l = c.getY() + j;
-		l -= c.mapRegionY * 8;
+		player.newWalkCmdSteps = 0;
+		if (++player.newWalkCmdSteps > 50)
+			player.newWalkCmdSteps = 0;
+		int k = player.getX() + i;
+		k -= player.mapRegionX * 8;
+		player.getNewWalkCmdX()[0] = player.getNewWalkCmdY()[0] = 0;
+		int l = player.getY() + j;
+		l -= player.mapRegionY * 8;
 
-		for (int n = 0; n < c.newWalkCmdSteps; n++) {
-			c.getNewWalkCmdX()[n] += k;
-			c.getNewWalkCmdY()[n] += l;
+		for (int n = 0; n < player.newWalkCmdSteps; n++) {
+			player.getNewWalkCmdX()[n] += k;
+			player.getNewWalkCmdY()[n] += l;
 		}
 	}
 
 	public void walkTo2(int i, int j) {
-		if (c.freezeDelay > 0)
+		if (player.freezeDelay > 0)
 			return;
-		c.newWalkCmdSteps = 0;
-		if (++c.newWalkCmdSteps > 50)
-			c.newWalkCmdSteps = 0;
-		int k = c.getX() + i;
-		k -= c.mapRegionX * 8;
-		c.getNewWalkCmdX()[0] = c.getNewWalkCmdY()[0] = 0;
-		int l = c.getY() + j;
-		l -= c.mapRegionY * 8;
+		player.newWalkCmdSteps = 0;
+		if (++player.newWalkCmdSteps > 50)
+			player.newWalkCmdSteps = 0;
+		int k = player.getX() + i;
+		k -= player.mapRegionX * 8;
+		player.getNewWalkCmdX()[0] = player.getNewWalkCmdY()[0] = 0;
+		int l = player.getY() + j;
+		l -= player.mapRegionY * 8;
 
-		for (int n = 0; n < c.newWalkCmdSteps; n++) {
-			c.getNewWalkCmdX()[n] += k;
-			c.getNewWalkCmdY()[n] += l;
+		for (int n = 0; n < player.newWalkCmdSteps; n++) {
+			player.getNewWalkCmdX()[n] += k;
+			player.getNewWalkCmdY()[n] += l;
 		}
 	}
 
 	public void stopDiagonal(int otherX, int otherY) {
-		if (c.freezeDelay > 0)
+		if (player.freezeDelay > 0)
 			return;
-		c.newWalkCmdSteps = 1;
-		int xMove = otherX - c.getX();
+		player.newWalkCmdSteps = 1;
+		int xMove = otherX - player.getX();
 		int yMove = 0;
 		if (xMove == 0)
-			yMove = otherY - c.getY();
+			yMove = otherY - player.getY();
 		/*
 		 * if (!clipHor) { yMove = 0; } else if (!clipVer) { xMove = 0; }
 		 */
 
-		int k = c.getX() + xMove;
-		k -= c.mapRegionX * 8;
-		c.getNewWalkCmdX()[0] = c.getNewWalkCmdY()[0] = 0;
-		int l = c.getY() + yMove;
-		l -= c.mapRegionY * 8;
+		int k = player.getX() + xMove;
+		k -= player.mapRegionX * 8;
+		player.getNewWalkCmdX()[0] = player.getNewWalkCmdY()[0] = 0;
+		int l = player.getY() + yMove;
+		l -= player.mapRegionY * 8;
 
-		for (int n = 0; n < c.newWalkCmdSteps; n++) {
-			c.getNewWalkCmdX()[n] += k;
-			c.getNewWalkCmdY()[n] += l;
+		for (int n = 0; n < player.newWalkCmdSteps; n++) {
+			player.getNewWalkCmdX()[n] += k;
+			player.getNewWalkCmdY()[n] += l;
 		}
 
 	}
 
 	public void walkToCheck(int i, int j) {
-		if (c.freezeDelay > 0)
+		if (player.freezeDelay > 0)
 			return;
-		c.newWalkCmdSteps = 0;
-		if (++c.newWalkCmdSteps > 50)
-			c.newWalkCmdSteps = 0;
-		int k = c.getX() + i;
-		k -= c.mapRegionX * 8;
-		c.getNewWalkCmdX()[0] = c.getNewWalkCmdY()[0] = 0;
-		int l = c.getY() + j;
-		l -= c.mapRegionY * 8;
+		player.newWalkCmdSteps = 0;
+		if (++player.newWalkCmdSteps > 50)
+			player.newWalkCmdSteps = 0;
+		int k = player.getX() + i;
+		k -= player.mapRegionX * 8;
+		player.getNewWalkCmdX()[0] = player.getNewWalkCmdY()[0] = 0;
+		int l = player.getY() + j;
+		l -= player.mapRegionY * 8;
 
-		for (int n = 0; n < c.newWalkCmdSteps; n++) {
-			c.getNewWalkCmdX()[n] += k;
-			c.getNewWalkCmdY()[n] += l;
+		for (int n = 0; n < player.newWalkCmdSteps; n++) {
+			player.getNewWalkCmdX()[n] += k;
+			player.getNewWalkCmdY()[n] += l;
 		}
 	}
 
 	public int getMove(int place1, int place2) {
-		if (System.currentTimeMillis() - c.lastSpear < 4000)
+		if (System.currentTimeMillis() - player.lastSpear < 4000)
 			return 0;
 		if ((place1 - place2) == 0) {
 			return 0;
@@ -1821,37 +1757,37 @@ public class PlayerAssistant {
 	}
 
 	public boolean fullVeracs() {
-		return c.playerEquipment[EquipmentListener.HAT_SLOT.getSlot()] == 4753
-				&& c.playerEquipment[EquipmentListener.CHEST_SLOT.getSlot()] == 4757
-				&& c.playerEquipment[EquipmentListener.LEGS_SLOT.getSlot()] == 4759
-				&& c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] == 4755;
+		return player.playerEquipment[EquipmentListener.HAT_SLOT.getSlot()] == 4753
+				&& player.playerEquipment[EquipmentListener.CHEST_SLOT.getSlot()] == 4757
+				&& player.playerEquipment[EquipmentListener.LEGS_SLOT.getSlot()] == 4759
+				&& player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] == 4755;
 	}
 
 	public boolean fullGuthans() {
-		return c.playerEquipment[EquipmentListener.HAT_SLOT.getSlot()] == 4724
-				&& c.playerEquipment[EquipmentListener.CHEST_SLOT.getSlot()] == 4728
-				&& c.playerEquipment[EquipmentListener.LEGS_SLOT.getSlot()] == 4730
-				&& c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] == 4726;
+		return player.playerEquipment[EquipmentListener.HAT_SLOT.getSlot()] == 4724
+				&& player.playerEquipment[EquipmentListener.CHEST_SLOT.getSlot()] == 4728
+				&& player.playerEquipment[EquipmentListener.LEGS_SLOT.getSlot()] == 4730
+				&& player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] == 4726;
 	}
 
 	/**
 	 * reseting animation
 	 **/
 	public void resetAnimation() {
-		c.getCombat().getPlayerAnimIndex(
-				c.getItems().getItemName(c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]).toLowerCase());
-		c.startAnimation(c.playerStandIndex);
+		player.getCombat().getPlayerAnimIndex(
+				player.getItems().getItemName(player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]).toLowerCase());
+		player.startAnimation(player.playerStandIndex);
 		requestUpdates();
 	}
 
 	public void requestUpdates() {
-		c.updateRequired = true;
-		c.setAppearanceUpdateRequired(true);
+		player.updateRequired = true;
+		player.setAppearanceUpdateRequired(true);
 	}
 
 	public void Obelisks(int id) {
-		if (!c.getItems().playerHasItem(id)) {
-			c.getItems().addItem(id, 1);
+		if (!player.getItems().playerHasItem(id)) {
+			player.getItems().addItem(id, 1);
 		}
 	}
 
@@ -1860,7 +1796,7 @@ public class PlayerAssistant {
 	public int getTotalLevel() {
 
 		for (int i = 0; i < 21; i++) {
-			answer = getLevelForXP(c.playerXP[i]);
+			answer = getLevelForXP(player.playerXP[i]);
 		}
 		return answer;
 	}
@@ -1871,32 +1807,32 @@ public class PlayerAssistant {
 		switch (skill) {
 		case 0:
 			sendFrame126("Congratulations, you just advanced an attack level!", 6248);
-			sendFrame126("Your attack level is now " + getLevelForXP(c.playerXP[skill]) + ".", 6249);
-			c.sendMessage("Congratulations, you just advanced an attack level.");
+			sendFrame126("Your attack level is now " + getLevelForXP(player.playerXP[skill]) + ".", 6249);
+			player.getActionSender().sendMessage("Congratulations, you just advanced an attack level.");
 			sendFrame164(6247);
 
 			break;
 
 		case 1:
 			sendFrame126("Congratulations, you just advanced a defence level!", 6254);
-			sendFrame126("Your defence level is now " + getLevelForXP(c.playerXP[skill]) + ".", 6255);
-			c.sendMessage("Congratulations, you just advanced a defence level.");
+			sendFrame126("Your defence level is now " + getLevelForXP(player.playerXP[skill]) + ".", 6255);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a defence level.");
 			sendFrame164(6253);
 
 			break;
 
 		case 2:
 			sendFrame126("Congratulations, you just advanced a strength level!", 6207);
-			sendFrame126("Your strength level is now " + getLevelForXP(c.playerXP[skill]) + ".", 6208);
-			c.sendMessage("Congratulations, you just advanced a strength level.");
+			sendFrame126("Your strength level is now " + getLevelForXP(player.playerXP[skill]) + ".", 6208);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a strength level.");
 			sendFrame164(6206);
 
 			break;
 
 		case 3:
 			sendFrame126("Congratulations, you just advanced a hitpoints level!", 6217);
-			sendFrame126("Your hitpoints level is now " + getLevelForXP(c.playerXP[skill]) + ".", 6218);
-			c.sendMessage("Congratulations, you just advanced a hitpoints level.");
+			sendFrame126("Your hitpoints level is now " + getLevelForXP(player.playerXP[skill]) + ".", 6218);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a hitpoints level.");
 			sendFrame164(6216);
 			// hitpoints
 
@@ -1904,274 +1840,274 @@ public class PlayerAssistant {
 
 		case 4:
 			sendFrame126("Congratulations, you just advanced a ranged level!", 5453);
-			sendFrame126("Your ranged level is now " + getLevelForXP(c.playerXP[skill]) + ".", 6114);
-			c.sendMessage("Congratulations, you just advanced a ranging level.");
+			sendFrame126("Your ranged level is now " + getLevelForXP(player.playerXP[skill]) + ".", 6114);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a ranging level.");
 			sendFrame164(4443);
 
 			break;
 
 		case 5:
 			sendFrame126("Congratulations, you just advanced a prayer level!", 6243);
-			sendFrame126("Your prayer level is now " + getLevelForXP(c.playerXP[skill]) + ".", 6244);
-			c.sendMessage("Congratulations, you just advanced a prayer level.");
+			sendFrame126("Your prayer level is now " + getLevelForXP(player.playerXP[skill]) + ".", 6244);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a prayer level.");
 			sendFrame164(6242);
 
 			break;
 
 		case 6:
 			sendFrame126("Congratulations, you just advanced a magic level!", 6212);
-			sendFrame126("Your magic level is now " + getLevelForXP(c.playerXP[skill]) + ".", 6213);
-			c.sendMessage("Congratulations, you just advanced a magic level.");
+			sendFrame126("Your magic level is now " + getLevelForXP(player.playerXP[skill]) + ".", 6213);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a magic level.");
 			sendFrame164(6211);
 
 			break;
 
 		case 7:
 			sendFrame126("Congratulations, you just advanced a cooking level!", 6227);
-			sendFrame126("Your cooking level is now " + getLevelForXP(c.playerXP[skill]) + ".", 6228);
-			c.sendMessage("Congratulations, you just advanced a cooking level.");
+			sendFrame126("Your cooking level is now " + getLevelForXP(player.playerXP[skill]) + ".", 6228);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a cooking level.");
 			sendFrame164(6226);
 
 			break;
 
 		case 8:
 			sendFrame126("Congratulations, you just advanced a woodcutting level!", 4273);
-			sendFrame126("Your woodcutting level is now " + getLevelForXP(c.playerXP[skill]) + ".", 4274);
-			c.sendMessage("Congratulations, you just advanced a woodcutting level.");
+			sendFrame126("Your woodcutting level is now " + getLevelForXP(player.playerXP[skill]) + ".", 4274);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a woodcutting level.");
 			sendFrame164(4272);
 
 			break;
 
 		case 9:
 			sendFrame126("Congratulations, you just advanced a fletching level!", 6232);
-			sendFrame126("Your fletching level is now " + getLevelForXP(c.playerXP[skill]) + ".", 6233);
-			c.sendMessage("Congratulations, you just advanced a fletching level.");
+			sendFrame126("Your fletching level is now " + getLevelForXP(player.playerXP[skill]) + ".", 6233);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a fletching level.");
 			sendFrame164(6231);
 			break;
 
 		case 10:
 			sendFrame126("Congratulations, you just advanced a fishing level!", 6259);
-			sendFrame126("Your fishing level is now " + getLevelForXP(c.playerXP[skill]) + ".", 6260);
-			c.sendMessage("Congratulations, you just advanced a fishing level.");
+			sendFrame126("Your fishing level is now " + getLevelForXP(player.playerXP[skill]) + ".", 6260);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a fishing level.");
 			sendFrame164(6258);
 			break;
 
 		case 11:
 			sendFrame126("Congratulations, you just advanced a fire making level!", 4283);
-			sendFrame126("Your firemaking level is now " + getLevelForXP(c.playerXP[skill]) + ".", 4284);
-			c.sendMessage("Congratulations, you just advanced a fire making level.");
+			sendFrame126("Your firemaking level is now " + getLevelForXP(player.playerXP[skill]) + ".", 4284);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a fire making level.");
 			sendFrame164(4282);
 			break;
 
 		case 12:
 			sendFrame126("Congratulations, you just advanced a crafting level!", 6264);
-			sendFrame126("Your crafting level is now " + getLevelForXP(c.playerXP[skill]) + ".", 6265);
-			c.sendMessage("Congratulations, you just advanced a crafting level.");
+			sendFrame126("Your crafting level is now " + getLevelForXP(player.playerXP[skill]) + ".", 6265);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a crafting level.");
 			sendFrame164(6263);
 			break;
 
 		case 13:
 			sendFrame126("Congratulations, you just advanced a smithing level!", 6222);
-			sendFrame126("Your smithing level is now " + getLevelForXP(c.playerXP[skill]) + ".", 6223);
-			c.sendMessage("Congratulations, you just advanced a smithing level.");
+			sendFrame126("Your smithing level is now " + getLevelForXP(player.playerXP[skill]) + ".", 6223);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a smithing level.");
 			sendFrame164(6221);
 			break;
 
 		case 14:
 			sendFrame126("Congratulations, you just advanced a mining level!", 4417);
-			sendFrame126("Your mining level is now " + getLevelForXP(c.playerXP[skill]) + ".", 4438);
-			c.sendMessage("Congratulations, you just advanced a mining level.");
+			sendFrame126("Your mining level is now " + getLevelForXP(player.playerXP[skill]) + ".", 4438);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a mining level.");
 			sendFrame164(4416);
 			break;
 
 		case 15:
 			sendFrame126("Congratulations, you just advanced a herblore level!", 6238);
-			sendFrame126("Your herblore level is now " + getLevelForXP(c.playerXP[skill]) + ".", 6239);
-			c.sendMessage("Congratulations, you just advanced a herblore level.");
+			sendFrame126("Your herblore level is now " + getLevelForXP(player.playerXP[skill]) + ".", 6239);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a herblore level.");
 			sendFrame164(6237);
 			break;
 
 		case 16:
 			sendFrame126("Congratulations, you just advanced a agility level!", 4278);
-			sendFrame126("Your agility level is now " + getLevelForXP(c.playerXP[skill]) + ".", 4279);
-			c.sendMessage("Congratulations, you just advanced an agility level.");
+			sendFrame126("Your agility level is now " + getLevelForXP(player.playerXP[skill]) + ".", 4279);
+			player.getActionSender().sendMessage("Congratulations, you just advanced an agility level.");
 			sendFrame164(4277);
 			break;
 
 		case 17:
 			sendFrame126("Congratulations, you just advanced a thieving level!", 4263);
-			sendFrame126("Your theiving level is now " + getLevelForXP(c.playerXP[skill]) + ".", 4264);
-			c.sendMessage("Congratulations, you just advanced a thieving level.");
+			sendFrame126("Your theiving level is now " + getLevelForXP(player.playerXP[skill]) + ".", 4264);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a thieving level.");
 			sendFrame164(4261);
 			break;
 
 		case 18:
 			sendFrame126("Congratulations, you just advanced a slayer level!", 12123);
-			sendFrame126("Your slayer level is now " + getLevelForXP(c.playerXP[skill]) + ".", 12124);
-			c.sendMessage("Congratulations, you just advanced a slayer level.");
+			sendFrame126("Your slayer level is now " + getLevelForXP(player.playerXP[skill]) + ".", 12124);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a slayer level.");
 			sendFrame164(12122);
 			break;
 
 		case 20:
 			sendFrame126("Congratulations, you just advanced a runecrafting level!", 4268);
-			sendFrame126("Your runecrafting level is now " + getLevelForXP(c.playerXP[skill]) + ".", 4269);
-			c.sendMessage("Congratulations, you just advanced a runecrafting level.");
+			sendFrame126("Your runecrafting level is now " + getLevelForXP(player.playerXP[skill]) + ".", 4269);
+			player.getActionSender().sendMessage("Congratulations, you just advanced a runecrafting level.");
 			sendFrame164(4267);
 			break;
 		}
-		c.dialogueAction = 0;
-		c.nextChat = 0;
+		player.dialogueAction = 0;
+		player.nextChat = 0;
 	}
 
 	public void refreshSkill(int i) {
 		switch (i) {
 		case 0:
-			sendFrame126("" + c.playerLevel[0] + "", 4004);
-			sendFrame126("" + getLevelForXP(c.playerXP[0]) + "", 4005);
-			sendFrame126("" + c.playerXP[0] + "", 4044);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[0]) + 1) + "", 4045);
+			sendFrame126("" + player.playerLevel[0] + "", 4004);
+			sendFrame126("" + getLevelForXP(player.playerXP[0]) + "", 4005);
+			sendFrame126("" + player.playerXP[0] + "", 4044);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[0]) + 1) + "", 4045);
 			break;
 
 		case 1:
-			sendFrame126("" + c.playerLevel[1] + "", 4008);
-			sendFrame126("" + getLevelForXP(c.playerXP[1]) + "", 4009);
-			sendFrame126("" + c.playerXP[1] + "", 4056);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[1]) + 1) + "", 4057);
+			sendFrame126("" + player.playerLevel[1] + "", 4008);
+			sendFrame126("" + getLevelForXP(player.playerXP[1]) + "", 4009);
+			sendFrame126("" + player.playerXP[1] + "", 4056);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[1]) + 1) + "", 4057);
 			break;
 
 		case 2:
-			sendFrame126("" + c.playerLevel[2] + "", 4006);
-			sendFrame126("" + getLevelForXP(c.playerXP[2]) + "", 4007);
-			sendFrame126("" + c.playerXP[2] + "", 4050);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[2]) + 1) + "", 4051);
+			sendFrame126("" + player.playerLevel[2] + "", 4006);
+			sendFrame126("" + getLevelForXP(player.playerXP[2]) + "", 4007);
+			sendFrame126("" + player.playerXP[2] + "", 4050);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[2]) + 1) + "", 4051);
 			break;
 
 		case 3:
-			sendFrame126("" + c.playerLevel[3] + "", 4016);
-			sendFrame126("" + getLevelForXP(c.playerXP[3]) + "", 4017);
-			sendFrame126("" + c.playerXP[3] + "", 4080);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[3]) + 1) + "", 4081);
+			sendFrame126("" + player.playerLevel[3] + "", 4016);
+			sendFrame126("" + getLevelForXP(player.playerXP[3]) + "", 4017);
+			sendFrame126("" + player.playerXP[3] + "", 4080);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[3]) + 1) + "", 4081);
 			break;
 
 		case 4:
-			sendFrame126("" + c.playerLevel[4] + "", 4010);
-			sendFrame126("" + getLevelForXP(c.playerXP[4]) + "", 4011);
-			sendFrame126("" + c.playerXP[4] + "", 4062);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[4]) + 1) + "", 4063);
+			sendFrame126("" + player.playerLevel[4] + "", 4010);
+			sendFrame126("" + getLevelForXP(player.playerXP[4]) + "", 4011);
+			sendFrame126("" + player.playerXP[4] + "", 4062);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[4]) + 1) + "", 4063);
 			break;
 
 		case 5:
-			sendFrame126("" + c.playerLevel[5] + "", 4012);
-			sendFrame126("" + getLevelForXP(c.playerXP[5]) + "", 4013);
-			sendFrame126("" + c.playerXP[5] + "", 4068);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[5]) + 1) + "", 4069);
-			sendFrame126("" + c.playerLevel[5] + "/" + getLevelForXP(c.playerXP[5]) + "", 687);// Prayer
+			sendFrame126("" + player.playerLevel[5] + "", 4012);
+			sendFrame126("" + getLevelForXP(player.playerXP[5]) + "", 4013);
+			sendFrame126("" + player.playerXP[5] + "", 4068);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[5]) + 1) + "", 4069);
+			sendFrame126("" + player.playerLevel[5] + "/" + getLevelForXP(player.playerXP[5]) + "", 687);// Prayer
 																								// frame
 			break;
 
 		case 6:
-			sendFrame126("" + c.playerLevel[6] + "", 4014);
-			sendFrame126("" + getLevelForXP(c.playerXP[6]) + "", 4015);
-			sendFrame126("" + c.playerXP[6] + "", 4074);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[6]) + 1) + "", 4075);
+			sendFrame126("" + player.playerLevel[6] + "", 4014);
+			sendFrame126("" + getLevelForXP(player.playerXP[6]) + "", 4015);
+			sendFrame126("" + player.playerXP[6] + "", 4074);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[6]) + 1) + "", 4075);
 			break;
 
 		case 7:
-			sendFrame126("" + c.playerLevel[7] + "", 4034);
-			sendFrame126("" + getLevelForXP(c.playerXP[7]) + "", 4035);
-			sendFrame126("" + c.playerXP[7] + "", 4134);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[7]) + 1) + "", 4135);
+			sendFrame126("" + player.playerLevel[7] + "", 4034);
+			sendFrame126("" + getLevelForXP(player.playerXP[7]) + "", 4035);
+			sendFrame126("" + player.playerXP[7] + "", 4134);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[7]) + 1) + "", 4135);
 			break;
 
 		case 8:
-			sendFrame126("" + c.playerLevel[8] + "", 4038);
-			sendFrame126("" + getLevelForXP(c.playerXP[8]) + "", 4039);
-			sendFrame126("" + c.playerXP[8] + "", 4146);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[8]) + 1) + "", 4147);
+			sendFrame126("" + player.playerLevel[8] + "", 4038);
+			sendFrame126("" + getLevelForXP(player.playerXP[8]) + "", 4039);
+			sendFrame126("" + player.playerXP[8] + "", 4146);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[8]) + 1) + "", 4147);
 			break;
 
 		case 9:
-			sendFrame126("" + c.playerLevel[9] + "", 4026);
-			sendFrame126("" + getLevelForXP(c.playerXP[9]) + "", 4027);
-			sendFrame126("" + c.playerXP[9] + "", 4110);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[9]) + 1) + "", 4111);
+			sendFrame126("" + player.playerLevel[9] + "", 4026);
+			sendFrame126("" + getLevelForXP(player.playerXP[9]) + "", 4027);
+			sendFrame126("" + player.playerXP[9] + "", 4110);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[9]) + 1) + "", 4111);
 			break;
 
 		case 10:
-			sendFrame126("" + c.playerLevel[10] + "", 4032);
-			sendFrame126("" + getLevelForXP(c.playerXP[10]) + "", 4033);
-			sendFrame126("" + c.playerXP[10] + "", 4128);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[10]) + 1) + "", 4129);
+			sendFrame126("" + player.playerLevel[10] + "", 4032);
+			sendFrame126("" + getLevelForXP(player.playerXP[10]) + "", 4033);
+			sendFrame126("" + player.playerXP[10] + "", 4128);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[10]) + 1) + "", 4129);
 			break;
 
 		case 11:
-			sendFrame126("" + c.playerLevel[11] + "", 4036);
-			sendFrame126("" + getLevelForXP(c.playerXP[11]) + "", 4037);
-			sendFrame126("" + c.playerXP[11] + "", 4140);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[11]) + 1) + "", 4141);
+			sendFrame126("" + player.playerLevel[11] + "", 4036);
+			sendFrame126("" + getLevelForXP(player.playerXP[11]) + "", 4037);
+			sendFrame126("" + player.playerXP[11] + "", 4140);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[11]) + 1) + "", 4141);
 			break;
 
 		case 12:
-			sendFrame126("" + c.playerLevel[12] + "", 4024);
-			sendFrame126("" + getLevelForXP(c.playerXP[12]) + "", 4025);
-			sendFrame126("" + c.playerXP[12] + "", 4104);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[12]) + 1) + "", 4105);
+			sendFrame126("" + player.playerLevel[12] + "", 4024);
+			sendFrame126("" + getLevelForXP(player.playerXP[12]) + "", 4025);
+			sendFrame126("" + player.playerXP[12] + "", 4104);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[12]) + 1) + "", 4105);
 			break;
 
 		case 13:
-			sendFrame126("" + c.playerLevel[13] + "", 4030);
-			sendFrame126("" + getLevelForXP(c.playerXP[13]) + "", 4031);
-			sendFrame126("" + c.playerXP[13] + "", 4122);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[13]) + 1) + "", 4123);
+			sendFrame126("" + player.playerLevel[13] + "", 4030);
+			sendFrame126("" + getLevelForXP(player.playerXP[13]) + "", 4031);
+			sendFrame126("" + player.playerXP[13] + "", 4122);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[13]) + 1) + "", 4123);
 			break;
 
 		case 14:
-			sendFrame126("" + c.playerLevel[14] + "", 4028);
-			sendFrame126("" + getLevelForXP(c.playerXP[14]) + "", 4029);
-			sendFrame126("" + c.playerXP[14] + "", 4116);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[14]) + 1) + "", 4117);
+			sendFrame126("" + player.playerLevel[14] + "", 4028);
+			sendFrame126("" + getLevelForXP(player.playerXP[14]) + "", 4029);
+			sendFrame126("" + player.playerXP[14] + "", 4116);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[14]) + 1) + "", 4117);
 			break;
 
 		case 15:
-			sendFrame126("" + c.playerLevel[15] + "", 4020);
-			sendFrame126("" + getLevelForXP(c.playerXP[15]) + "", 4021);
-			sendFrame126("" + c.playerXP[15] + "", 4092);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[15]) + 1) + "", 4093);
+			sendFrame126("" + player.playerLevel[15] + "", 4020);
+			sendFrame126("" + getLevelForXP(player.playerXP[15]) + "", 4021);
+			sendFrame126("" + player.playerXP[15] + "", 4092);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[15]) + 1) + "", 4093);
 			break;
 
 		case 16:
-			sendFrame126("" + c.playerLevel[16] + "", 4018);
-			sendFrame126("" + getLevelForXP(c.playerXP[16]) + "", 4019);
-			sendFrame126("" + c.playerXP[16] + "", 4086);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[16]) + 1) + "", 4087);
+			sendFrame126("" + player.playerLevel[16] + "", 4018);
+			sendFrame126("" + getLevelForXP(player.playerXP[16]) + "", 4019);
+			sendFrame126("" + player.playerXP[16] + "", 4086);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[16]) + 1) + "", 4087);
 			break;
 
 		case 17:
-			sendFrame126("" + c.playerLevel[17] + "", 4022);
-			sendFrame126("" + getLevelForXP(c.playerXP[17]) + "", 4023);
-			sendFrame126("" + c.playerXP[17] + "", 4098);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[17]) + 1) + "", 4099);
+			sendFrame126("" + player.playerLevel[17] + "", 4022);
+			sendFrame126("" + getLevelForXP(player.playerXP[17]) + "", 4023);
+			sendFrame126("" + player.playerXP[17] + "", 4098);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[17]) + 1) + "", 4099);
 			break;
 
 		case 18:
-			sendFrame126("" + c.playerLevel[18] + "", 12166);
-			sendFrame126("" + getLevelForXP(c.playerXP[18]) + "", 12167);
-			sendFrame126("" + c.playerXP[18] + "", 12171);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[18]) + 1) + "", 12172);
+			sendFrame126("" + player.playerLevel[18] + "", 12166);
+			sendFrame126("" + getLevelForXP(player.playerXP[18]) + "", 12167);
+			sendFrame126("" + player.playerXP[18] + "", 12171);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[18]) + 1) + "", 12172);
 			break;
 
 		case 19:
-			sendFrame126("" + c.playerLevel[19] + "", 13926);
-			sendFrame126("" + getLevelForXP(c.playerXP[19]) + "", 13927);
-			sendFrame126("" + c.playerXP[19] + "", 13921);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[19]) + 1) + "", 13922);
+			sendFrame126("" + player.playerLevel[19] + "", 13926);
+			sendFrame126("" + getLevelForXP(player.playerXP[19]) + "", 13927);
+			sendFrame126("" + player.playerXP[19] + "", 13921);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[19]) + 1) + "", 13922);
 			break;
 
 		case 20:
-			sendFrame126("" + c.playerLevel[20] + "", 4152);
-			sendFrame126("" + getLevelForXP(c.playerXP[20]) + "", 4153);
-			sendFrame126("" + c.playerXP[20] + "", 4157);
-			sendFrame126("" + getXPForLevel(getLevelForXP(c.playerXP[20]) + 1) + "", 4158);
+			sendFrame126("" + player.playerLevel[20] + "", 4152);
+			sendFrame126("" + getLevelForXP(player.playerXP[20]) + "", 4153);
+			sendFrame126("" + player.playerXP[20] + "", 4157);
+			sendFrame126("" + getXPForLevel(getLevelForXP(player.playerXP[20]) + 1) + "", 4158);
 			break;
 		}
 	}
@@ -2205,36 +2141,36 @@ public class PlayerAssistant {
 	}
 
 	public boolean addSkillXP(double d, int skill) {
-		if (d + c.playerXP[skill] < 0 || c.playerXP[skill] > 200000000) {
-			if (c.playerXP[skill] > 200000000) {
-				c.playerXP[skill] = 200000000;
+		if (d + player.playerXP[skill] < 0 || player.playerXP[skill] > 200000000) {
+			if (player.playerXP[skill] > 200000000) {
+				player.playerXP[skill] = 200000000;
 			}
 			return false;
 		}
 		d *= AdditionalExp.DOUBLE_EXP.getExp();
-		int oldLevel = getLevelForXP(c.playerXP[skill]);
-		c.playerXP[skill] += d;
-		if (oldLevel < getLevelForXP(c.playerXP[skill])) {
-			if (c.playerLevel[skill] < c.getLevelForXP(c.playerXP[skill]) && skill != 3 && skill != 5)
-				c.playerLevel[skill] = c.getLevelForXP(c.playerXP[skill]);
+		int oldLevel = getLevelForXP(player.playerXP[skill]);
+		player.playerXP[skill] += d;
+		if (oldLevel < getLevelForXP(player.playerXP[skill])) {
+			if (player.playerLevel[skill] < player.getLevelForXP(player.playerXP[skill]) && skill != 3 && skill != 5)
+				player.playerLevel[skill] = player.getLevelForXP(player.playerXP[skill]);
 			levelUp(skill);
-			c.gfx100(199);
+			player.gfx100(199);
 			requestUpdates();
 		}
-		setSkillLevel(skill, c.playerLevel[skill], c.playerXP[skill]);
+		setSkillLevel(skill, player.playerLevel[skill], player.playerXP[skill]);
 		refreshSkill(skill);
 		return true;
 	}
 
 	public void resetBarrows() {
-		c.barrowsNpcs[0][1] = 0;
-		c.barrowsNpcs[1][1] = 0;
-		c.barrowsNpcs[2][1] = 0;
-		c.barrowsNpcs[3][1] = 0;
-		c.barrowsNpcs[4][1] = 0;
-		c.barrowsNpcs[5][1] = 0;
-		c.barrowsKillCount = 0;
-		c.randomCoffin = Misc.random(3) + 1;
+		player.barrowsNpcs[0][1] = 0;
+		player.barrowsNpcs[1][1] = 0;
+		player.barrowsNpcs[2][1] = 0;
+		player.barrowsNpcs[3][1] = 0;
+		player.barrowsNpcs[4][1] = 0;
+		player.barrowsNpcs[5][1] = 0;
+		player.barrowsKillCount = 0;
+		player.randomCoffin = Misc.random(3) + 1;
 	}
 
 	public static int Barrows[] = { 4708, 4710, 4712, 4714, 4716, 4718, 4720, 4722, 4724, 4726, 4728, 4730, 4732, 4734,
@@ -2268,17 +2204,17 @@ public class PlayerAssistant {
 	 */
 	public void drawHeadicon(int i, int j, int k, int l) {
 		// synchronized(c) {
-		c.outStream.createFrame(254);
-		c.outStream.writeByte(i);
+		player.outStream.createFrame(254);
+		player.outStream.writeByte(i);
 
 		if (i == 1 || i == 10) {
-			c.outStream.writeWord(j);
-			c.outStream.writeWord(k);
-			c.outStream.writeByte(l);
+			player.outStream.writeWord(j);
+			player.outStream.writeWord(k);
+			player.outStream.writeByte(l);
 		} else {
-			c.outStream.writeWord(k);
-			c.outStream.writeWord(l);
-			c.outStream.writeByte(j);
+			player.outStream.writeWord(k);
+			player.outStream.writeWord(l);
+			player.outStream.writeByte(j);
 		}
 
 	}
@@ -2313,7 +2249,7 @@ public class PlayerAssistant {
 	}
 
 	public boolean inPitsWait() {
-		return c.getX() <= 2404 && c.getX() >= 2394 && c.getY() <= 5175 && c.getY() >= 5169;
+		return player.getX() <= 2404 && player.getX() >= 2394 && player.getY() <= 5175 && player.getY() >= 5169;
 	}
 
 	public void castleWarsObjects() {
@@ -2323,10 +2259,10 @@ public class PlayerAssistant {
 
 	public int antiFire() {
 		int toReturn = 0;
-		if (c.antiFirePot)
+		if (player.antiFirePot)
 			toReturn++;
-		if (c.playerEquipment[EquipmentListener.SHIELD_SLOT.getSlot()] == 1540 || c.prayerActive[12]
-				|| c.playerEquipment[EquipmentListener.SHIELD_SLOT.getSlot()] == 11284)
+		if (player.playerEquipment[EquipmentListener.SHIELD_SLOT.getSlot()] == 1540 || player.prayerActive[12]
+				|| player.playerEquipment[EquipmentListener.SHIELD_SLOT.getSlot()] == 11284)
 			toReturn++;
 		return toReturn;
 	}
@@ -2335,7 +2271,7 @@ public class PlayerAssistant {
 		int[][] itemsToCheck = { { 995, 100000000 }, { 35, 5 }, { 667, 5 }, { 2402, 5 }, { 746, 5 }, { 4151, 150 },
 				{ 565, 100000 }, { 560, 100000 }, { 555, 300000 }, { 11235, 10 } };
 		for (int j = 0; j < itemsToCheck.length; j++) {
-			if (itemsToCheck[j][1] < c.getItems().getTotalCount(itemsToCheck[j][0]))
+			if (itemsToCheck[j][1] < player.getItems().getTotalCount(itemsToCheck[j][0]))
 				return true;
 		}
 		return false;
@@ -2343,8 +2279,8 @@ public class PlayerAssistant {
 
 	public int getWearingAmount() {
 		int count = 0;
-		for (int j = 0; j < c.playerEquipment.length; j++) {
-			if (c.playerEquipment[j] > 0)
+		for (int j = 0; j < player.playerEquipment.length; j++) {
+			if (player.playerEquipment[j] > 0)
 				count++;
 		}
 		return count;
@@ -2354,18 +2290,18 @@ public class PlayerAssistant {
 		switch (itemId) {
 		case 11283:
 		case 11284:
-			if (c.playerIndex > 0) {
-				c.getCombat().handleDfs();
-			} else if (c.npcIndex > 0) {
-				c.getCombat().handleDfsNPC();
+			if (player.playerIndex > 0) {
+				player.getCombat().handleDfs();
+			} else if (player.npcIndex > 0) {
+				player.getCombat().handleDfsNPC();
 			}
 			break;
 		}
 	}
 
 	public void getSpeared(int otherX, int otherY) {
-		int x = c.absX - otherX;
-		int y = c.absY - otherY;
+		int x = player.absX - otherX;
+		int y = player.absY - otherY;
 		if (x > 0)
 			x = 1;
 		else if (x < 0)
@@ -2375,28 +2311,28 @@ public class PlayerAssistant {
 		else if (y < 0)
 			y = -1;
 		moveCheck(x, y);
-		c.lastSpear = System.currentTimeMillis();
+		player.lastSpear = System.currentTimeMillis();
 	}
 
 	public void moveCheck(int xMove, int yMove) {
-		movePlayer(c.absX + xMove, c.absY + yMove, c.heightLevel);
+		movePlayer(player.absX + xMove, player.absY + yMove, player.heightLevel);
 	}
 
 	public int findKiller() {
-		int killer = c.playerId;
+		int killer = player.playerId;
 		int damage = 0;
 		for (int j = 0; j < Constants.MAX_PLAYERS; j++) {
 			if (PlayerHandler.players[j] == null)
 				continue;
-			if (j == c.playerId)
+			if (j == player.playerId)
 				continue;
-			if (c.goodDistance(c.absX, c.absY, PlayerHandler.players[j].absX, PlayerHandler.players[j].absY, 40)
-					|| c.goodDistance(c.absX, c.absY + 9400, PlayerHandler.players[j].absX,
+			if (player.goodDistance(player.absX, player.absY, PlayerHandler.players[j].absX, PlayerHandler.players[j].absY, 40)
+					|| player.goodDistance(player.absX, player.absY + 9400, PlayerHandler.players[j].absX,
 							PlayerHandler.players[j].absY, 40)
-					|| c.goodDistance(c.absX, c.absY, PlayerHandler.players[j].absX,
+					|| player.goodDistance(player.absX, player.absY, PlayerHandler.players[j].absX,
 							PlayerHandler.players[j].absY + 9400, 40))
-				if (c.damageTaken[j] > damage) {
-					damage = c.damageTaken[j];
+				if (player.damageTaken[j] > damage) {
+					damage = player.damageTaken[j];
 					killer = j;
 				}
 		}
@@ -2404,26 +2340,26 @@ public class PlayerAssistant {
 	}
 
 	public void resetTzhaar() {
-		c.waveId = -1;
-		c.tzhaarToKill = -1;
-		c.tzhaarKilled = -1;
+		player.waveId = -1;
+		player.tzhaarToKill = -1;
+		player.tzhaarKilled = -1;
 		wave = 1;
-		c.getPA().movePlayer(2438, 5168, 0);
+		player.getPA().movePlayer(2438, 5168, 0);
 	}
 
 	public int wave = 1;
 
 	public void enterCaves() {
 		resetTzhaar();
-		c.getPA().movePlayer(2413, 5117, c.playerId * 4);
-		c.waveId = 0;
-		c.tzhaarToKill = -1;
-		c.tzhaarKilled = -1;
-		CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
+		player.getPA().movePlayer(2413, 5117, player.playerId * 4);
+		player.waveId = 0;
+		player.tzhaarToKill = -1;
+		player.tzhaarKilled = -1;
+		CycleEventHandler.getSingleton().addEvent(player, new CycleEvent() {
 			@Override
 			public void execute(CycleEventContainer event) {
-				Server.fightCaves.spawnNextWave((Player) PlayerHandler.players[c.playerId]);
-				c.sendMessage("@blu@Wave: " + wave);
+				Server.fightCaves.spawnNextWave((Player) PlayerHandler.players[player.playerId]);
+				player.getActionSender().sendMessage("@blu@Wave: " + wave);
 				event.stop();
 			}
 
@@ -2437,9 +2373,9 @@ public class PlayerAssistant {
 	}
 
 	public void appendPoison(int damage) {
-		if (System.currentTimeMillis() - c.lastPoisonSip > c.poisonImmune) {
-			c.sendMessage("You have been poisoned.");
-			c.poisonDamage = damage;
+		if (System.currentTimeMillis() - player.lastPoisonSip > player.poisonImmune) {
+			player.getActionSender().sendMessage("You have been poisoned.");
+			player.poisonDamage = damage;
 		}
 	}
 
@@ -2455,105 +2391,77 @@ public class PlayerAssistant {
 
 	public void fixAllBarrows() {
 		int totalCost = 0;
-		int cashAmount = c.getItems().getItemAmount(995);
-		for (int j = 0; j < c.playerItems.length; j++) {
+		int cashAmount = player.getItems().getItemAmount(995);
+		for (int j = 0; j < player.playerItems.length; j++) {
 			boolean breakOut = false;
-			for (int i = 0; i < c.getItems().brokenBarrows.length; i++) {
-				if (c.playerItems[j] - 1 == c.getItems().brokenBarrows[i][1]) {
+			for (int i = 0; i < player.getItems().brokenBarrows.length; i++) {
+				if (player.playerItems[j] - 1 == player.getItems().brokenBarrows[i][1]) {
 					if (totalCost + 80000 > cashAmount) {
 						breakOut = true;
-						c.sendMessage("You have run out of money.");
+						player.getActionSender().sendMessage("You have run out of money.");
 						break;
 					} else {
 						totalCost += 80000;
 					}
-					c.playerItems[j] = c.getItems().brokenBarrows[i][0] + 1;
+					player.playerItems[j] = player.getItems().brokenBarrows[i][0] + 1;
 				}
 			}
 			if (breakOut)
 				break;
 		}
 		if (totalCost > 0)
-			c.getItems().deleteItem(995, c.getItems().getItemSlot(995), totalCost);
+			player.getItems().deleteItem(995, player.getItems().getItemSlot(995), totalCost);
 	}
 
 	public void handleLoginText() {
-		c.getPA().sendFrame126("Home Teleport", 1300);
-		c.getPA().sendFrame126("Teleport to Home", 1301);
+		player.getPA().sendFrame126("Home Teleport", 1300);
+		player.getPA().sendFrame126("Teleport to Home", 1301);
 
-		c.getPA().sendFrame126("Training", 1325);
-		c.getPA().sendFrame126("Go fight some monsters", 1326);
+		player.getPA().sendFrame126("Training", 1325);
+		player.getPA().sendFrame126("Go fight some monsters", 1326);
 
-		c.getPA().sendFrame126("Minigames", 1350);
-		c.getPA().sendFrame126("Play various minigames", 1351);
+		player.getPA().sendFrame126("Minigames", 1350);
+		player.getPA().sendFrame126("Play various minigames", 1351);
 
-		c.getPA().sendFrame126("Skilling", 1382);
-		c.getPA().sendFrame126("Train your non-combat skills here", 1383);
+		player.getPA().sendFrame126("Skilling", 1382);
+		player.getPA().sendFrame126("Train your non-combat skills here", 1383);
 
-		c.getPA().sendFrame126("PVP", 1415);
-		c.getPA().sendFrame126("Fight to be the best", 1416);
+		player.getPA().sendFrame126("PVP", 1415);
+		player.getPA().sendFrame126("Fight to be the best", 1416);
 
-		c.getPA().sendFrame126("Members Zone", 1454);
-		c.getPA().sendFrame126("Special Members only area", 1455);
+		player.getPA().sendFrame126("Members Zone", 1454);
+		player.getPA().sendFrame126("Special Members only area", 1455);
 		// c.getPA().sendFrame126("Lumbridge Teleport", 1325);
 		// c.getPA().sendFrame126("Falador Teleport", 1350);
 		// c.getPA().sendFrame126("Camelot Teleport", 1382);
 		// c.getPA().sendFrame126("Ardougne Teleport", 1415);
 
-		c.sendMessage(Constants.WELCOME_MESSAGE);
-		if (c.membership) {
-			c.membership().checkDate(c);
-		} else if (c.membership == false) {
-			c.sendMessage("@blu@Your account isn't a member, visit ::donate for more details!");
+		player.getActionSender().sendMessage(Constants.WELCOME_MESSAGE);
+		if (player.membership) {
+			player.membership().checkDate(player);
+		} else if (player.membership == false) {
+			player.getActionSender().sendMessage("@blu@Your account isn't a member, visit ::donate for more details!");
 		}
-	}
-
-	/**
-	 * Shakes the player's screen. Parameters 1, 0, 0, 0 to reset.
-	 * 
-	 * @param verticleAmount
-	 *            How far the up and down shaking goes (1-4).
-	 * @param verticleSpeed
-	 *            How fast the up and down shaking is.
-	 * @param horizontalAmount
-	 *            How far the left-right tilting goes.
-	 * @param horizontalSpeed
-	 *            How fast the right-left tiling goes..
-	 */
-	public void shakeScreen(int verticleAmount, int verticleSpeed, int horizontalAmount, int horizontalSpeed) {
-		c.outStream.createFrame(35); // Creates frame 35.
-		c.outStream.writeByte(verticleAmount);
-		c.outStream.writeByte(verticleSpeed);
-		c.outStream.writeByte(horizontalAmount);
-		c.outStream.writeByte(horizontalSpeed);
 	}
 
 	/*
 	 * Resets the shaking of the player's screen.
 	 */
 	public void resetShaking() {
-		shakeScreen(1, 0, 0, 0);
+		player.getActionSender().shakeScreen(player, 1);
 	}
 
 	public void itemOnInterface(int interfaceChild, int zoom, int itemId) {
-		if (c.getOutStream() != null && c != null) {
-			c.getOutStream().createFrame(246);
-			c.getOutStream().writeWordBigEndian(interfaceChild);
-			c.getOutStream().writeWord(zoom);
-			c.getOutStream().writeWord(itemId);
-			c.flushOutStream();
+		if (player.getOutStream() != null && player != null) {
+			player.getOutStream().createFrame(246);
+			player.getOutStream().writeWordBigEndian(interfaceChild);
+			player.getOutStream().writeWord(zoom);
+			player.getOutStream().writeWord(itemId);
+			player.flushOutStream();
 		}
 	}
 
 	public void handleWeaponStyle() {
-		if (c.fightMode == 0) {
-			c.getPA().sendFrame36(43, c.fightMode);
-		} else if (c.fightMode == 1) {
-			c.getPA().sendFrame36(43, 3);
-		} else if (c.fightMode == 2) {
-			c.getPA().sendFrame36(43, 1);
-		} else if (c.fightMode == 3) {
-			c.getPA().sendFrame36(43, 2);
-		}
+		player.getActionSender().sendConfig(43, player.fightMode == 3?  2 : player.fightMode == 2 ? 1 : player.fightMode == 1 ? 3 : player.fightMode);
 	}
 }

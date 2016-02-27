@@ -51,18 +51,23 @@ public class BuryBones {
 		Curvedb(10977, 500, "Curved bone"),
 		Longb(10976, 500, "Long bone");
 		
-		private static HashMap<Integer, BonesData> BoneInfo = new HashMap<Integer, BonesData>();
+		private static HashMap<Integer, BonesData> boneMap = new HashMap<Integer, BonesData>();
 		
 		private int boneID, boneXP;
 		private String boneName;
 
 		static {
 			for (BonesData bones : values()) {
-				BoneInfo.put(bones.getboneID(), bones);
-				BoneInfo.put(bones.getboneXP(), bones);
+				boneMap.put(bones.getboneID(), bones);
+				boneMap.put(bones.getboneXP(), bones);
 			}
 		}
 
+		@SuppressWarnings("unused")
+		public static BonesData forId(int id) {
+			return boneMap.get(id);
+		}
+		
 		BonesData(final int boneID, final int boneXP, final String boneName) {
 			this.boneID = boneID;
 			this.boneXP = boneXP;
@@ -81,19 +86,17 @@ public class BuryBones {
 		}
 	}
 
-	public static void boneOnGround(Player c, int itemId, int itemSlot) {
-		if (System.currentTimeMillis() - c.buryDelay > Constants.TICK) {
+	public static void boneOnGround(Player player, int itemId, int itemSlot) {
+		if (System.currentTimeMillis() - player.buryDelay > Constants.TICK) {
 			for (final BonesData bones : BonesData.values()) {
 				if (itemId == bones.getboneID()) {
-					c.getAttributes().setAttribute("boneBurying", true);
-					c.getItems().deleteItem(itemId, itemSlot, 1);
-					c.sendMessage("You bury some " + bones.getboneName() + ".");
-					c.getPA().addSkillXP(bones.getboneXP() * SkillIndex.PRAYER.getExpRatio(), SkillIndex.PRAYER.getSkillId());
+					player.getItems().deleteItem(itemId, itemSlot, 1);
+					player.getActionSender().sendMessage("You bury some " + bones.getboneName() + ".");
+					player.getPA().addSkillXP(bones.getboneXP() * SkillIndex.PRAYER.getExpRatio(), SkillIndex.PRAYER.getSkillId());
 
 				}
-				c.buryDelay = System.currentTimeMillis();
-				c.startAnimation(827);
-				c.getAttributes().removeAttribute("boneBurying");
+				player.buryDelay = System.currentTimeMillis();
+				player.startAnimation(827);
 			}
 		}
 	}

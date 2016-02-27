@@ -70,8 +70,8 @@ public class PestControl {
 			for (int j = 0; j < PlayerHandler.players.length; j++) {
 				if (PlayerHandler.players[j] != null) {
 					if (PlayerHandler.players[j].inPcBoat()) {
-						Player c = (Player) PlayerHandler.players[j];
-						c.sendMessage("There need to be at least 3 players to start a game of pest control.");
+						Player player = (Player) PlayerHandler.players[j];
+						player.getActionSender().sendMessage("There need to be at least 3 players to start a game of pest control.");
 					}
 				}
 			}
@@ -94,59 +94,59 @@ public class PestControl {
 		for (int j = 0; j < PlayerHandler.players.length; j++) {
 			if (PlayerHandler.players[j] != null) {
 				if (PlayerHandler.players[j].inPcBoat()) {
-					Player c = (Player) PlayerHandler.players[j];
-					c.getPA().sendFrame126("Next Departure: " + waitTimer + "", 21120);
-					c.getPA().sendFrame126("Players Ready: " + playersInBoat() + "", 21121);
-					c.getPA().sendFrame126("(Need 3 to 25 players)", 21122);
-					c.getPA().sendFrame126("Points: " + c.pcPoints + "", 21123);
+					Player player = (Player) PlayerHandler.players[j];
+					player.getPA().sendFrame126("Next Departure: " + waitTimer + "", 21120);
+					player.getPA().sendFrame126("Players Ready: " + playersInBoat() + "", 21121);
+					player.getPA().sendFrame126("(Need 3 to 25 players)", 21122);
+					player.getPA().sendFrame126("Points: " + player.pcPoints + "", 21123);
 				}
 				if (PlayerHandler.players[j].inPcGame()) {
-					Player c = (Player) PlayerHandler.players[j];
+					Player player = (Player) PlayerHandler.players[j];
 					for (j = 0; j < NPCHandler.npcs.length; j++) {
 						if (NPCHandler.npcs[j] != null) {
 							if (NPCHandler.npcs[j].npcType == 6142)
 								if (Portal1kill == 0) {
-									c.getPA().sendFrame126("" + NPCHandler.npcs[j].HP + "", 21111);
+									player.getPA().sendFrame126("" + NPCHandler.npcs[j].HP + "", 21111);
 									if (NPCHandler.npcs[j].HP == 0) {
 										Portal1kill = 1;
 									}
 								} else {
-									c.getPA().sendFrame126("Dead", 21111);
+									player.getPA().sendFrame126("Dead", 21111);
 								}
 							if (NPCHandler.npcs[j].npcType == 6143)
 								if (Portal2kill == 0) {
-									c.getPA().sendFrame126("" + NPCHandler.npcs[j].HP + "", 21112);
+									player.getPA().sendFrame126("" + NPCHandler.npcs[j].HP + "", 21112);
 									if (NPCHandler.npcs[j].HP == 0) {
 										Portal2kill = 1;
 									}
 								} else {
-									c.getPA().sendFrame126("Dead", 21112);
+									player.getPA().sendFrame126("Dead", 21112);
 								}
 							if (NPCHandler.npcs[j].npcType == 6144)
 								if (Portal3kill == 0) {
-									c.getPA().sendFrame126("" + NPCHandler.npcs[j].HP + "", 21113);
+									player.getPA().sendFrame126("" + NPCHandler.npcs[j].HP + "", 21113);
 									if (NPCHandler.npcs[j].HP == 0) {
 										Portal3kill = 1;
 									}
 								} else {
-									c.getPA().sendFrame126("Dead", 21113);
+									player.getPA().sendFrame126("Dead", 21113);
 								}
 							if (NPCHandler.npcs[j].npcType == 6145)
 								if (Portal4kill == 0) {
-									c.getPA().sendFrame126("" + NPCHandler.npcs[j].HP + "", 21114);
+									player.getPA().sendFrame126("" + NPCHandler.npcs[j].HP + "", 21114);
 									if (NPCHandler.npcs[j].HP == 0) {
 										Portal4kill = 1;
 									}
 								} else {
-									c.getPA().sendFrame126("Dead", 21114);
+									player.getPA().sendFrame126("Dead", 21114);
 								}
 							if (NPCHandler.npcs[j].npcType == 3782)
-								c.getPA().sendFrame126("" + NPCHandler.npcs[j].HP + "", 21115);
+								player.getPA().sendFrame126("" + NPCHandler.npcs[j].HP + "", 21115);
 						}
 					}
-					c.getPA().sendFrame126("0", 21115);
-					c.getPA().sendFrame126("0", 21116);
-					c.getPA().sendFrame126("Time remaining: " + gameTimer + "", 21117);
+					player.getPA().sendFrame126("0", 21115);
+					player.getPA().sendFrame126("0", 21116);
+					player.getPA().sendFrame126("Time remaining: " + gameTimer + "", 21117);
 				}
 			}
 		}
@@ -158,28 +158,28 @@ public class PestControl {
 		for (int j = 0; j < PlayerHandler.players.length; j++) {
 			if (PlayerHandler.players[j] != null) {
 				if (PlayerHandler.players[j].inPcGame()) {
-					Player c = (Player) PlayerHandler.players[j];
-					c.getPA().movePlayer(2657, 2639, 0);
-					if (won && c.pcDamage > 4) {
-						c.sendMessage(
+					Player player = (Player) PlayerHandler.players[j];
+					player.getPA().movePlayer(2657, 2639, 0);
+					if (won && player.pcDamage > 4) {
+						player.getActionSender().sendMessage(
 								"You have won the pest control game and have been awarded 4 pest control points.");
-						c.pcPoints += 4;
-						c.getPA().sendFrame126("@red@Pest Control Points: @or2@" + c.pcPoints, 7333);
-						c.playerLevel[3] = c.getLevelForXP(c.playerXP[3]);
-						c.playerLevel[5] = c.getLevelForXP(c.playerXP[5]);
-						c.specAmount = 100;
-						c.getItems().addItem(995, c.combatLevel * 50);
-						c.getPA().refreshSkill(3);
-						c.getPA().refreshSkill(5);
+						player.pcPoints += 4;
+						player.getPA().sendFrame126("@red@Pest Control Points: @or2@" + player.pcPoints, 7333);
+						player.playerLevel[3] = player.getLevelForXP(player.playerXP[3]);
+						player.playerLevel[5] = player.getLevelForXP(player.playerXP[5]);
+						player.specAmount = 100;
+						player.getItems().addItem(995, player.combatLevel * 50);
+						player.getPA().refreshSkill(3);
+						player.getPA().refreshSkill(5);
 					} else if (won) {
-						c.sendMessage("The void knights notice your lack of zeal.");
+						player.getActionSender().sendMessage("The void knights notice your lack of zeal.");
 					} else {
-						c.sendMessage(
+						player.getActionSender().sendMessage(
 								"You failed to kill all the portals in 5 minutes and have not been awarded any points.");
 					}
-					c.pcDamage = 0;
-					c.getItems().addSpecialBar(c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]);
-					c.getCombat().resetPrayers();
+					player.pcDamage = 0;
+					player.getItems().addSpecialBar(player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]);
+					player.getCombat().resetPrayers();
 					Portal1kill = 0;
 					Portal2kill = 0;
 					Portal3kill = 0;
@@ -209,12 +209,12 @@ public class PestControl {
 	}
 
 	public void movePlayer(int index) {
-		Player c = (Player) PlayerHandler.players[index];
-		if (c.combatLevel < 40) {
-			c.sendMessage("You must be at least 40 to enter this boat.");
+		Player player = (Player) PlayerHandler.players[index];
+		if (player.combatLevel < 40) {
+			player.getActionSender().sendMessage("You must be at least 40 to enter this boat.");
 			return;
 		}
-		c.getPA().movePlayer(2658, 2611, 0);
+		player.getPA().movePlayer(2658, 2611, 0);
 	}
 
 	public void spawnNpcs() {

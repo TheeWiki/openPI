@@ -21,6 +21,7 @@ import server.model.objects.Doors;
 import server.model.objects.DoubleDoors;
 import server.model.players.PlayerHandler;
 import server.model.shops.ShopHandler;
+import server.net.Connection;
 import server.net.PipelineFactory;
 import server.panel.ControlPanel;
 import server.util.Logger;
@@ -39,10 +40,6 @@ public class Server {
 	 */
 	public static PlayerManager playerManager = new PlayerManager();
 
-	/**
-	 * Calls the rate in which an event cycles.
-	 */
-	public static final int cycleRate;
 
 	/**
 	 * Server updating.
@@ -60,7 +57,7 @@ public class Server {
 	/**
 	 * Used to identify the server port.
 	 */
-	public static int serverlistenerPort;
+	public static int serverlistenerPort = 43594;
 
 	/**
 	 * Calls the usage of player items.
@@ -113,17 +110,9 @@ public class Server {
 	 */
 	private static final TaskScheduler scheduler = new TaskScheduler();
 
-	/**
-	 * Gets the task scheduler.
-	 */
-	public static TaskScheduler getTaskScheduler() {
-		return scheduler;
-	}
-
-	static {
-		serverlistenerPort = 43594;
-		
-		cycleRate = 600;
+	static
+	{
+		Constants.TICK = 600;
 		shutdownServer = false;
 	}
 
@@ -135,6 +124,10 @@ public class Server {
 		long startTime = System.currentTimeMillis();
 		System.setOut(new Logger(System.out));
 		System.setErr(new Logger(System.err));
+		
+		/*
+		 * Loads the Python plugins
+		 */
 		Plugin.load();
 	
 		NPCDrops.init();

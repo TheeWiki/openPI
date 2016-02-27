@@ -17,126 +17,126 @@ public class AttackPlayer implements PacketType {
 
 	@SuppressWarnings("static-access")
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
-		c.playerIndex = 0;
-		c.npcIndex = 0;
+	public void processPacket(Player player, int packetType, int packetSize) {
+		player.playerIndex = 0;
+		player.npcIndex = 0;
 		switch (packetType) {
 
 		/**
 		 * Attack player
 		 **/
 		case ATTACK_PLAYER:
-			c.playerIndex = c.getInStream().readSignedWordBigEndian();
-			if (Server.playerHandler.players[c.playerIndex] == null) {
+			player.playerIndex = player.getInStream().readSignedWordBigEndian();
+			if (Server.playerHandler.players[player.playerIndex] == null) {
 				break;
 			}
 
-			if (c.respawnTimer > 0) {
+			if (player.respawnTimer > 0) {
 				break;
 			}
 
-			if (c.autocastId > 0)
-				c.autocasting = true;
+			if (player.autocastId > 0)
+				player.autocasting = true;
 
-			if (!c.autocasting && c.spellId > 0) {
-				c.spellId = 0;
+			if (!player.autocasting && player.spellId > 0) {
+				player.spellId = 0;
 			}
-			c.mageFollow = false;
-			c.spellId = 0;
-			c.usingMagic = false;
+			player.mageFollow = false;
+			player.spellId = 0;
+			player.usingMagic = false;
 			boolean usingBow = false;
 			boolean usingOtherRangeWeapons = false;
 			boolean usingArrows = false;
-			boolean usingCross = c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] == 9185;
-			for (int bowId : c.BOWS) {
-				if (c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] == bowId) {
+			boolean usingCross = player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] == 9185;
+			for (int bowId : player.BOWS) {
+				if (player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] == bowId) {
 					usingBow = true;
-					for (int arrowId : c.ARROWS) {
-						if (c.playerEquipment[EquipmentListener.ARROWS_SLOT.getSlot()] == arrowId) {
+					for (int arrowId : player.ARROWS) {
+						if (player.playerEquipment[EquipmentListener.ARROWS_SLOT.getSlot()] == arrowId) {
 							usingArrows = true;
 						}
 					}
 				}
 			}
-			for (int otherRangeId : c.OTHER_RANGE_WEAPONS) {
-				if (c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] == otherRangeId) {
+			for (int otherRangeId : player.OTHER_RANGE_WEAPONS) {
+				if (player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] == otherRangeId) {
 					usingOtherRangeWeapons = true;
 				}
 			}
-			if (c.duelStatus == 5) {
-				if (c.duelCount > 0) {
-					c.sendMessage("The duel hasn't started yet!");
-					c.playerIndex = 0;
+			if (player.duelStatus == 5) {
+				if (player.duelCount > 0) {
+					player.getActionSender().sendMessage("The duel hasn't started yet!");
+					player.playerIndex = 0;
 					return;
 				}
-				if (c.duelRule[Rules.FUN_WEAPONS_RULE.getRule()]) {
+				if (player.duelRule[Rules.FUN_WEAPONS_RULE.getRule()]) {
 					boolean canUseWeapon = false;
 					for (int funWeapon : Constants.FUN_WEAPONS) {
-						if (c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] == funWeapon) {
+						if (player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] == funWeapon) {
 							canUseWeapon = true;
 						}
 					}
 					if (!canUseWeapon) {
-						c.sendMessage("You can only use fun weapons in this duel!");
+						player.getActionSender().sendMessage("You can only use fun weapons in this duel!");
 						return;
 					}
 				}
 
-				if (c.duelRule[Rules.RANGE_RULE.getRule()] && (usingBow || usingOtherRangeWeapons)) {
-					c.sendMessage("Range has been disabled in this duel!");
+				if (player.duelRule[Rules.RANGE_RULE.getRule()] && (usingBow || usingOtherRangeWeapons)) {
+					player.getActionSender().sendMessage("Range has been disabled in this duel!");
 					return;
 				}
-				if (c.duelRule[Rules.MELEE_RULE.getRule()] && (!usingBow && !usingOtherRangeWeapons)) {
-					c.sendMessage("Melee has been disabled in this duel!");
+				if (player.duelRule[Rules.MELEE_RULE.getRule()] && (!usingBow && !usingOtherRangeWeapons)) {
+					player.getActionSender().sendMessage("Melee has been disabled in this duel!");
 					return;
 				}
 			}
 
-			if ((usingBow || c.autocasting)
-					&& c.goodDistance(c.getX(), c.getY(), Server.playerHandler.players[c.playerIndex].getX(),
-							Server.playerHandler.players[c.playerIndex].getY(), 6)) {
-				c.usingBow = true;
-				c.stopMovement();
+			if ((usingBow || player.autocasting)
+					&& player.goodDistance(player.getX(), player.getY(), Server.playerHandler.players[player.playerIndex].getX(),
+							Server.playerHandler.players[player.playerIndex].getY(), 6)) {
+				player.usingBow = true;
+				player.stopMovement();
 			}
 
 			if (usingOtherRangeWeapons
-					&& c.goodDistance(c.getX(), c.getY(), Server.playerHandler.players[c.playerIndex].getX(),
-							Server.playerHandler.players[c.playerIndex].getY(), 3)) {
-				c.usingRangeWeapon = true;
-				c.stopMovement();
+					&& player.goodDistance(player.getX(), player.getY(), Server.playerHandler.players[player.playerIndex].getX(),
+							Server.playerHandler.players[player.playerIndex].getY(), 3)) {
+				player.usingRangeWeapon = true;
+				player.stopMovement();
 			}
 			if (!usingBow)
-				c.usingBow = false;
+				player.usingBow = false;
 			if (!usingOtherRangeWeapons)
-				c.usingRangeWeapon = false;
+				player.usingRangeWeapon = false;
 
-			if (!usingCross && !usingArrows && usingBow && c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] < 4212
-					&& c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] > 4223) {
-				c.sendMessage("You have run out of arrows!");
+			if (!usingCross && !usingArrows && usingBow && player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] < 4212
+					&& player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] > 4223) {
+				player.getActionSender().sendMessage("You have run out of arrows!");
 				return;
 			}
-			if (c.getCombat().correctBowAndArrows() < c.playerEquipment[EquipmentListener.ARROWS_SLOT.getSlot()] && Constants.CORRECT_ARROWS
-					&& usingBow && !c.getCombat().usingCrystalBow() && c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] != 9185) {
-				c.sendMessage("You can't use "
-						+ c.getItems().getItemName(c.playerEquipment[EquipmentListener.ARROWS_SLOT.getSlot()]).toLowerCase() + "s with a "
-						+ c.getItems().getItemName(c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]).toLowerCase() + ".");
-				c.stopMovement();
-				c.getCombat().resetPlayerAttack();
+			if (player.getCombat().correctBowAndArrows() < player.playerEquipment[EquipmentListener.ARROWS_SLOT.getSlot()] && Constants.CORRECT_ARROWS
+					&& usingBow && !player.getCombat().usingCrystalBow() && player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] != 9185) {
+				player.getActionSender().sendMessage("You can't use "
+						+ player.getItems().getItemName(player.playerEquipment[EquipmentListener.ARROWS_SLOT.getSlot()]).toLowerCase() + "s with a "
+						+ player.getItems().getItemName(player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]).toLowerCase() + ".");
+				player.stopMovement();
+				player.getCombat().resetPlayerAttack();
 				return;
 			}
-			if (c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] == 9185 && !c.getCombat().properBolts()) {
-				c.sendMessage("You must use bolts with a crossbow.");
-				c.stopMovement();
-				c.getCombat().resetPlayerAttack();
+			if (player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] == 9185 && !player.getCombat().properBolts()) {
+				player.getActionSender().sendMessage("You must use bolts with a crossbow.");
+				player.stopMovement();
+				player.getCombat().resetPlayerAttack();
 				return;
 			}
-			if (c.getCombat().checkReqs()) {
-				c.followId = c.playerIndex;
-				if (!c.usingMagic && !usingBow && !usingOtherRangeWeapons) {
-					c.followDistance = 1;
-					c.getPA().followPlayer();
+			if (player.getCombat().checkReqs()) {
+				player.followId = player.playerIndex;
+				if (!player.usingMagic && !usingBow && !usingOtherRangeWeapons) {
+					player.followDistance = 1;
+					player.getPA().followPlayer();
 				}
-				if (c.attackTimer <= 0) {
+				if (player.attackTimer <= 0) {
 					// c.sendMessage("Tried to attack...");
 					// c.getCombat().attackPlayer(c.playerIndex);
 					// c.attackTimer++;
@@ -148,91 +148,91 @@ public class AttackPlayer implements PacketType {
 		 * Attack player with magic
 		 **/
 		case MAGE_PLAYER:
-			if (!c.mageAllowed) {
-				c.mageAllowed = true;
+			if (!player.mageAllowed) {
+				player.mageAllowed = true;
 				break;
 			}
 			// c.usingSpecial = false;
 			// c.getItems().updateSpecialBar();
 
-			c.playerIndex = c.getInStream().readSignedWordA();
-			int castingSpellId = c.getInStream().readSignedWordBigEndian();
-			c.usingMagic = false;
-			if (Server.playerHandler.players[c.playerIndex] == null) {
+			player.playerIndex = player.getInStream().readSignedWordA();
+			int castingSpellId = player.getInStream().readSignedWordBigEndian();
+			player.usingMagic = false;
+			if (Server.playerHandler.players[player.playerIndex] == null) {
 				break;
 			}
 
-			if (c.respawnTimer > 0) {
+			if (player.respawnTimer > 0) {
 				break;
 			}
 
 			for (int i = 0; i < Enchantment.MAGIC_SPELLS.length; i++) {
 				if (castingSpellId == Enchantment.MAGIC_SPELLS[i][0]) {
-					c.spellId = i;
-					c.usingMagic = true;
+					player.spellId = i;
+					player.usingMagic = true;
 					break;
 				}
 			}
 
-			if (c.autocasting)
-				c.autocasting = false;
+			if (player.autocasting)
+				player.autocasting = false;
 
-			if (!c.getCombat().checkReqs()) {
+			if (!player.getCombat().checkReqs()) {
 				break;
 			}
-			if (c.duelStatus == 5) {
-				if (c.duelCount > 0) {
-					c.sendMessage("The duel hasn't started yet!");
-					c.playerIndex = 0;
+			if (player.duelStatus == 5) {
+				if (player.duelCount > 0) {
+					player.getActionSender().sendMessage("The duel hasn't started yet!");
+					player.playerIndex = 0;
 					return;
 				}
-				if (c.duelRule[Rules.MAGIC_RULE.getRule()]) {
-					c.sendMessage("Magic has been disabled in this duel!");
+				if (player.duelRule[Rules.MAGIC_RULE.getRule()]) {
+					player.getActionSender().sendMessage("Magic has been disabled in this duel!");
 					return;
 				}
 			}
 
-			for (int r = 0; r < c.REDUCE_SPELLS.length; r++) { // reducing
+			for (int r = 0; r < player.REDUCE_SPELLS.length; r++) { // reducing
 																// spells,
 																// confuse etc
-				if (Server.playerHandler.players[c.playerIndex].REDUCE_SPELLS[r] == Enchantment.MAGIC_SPELLS[c.spellId][0]) {
+				if (Server.playerHandler.players[player.playerIndex].REDUCE_SPELLS[r] == Enchantment.MAGIC_SPELLS[player.spellId][0]) {
 					if ((System.currentTimeMillis()
-							- Server.playerHandler.players[c.playerIndex].reduceSpellDelay[r]) < Server.playerHandler.players[c.playerIndex].REDUCE_SPELL_TIME[r]) {
-						c.sendMessage("That player is currently immune to this spell.");
-						c.usingMagic = false;
-						c.stopMovement();
-						c.getCombat().resetPlayerAttack();
+							- Server.playerHandler.players[player.playerIndex].reduceSpellDelay[r]) < Server.playerHandler.players[player.playerIndex].REDUCE_SPELL_TIME[r]) {
+						player.getActionSender().sendMessage("That player is currently immune to this spell.");
+						player.usingMagic = false;
+						player.stopMovement();
+						player.getCombat().resetPlayerAttack();
 					}
 					break;
 				}
 			}
 
 			if (System.currentTimeMillis()
-					- Server.playerHandler.players[c.playerIndex].teleBlockDelay < Server.playerHandler.players[c.playerIndex].teleBlockLength
-					&& Enchantment.MAGIC_SPELLS[c.spellId][0] == 12445) {
-				c.sendMessage("That player is already affected by this spell.");
-				c.usingMagic = false;
-				c.stopMovement();
-				c.getCombat().resetPlayerAttack();
+					- Server.playerHandler.players[player.playerIndex].teleBlockDelay < Server.playerHandler.players[player.playerIndex].teleBlockLength
+					&& Enchantment.MAGIC_SPELLS[player.spellId][0] == 12445) {
+				player.getActionSender().sendMessage("That player is already affected by this spell.");
+				player.usingMagic = false;
+				player.stopMovement();
+				player.getCombat().resetPlayerAttack();
 			}
 
-			if (!c.getCombat().checkMagicReqs(c.spellId)) {
-				c.stopMovement();
-				c.getCombat().resetPlayerAttack();
+			if (!player.getCombat().checkMagicReqs(player.spellId)) {
+				player.stopMovement();
+				player.getCombat().resetPlayerAttack();
 				break;
 			}
 
-			if (c.usingMagic) {
-				if (c.goodDistance(c.getX(), c.getY(), Server.playerHandler.players[c.playerIndex].getX(),
-						Server.playerHandler.players[c.playerIndex].getY(), 7)) {
-					c.stopMovement();
+			if (player.usingMagic) {
+				if (player.goodDistance(player.getX(), player.getY(), Server.playerHandler.players[player.playerIndex].getX(),
+						Server.playerHandler.players[player.playerIndex].getY(), 7)) {
+					player.stopMovement();
 				}
-				if (c.getCombat().checkReqs()) {
-					c.followId = c.playerIndex;
-					c.mageFollow = true;
-					if (c.attackTimer <= 0) {
-						c.getCombat().attackPlayer(c.playerIndex);
-						c.attackTimer++;
+				if (player.getCombat().checkReqs()) {
+					player.followId = player.playerIndex;
+					player.mageFollow = true;
+					if (player.attackTimer <= 0) {
+						player.getCombat().attackPlayer(player.playerIndex);
+						player.attackTimer++;
 					}
 				}
 			}

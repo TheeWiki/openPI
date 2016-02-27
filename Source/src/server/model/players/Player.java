@@ -29,7 +29,9 @@ import server.model.players.combat.range.CannonCoords;
 import server.model.players.combat.range.DwarfMultiCannon;
 import server.model.players.packet.PacketHandler;
 import server.model.players.skills.guilds.RangersGuild;
+import server.model.players.skills.herblore.Potions;
 import server.model.shops.ShopAssistant;
+import server.net.ActionSender;
 import server.net.Packet;
 import server.net.Packet.Type;
 import server.net.login.SideBars;
@@ -156,16 +158,15 @@ public class Player {
 	public void assignAutocast(int button) {
 		for (int j = 0; j < autocastIds.length; j++) {
 			if (autocastIds[j] == button) {
-				@SuppressWarnings("static-access")
-				Player c = (Player) Server.playerHandler.players[this.playerId];
+				Player player = (Player) PlayerHandler.players[this.playerId];
 				autocasting = true;
 				autocastId = autocastIds[j + 1];
-				c.getPA().sendFrame36(108, 1);
-				c.setSidebarInterface(0, 328);
+				player.getActionSender().sendConfig(108, 1);
+				player.setSidebarInterface(0, 328);
 				// spellName = getSpellName(autocastId);
 				// spellName = spellName;
 				// c.getPA().sendFrame126(spellName, 354);
-				c = null;
+				player = null;
 				break;
 			}
 		}
@@ -307,7 +308,7 @@ public class Player {
 	public int prayerId = -1;
 	public int headIcon = -1;
 	public int bountyIcon = 0;
-	public long stopPrayerDelay, prayerDelay;
+	public long stopPrayerDelay;
 	public boolean usingPrayer;
 	public final int[] PRAYER_DRAIN_RATE = { 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500,
 			500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500 };
@@ -478,9 +479,8 @@ public class Player {
 
 	public int cwKills, cwDeaths, cwGames;
 
-	@SuppressWarnings("static-access")
 	public void updateshop(int i) {
-		Player p = (Player) Server.playerHandler.players[playerId];
+		Player p = (Player) PlayerHandler.players[playerId];
 		p.getShops().resetShop(i);
 	}
 
@@ -901,19 +901,19 @@ public class Player {
 					squaresRan++;
 					if (squaresRan == Constants.RUN_SQUARE_DECREASE) {
 						runEnergy--;
-						Player c = (Player) PlayerHandler.players[playerId];
-						c.getPA().sendFrame126(runEnergy + "%", 149);
+						Player player = (Player) PlayerHandler.players[playerId];
+						player.getPA().sendFrame126(runEnergy + "%", 149);
 						squaresRan = 0;
 						if (runEnergy == 0) {
 							isRunning = false;
 							isRunning2 = false;
-							c.getPA().sendFrame36(173, 0);
+							player.getActionSender().sendConfig(173, 0);
 						}
 					}
 				}
 			}
 			@SuppressWarnings("unused")
-			Player c = (Player) this;
+			Player player = (Player) this;
 			// c.sendMessage("Cycle Ended");
 			int deltaX = 0, deltaY = 0;
 			if (currentX < 2 * 8) {
@@ -1301,8 +1301,8 @@ public class Player {
 	}
 
 	public boolean wearing2h() {
-		Player c = (Player) this;
-		String name = c.getItems().getItemName(c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]);
+		Player player = (Player) this;
+		String name = player.getItems().getItemName(player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]);
 		if (name.contains("2h"))
 			return true;
 		else if (name.contains("godsword"))
@@ -1524,18 +1524,18 @@ public class Player {
 		this.direction = direction;
 		updateRequired = true;
 		forceMovementUpdateRequired = true;
-		final Player c = (Player) this;
-		CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
+		final Player player = (Player) this;
+		CycleEventHandler.getSingleton().addEvent(player, new CycleEvent() {
 			@Override
 			public void execute(CycleEventContainer container) {
-				c.getCombat().getPlayerAnimIndex(c.getItems()
+				player.getCombat().getPlayerAnimIndex(player.getItems()
 						.getItemName(playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]).toLowerCase());
-				c.getPA().walkTo(x2, y2);
+				player.getPA().walkTo(x2, y2);
 
 				updateRequired = true;
 				forceMovementUpdateRequired = false;
 				canWalk = true;
-				c.getPA().requestUpdates();
+				player.getPA().requestUpdates();
 				// TODO: add a reset movement after event is done (when u
 				// finished being force moved, and click the tile you're under
 				// the character will run back to original tile to force
@@ -1545,7 +1545,7 @@ public class Player {
 
 			@Override
 			public void stop() {
-				c.teleporting = false;
+				player.teleporting = false;
 				resetWalkingQueue();
 			}
 		}, (x2 + y2) * 600);
@@ -1728,11 +1728,11 @@ public class Player {
 		if (freezeTimer > -6) {
 			freezeTimer--;
 			if (frozenBy > 0) {
-				if (Server.playerHandler.players[frozenBy] == null) {
+				if (PlayerHandler.players[frozenBy] == null) {
 					freezeTimer = -1;
 					frozenBy = -1;
-				} else if (!goodDistance(absX, absY, Server.playerHandler.players[frozenBy].absX,
-						Server.playerHandler.players[frozenBy].absY, 20)) {
+				} else if (!goodDistance(absX, absY, PlayerHandler.players[frozenBy].absX,
+						PlayerHandler.players[frozenBy].absY, 20)) {
 					freezeTimer = -1;
 					frozenBy = -1;
 				}
@@ -1794,7 +1794,7 @@ public class Player {
 		}
 
 		if (inTrade && tradeResetNeeded) {
-			Player o = (Player) Server.playerHandler.players[tradeWith];
+			Player o = (Player) PlayerHandler.players[tradeWith];
 			if (o != null) {
 				if (o.tradeResetNeeded) {
 					getTradeAndDuel().resetTrade();
@@ -1851,15 +1851,6 @@ public class Player {
 		resetWalkingQueue();
 	}
 
-	public void sendMessage(String s) {
-		if (getOutStream() != null) {
-			outStream.createFrameVarSize(253);
-			outStream.writeString(s);
-			outStream.endFrameVarSize();
-		}
-
-	}
-
 	public void setSidebarInterface(int menuId, int form) {
 		if (getOutStream() != null) {
 			outStream.createFrame(71);
@@ -1869,16 +1860,15 @@ public class Player {
 
 	}
 
-	@SuppressWarnings("static-access")
 	public void initialize() {
 		outStream.createFrame(249);
 		outStream.writeByteA(1); // 1 for members, zero for free
 		outStream.writeWordBigEndianA(playerId);
-		for (int player = 0; player < Server.playerHandler.players.length; player++) {
+		for (int player = 0; player < PlayerHandler.players.length; player++) {
 			if (player == playerId)
 				continue;
-			if (Server.playerHandler.players[player] != null) {
-				if (Server.playerHandler.players[player].playerName.equalsIgnoreCase(playerName))
+			if (PlayerHandler.players[player] != null) {
+				if (PlayerHandler.players[player].playerName.equalsIgnoreCase(playerName))
 					disconnected = true;
 			}
 		}
@@ -1893,22 +1883,22 @@ public class Player {
 		// });
 		for (int prayerId = 0; prayerId < PRAYER.length; prayerId++) {
 			prayerActive[prayerId] = false;
-			getPA().sendFrame36(PRAYER_GLOW[prayerId], 0);
+			getActionSender().sendConfig(PRAYER_GLOW[prayerId], 0);
 		}
-
+		
 		isRunning2 = !isRunning2;
 		int off = isRunning2 == false ? 0 : 1;
-		getPA().sendFrame36(173, off);
+		getActionSender().sendConfig(173, off);
 
 		runEnergyTime = System.currentTimeMillis();
 		getPA().sendFrame126(runEnergy + "%", 149);
 		getPA().sendFrame126("10m kg", 184);
 		getPA().sendFrame126("QP: " + questPoints, 3985);
 
-		// getPA().sendFrame36(43, fightMode-1); // ??
-		getPA().sendFrame36(172, autoRet == 1 ? 0 : 1);
-		getPA().sendFrame36(166, 3); // brightness
-		getPA().sendFrame36(108, 0);// resets autocast button
+		// getActionSender().sendConfig(43, fightMode-1); // ??
+		getActionSender().sendConfig(172, autoRet == 1 ? 0 : 1);
+		getActionSender().sendConfig(166, 3); // brightness
+		getActionSender().sendConfig(108, 0);// resets autocast button
 		getPA().sendFrame107(); // reset screen
 		getPA().setChatOptions(0, 0, 0); // reset private messaging options
 
@@ -1957,7 +1947,7 @@ public class Player {
 			CycleEventHandler.getSingleton().stopEvents(this);
 			properLogout = true;
 		} else {
-			sendMessage("You must wait a few seconds from being out of combat to logout.");
+			getActionSender().sendMessage("You must wait a few seconds from being out of combat to logout.");
 		}
 	}
 
@@ -1969,7 +1959,7 @@ public class Player {
 		} else {
 			points = 25000;
 		}
-		sendMessage("You receive " + amt + " points and now have a total of " + points + " openPI points.");
+		getActionSender().sendMessage("You receive " + amt + " points and now have a total of " + points + " openPI points.");
 	}
 
 	public int packetSize = 0, packetType = -1;
@@ -2206,13 +2196,17 @@ public class Player {
 		this.outStreamDecryption = outStreamDecryption;
 	}
 
-	@SuppressWarnings("static-access")
+	private Potions potions = new Potions(this);
+	public Potions getPotions()
+	{
+		return potions;
+	}
 	public boolean samePlayer() {
-		for (int j = 0; j < Server.playerHandler.players.length; j++) {
+		for (int j = 0; j < PlayerHandler.players.length; j++) {
 			if (j == playerId)
 				continue;
-			if (Server.playerHandler.players[j] != null) {
-				if (Server.playerHandler.players[j].playerName.equalsIgnoreCase(playerName)) {
+			if (PlayerHandler.players[j] != null) {
+				if (PlayerHandler.players[j].playerName.equalsIgnoreCase(playerName)) {
 					disconnected = true;
 					return true;
 				}
@@ -2235,7 +2229,13 @@ public class Player {
 
 	}
 
+	private ActionSender actionsender = new ActionSender(this);
+	public ActionSender getActionSender()
+	{
+		return actionsender;
+	}
 	public int[] damageTaken = new int[Constants.MAX_PLAYERS];
+	public int randomBarrows = 0;
 
 	public void handleHitMask(int damage) {
 		if (!hitUpdateRequired) {

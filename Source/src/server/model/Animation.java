@@ -147,7 +147,5 @@ public class Animation {
 		public Animation getAnimation() {
 			return animation;
 		}
-
 	}
-
 }

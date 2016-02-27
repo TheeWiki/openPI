@@ -75,7 +75,7 @@ public class Cleaning {
 			player.getPA().addSkillXP((int) herbloring.getExperience() * SkillIndex.HERBLORE.getExpRatio(), SkillIndex.HERBLORE.getSkillId());
 			player.getItems().deleteItem(itemId, itemSlot, 1);
 			player.getItems().addItem(herbloring.getCleanId(), 1);
-			player.sendMessage("You identify the herb, it's a " + player.getItems().getItemName(herbloring.getCleanId()).toLowerCase().replace("clean", "") + "");
+			player.getActionSender().sendMessage("You identify the herb, it's a " + player.getItems().getItemName(herbloring.getCleanId()).toLowerCase().replace("clean", "") + "");
 			return true;
 		}
 		return false;

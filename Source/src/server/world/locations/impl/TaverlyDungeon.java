@@ -7,56 +7,56 @@ public class TaverlyDungeon extends AbstractLocations
 {
 
 	@Override
-	public void sendFirstClickObject(Player c, int object) {
+	public void sendFirstClickObject(Player player, int object) {
 		switch(object)
 		{
 		case 9293:
-			if (c.absX < c.objectX) {
-				c.getPA().movePlayer(2892, 9799, 0);
+			if (player.absX < player.objectX) {
+				player.getPA().movePlayer(2892, 9799, 0);
 			} else {
-				c.getPA().movePlayer(2886, 9799, 0);
+				player.getPA().movePlayer(2886, 9799, 0);
 			}
 			break;
 		case 9294:
-			if (c.absX < c.objectX) {
-				c.getPA().movePlayer(c.objectX + 1, c.absY, 0);
-			} else if (c.absX > c.objectX) {
-				c.getPA().movePlayer(c.objectX - 1, c.absY, 0);
+			if (player.absX < player.objectX) {
+				player.getPA().movePlayer(player.objectX + 1, player.absY, 0);
+			} else if (player.absX > player.objectX) {
+				player.getPA().movePlayer(player.objectX - 1, player.absY, 0);
 			}
 			break;
 		case 1759:
-			if (c.objectX == 2884 && c.objectY == 3397)
-				c.getPA().movePlayer(c.absX, c.absY + 6400, 0);
+			if (player.objectX == 2884 && player.objectY == 3397)
+				player.getPA().movePlayer(player.absX, player.absY + 6400, 0);
 			break;
 		}
 	}
 
 	@Override
-	public void sendSecondClickObject(Player c, int object) {
+	public void sendSecondClickObject(Player player, int object) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendThirdClickObject(Player c, int object) {
+	public void sendThirdClickObject(Player player, int object) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendFirstClickNpc(Player c, int npc) {
+	public void sendFirstClickNpc(Player player, int npc) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendSecondClickNpc(Player c, int npc) {
+	public void sendSecondClickNpc(Player player, int npc) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendThirdClickNpc(Player c, int npc) {
+	public void sendThirdClickNpc(Player player, int npc) {
 		// TODO Auto-generated method stub
 		
 	}

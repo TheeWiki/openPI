@@ -8,7 +8,7 @@ import server.model.players.PlayerSave;
 
 public class Membership {
 
-	private int getTodayDate(Player c) {
+	private int getTodayDate(Player player) {
 		Calendar cal = new GregorianCalendar();
 		@SuppressWarnings("unused")
 		int day = cal.get(Calendar.DAY_OF_MONTH);
@@ -18,33 +18,33 @@ public class Membership {
 		return (month);
 	}
 
-	public void giveMembership(Player c) {
-		c.startDate = getTodayDate(c);
-		c.membership = true;
-		PlayerSave.saveGame(c);
-		c.sendMessage("@yel@You have just recieved a month membership!");
+	public void giveMembership(Player player) {
+		player.startDate = getTodayDate(player);
+		player.membership = true;
+		PlayerSave.saveGame(player);
+		player.getActionSender().sendMessage("@yel@You have just recieved a month membership!");
 	}
 	/**
 	 * TODO: Fix printout
-	 * @param c
+	 * @param player
 	 */
-	public void checkDate(Player c) {
-		if (c.membership = true)
+	public void checkDate(Player player) {
+		if (player.membership = true)
 		{
-			c.sendMessage("@blu@You have "+getDaysLeft(c) + " days of membership left.");
+			player.getActionSender().sendMessage("@blu@You have "+getDaysLeft(player) + " days of membership left.");
 		}
-		if(c.membership && c.startDate <= 0) {
-			c.startDate = getTodayDate(c);
-			PlayerSave.saveGame(c);
-		} else if(c.membership && getDaysLeft(c) <= 0) {
-			c.membership = false;
-			c.startDate = -1;
-			PlayerSave.saveGame(c);
-			c.sendMessage("@red@Your account isn't a member, type ::buymembership or visit keldagrim.com");
+		if(player.membership && player.startDate <= 0) {
+			player.startDate = getTodayDate(player);
+			PlayerSave.saveGame(player);
+		} else if(player.membership && getDaysLeft(player) <= 0) {
+			player.membership = false;
+			player.startDate = -1;
+			PlayerSave.saveGame(player);
+			player.getActionSender().sendMessage("@red@Your account isn't a member, type ::buymembership or visit keldagrim.com");
 		}
 	}
 
-	public int getDaysLeft(Player c) {
-		return (31 - (getTodayDate(c) - c.startDate));
+	public int getDaysLeft(Player player) {
+		return (31 - (getTodayDate(player) - player.startDate));
 	}
 }

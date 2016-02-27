@@ -149,34 +149,34 @@ public class Enchantment {
 
 	}
 
-	private static boolean hasRunes(Player c, int spellID) {
+	private static boolean hasRunes(Player player, int spellID) {
 		EnchantSpell ens = EnchantSpell.forId(spellID);
 		if (ens.getReq3() == 0) {
-			if (c.getCombat().wearingStaff(ens.getReq1())
-					&& c.getItems().playerHasItem(ens.getReq2(),
+			if (player.getCombat().wearingStaff(ens.getReq1())
+					&& player.getItems().playerHasItem(ens.getReq2(),
 							ens.getReqAmt2())
-					&& c.getItems().playerHasItem(ens.getReq3(), ens.getReqAmt3())
-					|| (c.getCombat().wearingStaff(ens.getReq2())
-							&& c.getItems().playerHasItem(ens.getReq1(), ens.getReqAmt1())
-							&& c.getItems().playerHasItem(ens.getReq3(), ens.getReqAmt3())
-							|| (c.getCombat().wearingStaff(ens.getReq3())
-									&& c.getItems().playerHasItem(ens.getReq1(), ens.getReqAmt1())
-									&& c.getItems().playerHasItem(ens.getReq2(), ens.getReqAmt2())))) {
+					&& player.getItems().playerHasItem(ens.getReq3(), ens.getReqAmt3())
+					|| (player.getCombat().wearingStaff(ens.getReq2())
+							&& player.getItems().playerHasItem(ens.getReq1(), ens.getReqAmt1())
+							&& player.getItems().playerHasItem(ens.getReq3(), ens.getReqAmt3())
+							|| (player.getCombat().wearingStaff(ens.getReq3())
+									&& player.getItems().playerHasItem(ens.getReq1(), ens.getReqAmt1())
+									&& player.getItems().playerHasItem(ens.getReq2(), ens.getReqAmt2())))) {
 				return true;
-			} else if (c.getItems().playerHasItem(ens.getReq1(), ens.getReqAmt1())
-					&& c.getItems().playerHasItem(ens.getReq2(), ens.getReqAmt2())
-					&& c.getItems().playerHasItem(ens.getReq3(), ens.getReqAmt3())) {
+			} else if (player.getItems().playerHasItem(ens.getReq1(), ens.getReqAmt1())
+					&& player.getItems().playerHasItem(ens.getReq2(), ens.getReqAmt2())
+					&& player.getItems().playerHasItem(ens.getReq3(), ens.getReqAmt3())) {
 				return true;
 			} else {
 				return false;
 			}
 		} else {
-			if (c.getCombat().wearingStaff(ens.getReq1()) && c.getItems().playerHasItem(ens.getReq2(), ens.getReqAmt2())
-					|| (c.getCombat().wearingStaff(ens.getReq2())
-							&& c.getItems().playerHasItem(ens.getReq1(), ens.getReqAmt1()))) {
+			if (player.getCombat().wearingStaff(ens.getReq1()) && player.getItems().playerHasItem(ens.getReq2(), ens.getReqAmt2())
+					|| (player.getCombat().wearingStaff(ens.getReq2())
+							&& player.getItems().playerHasItem(ens.getReq1(), ens.getReqAmt1()))) {
 				return true;
-			} else if (c.getItems().playerHasItem(ens.getReq1(), ens.getReqAmt1())
-					&& c.getItems().playerHasItem(ens.getReq2(), ens.getReqAmt2())) {
+			} else if (player.getItems().playerHasItem(ens.getReq1(), ens.getReqAmt1())
+					&& player.getItems().playerHasItem(ens.getReq2(), ens.getReqAmt2())) {
 				return true;
 			} else {
 				return false;
@@ -202,39 +202,39 @@ public class Enchantment {
 		return 0;
 	}
 
-	public static void enchantItem(Player c, int itemID, int spellID) {
+	public static void enchantItem(Player player, int itemID, int spellID) {
 		Enchant enc = Enchant.forId(itemID);
 		EnchantSpell ens = EnchantSpell.forId(spellID);
 		if (enc == null || ens == null) {
 			return;
 		}
-		if (c.playerLevel[SkillIndex.MAGIC.getSkillId()] >= enc.getLevelReq()) {
-			if (c.getItems().playerHasItem(enc.getUnenchanted(), 1)) {
-				if (hasRunes(c, spellID)) {
+		if (player.playerLevel[SkillIndex.MAGIC.getSkillId()] >= enc.getLevelReq()) {
+			if (player.getItems().playerHasItem(enc.getUnenchanted(), 1)) {
+				if (hasRunes(player, spellID)) {
 					if (getEnchantmentLevel(spellID) == enc.getELevel()) {
-						c.getItems().deleteItem(enc.getUnenchanted(), 1);
-						c.getItems().addItem(enc.getEnchanted(), 1);
+						player.getItems().deleteItem(enc.getUnenchanted(), 1);
+						player.getItems().addItem(enc.getEnchanted(), 1);
 
-						c.getPA().addSkillXP(enc.getXp() * SkillIndex.MAGIC.getExpRatio(), SkillIndex.MAGIC.getSkillId());
+						player.getPA().addSkillXP(enc.getXp() * SkillIndex.MAGIC.getExpRatio(), SkillIndex.MAGIC.getSkillId());
 
-						c.getItems().deleteItem(ens.getReq1(), c.getItems().getItemSlot(ens.getReq1()), ens.getReqAmt1());
-						c.getItems().deleteItem(ens.getReq2(), c.getItems().getItemSlot(ens.getReq2()), ens.getReqAmt2());
-						c.startAnimation(enc.getAnim());
-						c.gfx100(enc.getGFX());
+						player.getItems().deleteItem(ens.getReq1(), player.getItems().getItemSlot(ens.getReq1()), ens.getReqAmt1());
+						player.getItems().deleteItem(ens.getReq2(), player.getItems().getItemSlot(ens.getReq2()), ens.getReqAmt2());
+						player.startAnimation(enc.getAnim());
+						player.gfx100(enc.getGFX());
 						if (ens.getReq3() != -1) {
-							c.getItems().deleteItem(ens.getReq3(), c.getItems().getItemSlot(ens.getReq3()), ens.getReqAmt3());
+							player.getItems().deleteItem(ens.getReq3(), player.getItems().getItemSlot(ens.getReq3()), ens.getReqAmt3());
 						}
-						c.getPA().sendFrame106(6);
+						player.getPA().sendFrame106(6);
 					} else {
-						c.sendMessage("You can only enchant this jewelry using a level-" + enc.getELevel()
+						player.getActionSender().sendMessage("You can only enchant this jewelry using a level-" + enc.getELevel()
 								+ " enchantment spell!");
 					}
 				} else {
-					c.sendMessage("You do not have enough runes to cast this spell.");
+					player.getActionSender().sendMessage("You do not have enough runes to cast this spell.");
 				}
 			}
 		} else {
-			c.sendMessage("You need a magic level of at least " + enc.getLevelReq() + " to cast this spell.");
+			player.getActionSender().sendMessage("You need a magic level of at least " + enc.getLevelReq() + " to cast this spell.");
 		}
 	}
 
@@ -242,29 +242,29 @@ public class Enchantment {
 			{ 1165, 880, 29, 9238 }, { 1165, 9338, 37, 9241 }, { 1176, 9336, 39, 9239 }, { 1176, 9339, 59, 9242 },
 			{ 1180, 9340, 67, 9243 }, { 1187, 9341, 78, 9244 }, { 6003, 9342, 97, 9245 } };
 
-	public static void enchantBolt(Player c, int spell, int bolt, int amount) {
+	public static void enchantBolt(Player player, int spell, int bolt, int amount) {
 		EnchantSpell ens = EnchantSpell.forId(spell);
 		for (int i = 0; i < boltData.length; i++) {
 			if (spell == boltData[i][0]) {
 				if (bolt == boltData[i][1]) {
-					if (hasRunes(c, spell)) {
-						c.getItems().deleteItem(ens.getReq1(), c.getItems().getItemSlot(ens.getReq1()),
+					if (hasRunes(player, spell)) {
+						player.getItems().deleteItem(ens.getReq1(), player.getItems().getItemSlot(ens.getReq1()),
 								ens.getReqAmt1());
-						c.getItems().deleteItem(ens.getReq2(), c.getItems().getItemSlot(ens.getReq2()),
+						player.getItems().deleteItem(ens.getReq2(), player.getItems().getItemSlot(ens.getReq2()),
 								ens.getReqAmt2());
 					} else {
-						c.sendMessage("You don't have the required runes to use this spell.");
+						player.getActionSender().sendMessage("You don't have the required runes to use this spell.");
 						return;
 					}
-					if (!c.getItems().playerHasItem(boltData[i][1], amount))
-						amount = c.getItems().getItemAmount(bolt);
-					c.getItems().deleteItem(boltData[i][1], c.getItems().getItemSlot(boltData[i][1]), amount);
+					if (!player.getItems().playerHasItem(boltData[i][1], amount))
+						amount = player.getItems().getItemAmount(bolt);
+					player.getItems().deleteItem(boltData[i][1], player.getItems().getItemSlot(boltData[i][1]), amount);
 
-					c.getPA().addSkillXP(boltData[i][2] * amount * SkillIndex.MAGIC.getExpRatio(),
+					player.getPA().addSkillXP(boltData[i][2] * amount * SkillIndex.MAGIC.getExpRatio(),
 							SkillIndex.MAGIC.getSkillId());
 
-					c.getItems().addItem(boltData[i][3], amount);
-					c.getPA().sendFrame106(6);
+					player.getItems().addItem(boltData[i][3], amount);
+					player.getPA().sendFrame106(6);
 					return;
 				}
 			}

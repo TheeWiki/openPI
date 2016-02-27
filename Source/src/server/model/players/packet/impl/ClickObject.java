@@ -14,189 +14,189 @@ public class ClickObject implements PacketType {
 
 	public static final int FIRST_CLICK = 132, SECOND_CLICK = 252, THIRD_CLICK = 70;	
 	@Override
-	public void processPacket(final Player c, int packetType, int packetSize) {		
-		c.clickObjectType = c.objectX = c.objectId = c.objectY = 0;
-		c.objectYOffset = c.objectXOffset = 0;
-		c.getPA().resetFollow();
+	public void processPacket(final Player player, int packetType, int packetSize) {		
+		player.clickObjectType = player.objectX = player.objectId = player.objectY = 0;
+		player.objectYOffset = player.objectXOffset = 0;
+		player.getPA().resetFollow();
 		switch(packetType) {
 			
 			case FIRST_CLICK:
-			c.objectX = c.getInStream().readSignedWordBigEndianA();
-			c.objectId = c.getInStream().readUnsignedWord();
-			c.objectY = c.getInStream().readUnsignedWordA();
-			c.objectDistance = 1;
-			if(c.goodDistance(c.getX(), c.getY(), c.objectX, c.objectY, 1)) {
-				if (Doors.getSingleton().handleDoor(c.objectId, c.objectX, c.objectY, c.heightLevel)) { 
+			player.objectX = player.getInStream().readSignedWordBigEndianA();
+			player.objectId = player.getInStream().readUnsignedWord();
+			player.objectY = player.getInStream().readUnsignedWordA();
+			player.objectDistance = 1;
+			if(player.goodDistance(player.getX(), player.getY(), player.objectX, player.objectY, 1)) {
+				if (Doors.getSingleton().handleDoor(player.objectId, player.objectX, player.objectY, player.heightLevel)) { 
 				}
 			}
 			
-			if(c.playerRights >= 3 && c.playerName.equalsIgnoreCase("Sanity")) {
-				Misc.println("objectId: "+c.objectId+"  ObjectX: "+c.objectX+ "  objectY: "+c.objectY+" Xoff: "+ (c.getX() - c.objectX)+" Yoff: "+ (c.getY() - c.objectY)); 
-			} else if (c.playerRights == 3) {
-				c.sendMessage("objectId: " + c.objectId + " objectX: " + c.objectX + " objectY: " + c.objectY);
+			if(player.playerRights >= 3 && player.playerName.equalsIgnoreCase("Sanity")) {
+				Misc.println("objectId: "+player.objectId+"  ObjectX: "+player.objectX+ "  objectY: "+player.objectY+" Xoff: "+ (player.getX() - player.objectX)+" Yoff: "+ (player.getY() - player.objectY)); 
+			} else if (player.playerRights == 3) {
+				player.getActionSender().sendMessage("objectId: " + player.objectId + " objectX: " + player.objectX + " objectY: " + player.objectY);
 			}
-			if (Math.abs(c.getX() - c.objectX) > 25 || Math.abs(c.getY() - c.objectY) > 25) {
-				c.resetWalkingQueue();
+			if (Math.abs(player.getX() - player.objectX) > 25 || Math.abs(player.getY() - player.objectY) > 25) {
+				player.resetWalkingQueue();
 				break;
 			}
-			switch(c.objectId) {
+			switch(player.objectId) {
 			case 9398://deposit
-				c.getPA().sendFrame126("The Bank of RuneScape - Deposit Box", 7421);
-				c.getPA().sendFrame248(4465, 197);//197 just because you can't see it =\
-				c.getItems().resetItems(7423);
+				player.getPA().sendFrame126("The Bank of RuneScape - Deposit Box", 7421);
+				player.getPA().sendFrame248(4465, 197);//197 just because you can't see it =\
+				player.getItems().resetItems(7423);
 			break;
 			
 				case 1733:
-					c.objectYOffset = 2;
+					player.objectYOffset = 2;
 				break;
 				
 				case 3044:
-					c.objectDistance = 3;
+					player.objectDistance = 3;
 				break;
 				
 				case 245:
-					c.objectYOffset = -1;
-					c.objectDistance = 0;
+					player.objectYOffset = -1;
+					player.objectDistance = 0;
 				break;
 				
 				case 272:
-					c.objectYOffset = 1;
-					c.objectDistance = 0;
+					player.objectYOffset = 1;
+					player.objectDistance = 0;
 				break;
 				
 				case 273:
-					c.objectYOffset = 1;
-					c.objectDistance = 0;
+					player.objectYOffset = 1;
+					player.objectDistance = 0;
 				break;
 				
 				case 246:
-					c.objectYOffset = 1;
-					c.objectDistance = 0;
+					player.objectYOffset = 1;
+					player.objectDistance = 0;
 				break;
 				
 				case 4493:
 				case 4494:
 				case 4496:
 				case 4495:
-					c.objectDistance = 5;
+					player.objectDistance = 5;
 				break;
 				case 10229:
 				case 6522:
-					c.objectDistance = 2;
+					player.objectDistance = 2;
 				break;
 				case 8959:
-					c.objectYOffset = 1;
+					player.objectYOffset = 1;
 				break;
 				case 4417:
-				if (c.objectX == 2425 && c.objectY == 3074)
-					c.objectYOffset = 2;
+				if (player.objectX == 2425 && player.objectY == 3074)
+					player.objectYOffset = 2;
 				break;
 				case 4420:
-				if (c.getX() >= 2383 && c.getX() <= 2385){
-					c.objectYOffset = 1;
+				if (player.getX() >= 2383 && player.getX() <= 2385){
+					player.objectYOffset = 1;
 				} else {
-					c.objectYOffset = -2;
+					player.objectYOffset = -2;
 				}
 				case 6552:
 				case 409:
-					c.objectDistance = 2;
+					player.objectDistance = 2;
 				break;
 				case 2879:
 				case 2878:
-					c.objectDistance = 3;
+					player.objectDistance = 3;
 				break;
 				case 2558:
-					c.objectDistance = 0;
-					if (c.absX > c.objectX && c.objectX == 3044)
-						c.objectXOffset = 1;
-					if (c.absY > c.objectY)
-						c.objectYOffset = 1;
-					if (c.absX < c.objectX && c.objectX == 3038)
-						c.objectXOffset = -1;
+					player.objectDistance = 0;
+					if (player.absX > player.objectX && player.objectX == 3044)
+						player.objectXOffset = 1;
+					if (player.absY > player.objectY)
+						player.objectYOffset = 1;
+					if (player.absX < player.objectX && player.objectX == 3038)
+						player.objectXOffset = -1;
 				break;
 				case 9356:
-					c.objectDistance = 2;
+					player.objectDistance = 2;
 				break;
 				case 5959:
 				case 1815:
 				case 5960:
 				case 1816:
-					c.objectDistance = 0;
+					player.objectDistance = 0;
 				break;
 				
 				case 9293:
-					c.objectDistance = 2;
+					player.objectDistance = 2;
 				break;
 				case 4418:
-				if (c.objectX == 2374 && c.objectY == 3131)
-					c.objectYOffset = -2;
-				else if (c.objectX == 2369 && c.objectY == 3126)
-					c.objectXOffset = 2;
-				else if (c.objectX == 2380 && c.objectY == 3127)
-					c.objectYOffset = 2;
-				else if (c.objectX == 2369 && c.objectY == 3126)
-					c.objectXOffset = 2;
-				else if (c.objectX == 2374 && c.objectY == 3131)
-					c.objectYOffset = -2;
+				if (player.objectX == 2374 && player.objectY == 3131)
+					player.objectYOffset = -2;
+				else if (player.objectX == 2369 && player.objectY == 3126)
+					player.objectXOffset = 2;
+				else if (player.objectX == 2380 && player.objectY == 3127)
+					player.objectYOffset = 2;
+				else if (player.objectX == 2369 && player.objectY == 3126)
+					player.objectXOffset = 2;
+				else if (player.objectX == 2374 && player.objectY == 3131)
+					player.objectYOffset = -2;
 				break;
 				case 9706:
-					c.objectDistance = 0;
-					c.objectXOffset = 1;
+					player.objectDistance = 0;
+					player.objectXOffset = 1;
 				break;
 				case 9707:
-					c.objectDistance = 0;
-					c.objectYOffset = -1;
+					player.objectDistance = 0;
+					player.objectYOffset = -1;
 				break;
 				case 4419:
 				case 6707: // verac
-				c.objectYOffset = 3;
+				player.objectYOffset = 3;
 				break;
 				case 6823:
-				c.objectDistance = 2;
-				c.objectYOffset = 1;
+				player.objectDistance = 2;
+				player.objectYOffset = 1;
 				break;
 				
 				case 6706: // torag
-				c.objectXOffset = 2;
+				player.objectXOffset = 2;
 				break;
 				case 6772:
-				c.objectDistance = 2;
-				c.objectYOffset = 1;
+				player.objectDistance = 2;
+				player.objectYOffset = 1;
 				break;
 				
 				case 6705: // karils
-				c.objectYOffset = -1;
+				player.objectYOffset = -1;
 				break;
 				case 6822:
-				c.objectDistance = 2;
-				c.objectYOffset = 1;
+				player.objectDistance = 2;
+				player.objectYOffset = 1;
 				break;
 				
 				case 6704: // guthan stairs
-				c.objectYOffset = -1;
+				player.objectYOffset = -1;
 				break;
 				case 6773:
-				c.objectDistance = 2;
-				c.objectXOffset = 1;
-				c.objectYOffset = 1;
+				player.objectDistance = 2;
+				player.objectXOffset = 1;
+				player.objectYOffset = 1;
 				break;
 				
 				case 6703: // dharok stairs
-				c.objectXOffset = -1;
+				player.objectXOffset = -1;
 				break;
 				case 6771:
-				c.objectDistance = 2;
-				c.objectXOffset = 1;
-				c.objectYOffset = 1;
+				player.objectDistance = 2;
+				player.objectXOffset = 1;
+				player.objectYOffset = 1;
 				break;
 				
 				case 6702: // ahrim stairs
-				c.objectXOffset = -1;
+				player.objectXOffset = -1;
 				break;
 				case 6821:
-				c.objectDistance = 2;
-				c.objectXOffset = 1;
-				c.objectYOffset = 1;
+				player.objectDistance = 2;
+				player.objectXOffset = 1;
+				player.objectYOffset = 1;
 				break;
 				case 1276:
 				case 1278://trees
@@ -205,119 +205,119 @@ public class ClickObject implements PacketType {
 				case 1307: //maple
 				case 1309: //yew
 				case 1306: //yew
-				c.objectDistance = 3;
+				player.objectDistance = 3;
 				break;
 				case 2513:
-					c.getRG().fireAtTarget();
+					player.getRG().fireAtTarget();
 					break;
 				default:
-				c.objectDistance = 1;
-				c.objectXOffset = 0;
-				c.objectYOffset = 0;
+				player.objectDistance = 1;
+				player.objectXOffset = 0;
+				player.objectYOffset = 0;
 				break;		
 			}
-			if(c.goodDistance(c.objectX+c.objectXOffset, c.objectY+c.objectYOffset, c.getX(), c.getY(), c.objectDistance)) {
-				c.getActions().firstClickObject(c, c.objectId, c.objectX, c.objectY);
+			if(player.goodDistance(player.objectX+player.objectXOffset, player.objectY+player.objectYOffset, player.getX(), player.getY(), player.objectDistance)) {
+				player.getActions().firstClickObject(player, player.objectId, player.objectX, player.objectY);
 			} else {
-				c.clickObjectType = 1;
-				CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
+				player.clickObjectType = 1;
+				CycleEventHandler.getSingleton().addEvent(player, new CycleEvent() {
 					@Override
 					public void execute(CycleEventContainer container) {
-						if(c.clickObjectType == 1 && c.goodDistance(c.objectX + c.objectXOffset, c.objectY + c.objectYOffset, c.getX(), c.getY(), c.objectDistance)) {
-							c.getActions().firstClickObject(c, c.objectId, c.objectX, c.objectY);
+						if(player.clickObjectType == 1 && player.goodDistance(player.objectX + player.objectXOffset, player.objectY + player.objectYOffset, player.getX(), player.getY(), player.objectDistance)) {
+							player.getActions().firstClickObject(player, player.objectId, player.objectX, player.objectY);
 							container.stop();
 						}
-						if(c.clickObjectType > 1 || c.clickObjectType == 0)
+						if(player.clickObjectType > 1 || player.clickObjectType == 0)
 							container.stop();
 					}
 					@Override
 					public void stop() {
-						c.clickObjectType = 0;
+						player.clickObjectType = 0;
 					}
 				}, 1);
 			}
 			break;
 			
 			case SECOND_CLICK:
-			c.objectId = c.getInStream().readUnsignedWordBigEndianA();
-			c.objectY = c.getInStream().readSignedWordBigEndian();
-			c.objectX = c.getInStream().readUnsignedWordA();
-			c.objectDistance = 1;
+			player.objectId = player.getInStream().readUnsignedWordBigEndianA();
+			player.objectY = player.getInStream().readSignedWordBigEndian();
+			player.objectX = player.getInStream().readUnsignedWordA();
+			player.objectDistance = 1;
 			
-			if(c.playerRights >= 3) {
-				Misc.println("objectId: "+c.objectId+"  ObjectX: "+c.objectX+ "  objectY: "+c.objectY+" Xoff: "+ (c.getX() - c.objectX)+" Yoff: "+ (c.getY() - c.objectY)); 
+			if(player.playerRights >= 3) {
+				Misc.println("objectId: "+player.objectId+"  ObjectX: "+player.objectX+ "  objectY: "+player.objectY+" Xoff: "+ (player.getX() - player.objectX)+" Yoff: "+ (player.getY() - player.objectY)); 
 			}
 			
-			switch(c.objectId) {
+			switch(player.objectId) {
 			case 6163:
 			case 6165:
 			case 6166:
 			case 6164:
 			case 6162:
-				c.objectDistance = 2;
+				player.objectDistance = 2;
 			break;
 				default:
-				c.objectDistance = 1;
-				c.objectXOffset = 0;
-				c.objectYOffset = 0;
+				player.objectDistance = 1;
+				player.objectXOffset = 0;
+				player.objectYOffset = 0;
 				break;
 				
 			}
-			if(c.goodDistance(c.objectX+c.objectXOffset, c.objectY+c.objectYOffset, c.getX(), c.getY(), c.objectDistance)) { 
-				c.getActions().secondClickObject(c, c.objectId, c.objectX, c.objectY);
+			if(player.goodDistance(player.objectX+player.objectXOffset, player.objectY+player.objectYOffset, player.getX(), player.getY(), player.objectDistance)) { 
+				player.getActions().secondClickObject(player, player.objectId, player.objectX, player.objectY);
 			} else {
-				c.clickObjectType = 2;
-				CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
+				player.clickObjectType = 2;
+				CycleEventHandler.getSingleton().addEvent(player, new CycleEvent() {
 					@Override
 					public void execute(CycleEventContainer container) {
-						if(c.clickObjectType == 2 && c.goodDistance(c.objectX + c.objectXOffset, c.objectY + c.objectYOffset, c.getX(), c.getY(), c.objectDistance)) {
-							c.getActions().secondClickObject(c, c.objectId, c.objectX, c.objectY);
+						if(player.clickObjectType == 2 && player.goodDistance(player.objectX + player.objectXOffset, player.objectY + player.objectYOffset, player.getX(), player.getY(), player.objectDistance)) {
+							player.getActions().secondClickObject(player, player.objectId, player.objectX, player.objectY);
 							container.stop();
 						}
-						if(c.clickObjectType < 2 || c.clickObjectType > 2)
+						if(player.clickObjectType < 2 || player.clickObjectType > 2)
 							container.stop();
 					}
 					@Override
 					public void stop() {
-						c.clickObjectType = 0;
+						player.clickObjectType = 0;
 					}
 				}, 1);
 			}
 			break;
 			
 			case THIRD_CLICK:
-			c.objectX = c.getInStream().readSignedWordBigEndian();
-			c.objectY = c.getInStream().readUnsignedWord();
-			c.objectId = c.getInStream().readUnsignedWordBigEndianA();
+			player.objectX = player.getInStream().readSignedWordBigEndian();
+			player.objectY = player.getInStream().readUnsignedWord();
+			player.objectId = player.getInStream().readUnsignedWordBigEndianA();
 			
-			if(c.playerRights >= 3) {
-				Misc.println("objectId: "+c.objectId+"  ObjectX: "+c.objectX+ "  objectY: "+c.objectY+" Xoff: "+ (c.getX() - c.objectX)+" Yoff: "+ (c.getY() - c.objectY)); 
+			if(player.playerRights >= 3) {
+				Misc.println("objectId: "+player.objectId+"  ObjectX: "+player.objectX+ "  objectY: "+player.objectY+" Xoff: "+ (player.getX() - player.objectX)+" Yoff: "+ (player.getY() - player.objectY)); 
 			}
 			
-			switch(c.objectId) {
+			switch(player.objectId) {
 				default:
-				c.objectDistance = 1;
-				c.objectXOffset = 0;
-				c.objectYOffset = 0;
+				player.objectDistance = 1;
+				player.objectXOffset = 0;
+				player.objectYOffset = 0;
 				break;		
 			}
-			if(c.goodDistance(c.objectX+c.objectXOffset, c.objectY+c.objectYOffset, c.getX(), c.getY(), c.objectDistance)) { 
-				c.getActions().secondClickObject(c, c.objectId, c.objectX, c.objectY);
+			if(player.goodDistance(player.objectX+player.objectXOffset, player.objectY+player.objectYOffset, player.getX(), player.getY(), player.objectDistance)) { 
+				player.getActions().secondClickObject(player, player.objectId, player.objectX, player.objectY);
 			} else {
-				c.clickObjectType = 3;
-				CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
+				player.clickObjectType = 3;
+				CycleEventHandler.getSingleton().addEvent(player, new CycleEvent() {
 					@Override
 					public void execute(CycleEventContainer container) {
-						if(c.clickObjectType == 3 && c.goodDistance(c.objectX + c.objectXOffset, c.objectY + c.objectYOffset, c.getX(), c.getY(), c.objectDistance)) {
-							c.getActions().thirdClickObject(c, c.objectId, c.objectX, c.objectY);
+						if(player.clickObjectType == 3 && player.goodDistance(player.objectX + player.objectXOffset, player.objectY + player.objectYOffset, player.getX(), player.getY(), player.objectDistance)) {
+							player.getActions().thirdClickObject(player, player.objectId, player.objectX, player.objectY);
 							container.stop();
 						}
-						if(c.clickObjectType < 3)
+						if(player.clickObjectType < 3)
 							container.stop();
 					}
 					@Override
 					public void stop() {
-						c.clickObjectType = 0;
+						player.clickObjectType = 0;
 					}
 				}, 1);
 			}	

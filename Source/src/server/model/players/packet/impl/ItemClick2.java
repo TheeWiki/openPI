@@ -15,17 +15,17 @@ import server.util.Misc;
 public class ItemClick2 implements PacketType {
 
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
-		int itemId = c.getInStream().readSignedWordA();
+	public void processPacket(Player player, int packetType, int packetSize) {
+		int itemId = player.getInStream().readSignedWordA();
 		
-		if (!c.getItems().playerHasItem(itemId,1))
+		if (!player.getItems().playerHasItem(itemId,1))
 			return;
 
 		switch (itemId) {
 		
 		default:
-			if (c.playerRights == 3)
-				Misc.println(c.playerName+ " - Item3rdOption: "+itemId);
+			if (player.playerRights == 3)
+				Misc.println(player.playerName+ " - Item3rdOption: "+itemId);
 			break;
 		}
 

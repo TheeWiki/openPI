@@ -8,45 +8,45 @@ import server.model.players.packet.PacketType;
 public class Bank5 implements PacketType {
 
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
-	int interfaceId = c.getInStream().readSignedWordBigEndianA();
-	int removeId = c.getInStream().readSignedWordBigEndianA();
-	int removeSlot = c.getInStream().readSignedWordBigEndian();
+	public void processPacket(Player player, int packetType, int packetSize) {
+	int interfaceId = player.getInStream().readSignedWordBigEndianA();
+	int removeId = player.getInStream().readSignedWordBigEndianA();
+	int removeSlot = player.getInStream().readSignedWordBigEndian();
 	
 		switch(interfaceId){
 
 			case 3900:
-			c.getShops().buyItem(removeId, removeSlot, 1);
+			player.getShops().buyItem(removeId, removeSlot, 1);
 			break;
 			
 			case 3823:
-			c.getShops().sellItem(removeId, removeSlot, 1);
+			player.getShops().sellItem(removeId, removeSlot, 1);
 			break;
 			
 			case 5064:
-			c.getItems().bankItem(removeId, removeSlot, 5);
+			player.getItems().bankItem(removeId, removeSlot, 5);
 			break;
 			
 			case 5382:
-			c.getItems().fromBank(removeId, removeSlot, 5);
+			player.getItems().fromBank(removeId, removeSlot, 5);
 			break;
 			
 			case 3322:
-			if(c.duelStatus <= 0) { 
-                c.getTradeAndDuel().tradeItem(removeId, removeSlot, 5);
+			if(player.duelStatus <= 0) { 
+                player.getTradeAndDuel().tradeItem(removeId, removeSlot, 5);
            	} else {
-				c.getTradeAndDuel().stakeItem(removeId, removeSlot, 5);
+				player.getTradeAndDuel().stakeItem(removeId, removeSlot, 5);
 			}	
 			break;
 			
 			case 3415:
-			if(c.duelStatus <= 0) { 
-				c.getTradeAndDuel().fromTrade(removeId, removeSlot, 5);
+			if(player.duelStatus <= 0) { 
+				player.getTradeAndDuel().fromTrade(removeId, removeSlot, 5);
 			}
 			break;
 			
 			case 6669:
-			c.getTradeAndDuel().fromDuel(removeId, removeSlot, 5);
+			player.getTradeAndDuel().fromDuel(removeId, removeSlot, 5);
 			break;
 
 			

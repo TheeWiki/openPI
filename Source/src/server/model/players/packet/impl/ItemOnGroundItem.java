@@ -8,18 +8,18 @@ public class ItemOnGroundItem implements PacketType {
 
 	@SuppressWarnings("unused")
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
-		int a1 = c.getInStream().readSignedWordBigEndian();
-		int itemUsed = c.getInStream().readSignedWordA();
-		int groundItem = c.getInStream().readUnsignedWord();
-		int gItemY = c.getInStream().readSignedWordA();
-		int itemUsedSlot = c.getInStream().readSignedWordBigEndianA();
-		int gItemX = c.getInStream().readUnsignedWord();
+	public void processPacket(Player player, int packetType, int packetSize) {
+		int a1 = player.getInStream().readSignedWordBigEndian();
+		int itemUsed = player.getInStream().readSignedWordA();
+		int groundItem = player.getInStream().readUnsignedWord();
+		int gItemY = player.getInStream().readSignedWordA();
+		int itemUsedSlot = player.getInStream().readSignedWordBigEndianA();
+		int gItemX = player.getInStream().readUnsignedWord();
 		
 		switch(itemUsed) {
 		
 		default:
-			if(c.playerRights == 3)
+			if(player.playerRights == 3)
 				Misc.println("ItemUsed "+itemUsed+" on Ground Item "+groundItem);
 			break;
 		}

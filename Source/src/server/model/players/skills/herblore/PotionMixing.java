@@ -9,15 +9,15 @@ import server.util.Misc;
 
 public class PotionMixing {
 
-	Player c;
+	Player player;
 
-	public PotionMixing(Player c) {
-		this.c = c;
+	public PotionMixing(Player player) {
+		this.player = player;
 	}
 
 	public void mixPotion2(int id, int id2) {
-		String id11 = c.getItems().getItemName(id);
-		String id22 = c.getItems().getItemName(id2);
+		String id11 = player.getItems().getItemName(id);
+		String id22 = player.getItems().getItemName(id2);
 		if (id11.substring(0, id11.indexOf("(")).equalsIgnoreCase(id22.substring(0, id22.indexOf("(")))) {
 			try {
 				int amount1 = Integer.parseInt(id11.substring(id11.indexOf("(") + 1, id11.indexOf("(") + 2));
@@ -28,17 +28,17 @@ public class PotionMixing {
 					amount2 = totalAmount - 4;
 					String item1 = id11.substring(0, id11.indexOf("(") + 1) + amount1 + ")";
 					String item2 = id11.substring(0, id11.indexOf("(") + 1) + amount2 + ")";
-					c.getItems().deleteItem(id, c.getItems().getItemSlot(id), 1);
-					c.getItems().deleteItem(id2, c.getItems().getItemSlot(id2), 1);
-					c.getItems().addItem(c.getItems().getItemId(item1), 1);
-					c.getItems().addItem(c.getItems().getItemId(item2), 1);
+					player.getItems().deleteItem(id, player.getItems().getItemSlot(id), 1);
+					player.getItems().deleteItem(id2, player.getItems().getItemSlot(id2), 1);
+					player.getItems().addItem(player.getItems().getItemId(item1), 1);
+					player.getItems().addItem(player.getItems().getItemId(item2), 1);
 				} else {
 					amount1 = totalAmount;
 					String item1 = id11.substring(0, id11.indexOf("(") + 1) + amount1 + ")";
-					c.getItems().deleteItem(id, c.getItems().getItemSlot(id), 1);
-					c.getItems().deleteItem(id2, c.getItems().getItemSlot(id2), 1);
-					c.getItems().addItem(c.getItems().getItemId(item1), 1);
-					c.getItems().addItem(229, 1);
+					player.getItems().deleteItem(id, player.getItems().getItemSlot(id), 1);
+					player.getItems().deleteItem(id2, player.getItems().getItemSlot(id2), 1);
+					player.getItems().addItem(player.getItems().getItemId(item1), 1);
+					player.getItems().addItem(229, 1);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -62,10 +62,10 @@ public class PotionMixing {
 	public void mixPotion(int id, int id2) {
 		for (int j = 0; j < potMixing.length; j++) {
 			if ((potMixing[j][0] == id && potMixing[j][1] == id) || (potMixing[j][1] == id && potMixing[j][0] == id2)) {
-				c.getItems().deleteItem(id, c.getItems().getItemSlot(id), 1);
-				c.getItems().deleteItem(id2, c.getItems().getItemSlot(id2), 1);
-				c.getItems().addItem(potMixing[j][2], 1);
-				c.getItems().addItem(potMixing[j][3], 1);
+				player.getItems().deleteItem(id, player.getItems().getItemSlot(id), 1);
+				player.getItems().deleteItem(id2, player.getItems().getItemSlot(id2), 1);
+				player.getItems().addItem(potMixing[j][2], 1);
+				player.getItems().addItem(potMixing[j][3], 1);
 				break;
 			}
 		}

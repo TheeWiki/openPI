@@ -55,26 +55,26 @@ public class Food {
 		}
 	}
 	
-	public static void eat(Player c, int id, int slot) {
-		if (c.duelRule[Rules.EAT_RULE.getRule()]) {
-			c.sendMessage("You may not eat in this duel.");
+	public static void eat(Player player, int id, int slot) {
+		if (player.duelRule[Rules.EAT_RULE.getRule()]) {
+			player.getActionSender().sendMessage("You may not eat in this duel.");
 			return;
 		}
-		if (System.currentTimeMillis() - c.foodDelay >= 1500 && c.playerLevel[3] > 0) {
-			c.getCombat().resetPlayerAttack();
-			c.attackTimer += 2;
-			c.startAnimation(829);
-			c.getItems().deleteItem(id,slot,1);
+		if (System.currentTimeMillis() - player.foodDelay >= 1500 && player.playerLevel[3] > 0) {
+			player.getCombat().resetPlayerAttack();
+			player.attackTimer += 2;
+			player.startAnimation(829);
+			player.getItems().deleteItem(id,slot,1);
 			FoodToEat f = FoodToEat.food.get(id);
-			if (c.playerLevel[3] < c.getLevelForXP(c.playerXP[3])) {
-				c.playerLevel[3] += f.getHeal();
-				if (c.playerLevel[3] > c.getLevelForXP(c.playerXP[3]))
-					c.playerLevel[3] = c.getLevelForXP(c.playerXP[3]);
+			if (player.playerLevel[3] < player.getLevelForXP(player.playerXP[3])) {
+				player.playerLevel[3] += f.getHeal();
+				if (player.playerLevel[3] > player.getLevelForXP(player.playerXP[3]))
+					player.playerLevel[3] = player.getLevelForXP(player.playerXP[3]);
 			}
-			c.foodDelay = System.currentTimeMillis();
-			c.getPA().refreshSkill(3);
-			c.getPA().sendSound(c.getSound().FOODEAT);
-			c.sendMessage("You eat the " + f.getName() + ".");
+			player.foodDelay = System.currentTimeMillis();
+			player.getPA().refreshSkill(3);
+			player.getPA().sendSound(player.getSound().FOODEAT);
+			player.getActionSender().sendMessage("You eat the " + f.getName() + ".");
 		}		
 	}
 }

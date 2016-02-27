@@ -135,7 +135,7 @@ public class PacketHandler{
 	}
 
 
-	public static void processPacket(Player c, int packetType, int packetSize) {	
+	public static void processPacket(Player player, int packetType, int packetSize) {	
 		if(packetType == -1) {
 			return;
 		}
@@ -143,7 +143,7 @@ public class PacketHandler{
 		if(p != null) {
 			try {
 				//System.out.println("packet: " + packetType);
-				p.processPacket(c, packetType, packetSize);
+				p.processPacket(player, packetType, packetSize);
 			} catch(Exception e) {
 					e.printStackTrace();
 			}

@@ -11,21 +11,21 @@ import server.world.sound.Music;
 public class ChangeRegions implements PacketType {
 
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
+	public void processPacket(Player player, int packetType, int packetSize) {
 		//Server.objectHandler.updateObjects(c);
-		Server.itemHandler.reloadItems(c);
-		Server.objectManager.loadObjects(c);
-		c.getPA().castleWarsObjects();
-		Music.playMusic(c);
+		Server.itemHandler.reloadItems(player);
+		Server.objectManager.loadObjects(player);
+		player.getPA().castleWarsObjects();
+		Music.playMusic(player);
 		
-		c.saveFile = true;
+		player.saveFile = true;
 		
-		if(c.skullTimer > 0) {
-			c.isSkulled = true;	
-			c.headIconPk = 0;
-			c.getPA().requestUpdates();
+		if(player.skullTimer > 0) {
+			player.isSkulled = true;	
+			player.headIconPk = 0;
+			player.getPA().requestUpdates();
 		}
-		c.toleranceTimer = System.currentTimeMillis();
+		player.toleranceTimer = System.currentTimeMillis();
 	}
 		
 }

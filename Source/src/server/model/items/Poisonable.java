@@ -27,8 +27,8 @@ public class Poisonable {
 		return null;
 	}
 
-	private static boolean isPoisionable(Player c, int wep) {
-		String wepName = c.getItems().getItemName(wep);
+	private static boolean isPoisionable(Player player, int wep) {
+		String wepName = player.getItems().getItemName(wep);
 		for (int i = 0; i < poisionData.length; i++) {
 			if (wepName.toLowerCase().contains(poisionData[i][0])) {
 				return true;
@@ -37,26 +37,26 @@ public class Poisonable {
 		return false;
 	}
 
-	public static boolean useItemonItem(Player c, int id, int id2) {
+	public static boolean useItemonItem(Player player, int id, int id2) {
 		String wep = null;
 		String poisionPrefix = null;
 		int amount = 5;
 		int toPoision = 0;
 		int poisionVial = 0;
 
-		if (isPoisionable(c,id)) {
-			wep = c.getItems().getItemName(id);
+		if (isPoisionable(player,id)) {
+			wep = player.getItems().getItemName(id);
 			poisionPrefix = getPoisionPrefix(id2);
-			if (!c.getItems().isStackable(id)) {
+			if (!player.getItems().isStackable(id)) {
 				amount = 1;
 			}
 			poisionVial = id2;
 			toPoision = id;
 		}
-		if (isPoisionable(c,id2)) {
-			wep = c.getItems().getItemName(id);
+		if (isPoisionable(player,id2)) {
+			wep = player.getItems().getItemName(id);
 			poisionPrefix = getPoisionPrefix(id);
-			if (!c.getItems().isStackable(id2)) {
+			if (!player.getItems().isStackable(id2)) {
 				amount = 1;
 			}
 			poisionVial = id;
@@ -67,20 +67,20 @@ public class Poisonable {
 		}
 		if (wep.toLowerCase().contains("(p++)") || wep.toLowerCase().contains("(p+)")
 				|| wep.toLowerCase().contains("(p)")) {
-			c.sendMessage("This weapon has already been poisoned.");
+			player.getActionSender().sendMessage("This weapon has already been poisoned.");
 			return false;
 		}
-		if (c.getItems().getItemAmount(toPoision) < amount) {
-			amount = c.getItems().getItemAmount(toPoision);
+		if (player.getItems().getItemAmount(toPoision) < amount) {
+			amount = player.getItems().getItemAmount(toPoision);
 		}
 
-		int itemToAdd = c.getItems().getItemId(wep + poisionPrefix);
+		int itemToAdd = player.getItems().getItemId(wep + poisionPrefix);
 
-		c.getItems().deleteItem(toPoision, amount);
-		c.getItems().deleteItem(poisionVial, 1);
-		c.getItems().addItem(itemToAdd, amount);
-		c.getItems().addItem(229, 1);
-		c.sendMessage("You drop the poison over the weapon.");
+		player.getItems().deleteItem(toPoision, amount);
+		player.getItems().deleteItem(poisionVial, 1);
+		player.getItems().addItem(itemToAdd, amount);
+		player.getItems().addItem(229, 1);
+		player.getActionSender().sendMessage("You drop the poison over the weapon.");
 		return true;
 	}
 

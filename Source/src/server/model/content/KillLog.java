@@ -79,10 +79,10 @@ public class KillLog {
 //			else if (name.contains("King black"))
 //				name = "KBD";
 			name.replace("_", " ");
-			player.sendMessage("You now have @dre@" + player.loggedKills[index]
+			player.getActionSender().sendMessage("You now have @dre@" + player.loggedKills[index]
 					+ "@bla@ " + name + " kills.");
 			if (shouldNotify(player.loggedKills[index])) {
-				player.sendMessage("@grd@" + player.playerName + " has achieved " + player.loggedKills[index] + " " + name + " kills!");
+				player.getActionSender().sendMessage("@grd@" + player.playerName + " has achieved " + player.loggedKills[index] + " " + name + " kills!");
 				player.addPoints(10);
 //				FileLog.writeLatestAchievment(player.playerName
 //						+ " has achieved " + player.loggedKills[index] + " "

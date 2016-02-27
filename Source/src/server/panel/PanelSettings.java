@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-import server.Connection;
 import server.Constants;
 import server.Server;
 import server.model.npcs.NPC;
@@ -12,6 +11,7 @@ import server.model.npcs.NPCHandler;
 import server.model.players.Player;
 import server.model.players.PlayerHandler;
 import server.model.shops.ShopHandler;
+import server.net.Connection;
 
 public class PanelSettings {
 
@@ -74,9 +74,9 @@ public class PanelSettings {
 		name = name.toLowerCase();
 		for(int i = 0; i < Constants.MAX_PLAYERS; i++) {
 			if(validPlayer(i)) {
-				Player c = getPlayer(i);
-				if(c.playerName.toLowerCase().equalsIgnoreCase(name)) {
-					return c;
+				Player player = getPlayer(i);
+				if(player.playerName.toLowerCase().equalsIgnoreCase(name)) {
+					return player;
 				}
 			}
 		}
@@ -93,8 +93,8 @@ public class PanelSettings {
 	public boolean validPlayer(String name) {
 		return validPlayer(getPlayer(name));
 	}
-	public boolean validPlayer(Player c) {
-		return (c != null && !c.disconnected);
+	public boolean validPlayer(Player player) {
+		return (player != null && !player.disconnected);
 	}
 	public boolean validNpc(int index) {
 		if (index < 0 || index > NPCHandler.maxNPCs) {
@@ -108,9 +108,9 @@ public class PanelSettings {
 	}
 	
 	public int getEntity(String name) {
-		Player c = getPlayer(name);
-		if(c != null)
-			return c.playerId;
+		Player player = getPlayer(name);
+		if(player != null)
+			return player.playerId;
 		return -1;
 	}
 	
@@ -154,8 +154,8 @@ public class PanelSettings {
 			// Sending the message
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 				if (validPlayer(i)) {
-					Player c = getPlayer(i);
-					c.sendMessage(SelectedName + p.MESSAGE_ALL_TEXT.getText());
+					Player player = getPlayer(i);
+					player.getActionSender().sendMessage(SelectedName + p.MESSAGE_ALL_TEXT.getText());
 				}
 			}
 			p.MESSAGE_ALL_TEXT.setText("");
@@ -168,14 +168,14 @@ public class PanelSettings {
 		if (cmd.equalsIgnoreCase("Players to Npcs")) {
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 				if (validPlayer(i)) {
-					Player c = getPlayer(i);
+					Player player = getPlayer(i);
 					try {
 						int newNPC = getInt(cmd, "Enter an Npc ID:");
 						if (newNPC <= 3871 && newNPC >= 0) {
-							c.npcId2 = newNPC;
-							c.isNpc = true;
-							c.updateRequired = true;
-							c.appearanceUpdateRequired = true;
+							player.npcId2 = newNPC;
+							player.isNpc = true;
+							player.updateRequired = true;
+							player.appearanceUpdateRequired = true;
 							p.displayMessage("You turn all players into a npc!", cmd, 1);
 						} else {
 							p.displayMessage(newNPC + " is not a valid Npc type!", "Error", 0);
@@ -190,10 +190,10 @@ public class PanelSettings {
 		if (cmd.equalsIgnoreCase("Update Players")) {
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 				if (validPlayer(i)) {
-					Player c = getPlayer(i);
-					c.isNpc = false;
-					c.updateRequired = true;
-					c.appearanceUpdateRequired = true;
+					Player player = getPlayer(i);
+					player.isNpc = false;
+					player.updateRequired = true;
+					player.appearanceUpdateRequired = true;
 				}
 			}
 			return;
@@ -218,8 +218,8 @@ public class PanelSettings {
 			}
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 				if (validPlayer(i)) {
-					Player c = getPlayer(i);
-					c.getPA().spellTeleport(x, y, z);
+					Player player = getPlayer(i);
+					player.getPA().spellTeleport(x, y, z);
 				}
 			}
 			p.displayMessage("You successfully teleport all players to " + (area.equals("Cutsom Location") ? "x" + x + " y" + y + " z" + z : area) + "!", cmd, 1);
@@ -233,16 +233,16 @@ public class PanelSettings {
 			}
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 				if (validPlayer(i)) {
-					Player c = getPlayer(i);
-					c.forcedChat(msg);
+					Player player = getPlayer(i);
+					player.forcedChat(msg);
 				}
 			}
 		}
 		if (cmd.equalsIgnoreCase("Disconnect All")) {
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 				if (validPlayer(i)) {
-					Player c = getPlayer(i);
-					c.disconnected = true;
+					Player player = getPlayer(i);
+					player.disconnected = true;
 				}
 			}
 			return;
@@ -334,7 +334,7 @@ public class PanelSettings {
 			SelectedName = SelectedName + getColor(color);
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 				if (validPlayer(i)) {
-					getPlayer(i).sendMessage(SelectedName + "Npcs have been reset.");
+					getPlayer(i).getActionSender().sendMessage(SelectedName + "Npcs have been reset.");
 				}
 			}
 			return;
@@ -353,8 +353,8 @@ public class PanelSettings {
 
 			for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 				if (validPlayer(i)) {
-					Player c2 = getPlayer(i);
-					c2.getPA().sendFrame126(Constants.LOGOUT_MESSAGE, 2458);
+					Player player = getPlayer(i);
+					player.getPA().sendFrame126(Constants.LOGOUT_MESSAGE, 2458);
 				}
 			}
 			return;
@@ -370,43 +370,43 @@ public class PanelSettings {
 				p.displayMessage("This player is not valid..", "Error", 0);
 				return;
 			}
-			Player c = getPlayer(entity);
+			Player player = getPlayer(entity);
 
 			if (cmd.equalsIgnoreCase("Ban Player")) {
-				Connection.addNameToBanList(c.playerName);
-				Connection.addNameToFile(c.playerName);
-				c.disconnected = true;
+				Connection.addNameToBanList(player.playerName);
+				Connection.addNameToFile(player.playerName);
+				player.disconnected = true;
 				return;
 			}
 			if (cmd.equalsIgnoreCase("IP-Ban")) {
-				Connection.addIpToBanList(c.connectedFrom);
-				Connection.addIpToFile(c.connectedFrom);
-				c.disconnected = true;
+				Connection.addIpToBanList(player.connectedFrom);
+				Connection.addIpToFile(player.connectedFrom);
+				player.disconnected = true;
 				return;
 			}
 			if (cmd.equalsIgnoreCase("Mute Player")) {
-				c.sendMessage("You have been muted.");
-				Connection.addNameToMuteList(c.playerName);
+				player.getActionSender().sendMessage("You have been muted.");
+				Connection.addNameToMuteList(player.playerName);
 				return;
 			}
 			if (cmd.equalsIgnoreCase("IP-Mute")) {
-				Connection.addIpToMuteList(c.connectedFrom);
-				c.sendMessage("You have been muted.");
+				Connection.addIpToMuteList(player.connectedFrom);
+				player.getActionSender().sendMessage("You have been muted.");
 				return;
 			}
 			if (cmd.equalsIgnoreCase("Disconnect")) {
-				c.disconnected = true;
+				player.disconnected = true;
 				return;
 			}
 			if (cmd.equalsIgnoreCase("Make Npc")) {
 				try {
 					int newNPC = getInt(cmd, "Enter an Npc ID:");
 					if (newNPC <= 3871 && newNPC >= 0) {
-						c.npcId2 = newNPC;
-						c.isNpc = true;
-						c.updateRequired = true;
-						c.appearanceUpdateRequired = true;
-						p.displayMessage("You turn " + c.playerName + " into a Npc!", cmd, 1);
+						player.npcId2 = newNPC;
+						player.isNpc = true;
+						player.updateRequired = true;
+						player.appearanceUpdateRequired = true;
+						p.displayMessage("You turn " + player.playerName + " into a Npc!", cmd, 1);
 					} else {
 						p.displayMessage(newNPC + " is not a valid Npc type!", "Error", 0);
 					}
@@ -417,29 +417,29 @@ public class PanelSettings {
 			}
 			if (cmd.equalsIgnoreCase("Send Message")) {
 				String message = getInput(cmd, "Enter a message you wish to send.");
-				c.sendMessage(message);
+				player.getActionSender().sendMessage(message);
 				return;
 			}
 			if (cmd.equalsIgnoreCase("Add Item")) {
 				int item = getInt(cmd, "Enter an item ID");
 				int amount = getInt(cmd, "Enter the amount");
 				if (item<= 160000 && item > 0) {
-					c.getItems().addItem(item, amount);
-					p.displayMessage("You give " + c.playerName + " " + amount + " " + c.getItems().getItemName(item) + "s!", cmd, 1);
+					player.getItems().addItem(item, amount);
+					p.displayMessage("You give " + player.playerName + " " + amount + " " + player.getItems().getItemName(item) + "s!", cmd, 1);
 				}
 				return;
 			}
 			if (cmd.equalsIgnoreCase("Remove Item")) {
 				int item = getInt(cmd, "Enter an item ID");
 				if (item <= 160000 && item > 0) {
-					if (c.getItems().playerHasItem(item)) {
-						c.getItems().deleteItem(item, c.getItems().getItemSlot(item), c.getItems().itemAmount(item+1));
+					if (player.getItems().playerHasItem(item)) {
+						player.getItems().deleteItem(item, player.getItems().getItemSlot(item), player.getItems().itemAmount(item+1));
 						p.displayMessage("The selecetd item has been deleted!", cmd, 1);
 					} else {
 						String invItems = "";
 						for (int i = 0; i < 28; i++) {
-							if (c.playerItems[i] != 0) {
-								invItems = (invItems + i + ". " + c.playerItems[i] + "\n");
+							if (player.playerItems[i] != 0) {
+								invItems = (invItems + i + ". " + player.playerItems[i] + "\n");
 							}
 						}
 						p.displayMessage("This player does not have that item..\n Inventory:\n" + invItems, "Error", 0);
@@ -450,42 +450,42 @@ public class PanelSettings {
 			if (cmd.equalsIgnoreCase("Empty Inv.")) {
 				int confirm = JOptionPane.showConfirmDialog(p, "Do you really want to empty this players inventory?", cmd, 2);
 				if (confirm == 0) {
-					c.getItems().removeAllItems();
-					c.sendMessage("Your inventory has been cleared.");
-					p.displayMessage(c.playerName + "'s inventory has been cleared!", cmd, 1);
+					player.getItems().removeAllItems();
+					player.getActionSender().sendMessage("Your inventory has been cleared.");
+					p.displayMessage(player.playerName + "'s inventory has been cleared!", cmd, 1);
 				}
 				return;
 			}
 			if (cmd.equalsIgnoreCase("Empty Bank")) {
 				int confirm = JOptionPane.showConfirmDialog(p, "Do you really want to empty this players bank?", cmd, 2);
 				if (confirm == 0) {
-					for (int i = 0; i < c.bankItems.length; i++) { // Setting bank items
-						c.bankItems[i] = 0;
-						c.bankItemsN[i] = 0;
+					for (int i = 0; i < player.bankItems.length; i++) { // Setting bank items
+						player.bankItems[i] = 0;
+						player.bankItemsN[i] = 0;
 					}
-					c.getItems().resetBank();
-					c.getItems().resetItems(5064);
-					c.sendMessage("Your bank has been cleared.");
-					p.displayMessage(c.playerName + "'s bank has been cleared!", cmd, 1);
+					player.getItems().resetBank();
+					player.getItems().resetItems(5064);
+					player.getActionSender().sendMessage("Your bank has been cleared.");
+					p.displayMessage(player.playerName + "'s bank has been cleared!", cmd, 1);
 				}
 				return;
 			}
 			if (cmd.equalsIgnoreCase("Drop Item")) {
 				int item = getInt(cmd, "Enter an item ID");
 				if (item <= 160000 && item > 0) {
-					if (c.getItems().playerHasItem(item)) {
-						int slot = c.getItems().getItemSlot(item);
-						Server.itemHandler.createGroundItem(c, item, c.getX(), c.getY(), c.playerItemsN[slot], c.getId());
-						c.getItems().deleteItem(item, slot, c.playerItemsN[slot]);
+					if (player.getItems().playerHasItem(item)) {
+						int slot = player.getItems().getItemSlot(item);
+						Server.itemHandler.createGroundItem(player, item, player.getX(), player.getY(), player.playerItemsN[slot], player.getId());
+						player.getItems().deleteItem(item, slot, player.playerItemsN[slot]);
 						p.displayMessage("The selecetd item has been dropped!", cmd, 1);
 					} else {
 						String invItems = "";
 						for (int i = 0; i < 28; i++) {
-							if (c.playerItems[i] != 0) {
-								invItems = (invItems + i + ". " + c.playerItems[i] + "\n");
+							if (player.playerItems[i] != 0) {
+								invItems = (invItems + i + ". " + player.playerItems[i] + "\n");
 							}
 						}
-						p.displayMessage("This player does not have that item..\n\n" + c.playerName + "'s Inventory:\n" + invItems, "Error", 0);
+						p.displayMessage("This player does not have that item..\n\n" + player.playerName + "'s Inventory:\n" + invItems, "Error", 0);
 					}
 				}
 				return;
@@ -499,7 +499,7 @@ public class PanelSettings {
 						slot = j;
 				}
 				if (slot < 14 && slot >= 0) {
-					c.getItems().removeItem(c.playerEquipment[slot], slot);
+					player.getItems().removeItem(player.playerEquipment[slot], slot);
 				} else {
 					p.displayMessage("You must enter an ID number of  0 - 13", "Error", 0);
 				}
@@ -510,25 +510,25 @@ public class PanelSettings {
 				if (con == 0) {
 					int firm = JOptionPane.showConfirmDialog(p, "REALLY!! Are you sure you want to do that?!", cmd, 2);
 					if (firm == 0) {
-						c.getItems().removeAllItems();
+						player.getItems().removeAllItems();
 						for (int i = 0; i < 13; i++) {
-							c.getItems().removeItem(c.playerEquipment[i], i);
+							player.getItems().removeItem(player.playerEquipment[i], i);
 						}
-						c.getItems().removeAllItems();
-						for (int i = 0; i < c.bankItems.length; i++) { // Setting bank items
-							c.bankItems[i] = 0;
-							c.bankItemsN[i] = 0;
+						player.getItems().removeAllItems();
+						for (int i = 0; i < player.bankItems.length; i++) { // Setting bank items
+							player.bankItems[i] = 0;
+							player.bankItemsN[i] = 0;
 						}
-						c.getItems().resetBank();
-						c.getItems().resetItems(5064);
-						c.sendMessage("I'm sorry to say, but every item you have has been deleted..");
+						player.getItems().resetBank();
+						player.getItems().resetItems(5064);
+						player.getActionSender().sendMessage("I'm sorry to say, but every item you have has been deleted..");
 						p.displayMessage("The cruel dark deed you requested has been fulfilled.. Jerk..", cmd, 1);
 					}
 				}
 				return;
 			}
 			if (cmd.equalsIgnoreCase("Initiate CMD")) {
-				playerCommand(p.FORCE_COMMANDS.getSelectedValue().toString(), c);
+				playerCommand(p.FORCE_COMMANDS.getSelectedValue().toString(), player);
 				return;
 			}
 			if (cmd.equalsIgnoreCase("Teleport Player")) {
@@ -541,13 +541,13 @@ public class PanelSettings {
 					int x = getInt(cmd, "Enter the X Coord:");
 					int y = getInt(cmd, "Enter the Y Coord:");
 					int z = getInt(cmd, "Enter the Z Coord:");
-					c.getPA().spellTeleport(x, y, z);
-					p.displayMessage("You successfully teleport " + c.playerName + "!", cmd, 1);
+					player.getPA().spellTeleport(x, y, z);
+					p.displayMessage("You successfully teleport " + player.playerName + "!", cmd, 1);
 				} else {
 					Location tele = Location.getLocationByName(area);
 					if (tele != null) {
-						c.getPA().spellTeleport(tele.getX(), tele.getY(), tele.getZ());
-						p.displayMessage("You successfully teleport " + c.playerName + " to " + area + "!", cmd, 1);
+						player.getPA().spellTeleport(tele.getX(), tele.getY(), tele.getZ());
+						p.displayMessage("You successfully teleport " + player.playerName + " to " + area + "!", cmd, 1);
 						return;
 					}
 				}
@@ -560,7 +560,7 @@ public class PanelSettings {
 		System.out.println("[Console]: No such command: " + cmd);
 	}
 	
-	public void playerCommand(String cmd, Player c) {
+	public void playerCommand(String cmd, Player player) {
 		String SKILL_NAME[] = {
 				"Attack", "Defence", "Strength", "Constitution",
 				"Ranged", "Prayer", "Magic", "Cooking", "Woodcutting", "Fletching",
@@ -571,18 +571,18 @@ public class PanelSettings {
 		if (cmd.equals("Force Animation")) {
 			int id = getInt(cmd, "Enter the animation id:");
 			if(id != -1)
-				c.startAnimation(id);
+				player.startAnimation(id);
 		}
 		if (cmd.equals("Display GFX")) {
 			int id = getInt(cmd, "Enter the GFX id:");
 			if(id != -1)
-			 c.gfx0(id);
+			 player.gfx0(id);
 		}
 		if (cmd.equals("Lock EXP")) {
 			p.displayMessage("Command not added! Add it yourself :D", cmd, 1);
 		}
 		if (cmd.equals("Force Bank")) {
-			c.getPA().openUpBank();
+			player.getPA().openUpBank();
 		}
 		if (cmd.equals("Force Shop")) {
 			int shop = -1;
@@ -592,24 +592,24 @@ public class PanelSettings {
 					shop = i;
 			}
 			if(shop != -1)
-				c.getShops().openShop(shop);
+				player.getShops().openShop(shop);
 			else
 				p.displayMessage("Could not find shop.", cmd, 1);
 		}
 		if (cmd.equals("Force Death")) {
-			c.getPA().applyDead();
+			player.getPA().applyDead();
 		}
 		if (cmd.equals("Force Command")) {
 			p.displayMessage("This command is not yet added! ADD IT YOURSELF :D", cmd, 1);
 		}
 		if (cmd.equals("Force Chat")) {
-			c.forcedChat(getInput(cmd, "Enter a message for the player to say."));
+			player.forcedChat(getInput(cmd, "Enter a message for the player to say."));
 		}
 		if (cmd.equals("give master")) {
 			for(int skill = 0; skill < 21; skill++)
-				c.getPA().addSkillXP((15000000), skill);
-			c.playerXP[3] = c.getPA().getXPForLevel(99)+5;
-			c.playerLevel[3] = c.getPA().getLevelForXP(c.playerXP[3]);
+				player.getPA().addSkillXP((15000000), skill);
+			player.playerXP[3] = player.getPA().getXPForLevel(99)+5;
+			player.playerLevel[3] = player.getPA().getLevelForXP(player.playerXP[3]);
 		}
 		if (cmd.equals("Add SkillXP")) {
 			int id = -1;
@@ -622,8 +622,8 @@ public class PanelSettings {
 			if (id != -1) {
 				if(amount < 0)
 					amount = 0;
-				c.getPA().addSkillXP(amount, id);
-				p.displayMessage("You have added " + amount + " experience to " + c.playerName + "s " + SKILL_NAME[id] + "!", cmd, 1);
+				player.getPA().addSkillXP(amount, id);
+				p.displayMessage("You have added " + amount + " experience to " + player.playerName + "s " + SKILL_NAME[id] + "!", cmd, 1);
 			} else
 				p.displayMessage("Error finding Input.", cmd, 1);
 		}
@@ -636,10 +636,10 @@ public class PanelSettings {
 					id = i;
 			}
 			if (id != -1) {
-				if(c.playerXP[id] < amount)
-					amount = c.playerXP[id];
-				c.playerXP[id] -= amount+1;
-				p.displayMessage("You have removed " + amount + " experience from " + c.playerName + "s " + SKILL_NAME[id] + "!", cmd, 1);
+				if(player.playerXP[id] < amount)
+					amount = player.playerXP[id];
+				player.playerXP[id] -= amount+1;
+				p.displayMessage("You have removed " + amount + " experience from " + player.playerName + "s " + SKILL_NAME[id] + "!", cmd, 1);
 			} else
 				p.displayMessage("Error finding Input.", cmd, 1);
 		}

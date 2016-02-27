@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public enum Pests 
 {
-	//TODO Get npc ids/statistics
+	//TODO Get npc data
 	VOID_KNIGHT(50, 90, 19, 200, 200, false, true),
 	BLUE_PORTAL(50, 90, 19, 200, 200, false, false),
 	RED_PORAL(50, 90, 19, 200, 200, false, false),

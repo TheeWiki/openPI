@@ -11,10 +11,10 @@ import server.util.Misc;
 
 public class TradeAndDuel {
 
-	private Player c;
+	private Player player;
 
 	public TradeAndDuel(Player Player) {
-		this.c = Player;
+		this.player = Player;
 	}
 
 	/**
@@ -33,17 +33,17 @@ public class TradeAndDuel {
 		try {
 			@SuppressWarnings("static-access")
 			Player o = (Player) Server.playerHandler.players[id];
-			if (id == c.playerId)
+			if (id == player.playerId)
 				return;
-			c.tradeWith = id;
-			if (!c.inTrade && o.tradeRequested && o.tradeWith == c.playerId) {
-				c.getTradeAndDuel().openTrade();
+			player.tradeWith = id;
+			if (!player.inTrade && o.tradeRequested && o.tradeWith == player.playerId) {
+				player.getTradeAndDuel().openTrade();
 				o.getTradeAndDuel().openTrade();
-			} else if (!c.inTrade) {
+			} else if (!player.inTrade) {
 
-				c.tradeRequested = true;
-				c.sendMessage("Sending trade request...");
-				o.sendMessage(c.playerName + ":tradereq:");
+				player.tradeRequested = true;
+				player.getActionSender().sendMessage("Sending trade request...");
+				o.getActionSender().sendMessage(player.playerName + ":tradereq:");
 			}
 		} catch (Exception e) {
 			Misc.println("Error requesting trade.");
@@ -52,16 +52,16 @@ public class TradeAndDuel {
 
 	public void openTrade() {
 		@SuppressWarnings("static-access")
-		Player o = (Player) Server.playerHandler.players[c.tradeWith];
+		Player o = (Player) Server.playerHandler.players[player.tradeWith];
 
 		if (o == null) {
 			return;
 		}
-		c.inTrade = true;
-		c.canOffer = true;
-		c.tradeStatus = 1;
-		c.tradeRequested = false;
-		c.getItems().resetItems(3322);
+		player.inTrade = true;
+		player.canOffer = true;
+		player.tradeStatus = 1;
+		player.tradeRequested = false;
+		player.getItems().resetItems(3322);
 		resetTItems(3415);
 		resetOTItems(3416);
 		String out = o.playerName;
@@ -71,53 +71,53 @@ public class TradeAndDuel {
 		} else if (o.playerRights == 2) {
 			out = "@cr2@" + out;
 		}
-		c.getPA().sendFrame126(
+		player.getPA().sendFrame126(
 				"Trading with: " + o.playerName + " who has @gre@" + o.getItems().freeSlots() + " free slots", 3417);
-		c.getPA().sendFrame126("", 3431);
-		c.getPA().sendFrame126("Are you sure you want to make this trade?", 3535);
-		c.getPA().sendFrame248(3323, 3321);
+		player.getPA().sendFrame126("", 3431);
+		player.getPA().sendFrame126("Are you sure you want to make this trade?", 3535);
+		player.getPA().sendFrame248(3323, 3321);
 	}
 
 	public void resetTItems(int WriteFrame) {
-		synchronized (c) {
-			c.getOutStream().createFrameVarSizeWord(53);
-			c.getOutStream().writeWord(WriteFrame);
+		synchronized (player) {
+			player.getOutStream().createFrameVarSizeWord(53);
+			player.getOutStream().writeWord(WriteFrame);
 			int len = offeredItems.toArray().length;
 			int current = 0;
-			c.getOutStream().writeWord(len);
+			player.getOutStream().writeWord(len);
 			for (GameItem item : offeredItems) {
 				if (item.amount > 254) {
-					c.getOutStream().writeByte(255);
-					c.getOutStream().writeDWord_v2(item.amount);
+					player.getOutStream().writeByte(255);
+					player.getOutStream().writeDWord_v2(item.amount);
 				} else {
-					c.getOutStream().writeByte(item.amount);
+					player.getOutStream().writeByte(item.amount);
 				}
-				c.getOutStream().writeWordBigEndianA(item.id + 1);
+				player.getOutStream().writeWordBigEndianA(item.id + 1);
 				current++;
 			}
 			if (current < 27) {
 				for (int i = current; i < 28; i++) {
-					c.getOutStream().writeByte(1);
-					c.getOutStream().writeWordBigEndianA(-1);
+					player.getOutStream().writeByte(1);
+					player.getOutStream().writeWordBigEndianA(-1);
 				}
 			}
-			c.getOutStream().endFrameVarSizeWord();
-			c.flushOutStream();
+			player.getOutStream().endFrameVarSizeWord();
+			player.flushOutStream();
 		}
 	}
 
 	public boolean fromTrade(int itemID, int fromSlot, int amount) {
 		@SuppressWarnings("static-access")
-		Player o = (Player) Server.playerHandler.players[c.tradeWith];
+		Player o = (Player) Server.playerHandler.players[player.tradeWith];
 		if (o == null) {
 			return false;
 		}
 		try {
-			if (!c.inTrade || !c.canOffer) {
+			if (!player.inTrade || !player.canOffer) {
 				declineTrade();
 				return false;
 			}
-			c.tradeConfirmed = false;
+			player.tradeConfirmed = false;
 			o.tradeConfirmed = false;
 			if (!Item.itemStackable[itemID]) {
 				for (int a = 0; a < amount; a++) {
@@ -125,33 +125,33 @@ public class TradeAndDuel {
 						if (item.id == itemID) {
 							if (!item.stackable) {
 								offeredItems.remove(item);
-								c.getItems().addItem(itemID, 1);
-								o.getPA().sendFrame126("Trading with: " + c.playerName + " who has @gre@"
-										+ c.getItems().freeSlots() + " free slots", 3417);
+								player.getItems().addItem(itemID, 1);
+								o.getPA().sendFrame126("Trading with: " + player.playerName + " who has @gre@"
+										+ player.getItems().freeSlots() + " free slots", 3417);
 							} else {
 								if (item.amount > amount) {
 									item.amount -= amount;
-									c.getItems().addItem(itemID, amount);
-									o.getPA().sendFrame126("Trading with: " + c.playerName + " who has @gre@"
-											+ c.getItems().freeSlots() + " free slots", 3417);
+									player.getItems().addItem(itemID, amount);
+									o.getPA().sendFrame126("Trading with: " + player.playerName + " who has @gre@"
+											+ player.getItems().freeSlots() + " free slots", 3417);
 								} else {
 									amount = item.amount;
 									offeredItems.remove(item);
-									c.getItems().addItem(itemID, amount);
-									o.getPA().sendFrame126("Trading with: " + c.playerName + " who has @gre@"
-											+ c.getItems().freeSlots() + " free slots", 3417);
+									player.getItems().addItem(itemID, amount);
+									o.getPA().sendFrame126("Trading with: " + player.playerName + " who has @gre@"
+											+ player.getItems().freeSlots() + " free slots", 3417);
 								}
 							}
 							break;
 						}
-						o.getPA().sendFrame126("Trading with: " + c.playerName + " who has @gre@"
-								+ c.getItems().freeSlots() + " free slots", 3417);
-						c.tradeConfirmed = false;
+						o.getPA().sendFrame126("Trading with: " + player.playerName + " who has @gre@"
+								+ player.getItems().freeSlots() + " free slots", 3417);
+						player.tradeConfirmed = false;
 						o.tradeConfirmed = false;
-						c.getItems().resetItems(3322);
+						player.getItems().resetItems(3322);
 						resetTItems(3415);
 						o.getTradeAndDuel().resetOTItems(3416);
-						c.getPA().sendFrame126("", 3431);
+						player.getPA().sendFrame126("", 3431);
 						o.getPA().sendFrame126("", 3431);
 					}
 				}
@@ -162,15 +162,15 @@ public class TradeAndDuel {
 					} else {
 						if (item.amount > amount) {
 							item.amount -= amount;
-							c.getItems().addItem(itemID, amount);
-							o.getPA().sendFrame126("Trading with: " + c.playerName + " who has @gre@"
-									+ c.getItems().freeSlots() + " free slots", 3417);
+							player.getItems().addItem(itemID, amount);
+							o.getPA().sendFrame126("Trading with: " + player.playerName + " who has @gre@"
+									+ player.getItems().freeSlots() + " free slots", 3417);
 						} else {
 							amount = item.amount;
 							offeredItems.remove(item);
-							c.getItems().addItem(itemID, amount);
-							o.getPA().sendFrame126("Trading with: " + c.playerName + " who has @gre@"
-									+ c.getItems().freeSlots() + " free slots", 3417);
+							player.getItems().addItem(itemID, amount);
+							o.getPA().sendFrame126("Trading with: " + player.playerName + " who has @gre@"
+									+ player.getItems().freeSlots() + " free slots", 3417);
 						}
 					}
 					break;
@@ -178,14 +178,14 @@ public class TradeAndDuel {
 			}
 
 			o.getPA().sendFrame126(
-					"Trading with: " + c.playerName + " who has @gre@" + c.getItems().freeSlots() + " free slots",
+					"Trading with: " + player.playerName + " who has @gre@" + player.getItems().freeSlots() + " free slots",
 					3417);
-			c.tradeConfirmed = false;
+			player.tradeConfirmed = false;
 			o.tradeConfirmed = false;
-			c.getItems().resetItems(3322);
+			player.getItems().resetItems(3322);
 			resetTItems(3415);
 			o.getTradeAndDuel().resetOTItems(3416);
-			c.getPA().sendFrame126("", 3431);
+			player.getPA().sendFrame126("", 3431);
 			o.getPA().sendFrame126("", 3431);
 		} catch (Exception e) {
 		}
@@ -194,39 +194,39 @@ public class TradeAndDuel {
 
 	public boolean tradeItem(int itemID, int fromSlot, int amount) {
 		@SuppressWarnings("static-access")
-		Player o = (Player) Server.playerHandler.players[c.tradeWith];
+		Player o = (Player) Server.playerHandler.players[player.tradeWith];
 		if (o == null) {
 			return false;
 		}
 
 		for (int i : Constants.ITEM_TRADEABLE) {
 			if (i == itemID) {
-				c.sendMessage("You can't trade this item.");
+				player.getActionSender().sendMessage("You can't trade this item.");
 				return false;
 			}
 		}
-		c.tradeConfirmed = false;
+		player.tradeConfirmed = false;
 		o.tradeConfirmed = false;
 		if (!Item.itemStackable[itemID] && !Item.itemIsNote[itemID]) {
 			for (int a = 0; a < amount; a++) {
-				if (c.getItems().playerHasItem(itemID, 1)) {
+				if (player.getItems().playerHasItem(itemID, 1)) {
 					offeredItems.add(new GameItem(itemID, 1));
-					c.getItems().deleteItem(itemID, c.getItems().getItemSlot(itemID), 1);
-					o.getPA().sendFrame126("Trading with: " + c.playerName + " who has @gre@" + c.getItems().freeSlots()
+					player.getItems().deleteItem(itemID, player.getItems().getItemSlot(itemID), 1);
+					o.getPA().sendFrame126("Trading with: " + player.playerName + " who has @gre@" + player.getItems().freeSlots()
 							+ " free slots", 3417);
 				}
 			}
 			o.getPA().sendFrame126(
-					"Trading with: " + c.playerName + " who has @gre@" + c.getItems().freeSlots() + " free slots",
+					"Trading with: " + player.playerName + " who has @gre@" + player.getItems().freeSlots() + " free slots",
 					3417);
-			c.getItems().resetItems(3322);
+			player.getItems().resetItems(3322);
 			resetTItems(3415);
 			o.getTradeAndDuel().resetOTItems(3416);
-			c.getPA().sendFrame126("", 3431);
+			player.getPA().sendFrame126("", 3431);
 			o.getPA().sendFrame126("", 3431);
 		}
 
-		if (!c.inTrade || !c.canOffer) {
+		if (!player.inTrade || !player.canOffer) {
 			declineTrade();
 			return false;
 		}
@@ -237,8 +237,8 @@ public class TradeAndDuel {
 				if (item.id == itemID) {
 					inTrade = true;
 					item.amount += amount;
-					c.getItems().deleteItem(itemID, c.getItems().getItemSlot(itemID), amount);
-					o.getPA().sendFrame126("Trading with: " + c.playerName + " who has @gre@" + c.getItems().freeSlots()
+					player.getItems().deleteItem(itemID, player.getItems().getItemSlot(itemID), amount);
+					o.getPA().sendFrame126("Trading with: " + player.playerName + " who has @gre@" + player.getItems().freeSlots()
 							+ " free slots", 3417);
 					break;
 				}
@@ -246,51 +246,51 @@ public class TradeAndDuel {
 
 			if (!inTrade) {
 				offeredItems.add(new GameItem(itemID, amount));
-				c.getItems().deleteItem(itemID, fromSlot, amount);
+				player.getItems().deleteItem(itemID, fromSlot, amount);
 				o.getPA().sendFrame126(
-						"Trading with: " + c.playerName + " who has @gre@" + c.getItems().freeSlots() + " free slots",
+						"Trading with: " + player.playerName + " who has @gre@" + player.getItems().freeSlots() + " free slots",
 						3417);
 			}
 		}
 		o.getPA().sendFrame126(
-				"Trading with: " + c.playerName + " who has @gre@" + c.getItems().freeSlots() + " free slots", 3417);
-		c.getItems().resetItems(3322);
+				"Trading with: " + player.playerName + " who has @gre@" + player.getItems().freeSlots() + " free slots", 3417);
+		player.getItems().resetItems(3322);
 		resetTItems(3415);
 		o.getTradeAndDuel().resetOTItems(3416);
-		c.getPA().sendFrame126("", 3431);
+		player.getPA().sendFrame126("", 3431);
 		o.getPA().sendFrame126("", 3431);
 		return true;
 	}
 
 	public void resetTrade() {
 		offeredItems.clear();
-		c.inTrade = false;
-		c.tradeWith = 0;
-		c.canOffer = true;
-		c.tradeConfirmed = false;
-		c.tradeConfirmed2 = false;
-		c.acceptedTrade = false;
-		c.getPA().removeAllWindows();
-		c.tradeResetNeeded = false;
-		c.getPA().sendFrame126("Are you sure you want to make this trade?", 3535);
+		player.inTrade = false;
+		player.tradeWith = 0;
+		player.canOffer = true;
+		player.tradeConfirmed = false;
+		player.tradeConfirmed2 = false;
+		player.acceptedTrade = false;
+		player.getPA().removeAllWindows();
+		player.tradeResetNeeded = false;
+		player.getPA().sendFrame126("Are you sure you want to make this trade?", 3535);
 	}
 
 	public void declineTrade() {
-		c.tradeStatus = 0;
+		player.tradeStatus = 0;
 		declineTrade(true);
 	}
 
 	public void declineTrade(boolean tellOther) {
-		c.getPA().removeAllWindows();
+		player.getPA().removeAllWindows();
 		@SuppressWarnings("static-access")
-		Player o = (Player) Server.playerHandler.players[c.tradeWith];
+		Player o = (Player) Server.playerHandler.players[player.tradeWith];
 		if (o == null) {
 			return;
 		}
 
 		if (tellOther) {
 			o.getTradeAndDuel().declineTrade(false);
-			o.getTradeAndDuel().c.getPA().removeAllWindows();
+			o.getTradeAndDuel().player.getPA().removeAllWindows();
 		}
 
 		for (GameItem item : offeredItems) {
@@ -298,64 +298,64 @@ public class TradeAndDuel {
 				continue;
 			}
 			if (item.stackable) {
-				c.getItems().addItem(item.id, item.amount);
+				player.getItems().addItem(item.id, item.amount);
 			} else {
 				for (int i = 0; i < item.amount; i++) {
-					c.getItems().addItem(item.id, 1);
+					player.getItems().addItem(item.id, 1);
 				}
 			}
 		}
-		c.canOffer = true;
-		c.tradeConfirmed = false;
-		c.tradeConfirmed2 = false;
+		player.canOffer = true;
+		player.tradeConfirmed = false;
+		player.tradeConfirmed2 = false;
 		offeredItems.clear();
-		c.inTrade = false;
-		c.tradeWith = 0;
+		player.inTrade = false;
+		player.tradeWith = 0;
 	}
 
 	public void resetOTItems(int WriteFrame) {
-		synchronized (c) {
+		synchronized (player) {
 			@SuppressWarnings("static-access")
-			Player o = (Player) Server.playerHandler.players[c.tradeWith];
+			Player o = (Player) Server.playerHandler.players[player.tradeWith];
 			if (o == null) {
 				return;
 			}
-			c.getOutStream().createFrameVarSizeWord(53);
-			c.getOutStream().writeWord(WriteFrame);
+			player.getOutStream().createFrameVarSizeWord(53);
+			player.getOutStream().writeWord(WriteFrame);
 			int len = o.getTradeAndDuel().offeredItems.toArray().length;
 			int current = 0;
-			c.getOutStream().writeWord(len);
+			player.getOutStream().writeWord(len);
 			for (GameItem item : o.getTradeAndDuel().offeredItems) {
 				if (item.amount > 254) {
-					c.getOutStream().writeByte(255); // item's stack count. if
+					player.getOutStream().writeByte(255); // item's stack count. if
 														// over 254, write byte
 														// 255
-					c.getOutStream().writeDWord_v2(item.amount);
+					player.getOutStream().writeDWord_v2(item.amount);
 				} else {
-					c.getOutStream().writeByte(item.amount);
+					player.getOutStream().writeByte(item.amount);
 				}
-				c.getOutStream().writeWordBigEndianA(item.id + 1); // item id
+				player.getOutStream().writeWordBigEndianA(item.id + 1); // item id
 				current++;
 			}
 			if (current < 27) {
 				for (int i = current; i < 28; i++) {
-					c.getOutStream().writeByte(1);
-					c.getOutStream().writeWordBigEndianA(-1);
+					player.getOutStream().writeByte(1);
+					player.getOutStream().writeWordBigEndianA(-1);
 				}
 			}
-			c.getOutStream().endFrameVarSizeWord();
-			c.flushOutStream();
+			player.getOutStream().endFrameVarSizeWord();
+			player.flushOutStream();
 		}
 	}
 
 	public void confirmScreen() {
 		@SuppressWarnings("static-access")
-		Player o = (Player) Server.playerHandler.players[c.tradeWith];
+		Player o = (Player) Server.playerHandler.players[player.tradeWith];
 		if (o == null) {
 			return;
 		}
-		c.canOffer = false;
-		c.getItems().resetItems(3214);
+		player.canOffer = false;
+		player.getItems().resetItems(3214);
 		String SendTrade = "Absolutely nothing!";
 		String SendAmount = "";
 		int Count = 0;
@@ -370,9 +370,9 @@ public class TradeAndDuel {
 				}
 
 				if (Count == 0) {
-					SendTrade = c.getItems().getItemName(item.id);
+					SendTrade = player.getItems().getItemName(item.id);
 				} else {
-					SendTrade = SendTrade + "\\n" + c.getItems().getItemName(item.id);
+					SendTrade = SendTrade + "\\n" + player.getItems().getItemName(item.id);
 				}
 
 				if (item.stackable) {
@@ -382,7 +382,7 @@ public class TradeAndDuel {
 			}
 		}
 
-		c.getPA().sendFrame126(SendTrade, 3557);
+		player.getPA().sendFrame126(SendTrade, 3557);
 		SendTrade = "Absolutely nothing!";
 		SendAmount = "";
 		Count = 0;
@@ -399,9 +399,9 @@ public class TradeAndDuel {
 				// SendAmount = SendAmount;
 
 				if (Count == 0) {
-					SendTrade = c.getItems().getItemName(item.id);
+					SendTrade = player.getItems().getItemName(item.id);
 				} else {
-					SendTrade = SendTrade + "\\n" + c.getItems().getItemName(item.id);
+					SendTrade = SendTrade + "\\n" + player.getItems().getItemName(item.id);
 				}
 				if (item.stackable) {
 					SendTrade = SendTrade + " x " + SendAmount;
@@ -409,26 +409,26 @@ public class TradeAndDuel {
 				Count++;
 			}
 		}
-		c.getPA().sendFrame126(SendTrade, 3558);
+		player.getPA().sendFrame126(SendTrade, 3558);
 		// TODO: find out what 197 does eee 3213
-		c.getPA().sendFrame248(3443, 197);
+		player.getPA().sendFrame248(3443, 197);
 	}
 
 	public void giveItems() {
 		@SuppressWarnings("static-access")
-		Player o = (Player) Server.playerHandler.players[c.tradeWith];
+		Player o = (Player) Server.playerHandler.players[player.tradeWith];
 		if (o == null) {
 			return;
 		}
 		try {
 			for (GameItem item : o.getTradeAndDuel().offeredItems) {
 				if (item.id > 0) {
-					c.getItems().addItem(item.id, item.amount);
+					player.getItems().addItem(item.id, item.amount);
 				}
 			}
 
-			c.getPA().removeAllWindows();
-			c.tradeResetNeeded = true;
+			player.getPA().removeAllWindows();
+			player.tradeResetNeeded = true;
 		} catch (Exception e) {
 		}
 	}
@@ -442,29 +442,29 @@ public class TradeAndDuel {
 
 	public void requestDuel(int id) {
 		try {
-			if (id == c.playerId)
+			if (id == player.playerId)
 				return;
 			resetDuel();
 			resetDuelItems();
-			c.duelingWith = id;
+			player.duelingWith = id;
 			@SuppressWarnings("static-access")
 			Player o = (Player) Server.playerHandler.players[id];
 			if (o == null) {
 				return;
 			}
-			c.duelRequested = true;
-			if (c.duelStatus == 0 && o.duelStatus == 0 && c.duelRequested && o.duelRequested
-					&& c.duelingWith == o.getId() && o.duelingWith == c.getId()) {
-				if (c.goodDistance(c.getX(), c.getY(), o.getX(), o.getY(), 1)) {
-					c.getTradeAndDuel().openDuel();
+			player.duelRequested = true;
+			if (player.duelStatus == 0 && o.duelStatus == 0 && player.duelRequested && o.duelRequested
+					&& player.duelingWith == o.getId() && o.duelingWith == player.getId()) {
+				if (player.goodDistance(player.getX(), player.getY(), o.getX(), o.getY(), 1)) {
+					player.getTradeAndDuel().openDuel();
 					o.getTradeAndDuel().openDuel();
 				} else {
-					c.sendMessage("You need to get closer to your opponent to start the duel.");
+					player.getActionSender().sendMessage("You need to get closer to your opponent to start the duel.");
 				}
 
 			} else {
-				c.sendMessage("Sending duel request...");
-				o.sendMessage(c.playerName + ":duelreq:");
+				player.getActionSender().sendMessage("Sending duel request...");
+				o.getActionSender().sendMessage(player.playerName + ":duelreq:");
 			}
 		} catch (Exception e) {
 			Misc.println("Error requesting duel.");
@@ -473,112 +473,112 @@ public class TradeAndDuel {
 
 	public void openDuel() {
 		@SuppressWarnings("static-access")
-		Player o = (Player) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[player.duelingWith];
 		if (o == null) {
 			return;
 		}
-		c.duelStatus = 1;
+		player.duelStatus = 1;
 		refreshduelRules();
 		refreshDuelScreen();
-		c.canOffer = true;
-		for (int i = 0; i < c.playerEquipment.length; i++) {
-			sendDuelEquipment(c.playerEquipment[i], c.playerEquipmentN[i], i);
+		player.canOffer = true;
+		for (int i = 0; i < player.playerEquipment.length; i++) {
+			sendDuelEquipment(player.playerEquipment[i], player.playerEquipmentN[i], i);
 		}
-		c.getPA().sendFrame126("Dueling with: " + o.playerName + " (level-" + o.combatLevel + ")", 6671);
-		c.getPA().sendFrame126("", 6684);
-		c.getPA().sendFrame248(6575, 3321);
-		c.getItems().resetItems(3322);
+		player.getPA().sendFrame126("Dueling with: " + o.playerName + " (level-" + o.combatLevel + ")", 6671);
+		player.getPA().sendFrame126("", 6684);
+		player.getPA().sendFrame248(6575, 3321);
+		player.getItems().resetItems(3322);
 	}
 
 	public void sendDuelEquipment(int itemId, int amount, int slot) {
-		synchronized (c) {
+		synchronized (player) {
 			if (itemId != 0) {
-				c.getOutStream().createFrameVarSizeWord(34);
-				c.getOutStream().writeWord(13824);
-				c.getOutStream().writeByte(slot);
-				c.getOutStream().writeWord(itemId + 1);
+				player.getOutStream().createFrameVarSizeWord(34);
+				player.getOutStream().writeWord(13824);
+				player.getOutStream().writeByte(slot);
+				player.getOutStream().writeWord(itemId + 1);
 
 				if (amount > 254) {
-					c.getOutStream().writeByte(255);
-					c.getOutStream().writeDWord(amount);
+					player.getOutStream().writeByte(255);
+					player.getOutStream().writeDWord(amount);
 				} else {
-					c.getOutStream().writeByte(amount);
+					player.getOutStream().writeByte(amount);
 				}
-				c.getOutStream().endFrameVarSizeWord();
-				c.flushOutStream();
+				player.getOutStream().endFrameVarSizeWord();
+				player.flushOutStream();
 			}
 		}
 	}
 
 	public void refreshduelRules() {
-		for (int i = 0; i < c.duelRule.length; i++) {
-			c.duelRule[i] = false;
+		for (int i = 0; i < player.duelRule.length; i++) {
+			player.duelRule[i] = false;
 		}
-		c.getPA().sendFrame87(286, 0);
-		c.duelOption = 0;
+		player.getPA().sendFrame87(286, 0);
+		player.duelOption = 0;
 	}
 
 	public void refreshDuelScreen() {
-		synchronized (c) {
+		synchronized (player) {
 			@SuppressWarnings("static-access")
-			Player o = (Player) Server.playerHandler.players[c.duelingWith];
+			Player o = (Player) Server.playerHandler.players[player.duelingWith];
 			if (o == null) {
 				return;
 			}
-			c.getOutStream().createFrameVarSizeWord(53);
-			c.getOutStream().writeWord(6669);
-			c.getOutStream().writeWord(stakedItems.toArray().length);
+			player.getOutStream().createFrameVarSizeWord(53);
+			player.getOutStream().writeWord(6669);
+			player.getOutStream().writeWord(stakedItems.toArray().length);
 			int current = 0;
 			for (GameItem item : stakedItems) {
 				if (item.amount > 254) {
-					c.getOutStream().writeByte(255);
-					c.getOutStream().writeDWord_v2(item.amount);
+					player.getOutStream().writeByte(255);
+					player.getOutStream().writeDWord_v2(item.amount);
 				} else {
-					c.getOutStream().writeByte(item.amount);
+					player.getOutStream().writeByte(item.amount);
 				}
 				if (item.id > Constants.ITEM_LIMIT || item.id < 0) {
 					item.id = Constants.ITEM_LIMIT;
 				}
-				c.getOutStream().writeWordBigEndianA(item.id + 1);
+				player.getOutStream().writeWordBigEndianA(item.id + 1);
 
 				current++;
 			}
 
 			if (current < 27) {
 				for (int i = current; i < 28; i++) {
-					c.getOutStream().writeByte(1);
-					c.getOutStream().writeWordBigEndianA(-1);
+					player.getOutStream().writeByte(1);
+					player.getOutStream().writeWordBigEndianA(-1);
 				}
 			}
-			c.getOutStream().endFrameVarSizeWord();
-			c.flushOutStream();
+			player.getOutStream().endFrameVarSizeWord();
+			player.flushOutStream();
 
-			c.getOutStream().createFrameVarSizeWord(53);
-			c.getOutStream().writeWord(6670);
-			c.getOutStream().writeWord(o.getTradeAndDuel().stakedItems.toArray().length);
+			player.getOutStream().createFrameVarSizeWord(53);
+			player.getOutStream().writeWord(6670);
+			player.getOutStream().writeWord(o.getTradeAndDuel().stakedItems.toArray().length);
 			current = 0;
 			for (GameItem item : o.getTradeAndDuel().stakedItems) {
 				if (item.amount > 254) {
-					c.getOutStream().writeByte(255);
-					c.getOutStream().writeDWord_v2(item.amount);
+					player.getOutStream().writeByte(255);
+					player.getOutStream().writeDWord_v2(item.amount);
 				} else {
-					c.getOutStream().writeByte(item.amount);
+					player.getOutStream().writeByte(item.amount);
 				}
 				if (item.id > Constants.ITEM_LIMIT || item.id < 0) {
 					item.id = Constants.ITEM_LIMIT;
 				}
-				c.getOutStream().writeWordBigEndianA(item.id + 1);
+				player.getOutStream().writeWordBigEndianA(item.id + 1);
 				current++;
 			}
 
 			if (current < 27) {
 				for (int i = current; i < 28; i++) {
-					c.getOutStream().writeByte(1);
-					c.getOutStream().writeWordBigEndianA(-1);
+					player.getOutStream().writeByte(1);
+					player.getOutStream().writeWordBigEndianA(-1);
 				}
 			}
-			c.getOutStream().endFrameVarSizeWord();
-			c.flushOutStream();
+			player.getOutStream().endFrameVarSizeWord();
+			player.flushOutStream();
 		}
 	}
 
@@ -586,45 +586,45 @@ public class TradeAndDuel {
 
 		for (int i : Constants.ITEM_TRADEABLE) {
 			if (i == itemID) {
-				c.sendMessage("You can't stake this item.");
+				player.getActionSender().sendMessage("You can't stake this item.");
 				return false;
 			}
 		}
 		if (amount <= 0)
 			return false;
 		@SuppressWarnings("static-access")
-		Player o = (Player) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[player.duelingWith];
 		if (o == null) {
 			declineDuel();
 			return false;
 		}
-		if (o.duelStatus <= 0 || c.duelStatus <= 0) {
+		if (o.duelStatus <= 0 || player.duelStatus <= 0) {
 			declineDuel();
 			o.getTradeAndDuel().declineDuel();
 			return false;
 		}
-		if (!c.canOffer) {
+		if (!player.canOffer) {
 			return false;
 		}
 		changeDuelStuff();
 		if (!Item.itemStackable[itemID]) {
 			for (int a = 0; a < amount; a++) {
-				if (c.getItems().playerHasItem(itemID, 1)) {
+				if (player.getItems().playerHasItem(itemID, 1)) {
 					stakedItems.add(new GameItem(itemID, 1));
-					c.getItems().deleteItem(itemID, c.getItems().getItemSlot(itemID), 1);
+					player.getItems().deleteItem(itemID, player.getItems().getItemSlot(itemID), 1);
 				}
 			}
-			c.getItems().resetItems(3214);
-			c.getItems().resetItems(3322);
+			player.getItems().resetItems(3214);
+			player.getItems().resetItems(3322);
 			o.getItems().resetItems(3214);
 			o.getItems().resetItems(3322);
 			refreshDuelScreen();
 			o.getTradeAndDuel().refreshDuelScreen();
-			c.getPA().sendFrame126("", 6684);
+			player.getPA().sendFrame126("", 6684);
 			o.getPA().sendFrame126("", 6684);
 		}
 
-		if (!c.getItems().playerHasItem(itemID, amount)) {
+		if (!player.getItems().playerHasItem(itemID, amount)) {
 			return false;
 		}
 		if (Item.itemStackable[itemID] || Item.itemIsNote[itemID]) {
@@ -633,47 +633,47 @@ public class TradeAndDuel {
 				if (item.id == itemID) {
 					found = true;
 					item.amount += amount;
-					c.getItems().deleteItem(itemID, fromSlot, amount);
+					player.getItems().deleteItem(itemID, fromSlot, amount);
 					break;
 				}
 			}
 			if (!found) {
-				c.getItems().deleteItem(itemID, fromSlot, amount);
+				player.getItems().deleteItem(itemID, fromSlot, amount);
 				stakedItems.add(new GameItem(itemID, amount));
 			}
 		}
 
-		c.getItems().resetItems(3214);
-		c.getItems().resetItems(3322);
+		player.getItems().resetItems(3214);
+		player.getItems().resetItems(3322);
 		o.getItems().resetItems(3214);
 		o.getItems().resetItems(3322);
 		refreshDuelScreen();
 		o.getTradeAndDuel().refreshDuelScreen();
-		c.getPA().sendFrame126("", 6684);
+		player.getPA().sendFrame126("", 6684);
 		o.getPA().sendFrame126("", 6684);
 		return true;
 	}
 
 	public boolean fromDuel(int itemID, int fromSlot, int amount) {
 		@SuppressWarnings("static-access")
-		Player o = (Player) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[player.duelingWith];
 		if (o == null) {
 			declineDuel();
 			return false;
 		}
-		if (o.duelStatus <= 0 || c.duelStatus <= 0) {
+		if (o.duelStatus <= 0 || player.duelStatus <= 0) {
 			declineDuel();
 			o.getTradeAndDuel().declineDuel();
 			return false;
 		}
 		if (Item.itemStackable[itemID]) {
-			if (c.getItems().freeSlots() - 1 < (c.duelSpaceReq)) {
-				c.sendMessage("You have too many rules set to remove that item.");
+			if (player.getItems().freeSlots() - 1 < (player.duelSpaceReq)) {
+				player.getActionSender().sendMessage("You have too many rules set to remove that item.");
 				return false;
 			}
 		}
 
-		if (!c.canOffer) {
+		if (!player.canOffer) {
 			return false;
 		}
 
@@ -684,39 +684,39 @@ public class TradeAndDuel {
 				for (GameItem item : stakedItems) {
 					if (item.id == itemID) {
 						if (!item.stackable) {
-							if (c.getItems().freeSlots() - 1 < (c.duelSpaceReq)) {
+							if (player.getItems().freeSlots() - 1 < (player.duelSpaceReq)) {
 								goodSpace = false;
 								break;
 							}
 							stakedItems.remove(item);
-							c.getItems().addItem(itemID, 1);
+							player.getItems().addItem(itemID, 1);
 						} else {
-							if (c.getItems().freeSlots() - 1 < (c.duelSpaceReq)) {
+							if (player.getItems().freeSlots() - 1 < (player.duelSpaceReq)) {
 								goodSpace = false;
 								break;
 							}
 							if (item.amount > amount) {
 								item.amount -= amount;
-								c.getItems().addItem(itemID, amount);
+								player.getItems().addItem(itemID, amount);
 							} else {
-								if (c.getItems().freeSlots() - 1 < (c.duelSpaceReq)) {
+								if (player.getItems().freeSlots() - 1 < (player.duelSpaceReq)) {
 									goodSpace = false;
 									break;
 								}
 								amount = item.amount;
 								stakedItems.remove(item);
-								c.getItems().addItem(itemID, amount);
+								player.getItems().addItem(itemID, amount);
 							}
 						}
 						break;
 					}
 					o.duelStatus = 1;
-					c.duelStatus = 1;
-					c.getItems().resetItems(3214);
-					c.getItems().resetItems(3322);
+					player.duelStatus = 1;
+					player.getItems().resetItems(3214);
+					player.getItems().resetItems(3322);
 					o.getItems().resetItems(3214);
 					o.getItems().resetItems(3322);
-					c.getTradeAndDuel().refreshDuelScreen();
+					player.getTradeAndDuel().refreshDuelScreen();
 					o.getTradeAndDuel().refreshDuelScreen();
 					o.getPA().sendFrame126("", 6684);
 				}
@@ -729,27 +729,27 @@ public class TradeAndDuel {
 				} else {
 					if (item.amount > amount) {
 						item.amount -= amount;
-						c.getItems().addItem(itemID, amount);
+						player.getItems().addItem(itemID, amount);
 					} else {
 						amount = item.amount;
 						stakedItems.remove(item);
-						c.getItems().addItem(itemID, amount);
+						player.getItems().addItem(itemID, amount);
 					}
 				}
 				break;
 			}
 		}
 		o.duelStatus = 1;
-		c.duelStatus = 1;
-		c.getItems().resetItems(3214);
-		c.getItems().resetItems(3322);
+		player.duelStatus = 1;
+		player.getItems().resetItems(3214);
+		player.getItems().resetItems(3322);
 		o.getItems().resetItems(3214);
 		o.getItems().resetItems(3322);
-		c.getTradeAndDuel().refreshDuelScreen();
+		player.getTradeAndDuel().refreshDuelScreen();
 		o.getTradeAndDuel().refreshDuelScreen();
 		o.getPA().sendFrame126("", 6684);
 		if (!goodSpace) {
-			c.sendMessage("You have too many rules set to remove that item.");
+			player.getActionSender().sendMessage("You have too many rules set to remove that item.");
 			return true;
 		}
 		return true;
@@ -757,7 +757,7 @@ public class TradeAndDuel {
 
 	public void confirmDuel() {
 		@SuppressWarnings("static-access")
-		Player o = (Player) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[player.duelingWith];
 		if (o == null) {
 			declineDuel();
 			return;
@@ -765,32 +765,32 @@ public class TradeAndDuel {
 		String itemId = "";
 		for (GameItem item : stakedItems) {
 			if (Item.itemStackable[item.id] || Item.itemIsNote[item.id]) {
-				itemId += c.getItems().getItemName(item.id) + " x " + Misc.format(item.amount) + "\\n";
+				itemId += player.getItems().getItemName(item.id) + " x " + Misc.format(item.amount) + "\\n";
 			} else {
-				itemId += c.getItems().getItemName(item.id) + "\\n";
+				itemId += player.getItems().getItemName(item.id) + "\\n";
 			}
 		}
-		c.getPA().sendFrame126(itemId, 6516);
+		player.getPA().sendFrame126(itemId, 6516);
 		itemId = "";
 		for (GameItem item : o.getTradeAndDuel().stakedItems) {
 			if (Item.itemStackable[item.id] || Item.itemIsNote[item.id]) {
-				itemId += c.getItems().getItemName(item.id) + " x " + Misc.format(item.amount) + "\\n";
+				itemId += player.getItems().getItemName(item.id) + " x " + Misc.format(item.amount) + "\\n";
 			} else {
-				itemId += c.getItems().getItemName(item.id) + "\\n";
+				itemId += player.getItems().getItemName(item.id) + "\\n";
 			}
 		}
-		c.getPA().sendFrame126(itemId, 6517);
-		c.getPA().sendFrame126("", 8242);
+		player.getPA().sendFrame126(itemId, 6517);
+		player.getPA().sendFrame126("", 8242);
 		for (int i = 8238; i <= 8253; i++) {
-			c.getPA().sendFrame126("", i);
+			player.getPA().sendFrame126("", i);
 		}
-		c.getPA().sendFrame126("Hitpoints will be restored.", 8250);
-		c.getPA().sendFrame126("Boosted stats will be restored.", 8238);
-		if (c.duelRule[Rules.OBSTICLES_RULE.getRule()]) {
-			c.getPA().sendFrame126("There will be obstacles in the arena.", 8239);
+		player.getPA().sendFrame126("Hitpoints will be restored.", 8250);
+		player.getPA().sendFrame126("Boosted stats will be restored.", 8238);
+		if (player.duelRule[Rules.OBSTICLES_RULE.getRule()]) {
+			player.getPA().sendFrame126("There will be obstacles in the arena.", 8239);
 		}
-		c.getPA().sendFrame126("", 8240);
-		c.getPA().sendFrame126("", 8241);
+		player.getPA().sendFrame126("", 8240);
+		player.getPA().sendFrame126("", 8241);
 
 		String[] rulesOption = { "Players cannot forfeit!", "Players cannot move.", "Players cannot use range.",
 				"Players cannot use melee.", "Players cannot use magic.", "Players cannot drink pots.",
@@ -798,150 +798,150 @@ public class TradeAndDuel {
 
 		int lineNumber = 8242;
 		for (int i = 0; i < 8; i++) {
-			if (c.duelRule[i]) {
-				c.getPA().sendFrame126("" + rulesOption[i], lineNumber);
+			if (player.duelRule[i]) {
+				player.getPA().sendFrame126("" + rulesOption[i], lineNumber);
 				lineNumber++;
 			}
 		}
-		c.getPA().sendFrame126("", 6571);
-		c.getPA().sendFrame248(6412, 197);
+		player.getPA().sendFrame126("", 6571);
+		player.getPA().sendFrame248(6412, 197);
 		// c.getPA().showInterface(6412);
 	}
 
 	public void startDuel() {
 		@SuppressWarnings("static-access")
-		Player o = (Player) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[player.duelingWith];
 		if (o == null) {
 			duelVictory();
 		}
-		c.headIconHints = 2;
+		player.headIconHints = 2;
 
-		if (c.duelRule[Rules.PRAYER_RULE.getRule()]) {
-			for (int p = 0; p < c.PRAYER.length; p++) { // reset prayer glows
-				c.prayerActive[p] = false;
-				c.getPA().sendFrame36(c.PRAYER_GLOW[p], 0);
+		if (player.duelRule[Rules.PRAYER_RULE.getRule()]) {
+			for (int p = 0; p < player.PRAYER.length; p++) { // reset prayer glows
+				player.prayerActive[p] = false;
+				player.getActionSender().sendConfig(player.PRAYER_GLOW[p], 0);
 			}
-			c.headIcon = -1;
-			c.getPA().requestUpdates();
+			player.headIcon = -1;
+			player.getPA().requestUpdates();
 		}
 		/**
 		 * TODO: FIgure out what these are
 		 */
-		if (c.duelRule[11]) {
-			c.getItems().removeItem(c.playerEquipment[0], 0);
+		if (player.duelRule[11]) {
+			player.getItems().removeItem(player.playerEquipment[0], 0);
 		}
-		if (c.duelRule[12]) {
-			c.getItems().removeItem(c.playerEquipment[1], 1);
+		if (player.duelRule[12]) {
+			player.getItems().removeItem(player.playerEquipment[1], 1);
 		}
-		if (c.duelRule[13]) {
-			c.getItems().removeItem(c.playerEquipment[2], 2);
+		if (player.duelRule[13]) {
+			player.getItems().removeItem(player.playerEquipment[2], 2);
 		}
-		if (c.duelRule[14]) {
-			c.getItems().removeItem(c.playerEquipment[3], 3);
+		if (player.duelRule[14]) {
+			player.getItems().removeItem(player.playerEquipment[3], 3);
 		}
-		if (c.duelRule[15]) {
-			c.getItems().removeItem(c.playerEquipment[4], 4);
+		if (player.duelRule[15]) {
+			player.getItems().removeItem(player.playerEquipment[4], 4);
 		}
-		if (c.duelRule[16]) {
-			c.getItems().removeItem(c.playerEquipment[5], 5);
+		if (player.duelRule[16]) {
+			player.getItems().removeItem(player.playerEquipment[5], 5);
 		}
-		if (c.duelRule[17]) {
-			c.getItems().removeItem(c.playerEquipment[7], 7);
+		if (player.duelRule[17]) {
+			player.getItems().removeItem(player.playerEquipment[7], 7);
 		}
-		if (c.duelRule[18]) {
-			c.getItems().removeItem(c.playerEquipment[9], 9);
+		if (player.duelRule[18]) {
+			player.getItems().removeItem(player.playerEquipment[9], 9);
 		}
-		if (c.duelRule[19]) {
-			c.getItems().removeItem(c.playerEquipment[10], 10);
+		if (player.duelRule[19]) {
+			player.getItems().removeItem(player.playerEquipment[10], 10);
 		}
-		if (c.duelRule[20]) {
-			c.getItems().removeItem(c.playerEquipment[12], 12);
+		if (player.duelRule[20]) {
+			player.getItems().removeItem(player.playerEquipment[12], 12);
 		}
-		if (c.duelRule[21]) {
-			c.getItems().removeItem(c.playerEquipment[13], 13);
+		if (player.duelRule[21]) {
+			player.getItems().removeItem(player.playerEquipment[13], 13);
 		}
-		c.duelStatus = 5;
-		c.getPA().removeAllWindows();
-		c.specAmount = 10;
-		c.getItems().addSpecialBar(c.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]);
+		player.duelStatus = 5;
+		player.getPA().removeAllWindows();
+		player.specAmount = 10;
+		player.getItems().addSpecialBar(player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]);
 
-		if (c.duelRule[Rules.OBSTICLES_RULE.getRule()]) {
-			if (c.duelRule[Rules.WALKING_RULE.getRule()]) {
-				c.getPA().movePlayer(c.duelTeleX, c.duelTeleY, 0);
+		if (player.duelRule[Rules.OBSTICLES_RULE.getRule()]) {
+			if (player.duelRule[Rules.WALKING_RULE.getRule()]) {
+				player.getPA().movePlayer(player.duelTeleX, player.duelTeleY, 0);
 			} else {
-				c.getPA().movePlayer(3366 + Misc.random(12), 3246 + Misc.random(6), 0);
+				player.getPA().movePlayer(3366 + Misc.random(12), 3246 + Misc.random(6), 0);
 			}
 		} else {
-			if (c.duelRule[Rules.WALKING_RULE.getRule()]) {
-				c.getPA().movePlayer(c.duelTeleX, c.duelTeleY, 0);
+			if (player.duelRule[Rules.WALKING_RULE.getRule()]) {
+				player.getPA().movePlayer(player.duelTeleX, player.duelTeleY, 0);
 			} else {
-				c.getPA().movePlayer(3335 + Misc.random(12), 3246 + Misc.random(6), 0);
+				player.getPA().movePlayer(3335 + Misc.random(12), 3246 + Misc.random(6), 0);
 			}
 		}
 
-		c.getPA().createPlayerHints(10, o.playerId);
-		c.getPA().showOption(3, 0, "Attack", 1);
+		player.getPA().createPlayerHints(10, o.playerId);
+		player.getPA().showOption(3, 0, "Attack", 1);
 		for (int i = 0; i < 20; i++) {
-			c.playerLevel[i] = c.getPA().getLevelForXP(c.playerXP[i]);
-			c.getPA().refreshSkill(i);
+			player.playerLevel[i] = player.getPA().getLevelForXP(player.playerXP[i]);
+			player.getPA().refreshSkill(i);
 		}
 		for (GameItem item : o.getTradeAndDuel().stakedItems) {
 			otherStakedItems.add(new GameItem(item.id, item.amount));
 		}
-		c.getPA().requestUpdates();
+		player.getPA().requestUpdates();
 	}
 
 	public void duelVictory() {
 		@SuppressWarnings("static-access")
-		Player o = (Player) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[player.duelingWith];
 		if (o != null) {
-			c.getPA().sendFrame126("" + o.combatLevel, 6839);
-			c.getPA().sendFrame126(o.playerName, 6840);
+			player.getPA().sendFrame126("" + o.combatLevel, 6839);
+			player.getPA().sendFrame126(o.playerName, 6840);
 			o.duelStatus = 0;
 		} else {
-			c.getPA().sendFrame126("", 6839);
-			c.getPA().sendFrame126("", 6840);
+			player.getPA().sendFrame126("", 6839);
+			player.getPA().sendFrame126("", 6840);
 		}
-		c.duelStatus = 6;
-		c.getCombat().resetPrayers();
+		player.duelStatus = 6;
+		player.getCombat().resetPrayers();
 		for (int i = 0; i < 20; i++) {
-			c.playerLevel[i] = c.getPA().getLevelForXP(c.playerXP[i]);
-			c.getPA().refreshSkill(i);
+			player.playerLevel[i] = player.getPA().getLevelForXP(player.playerXP[i]);
+			player.getPA().refreshSkill(i);
 		}
-		c.getPA().refreshSkill(3);
+		player.getPA().refreshSkill(3);
 		duelRewardInterface();
-		c.getPA().showInterface(6733);
-		c.getPA().movePlayer(Constants.DUELING_RESPAWN_X + (Misc.random(Constants.RANDOM_DUELING_RESPAWN)),
+		player.getPA().showInterface(6733);
+		player.getPA().movePlayer(Constants.DUELING_RESPAWN_X + (Misc.random(Constants.RANDOM_DUELING_RESPAWN)),
 				Constants.DUELING_RESPAWN_Y + (Misc.random(Constants.RANDOM_DUELING_RESPAWN)), 0);
-		c.getPA().requestUpdates();
-		c.getPA().showOption(3, 0, "Challenge", 3);
-		c.getPA().createPlayerHints(10, -1);
-		c.canOffer = true;
-		c.duelSpaceReq = 0;
-		c.duelingWith = 0;
-		c.getCombat().resetPlayerAttack();
-		c.duelRequested = false;
+		player.getPA().requestUpdates();
+		player.getPA().showOption(3, 0, "Challenge", 3);
+		player.getPA().createPlayerHints(10, -1);
+		player.canOffer = true;
+		player.duelSpaceReq = 0;
+		player.duelingWith = 0;
+		player.getCombat().resetPlayerAttack();
+		player.duelRequested = false;
 	}
 
 	public void duelRewardInterface() {
-		synchronized (c) {
-			c.getOutStream().createFrameVarSizeWord(53);
-			c.getOutStream().writeWord(6822);
-			c.getOutStream().writeWord(otherStakedItems.toArray().length);
+		synchronized (player) {
+			player.getOutStream().createFrameVarSizeWord(53);
+			player.getOutStream().writeWord(6822);
+			player.getOutStream().writeWord(otherStakedItems.toArray().length);
 			for (GameItem item : otherStakedItems) {
 				if (item.amount > 254) {
-					c.getOutStream().writeByte(255);
-					c.getOutStream().writeDWord_v2(item.amount);
+					player.getOutStream().writeByte(255);
+					player.getOutStream().writeDWord_v2(item.amount);
 				} else {
-					c.getOutStream().writeByte(item.amount);
+					player.getOutStream().writeByte(item.amount);
 				}
 				if (item.id > Constants.ITEM_LIMIT || item.id < 0) {
 					item.id = Constants.ITEM_LIMIT;
 				}
-				c.getOutStream().writeWordBigEndianA(item.id + 1);
+				player.getOutStream().writeWordBigEndianA(item.id + 1);
 			}
-			c.getOutStream().endFrameVarSizeWord();
-			c.flushOutStream();
+			player.getOutStream().endFrameVarSizeWord();
+			player.flushOutStream();
 		}
 	}
 
@@ -949,14 +949,14 @@ public class TradeAndDuel {
 		for (GameItem item : otherStakedItems) {
 			if (item.id > 0 && item.amount > 0) {
 				if (Item.itemStackable[item.id]) {
-					if (!c.getItems().addItem(item.id, item.amount)) {
-						Server.itemHandler.createGroundItem(c, item.id, c.getX(), c.getY(), item.amount, c.getId());
+					if (!player.getItems().addItem(item.id, item.amount)) {
+						Server.itemHandler.createGroundItem(player, item.id, player.getX(), player.getY(), item.amount, player.getId());
 					}
 				} else {
 					int amount = item.amount;
 					for (int a = 1; a <= amount; a++) {
-						if (!c.getItems().addItem(item.id, 1)) {
-							Server.itemHandler.createGroundItem(c, item.id, c.getX(), c.getY(), 1, c.getId());
+						if (!player.getItems().addItem(item.id, 1)) {
+							Server.itemHandler.createGroundItem(player, item.id, player.getX(), player.getY(), 1, player.getId());
 						}
 					}
 				}
@@ -965,14 +965,14 @@ public class TradeAndDuel {
 		for (GameItem item : stakedItems) {
 			if (item.id > 0 && item.amount > 0) {
 				if (Item.itemStackable[item.id]) {
-					if (!c.getItems().addItem(item.id, item.amount)) {
-						Server.itemHandler.createGroundItem(c, item.id, c.getX(), c.getY(), item.amount, c.getId());
+					if (!player.getItems().addItem(item.id, item.amount)) {
+						Server.itemHandler.createGroundItem(player, item.id, player.getX(), player.getY(), item.amount, player.getId());
 					}
 				} else {
 					int amount = item.amount;
 					for (int a = 1; a <= amount; a++) {
-						if (!c.getItems().addItem(item.id, 1)) {
-							Server.itemHandler.createGroundItem(c, item.id, c.getX(), c.getY(), 1, c.getId());
+						if (!player.getItems().addItem(item.id, 1)) {
+							Server.itemHandler.createGroundItem(player, item.id, player.getX(), player.getY(), 1, player.getId());
 						}
 					}
 				}
@@ -980,45 +980,45 @@ public class TradeAndDuel {
 		}
 		resetDuel();
 		resetDuelItems();
-		c.duelStatus = 0;
+		player.duelStatus = 0;
 	}
 
 	public void declineDuel() {
-		c.getPA().removeAllWindows();
-		c.canOffer = true;
-		c.duelStatus = 0;
-		c.duelingWith = 0;
-		c.duelSpaceReq = 0;
-		c.duelRequested = false;
+		player.getPA().removeAllWindows();
+		player.canOffer = true;
+		player.duelStatus = 0;
+		player.duelingWith = 0;
+		player.duelSpaceReq = 0;
+		player.duelRequested = false;
 		for (GameItem item : stakedItems) {
 			if (item.amount < 1)
 				continue;
 			if (Item.itemStackable[item.id] || Item.itemIsNote[item.id]) {
-				c.getItems().addItem(item.id, item.amount);
+				player.getItems().addItem(item.id, item.amount);
 			} else {
-				c.getItems().addItem(item.id, 1);
+				player.getItems().addItem(item.id, 1);
 			}
 		}
 		stakedItems.clear();
-		for (int i = 0; i < c.duelRule.length; i++) {
-			c.duelRule[i] = false;
+		for (int i = 0; i < player.duelRule.length; i++) {
+			player.duelRule[i] = false;
 		}
 	}
 
 	public void resetDuel() {
-		c.getPA().showOption(3, 0, "Challenge", 3);
-		c.headIconHints = 0;
-		for (int i = 0; i < c.duelRule.length; i++) {
-			c.duelRule[i] = false;
+		player.getPA().showOption(3, 0, "Challenge", 3);
+		player.headIconHints = 0;
+		for (int i = 0; i < player.duelRule.length; i++) {
+			player.duelRule[i] = false;
 		}
-		c.getPA().createPlayerHints(10, -1);
-		c.duelStatus = 0;
-		c.canOffer = true;
-		c.duelSpaceReq = 0;
-		c.duelingWith = 0;
-		c.getPA().requestUpdates();
-		c.getCombat().resetPlayerAttack();
-		c.duelRequested = false;
+		player.getPA().createPlayerHints(10, -1);
+		player.duelStatus = 0;
+		player.canOffer = true;
+		player.duelSpaceReq = 0;
+		player.duelingWith = 0;
+		player.getPA().requestUpdates();
+		player.getCombat().resetPlayerAttack();
+		player.duelRequested = false;
 	}
 
 	public void resetDuelItems() {
@@ -1028,32 +1028,32 @@ public class TradeAndDuel {
 
 	public void changeDuelStuff() {
 		@SuppressWarnings("static-access")
-		Player o = (Player) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[player.duelingWith];
 		if (o == null) {
 			return;
 		}
 		o.duelStatus = 1;
-		c.duelStatus = 1;
+		player.duelStatus = 1;
 		o.getPA().sendFrame126("", 6684);
-		c.getPA().sendFrame126("", 6684);
+		player.getPA().sendFrame126("", 6684);
 	}
 
 	public void selectRule(int i) { // rules
 		@SuppressWarnings("static-access")
-		Player o = (Player) Server.playerHandler.players[c.duelingWith];
+		Player o = (Player) Server.playerHandler.players[player.duelingWith];
 		if (o == null) {
 			return;
 		}
-		if (!c.canOffer)
+		if (!player.canOffer)
 			return;
 		changeDuelStuff();
-		o.duelSlot = c.duelSlot;
-		if (i >= 11 && c.duelSlot > -1) {
-			if (c.playerEquipment[c.duelSlot] > 0) {
-				if (!c.duelRule[i]) {
-					c.duelSpaceReq++;
+		o.duelSlot = player.duelSlot;
+		if (i >= 11 && player.duelSlot > -1) {
+			if (player.playerEquipment[player.duelSlot] > 0) {
+				if (!player.duelRule[i]) {
+					player.duelSpaceReq++;
 				} else {
-					c.duelSpaceReq--;
+					player.duelSpaceReq--;
 				}
 			}
 			if (o.playerEquipment[o.duelSlot] > 0) {
@@ -1066,10 +1066,10 @@ public class TradeAndDuel {
 		}
 
 		if (i >= 11) {
-			if (c.getItems().freeSlots() < (c.duelSpaceReq) || o.getItems().freeSlots() < (o.duelSpaceReq)) {
-				c.sendMessage("You or your opponent don't have the required space to set this rule.");
-				if (c.playerEquipment[c.duelSlot] > 0) {
-					c.duelSpaceReq--;
+			if (player.getItems().freeSlots() < (player.duelSpaceReq) || o.getItems().freeSlots() < (o.duelSpaceReq)) {
+				player.getActionSender().sendMessage("You or your opponent don't have the required space to set this rule.");
+				if (player.playerEquipment[player.duelSlot] > 0) {
+					player.duelSpaceReq--;
 				}
 				if (o.playerEquipment[o.duelSlot] > 0) {
 					o.duelSpaceReq--;
@@ -1078,32 +1078,32 @@ public class TradeAndDuel {
 			}
 		}
 
-		if (!c.duelRule[i]) {
-			c.duelRule[i] = true;
-			c.duelOption += c.DUEL_RULE_ID[i];
+		if (!player.duelRule[i]) {
+			player.duelRule[i] = true;
+			player.duelOption += player.DUEL_RULE_ID[i];
 		} else {
-			c.duelRule[i] = false;
-			c.duelOption -= c.DUEL_RULE_ID[i];
+			player.duelRule[i] = false;
+			player.duelOption -= player.DUEL_RULE_ID[i];
 		}
 
-		c.getPA().sendFrame87(286, c.duelOption);
-		o.duelOption = c.duelOption;
-		o.duelRule[i] = c.duelRule[i];
+		player.getPA().sendFrame87(286, player.duelOption);
+		o.duelOption = player.duelOption;
+		o.duelRule[i] = player.duelRule[i];
 		o.getPA().sendFrame87(286, o.duelOption);
 
-		if (c.duelRule[Rules.OBSTICLES_RULE.getRule()]) {
-			if (c.duelRule[Rules.WALKING_RULE.getRule()]) {
-				c.duelTeleX = 3366 + Misc.random(12);
-				o.duelTeleX = c.duelTeleX - 1;
-				c.duelTeleY = 3246 + Misc.random(6);
-				o.duelTeleY = c.duelTeleY;
+		if (player.duelRule[Rules.OBSTICLES_RULE.getRule()]) {
+			if (player.duelRule[Rules.WALKING_RULE.getRule()]) {
+				player.duelTeleX = 3366 + Misc.random(12);
+				o.duelTeleX = player.duelTeleX - 1;
+				player.duelTeleY = 3246 + Misc.random(6);
+				o.duelTeleY = player.duelTeleY;
 			}
 		} else {
-			if (c.duelRule[Rules.WALKING_RULE.getRule()]) {
-				c.duelTeleX = 3335 + Misc.random(12);
-				o.duelTeleX = c.duelTeleX - 1;
-				c.duelTeleY = 3246 + Misc.random(6);
-				o.duelTeleY = c.duelTeleY;
+			if (player.duelRule[Rules.WALKING_RULE.getRule()]) {
+				player.duelTeleX = 3335 + Misc.random(12);
+				o.duelTeleX = player.duelTeleX - 1;
+				player.duelTeleY = 3246 + Misc.random(6);
+				o.duelTeleY = player.duelTeleY;
 			}
 		}
 

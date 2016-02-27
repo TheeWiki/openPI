@@ -243,26 +243,26 @@ public class MusicTab {
 
 	/**
 	 * 
-	 * @param c
+	 * @param player
 	 */
-	public static void loadMusicTab(Player c) {
+	public static void loadMusicTab(Player player) {
 		for (int i = 0; i < Music.songs.length; i++) {
 			if (Music.unlocked[Music.songs[i].array] == true) {
-				Music.updateList(c, Music.songs[i].tabId);
+				Music.updateList(player, Music.songs[i].tabId);
 			} else {
-				c.getPA().sendColor(Music.songs[i].tabId, 255 << 10 | 0 << 5 | 0);
+				player.getPA().sendColor(Music.songs[i].tabId, 255 << 10 | 0 << 5 | 0);
 			}
 		}
-		c.getPA().sendFrame36(18, 1); // set to AUTO. 1 = AUTO 0 = MAN
-		c.getPA().sendFrame36(19, 1); // turn on LOOP
+		player.getActionSender().sendConfig(18, 1); // set to AUTO. 1 = AUTO 0 = MAN
+		player.getActionSender().sendConfig(19, 1); // turn on LOOP
 	}
 
 	/**
 	 * 
-	 * @param c
+	 * @param player
 	 */
 	// Sets the boolean for each music id for the first time.
-	public static void initializeMusicBooleanFirstTime(Player c) {
+	public static void initializeMusicBooleanFirstTime(Player player) {
 		for (int i = 0; i < Music.unlocked.length; i++) {
 			Music.unlocked[i] = false;
 			if (i > 350) // above 350, no region music anymore but clickable.
@@ -271,43 +271,43 @@ public class MusicTab {
 		}
 	}
 
-	public static void setToManual(Player c) {
-		c.auto = 0;
-		c.getPA().sendFrame36(18, 0); // set to AUTO. 1 = AUTO 0 = MAN
+	public static void setToManual(Player player) {
+		player.auto = 0;
+		player.getActionSender().sendConfig(18, 0); // set to AUTO. 1 = AUTO 0 = MAN
 	}
 
 	/**
 	 * 
-	 * @param c
+	 * @param player
 	 * @param Id
 	 */
-	public static void handleClick(Player c, int Id) {
+	public static void handleClick(Player player, int Id) {
 		switch (Id) {
 		case 24125: // AUTO
-			c.auto = 1;
-			Music.playMusic(c);
+			player.auto = 1;
+			Music.playMusic(player);
 			break;
 		case 24126: // MANUAL
-			c.auto = 0;
+			player.auto = 0;
 			break;
 		case 38197:
-			c.isLoopingMusic = !c.isLoopingMusic;
-			int setting = c.isLoopingMusic == true ? 1 : 0;
-			c.getPA().sendFrame36(19, setting);
+			player.isLoopingMusic = !player.isLoopingMusic;
+			int setting = player.isLoopingMusic == true ? 1 : 0;
+			player.getActionSender().sendConfig(19, setting);
 			break;
 		}
 		for (int i = 0; i < music.length; i++) {
 			if (Id == music[i].buttonId) {
 				for (int j = 0; j < Music.songs.length; j++) {
 					if (Music.unlocked[music[i].array] == false) {
-						c.sendMessage("You need to unlock this song first!");
+						player.getActionSender().sendMessage("You need to unlock this song first!");
 						return;
 					}
 				}
-				c.getPA().sendFrame126(music[i].songName, 4439);
-				c.outStream.createFrame(74);
-				c.outStream.writeWordBigEndian(music[i].songId);
-				setToManual(c);
+				player.getPA().sendFrame126(music[i].songName, 4439);
+				player.outStream.createFrame(74);
+				player.outStream.writeWordBigEndian(music[i].songId);
+				setToManual(player);
 			}
 		}
 	}

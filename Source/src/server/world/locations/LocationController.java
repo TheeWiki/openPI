@@ -37,37 +37,37 @@ public final class LocationController {
 			tzhaar = new Tzhaar(), taverlyDungeon = new TaverlyDungeon(), wilderness = new Wilderness(),
 			pestControl = new PestControl(), mageBank = new MageBank(), slayerTower = new SlayerTower();
 
-	public static void sendFirstClickObject(Player c, int object) {
-		barrows.sendFirstClickObject(c, object);
-		home.sendFirstClickObject(c, object);
-		pestControl.sendFirstClickObject(c, object);
-		tzhaar.sendFirstClickObject(c, object);
-		wilderness.sendFirstClickObject(c, object);
-		taverlyDungeon.sendFirstClickObject(c, object);
-		duelArena.sendFirstClickObject(c, object);
-		mageBank.sendFirstClickObject(c, object);
-		slayerTower.sendFirstClickObject(c, object);
+	public static void sendFirstClickObject(Player player, int object) {
+		barrows.sendFirstClickObject(player, object);
+		home.sendFirstClickObject(player, object);
+		pestControl.sendFirstClickObject(player, object);
+		tzhaar.sendFirstClickObject(player, object);
+		wilderness.sendFirstClickObject(player, object);
+		taverlyDungeon.sendFirstClickObject(player, object);
+		duelArena.sendFirstClickObject(player, object);
+		mageBank.sendFirstClickObject(player, object);
+		slayerTower.sendFirstClickObject(player, object);
 	}
 
-	public static void sendSecondClickObject(Player c, int object) {
-		tzhaar.sendSecondClickObject(c, object);
+	public static void sendSecondClickObject(Player player, int object) {
+		tzhaar.sendSecondClickObject(player, object);
 	}
 
-	public static void sendThirdClickObject(Player c, int object) {
+	public static void sendThirdClickObject(Player player, int object) {
 
 	}
 
-	public static void sendFirstClickNpc(Player c, int npc) {
-		duelArena.sendFirstClickNpc(c, npc);
-		home.sendFirstClickNpc(c, npc);
+	public static void sendFirstClickNpc(Player player, int npc) {
+		duelArena.sendFirstClickNpc(player, npc);
+		home.sendFirstClickNpc(player, npc);
 	}
 
-	public static void sendSecondClickNpc(Player c, int npc) {
-		pestControl.sendSecondClickNpc(c, npc);
-		duelArena.sendSecondClickNpc(c, npc);
+	public static void sendSecondClickNpc(Player player, int npc) {
+		pestControl.sendSecondClickNpc(player, npc);
+		duelArena.sendSecondClickNpc(player, npc);
 	}
 
-	public static void sendThirdClickNpc(Player c, int npc) {
+	public static void sendThirdClickNpc(Player player, int npc) {
 
 	}
 }

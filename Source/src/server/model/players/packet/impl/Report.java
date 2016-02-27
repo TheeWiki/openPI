@@ -26,24 +26,24 @@ import server.util.Misc;
 public final class Report implements PacketType {
 
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
+	public void processPacket(Player player, int packetType, int packetSize) {
 		/*
 		 * Reads the reported username from the stream. Because the 317 protocol
 		 * sent this as {@link Long} we must convert it to {@link String}.
 		 * To do this, we require assistance from the almighty {@link Misc} class.
 		 */
-		String reportedName = Misc.longToPlayerName2(c.getInStream().readQWord());
+		String reportedName = Misc.longToPlayerName2(player.getInStream().readQWord());
 
 		/*
 		 * Reads the ident of the rule that the reported user supposedly broke.
 		 */
-		int brokenRuleIdent = c.getInStream().readUnsignedWordBigEndian();
+		int brokenRuleIdent = player.getInStream().readUnsignedWordBigEndian();
 
 		/*
 		 * Gets the last time we filed an abuse report. If the Player didn't file
 		 * one this session, the default 0L will be returned (to allow them to file it).
 		 */
-		long lastReport = Long.valueOf(c.getAttributes().getAttribute("lastReport", 0L).toString());
+		long lastReport = Long.valueOf(player.getAttributes().getAttribute("lastReport", 0L).toString());
 
 		/*
 		 * Make sure we received a valid {@link brokenRuleIdent}.
@@ -60,8 +60,8 @@ public final class Report implements PacketType {
 		 * Make sure they haven't filed an abuse report for at least 60 seconds, except
 		 * if they are moderator+.
 		 */
-		if ((System.currentTimeMillis() - lastReport) < 60000 && c.playerRights < 1) {
-			c.sendMessage("You can only report a player once every 60 seconds.");
+		if ((System.currentTimeMillis() - lastReport) < 60000 && player.playerRights < 1) {
+			player.getActionSender().sendMessage("You can only report a player once every 60 seconds.");
 			return;
 		}
 
@@ -69,8 +69,8 @@ public final class Report implements PacketType {
 		 * Also, make sure nobody can report themselves. Why the hell would anyone report
 		 * themself anyway? >.<
 		 */
-		if (reportedName.equalsIgnoreCase(c.playerName)) {
-			c.sendMessage("You cannot report yourself!");
+		if (reportedName.equalsIgnoreCase(player.playerName)) {
+			player.getActionSender().sendMessage("You cannot report yourself!");
 			return;
 		}
 
@@ -79,7 +79,7 @@ public final class Report implements PacketType {
 		 * Player reported is online ;)
 		 */
 		if (!PlayerHandler.isPlayerOn(reportedName)) {
-			c.sendMessage("Cannot find " + Misc.formatPlayerName(reportedName) + ".");
+			player.getActionSender().sendMessage("Cannot find " + Misc.formatPlayerName(reportedName) + ".");
 			return;
 		}
 
@@ -87,7 +87,7 @@ public final class Report implements PacketType {
 		 * Build the most basic information of the report.
 		 */
 		StringBuilder sb = new StringBuilder()
-				.append(Misc.formatPlayerName(c.playerName))
+				.append(Misc.formatPlayerName(player.playerName))
 				.append(" reported ")
 				.append(Misc.formatPlayerName(reportedName))
 				.append(" for ")
@@ -155,7 +155,7 @@ public final class Report implements PacketType {
 				if (chatMessages[i] == null ||
 						System.currentTimeMillis() - chatMessages[i].millis >= 60000 ||
 						!reportedName.equalsIgnoreCase(chatMessages[i].name) &&
-						!c.playerName.equalsIgnoreCase(chatMessages[i].name)) {
+						!player.playerName.equalsIgnoreCase(chatMessages[i].name)) {
 					continue;
 				}
 				/*
@@ -180,7 +180,7 @@ public final class Report implements PacketType {
 			/*
 			 * Because the abuse could be crucial, we must also inform the Player.
 			 */
-			c.sendMessage("Failed to write the abuse report. Please contact an administrator.");
+			player.getActionSender().sendMessage("Failed to write the abuse report. Please contact an administrator.");
 
 			/*
 			 * Stop the method from going any further. We'd rather not tell the {@link Player}
@@ -192,13 +192,13 @@ public final class Report implements PacketType {
 		/*
 		 * Let's thank the {@link Player} for helping us rid cheaters and abusers :)
 		 */
-		c.sendMessage("Thank-you, your abuse report has been received.");
+		player.getActionSender().sendMessage("Thank-you, your abuse report has been received.");
 
 		/*
 		 * Required to prevent people from spamming this function, by default they have to wait
 		 * at least 60 seconds.
 		 */
-		c.getAttributes().setAttribute("lastReport", System.currentTimeMillis());
+		player.getAttributes().setAttribute("lastReport", System.currentTimeMillis());
 
 	}
 

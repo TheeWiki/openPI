@@ -85,11 +85,11 @@ public class CastleWars {
 		if (player == null) {
 			return;
 		} else if (gameStarted == true) {
-			player.sendMessage("There's already a Castle Wars going. Please wait a few minutes before trying again.");
+			player.getActionSender().sendMessage("There's already a Castle Wars going. Please wait a few minutes before trying again.");
 			return;
 		} else if (player.playerEquipment[EquipmentListener.HAT_SLOT.getSlot()] > 0
 				|| player.playerEquipment[EquipmentListener.CAPE_SLOT.getSlot()] > 0) {
-			player.sendMessage("You may not wear capes or helmets inside of castle wars.");
+			player.getActionSender().sendMessage("You may not wear capes or helmets inside of castle wars.");
 			return;
 		}
 		toWaitingRoom(player, team);
@@ -108,12 +108,12 @@ public class CastleWars {
 	public static void toWaitingRoom(Player player, int team) {
 		if (team == 1) {
 			if (getSaraPlayers() > getZammyPlayers() && getSaraPlayers() > 0) {
-				player.sendMessage("The saradomin team is full, try again later!");
+				player.getActionSender().sendMessage("The saradomin team is full, try again later!");
 				return;
 			}
 			if (getZammyPlayers() >= getSaraPlayers() || getSaraPlayers() == 0) {
-				player.sendMessage("You have been added to the @red@Saradomin@bla@ team.");
-				player.sendMessage(
+				player.getActionSender().sendMessage("You have been added to the @red@Saradomin@bla@ team.");
+				player.getActionSender().sendMessage(
 						"Next Game Begins In:@red@ " + ((gameStartTimer * 3) + (timeRemaining * 3)) + " @bla@seconds.");
 				addCapes(player, SARA_CAPE);
 				waitingRoom.put(player, team);
@@ -122,12 +122,12 @@ public class CastleWars {
 			}
 		} else if (team == 2) {
 			if (getZammyPlayers() > getSaraPlayers() && getZammyPlayers() > 0) {
-				player.sendMessage("The zamorak team is full, try again later!");
+				player.getActionSender().sendMessage("The zamorak team is full, try again later!");
 				return;
 			}
 			if (getZammyPlayers() <= getSaraPlayers() || getZammyPlayers() == 0) {
-				player.sendMessage("[@red@RANDOM TEAM@bla@] You have been added to the @red@Zamorak@bla@ team.");
-				player.sendMessage(
+				player.getActionSender().sendMessage("[@red@RANDOM TEAM@bla@] You have been added to the @red@Zamorak@bla@ team.");
+				player.getActionSender().sendMessage(
 						"Next Game Begins In:@red@ " + ((gameStartTimer * 3) + (timeRemaining * 3)) + " @bla@seconds.");
 				addCapes(player, ZAMMY_CAPE);
 				waitingRoom.put(player, team);
@@ -162,14 +162,14 @@ public class CastleWars {
 				setSaraFlag(0);
 				objectId = 4902;
 				objectTeam = 0;
-				player.sendMessage("returned the sara flag!");
+				player.getActionSender().sendMessage("returned the sara flag!");
 			} else {
 				objectId = 4903;
 				objectTeam = 1;
 				setZammyFlag(0);
 				scores[0]++; // upping the score of a team; team 0 = sara, team
 								// 1 = zammy
-				player.sendMessage("The team of Saradomin scores 1 point!");
+				player.getActionSender().sendMessage("The team of Saradomin scores 1 point!");
 			}
 			break;
 		case 2:
@@ -177,14 +177,14 @@ public class CastleWars {
 				setZammyFlag(0);
 				objectId = 4903;
 				objectTeam = 1;
-				player.sendMessage("returned the zammy flag!");
+				player.getActionSender().sendMessage("returned the zammy flag!");
 			} else {
 				objectId = 4902;
 				objectTeam = 0;
 				setSaraFlag(0);
 				scores[1]++; // upping the score of a team; team 0 = sara, team
 								// 1 = zammy
-				player.sendMessage("The team of Zamorak scores 1 point!");
+				player.getActionSender().sendMessage("The team of Zamorak scores 1 point!");
 				zammyFlag = 0;
 			}
 			break;
@@ -208,7 +208,7 @@ public class CastleWars {
 	 */
 	public static void captureFlag(Player player) {
 		if (player.playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()] > 0) {
-			player.sendMessage("Please remove your weapon before attempting to get the flag again!");
+			player.getActionSender().sendMessage("Please remove your weapon before attempting to get the flag again!");
 			return;
 		}
 		int team = gameRoom.get(player);
@@ -370,7 +370,7 @@ public class CastleWars {
 		if (waitingRoom.containsKey(player)) {
 			waitingRoom.remove(player);
 			player.getPA().createPlayerHints(10, -1);
-			player.sendMessage("You left your team!");
+			player.getActionSender().sendMessage("You left your team!");
 			deleteGameItems(player);
 			player.getPA().movePlayer(2439 + Misc.random(4), 3085 + Misc.random(5), 0);
 			return;
@@ -504,29 +504,29 @@ public class CastleWars {
 			}
 			player.cwGames++;
 			player.getPA().movePlayer(2440 + Misc.random(3), 3089 - Misc.random(3), 0);
-			player.sendMessage("[@red@CASTLE WARS@bla@] The Castle Wars Game has ended!");
-			player.sendMessage("[@red@CASTLE WARS@bla@] Kills: @red@ " + player.cwKills + " @bla@Deaths:@red@ "
+			player.getActionSender().sendMessage("[@red@CASTLE WARS@bla@] The Castle Wars Game has ended!");
+			player.getActionSender().sendMessage("[@red@CASTLE WARS@bla@] Kills: @red@ " + player.cwKills + " @bla@Deaths:@red@ "
 					+ player.cwDeaths + "@bla@ Games Played: @red@" + player.cwGames + "@bla@.");
 			player.getPA().createPlayerHints(10, -1);
 			deleteGameItems(player);
 			if (scores[0] == scores[1]) {
 				player.getItems().addItem(4067, 30);
-				player.sendMessage("Tie game! You gain 30 CastleWars tickets!");
+				player.getActionSender().sendMessage("Tie game! You gain 30 CastleWars tickets!");
 			} else if (team == 1) {
 				if (scores[0] > scores[1]) {
 					player.getItems().addItem(4067, 50);
-					player.sendMessage("You won the CastleWars Game. You received 50 CastleWars Tickets!");
+					player.getActionSender().sendMessage("You won the CastleWars Game. You received 50 CastleWars Tickets!");
 				} else if (scores[0] < scores[1]) {
 					player.getItems().addItem(4067, 20);
-					player.sendMessage("You lost the CastleWars Game. You received 20 CastleWars Tickets!");
+					player.getActionSender().sendMessage("You lost the CastleWars Game. You received 20 CastleWars Tickets!");
 				}
 			} else if (team == 2) {
 				if (scores[1] > scores[0]) {
 					player.getItems().addItem(4067, 50);
-					player.sendMessage("You won the CastleWars Game. You received 50 CastleWars Tickets!");
+					player.getActionSender().sendMessage("You won the CastleWars Game. You received 50 CastleWars Tickets!");
 				} else if (scores[1] < scores[0]) {
 					player.getItems().addItem(4067, 20);
-					player.sendMessage("You lost the CastleWars Game. You received 20 CastleWars Tickets!");
+					player.getActionSender().sendMessage("You lost the CastleWars Game. You received 20 CastleWars Tickets!");
 				}
 			}
 		}
@@ -573,8 +573,8 @@ public class CastleWars {
 			deleteGameItems(player);
 			player.getPA().movePlayer(2440, 3089, 0);
 			System.out.println("Deleting playername test: " + player.playerName);
-			player.sendMessage("[@red@CASTLE WARS@bla@] The Casle Wars Game has ended for you!");
-			player.sendMessage("[@red@CASTLE WARS@bla@] Kills: @red@ " + player.cwKills + " @bla@Deaths:@red@ "
+			player.getActionSender().sendMessage("[@red@CASTLE WARS@bla@] The Casle Wars Game has ended for you!");
+			player.getActionSender().sendMessage("[@red@CASTLE WARS@bla@] Kills: @red@ " + player.cwKills + " @bla@Deaths:@red@ "
 					+ player.cwDeaths + "@bla@.");
 			player.getPA().createPlayerHints(10, -1);
 			gameRoom.remove(player);

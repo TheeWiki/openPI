@@ -11,21 +11,21 @@ import server.model.players.packet.PacketType;
 public class ItemOnObject implements PacketType {
 
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
+	public void processPacket(Player player, int packetType, int packetSize) {
 		/*
 		 * a = ?
 		 * b = ?
 		 */
 		
 		@SuppressWarnings("unused")
-		int a = c.getInStream().readUnsignedWord();
-		int objectId = c.getInStream().readSignedWordBigEndian();
-		int objectY = c.getInStream().readSignedWordBigEndianA();
+		int a = player.getInStream().readUnsignedWord();
+		int objectId = player.getInStream().readSignedWordBigEndian();
+		int objectY = player.getInStream().readSignedWordBigEndianA();
 		@SuppressWarnings("unused")
-		int b = c.getInStream().readUnsignedWord();
-		int objectX = c.getInStream().readSignedWordBigEndianA();
-		int itemId = c.getInStream().readUnsignedWord();
-		UseItem.ItemonObject(c, objectId, objectX, objectY, itemId);
+		int b = player.getInStream().readUnsignedWord();
+		int objectX = player.getInStream().readSignedWordBigEndianA();
+		int itemId = player.getInStream().readUnsignedWord();
+		UseItem.ItemonObject(player, objectId, objectX, objectY, itemId);
 		
 	}
 

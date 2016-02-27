@@ -9,12 +9,12 @@ import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.frame.FrameDecoder;
 
-import server.Connection;
 import server.Constants;
 import server.Server;
 import server.model.players.Player;
 import server.model.players.PlayerHandler;
 import server.model.players.PlayerSave;
+import server.net.Connection;
 import server.net.PacketBuilder;
 import server.util.ISAACCipher;
 import server.util.Misc;

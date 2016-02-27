@@ -9,11 +9,11 @@ import server.model.players.packet.PacketType;
 public class MoveItems implements PacketType {
 
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
-		int somejunk = c.getInStream().readUnsignedWordA(); //junk
-		int itemFrom =  c.getInStream().readUnsignedWordA();// slot1
-		int itemTo = (c.getInStream().readUnsignedWordA() -128);// slot2
+	public void processPacket(Player player, int packetType, int packetSize) {
+		int somejunk = player.getInStream().readUnsignedWordA(); //junk
+		int itemFrom =  player.getInStream().readUnsignedWordA();// slot1
+		int itemTo = (player.getInStream().readUnsignedWordA() -128);// slot2
 		//c.sendMessage("junk: " + somejunk);
-		c.getItems().moveItems(itemFrom, itemTo, somejunk);
+		player.getItems().moveItems(itemFrom, itemTo, somejunk);
 	}
 }

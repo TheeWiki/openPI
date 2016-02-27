@@ -28,7 +28,7 @@ public class Constants {
 	/**
 	 * Item limit
 	 */
-	public static final int ITEM_LIMIT = 16000;
+	public static final int ITEM_LIMIT = 16_000;
 
 	/**
 	 * Maximum item amount
@@ -147,7 +147,7 @@ public class Constants {
 	/**
 	 * Special increase delay
 	 */
-	public static final int INCREASE_SPECIAL_AMOUNT = 17500;
+	public static final int INCREASE_SPECIAL_AMOUNT = 17_500;
 
 	/**
 	 * Prayer points required
@@ -229,7 +229,7 @@ public class Constants {
 	/**
 	 * number of milliseconds before run energy goes up 1
 	 */
-	public static final int RUN_ENERGY_GAIN = 2250;
+	public static final int RUN_ENERGY_GAIN = 2_250;
 
 	/**
 	 * number of squares player runs before energy decreases

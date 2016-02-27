@@ -38,7 +38,7 @@ public class ObjectHandler {
 		globalObjects.remove(object);
 	}
 
-	public void createAnObject(Player c, int id, int x, int y) {
+	public void createAnObject(Player player, int id, int x, int y) {
 		Objects OBJECT = new Objects(id, x, y, 0, 0, 10, 0);
 		if (id == -1) {
 			removeObject(OBJECT);
@@ -48,7 +48,7 @@ public class ObjectHandler {
 		Server.objectHandler.placeObject(OBJECT);
 	}
 
-	public void createAnObject(Player c, int id, int x, int y, int face) {
+	public void createAnObject(Player player, int id, int x, int y, int face) {
 		Objects OBJECT = new Objects(id, x, y, 0, face, 10, 0);
 		if (id == -1) {
 			removeObject(OBJECT);
@@ -74,20 +74,20 @@ public class ObjectHandler {
 	/**
 	 * Update objects when entering a new region or logging in
 	 **/
-	public void updateObjects(Player c) {
+	public void updateObjects(Player player) {
 		for (Objects o : globalObjects) {
-			if (c != null) {
-				if (c.heightLevel == o.getObjectHeight() && o.objectTicks == 0) {
-					if (c.distanceToPoint(o.getObjectX(), o.getObjectY()) <= 60) {
-						c.getPA().object(o.getObjectId(), o.getObjectX(),
+			if (player != null) {
+				if (player.heightLevel == o.getObjectHeight() && o.objectTicks == 0) {
+					if (player.distanceToPoint(o.getObjectX(), o.getObjectY()) <= 60) {
+						player.getPA().object(o.getObjectId(), o.getObjectX(),
 								o.getObjectY(), o.getObjectFace(),
 								o.getObjectType());
 					}
 				}
 			}
 		}
-		if (c.distanceToPoint(2961, 3389) <= 60) {
-			c.getPA().object(6552, 2961, 3389, -1, 10);
+		if (player.distanceToPoint(2961, 3389) <= 60) {
+			player.getPA().object(6552, 2961, 3389, -1, 10);
 		}
 	}
 
@@ -127,7 +127,7 @@ public class ObjectHandler {
 		}
 	}
 
-	public void setFire(Player c, int id, int x, int y) {
+	public void setFire(Player player, int id, int x, int y) {
 		Objects OBJECT = new Objects(id, x, y, 0, 0, 10, 0);
 		if (id == -1) {
 			removeObject(OBJECT);

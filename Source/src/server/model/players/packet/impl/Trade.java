@@ -10,22 +10,22 @@ import server.model.players.packet.PacketType;
 public class Trade implements PacketType {
 
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
-		int tradeId = c.getInStream().readSignedWordBigEndian();
-		c.getPA().resetFollow();
+	public void processPacket(Player player, int packetType, int packetSize) {
+		int tradeId = player.getInStream().readSignedWordBigEndian();
+		player.getPA().resetFollow();
 		
-		if(c.arenas()) {
-			c.sendMessage("You can't trade inside the arena!");
+		if(player.arenas()) {
+			player.getActionSender().sendMessage("You can't trade inside the arena!");
 			return;
 		}
 		
 		
-		if(c.playerRights == 2 && !Constants.ADMIN_CAN_TRADE) {
-			c.sendMessage("Trading as an admin has been disabled.");
+		if(player.playerRights == 2 && !Constants.ADMIN_CAN_TRADE) {
+			player.getActionSender().sendMessage("Trading as an admin has been disabled.");
 			return;
 		}
-		if (tradeId != c.playerId)
-			c.getTradeAndDuel().requestTrade(tradeId);
+		if (tradeId != player.playerId)
+			player.getTradeAndDuel().requestTrade(tradeId);
 	}
 		
 }

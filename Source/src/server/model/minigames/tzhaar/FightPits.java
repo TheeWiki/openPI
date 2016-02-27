@@ -57,12 +57,12 @@ public class FightPits {
 	public void updateWaitRoom() {
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null) {
-				Player c = (Player) Server.playerHandler.players[j];
-				if (c.getPA().inPitsWait()) {
-					c.getPA().sendFrame126("     Next Game Begins In : " + ((gameStartTimer * 3) + (gameTime * 3)) + " seconds.", 6570);
-					c.getPA().sendFrame126("Champion: " + pitsChampion, 6572);
-					c.getPA().sendFrame126("Current waiting players: " + getWaitAmount() , 6664); 
-					c.getPA().walkableInterface(6673);
+				Player player = (Player) Server.playerHandler.players[j];
+				if (player.getPA().inPitsWait()) {
+					player.getPA().sendFrame126("     Next Game Begins In : " + ((gameStartTimer * 3) + (gameTime * 3)) + " seconds.", 6570);
+					player.getPA().sendFrame126("Champion: " + pitsChampion, 6572);
+					player.getPA().sendFrame126("Current waiting players: " + getWaitAmount() , 6664); 
+					player.getPA().walkableInterface(6673);
 				}	
 			}	
 		}	
@@ -96,8 +96,8 @@ public class FightPits {
 		int count = 0;
 		for (int j = 0; j < Server.playerHandler.players.length; j++) {
 			if (Server.playerHandler.players[j] != null )  {
-					Player c = (Player)Server.playerHandler.players[j];
-					if (c.getPA().inPitsWait())
+					Player player = (Player)Server.playerHandler.players[j];
+					if (player.getPA().inPitsWait())
 						count++;
 			}	
 		}
@@ -108,11 +108,11 @@ public class FightPits {
 	public void removePlayerFromPits(int playerId) {
 		for (int j = 0; j < playerInPits.length; j++) {
 			if (playerInPits[j] == playerId) {
-				Player c = (Player)Server.playerHandler.players[playerInPits[j]];
-				c.getPA().movePlayer(2399, 5173, 0);
+				Player player = (Player)Server.playerHandler.players[playerInPits[j]];
+				player.getPA().movePlayer(2399, 5173, 0);
 				playerInPits[j] = -1;
 				playersRemaining--;
-				c.inPits = false;
+				player.inPits = false;
 				break;
 			}
 		}
@@ -129,9 +129,9 @@ public class FightPits {
 				continue;
 			if (Server.playerHandler.players[playerInPits[j]] == null)
 				continue;
-			Player c = (Player)Server.playerHandler.players[playerInPits[j]];
-			c.getPA().movePlayer(2399, 5173, 0);
-			c.inPits = false;
+			Player player = (Player)Server.playerHandler.players[playerInPits[j]];
+			player.getPA().movePlayer(2399, 5173, 0);
+			player.inPits = false;
 		}
 		playerInPits = new int[200];	
 		pitsChampion = champion;
@@ -148,10 +148,10 @@ public class FightPits {
 		if (Server.playerHandler.players[playerId] == null)
 			return;
 		playersRemaining++;
-		Player c = (Player)Server.playerHandler.players[playerId];
-		c.getPA().walkableInterface(-1);
+		Player player = (Player)Server.playerHandler.players[playerId];
+		player.getPA().walkableInterface(-1);
 		playerInPits[pitsSlot++] = playerId;
-		c.getPA().movePlayer(2392 + Misc.random(12), 5139 + Misc.random(25), 0);
-		c.inPits = true;		
+		player.getPA().movePlayer(2392 + Misc.random(12), 5139 + Misc.random(25), 0);
+		player.inPits = true;		
 	}
 }

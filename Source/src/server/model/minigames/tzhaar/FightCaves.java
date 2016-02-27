@@ -107,12 +107,12 @@ public class FightCaves {
 	 * Handles the correct tz-kek effect; when you kill tz-kek it splits into 2
 	 * smaller version of itself.
 	 * 
-	 * @param c
+	 * @param player
 	 *            The player.
 	 * @param i
 	 *            The npcId.
 	 */
-	public static void tzKekEffect(Player c, int i) {
+	public static void tzKekEffect(Player player, int i) {
 		if (NPCHandler.npcs[i].npcType == TZ_KEK) {
 
 			int x = NPCHandler.npcs[i].absX + 2;
@@ -125,11 +125,11 @@ public class FightCaves {
 			int atk = getAtk(TZ_KEK_SPAWN);
 			int def = getDef(TZ_KEK_SPAWN);
 
-			if (c != null) {
-				if (c.tzKekTimer == 0) {
+			if (player != null) {
+				if (player.tzKekTimer == 0) {
 					if (NPCHandler.npcs[i].isDead) {
-						Server.npcHandler.spawnNpc(c, TZ_KEK_SPAWN, x, y, c.playerId * 4, 0, hp, max, atk, def, true, false);
-						Server.npcHandler.spawnNpc(c, TZ_KEK_SPAWN, x1, y1, c.playerId * 4, 0, hp, max, atk, def, true, false);
+						Server.npcHandler.spawnNpc(player, TZ_KEK_SPAWN, x, y, player.playerId * 4, 0, hp, max, atk, def, true, false);
+						Server.npcHandler.spawnNpc(player, TZ_KEK_SPAWN, x1, y1, player.playerId * 4, 0, hp, max, atk, def, true, false);
 					}
 				}
 			}
@@ -140,19 +140,19 @@ public class FightCaves {
 	 * Handles the correct tz-kih effect; prayer is drained by the formula:
 	 * drain = damage + 1
 	 * 
-	 * @param c
+	 * @param player
 	 *            The player
 	 * @param i
 	 *            The npcId
 	 * @param damage
 	 *            What the npchit
 	 */
-	public static void tzKihEffect(Player c, int i, int damage) {
+	public static void tzKihEffect(Player player, int i, int damage) {
 		if (NPCHandler.npcs[i].npcType == TZ_KIH) {
-			if (c != null) {
-				if (c.playerLevel[5] > 0) {
-					c.playerLevel[5] -= 1 + damage;
-					c.getPA().refreshSkill(5);
+			if (player != null) {
+				if (player.playerLevel[5] > 0) {
+					player.playerLevel[5] -= 1 + damage;
+					player.getPA().refreshSkill(5);
 				}
 			}
 		}
@@ -231,35 +231,35 @@ public class FightCaves {
 	/**
 	 * Handles spawning the next fightcave wave.
 	 * 
-	 * @param c
+	 * @param player
 	 *            The player.
 	 */
-	public void spawnNextWave(Player c) {
-		if (c != null) {
-			if (c.waveId >= WAVES.length) {
-				c.waveId = 0;
+	public void spawnNextWave(Player player) {
+		if (player != null) {
+			if (player.waveId >= WAVES.length) {
+				player.waveId = 0;
 				return;
 			}
-			if (c.waveId < 0) {
+			if (player.waveId < 0) {
 				return;
 			}
-			int npcAmount = WAVES[c.waveId].length;
+			int npcAmount = WAVES[player.waveId].length;
 			for (int wave = 0; wave < npcAmount; wave++) {
-				int npc = WAVES[c.waveId][wave];
+				int npc = WAVES[player.waveId][wave];
 				int X = COORDINATES[wave][0];
 				int Y = COORDINATES[wave][1];
-				int H = c.playerId * 4;
+				int H = player.playerId * 4;
 				int hp = getHp(npc);
 				int max = getMax(npc);
 				int atk = getAtk(npc);
 				int def = getDef(npc);
 				if (npc == 2745) {
-					c.getDH().sendNpcChat1("Look out, here comes Jad!", 2617, "Tk-nub");
+					player.getDH().sendNpcChat1("Look out, here comes Jad!", 2617, "Tk-nub");
 				} else { }
-				Server.npcHandler.spawnNpc(c, npc, X, Y, H, 0, hp, max, atk, def, true, false);
+				Server.npcHandler.spawnNpc(player, npc, X, Y, H, 0, hp, max, atk, def, true, false);
 			}
-			c.tzhaarToKill = npcAmount;
-			c.tzhaarKilled = 0;
+			player.tzhaarToKill = npcAmount;
+			player.tzhaarKilled = 0;
 		}
 	}
 }

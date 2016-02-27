@@ -9,15 +9,15 @@ public class Wilderness extends AbstractLocations
 {
 
 	@Override
-	public void sendFirstClickObject(Player c, int object) {
+	public void sendFirstClickObject(Player player, int object) {
 		switch(object)
 		{
 		case 733:
-			c.startAnimation(451);
-			if (c.objectX == 3158 && c.objectY == 3951) {
-				new Object(734, c.objectX, c.objectY, c.heightLevel, 1, 10, 733, 50);
+			player.startAnimation(451);
+			if (player.objectX == 3158 && player.objectY == 3951) {
+				new Object(734, player.objectX, player.objectY, player.heightLevel, 1, 10, 733, 50);
 			} else {
-				new Object(734, c.objectX, c.objectY, c.heightLevel, 0, 10, 733, 50);
+				new Object(734, player.objectX, player.objectY, player.heightLevel, 0, 10, 733, 50);
 			}
 			break;
 		case 14829:
@@ -34,44 +34,44 @@ public class Wilderness extends AbstractLocations
 			// chest in pirate house
 			break;
 		case 411:
-			if (c.playerLevel[5] < c.getPA().getLevelForXP(c.playerXP[5])) {
-				c.startAnimation(645);
-				c.playerLevel[5] = c.getPA().getLevelForXP(c.playerXP[5]);
-				c.sendMessage("You recharge your prayer points.");
-				c.getPA().refreshSkill(5);
+			if (player.playerLevel[5] < player.getPA().getLevelForXP(player.playerXP[5])) {
+				player.startAnimation(645);
+				player.playerLevel[5] = player.getPA().getLevelForXP(player.playerXP[5]);
+				player.getActionSender().sendMessage("You recharge your prayer points.");
+				player.getPA().refreshSkill(5);
 			} else {
-				c.sendMessage("You already have full prayer points.");
+				player.getActionSender().sendMessage("You already have full prayer points.");
 			}
 			break;
 		}
 	}
 
 	@Override
-	public void sendSecondClickObject(Player c, int object) {
+	public void sendSecondClickObject(Player player, int object) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendThirdClickObject(Player c, int object) {
+	public void sendThirdClickObject(Player player, int object) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendFirstClickNpc(Player c, int npc) {
+	public void sendFirstClickNpc(Player player, int npc) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendSecondClickNpc(Player c, int npc) {
+	public void sendSecondClickNpc(Player player, int npc) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendThirdClickNpc(Player c, int npc) {
+	public void sendThirdClickNpc(Player player, int npc) {
 		// TODO Auto-generated method stub
 		
 	}

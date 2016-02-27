@@ -11,96 +11,96 @@ public class Home extends AbstractLocations
 	private final int ANCIENT_ALTER = 6552, PRAYER_ALTER = 409;
 	
 	@Override
-	public void sendFirstClickObject(Player c, int object) {
+	public void sendFirstClickObject(Player player, int object) {
 		switch(object)
 		{
 		case 6839:
-    		c.setForceMovement(0, 7, false, false, 1, 300, 2, 0x338);
+    		player.setForceMovement(0, 7, false, false, 1, 300, 2, 0x338);
 		break;
 		case 6847:
 			int rng = Misc.random(3);
 			switch(rng)
 			{
 			case 0:
-				c.getDH().sendPlayerChat1("DING DONG!");
+				player.getDH().sendPlayerChat1("DING DONG!");
 				break;
 			case 1:
-				c.getDH().sendPlayerChat1("I should probably stop touching this bell..");
+				player.getDH().sendPlayerChat1("I should probably stop touching this bell..");
 				break;
 			case 2:
-				c.getDH().sendPlayerChat1("That's loud!");
+				player.getDH().sendPlayerChat1("That's loud!");
 				break;
 			case 3:
-				c.getDH().sendNpcChat1("Stop ringing that damn bell!", 872, "Head Wizzard");
+				player.getDH().sendNpcChat1("Stop ringing that damn bell!", 872, "Head Wizzard");
 				break;
 			}
 			break;
 		case 6836:
-				AwardSkillcape.executeAward(c);
+				AwardSkillcape.executeAward(player);
 			break;
 		case ANCIENT_ALTER:
-			if (c.playerMagicBook == 0) {
-				c.playerMagicBook = 1;
-				c.setSidebarInterface(6, 12855);
-				c.autocasting = false;
-				c.sendMessage("An ancient wisdomin fills your mind.");
-				c.getPA().resetAutocast();
+			if (player.playerMagicBook == 0) {
+				player.playerMagicBook = 1;
+				player.setSidebarInterface(6, 12855);
+				player.autocasting = false;
+				player.getActionSender().sendMessage("An ancient wisdomin fills your mind.");
+				player.getPA().resetAutocast();
 			} else {
-				c.setSidebarInterface(6, 1151);
-				c.playerMagicBook = 0;
-				c.autocasting = false;
-				c.sendMessage("You feel a drain on your memory.");
-				c.autocastId = -1;
-				c.getPA().resetAutocast();
+				player.setSidebarInterface(6, 1151);
+				player.playerMagicBook = 0;
+				player.autocasting = false;
+				player.getActionSender().sendMessage("You feel a drain on your memory.");
+				player.autocastId = -1;
+				player.getPA().resetAutocast();
 			}
 			break;
 		case PRAYER_ALTER:
-			if (c.playerLevel[5] < c.getPA().getLevelForXP(c.playerXP[5])) {
-				c.startAnimation(645);
-				c.playerLevel[5] = c.getPA().getLevelForXP(c.playerXP[5]);
-				c.sendMessage("You recharge your prayer points.");
-				c.getPA().refreshSkill(5);
+			if (player.playerLevel[5] < player.getPA().getLevelForXP(player.playerXP[5])) {
+				player.startAnimation(645);
+				player.playerLevel[5] = player.getPA().getLevelForXP(player.playerXP[5]);
+				player.getActionSender().sendMessage("You recharge your prayer points.");
+				player.getPA().refreshSkill(5);
 			} else {
-				c.sendMessage("You already have full prayer points.");
+				player.getActionSender().sendMessage("You already have full prayer points.");
 			}
 			break;
 		}
 	}
 
 	@Override
-	public void sendSecondClickObject(Player c, int object) {
+	public void sendSecondClickObject(Player player, int object) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendThirdClickObject(Player c, int object) {
+	public void sendThirdClickObject(Player player, int object) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendFirstClickNpc(Player c, int npc) {
+	public void sendFirstClickNpc(Player player, int npc) {
 		switch(npc)
 		{
 		case 599:
-			c.getPA().showInterface(3559);
-			c.canChangeAppearance = true;
+			player.getPA().showInterface(3559);
+			player.canChangeAppearance = true;
 			break;
 		case 2566:
-			c.getShops().openSkillCape();
+			player.getShops().openSkillCape();
 			break;
 		}
 	}
 
 	@Override
-	public void sendSecondClickNpc(Player c, int npc) {
+	public void sendSecondClickNpc(Player player, int npc) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendThirdClickNpc(Player c, int npc) {
+	public void sendThirdClickNpc(Player player, int npc) {
 		// TODO Auto-generated method stub
 		
 	}

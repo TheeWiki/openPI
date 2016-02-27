@@ -35,13 +35,13 @@ public class Barrows {
 	 * Selects the coffin and shows the interface if coffin ID matches random
 	 * coffin.
 	 **/
-	public static boolean selectCoffin(Player c, int coffinId) {
-		if (c.randomCoffin == 0) {
-			c.randomCoffin = getRandomCoffin();
+	public static boolean selectCoffin(Player player, int coffinId) {
+		if (player.randomCoffin == 0) {
+			player.randomCoffin = getRandomCoffin();
 		}
 
-		if (COFFIN_AND_BROTHERS[c.randomCoffin][0] == coffinId) {
-			c.getDH().sendDialogues(1, -1);
+		if (COFFIN_AND_BROTHERS[player.randomCoffin][0] == coffinId) {
+			player.getDH().sendDialogues(1, -1);
 			return true;
 		}
 		return false;

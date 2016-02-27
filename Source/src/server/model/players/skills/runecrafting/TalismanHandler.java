@@ -40,10 +40,10 @@ public class TalismanHandler {
 		}
 	}
 	
-	public static void handleTalisman(final Player c, final int itemId) {
+	public static void handleTalisman(final Player player, final int itemId) {
 		for (final talismanData t : talismanData.values()) {
 			if (itemId == t.getTalisman()) {
-				c.getPA().spellTeleport(t.getXCoordinate(), t.getYCoordinate(), 0);
+				player.getPA().spellTeleport(t.getXCoordinate(), t.getYCoordinate(), 0);
 			}
 		}
 	}

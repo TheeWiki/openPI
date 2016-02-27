@@ -17,15 +17,15 @@ public class DialogueContainer {
 	private int currentDialogueId = 1;
 	private boolean closeInterface = true;
 
-	public static void CreateDialogue(Player c, DialogueAction action, String... lines) {
-		if (c.nextChat > 0) {
-			c.nextChat = -1;
+	public static void CreateDialogue(Player player, DialogueAction action, String... lines) {
+		if (player.nextChat > 0) {
+			player.nextChat = -1;
 		}
-		c.dialogueContainer = new DialogueContainer(c, action, lines);
+		player.dialogueContainer = new DialogueContainer(player, action, lines);
 	}
 
-	private DialogueContainer(Player c, DialogueAction action, String... lines) {
-		this.c = c;
+	private DialogueContainer(Player player, DialogueAction action, String... lines) {
+		this.c = player;
 		this.action = action;
 		this.optionDialogues = new ArrayList<OptionDialogue>();
 		this.showOptions(true, lines);

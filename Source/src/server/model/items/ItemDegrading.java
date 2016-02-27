@@ -43,29 +43,29 @@ public class ItemDegrading {
 		{ 4759, 4994, 4995, 4996, 4997, 4998 }
 	};
 
-	public static void appendDegrade(Player c) {
-		for (int j = 0; j < c.playerEquipment.length; j++) {
+	public static void appendDegrade(Player player) {
+		for (int j = 0; j < player.playerEquipment.length; j++) {
 			for (int i = 0; i < DEGRADEABLES.length; i++) {
-				if (c.playerEquipment[j] == DEGRADEABLES[i][0]) {
-					c.playerEquipment[j] = DEGRADEABLES[i][1];
+				if (player.playerEquipment[j] == DEGRADEABLES[i][0]) {
+					player.playerEquipment[j] = DEGRADEABLES[i][1];
 
-				} else if (c.playerEquipment[j] == DEGRADEABLES[i][1]) {
-					c.playerEquipment[j] = DEGRADEABLES[i][2];
+				} else if (player.playerEquipment[j] == DEGRADEABLES[i][1]) {
+					player.playerEquipment[j] = DEGRADEABLES[i][2];
 
-				} else if (c.playerEquipment[j] == DEGRADEABLES[i][2]) {
-					c.playerEquipment[j] = DEGRADEABLES[i][3];
+				} else if (player.playerEquipment[j] == DEGRADEABLES[i][2]) {
+					player.playerEquipment[j] = DEGRADEABLES[i][3];
 
-				} else if (c.playerEquipment[j] == DEGRADEABLES[i][3]) {
-					c.playerEquipment[j] = DEGRADEABLES[i][4];
+				} else if (player.playerEquipment[j] == DEGRADEABLES[i][3]) {
+					player.playerEquipment[j] = DEGRADEABLES[i][4];
 
-				} else if (c.playerEquipment[j] == DEGRADEABLES[i][4]) {
-					c.getItems().wearItem(-1, 1, j);
-					c.getItems().addItem(DEGRADEABLES[i][5], 1);
+				} else if (player.playerEquipment[j] == DEGRADEABLES[i][4]) {
+					player.getItems().wearItem(-1, 1, j);
+					player.getItems().addItem(DEGRADEABLES[i][5], 1);
 //					c.sendMessage("Your " + c.getItems().getItemName(DEGRADEABLES[i][5]).replaceAll("0", "").trim() + " has degraded completely and has been added to your bank.");
-					c.sendMessage("Talk to the Strange Old Man to repair your item(s).");
+					player.getActionSender().sendMessage("Talk to the Strange Old Man to repair your item(s).");
 				}
 			}
-			c.getItems().updateSlot(j);
+			player.getItems().updateSlot(j);
 		}
 	}
 

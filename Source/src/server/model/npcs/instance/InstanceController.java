@@ -43,12 +43,12 @@ public class InstanceController {
 		}
 		for (ZoneInstance zi : ZoneInstance.values()) {
 			if (!player.getItems().playerHasItem(zi.getCurrency(), zi.getCost())) {
-				player.sendMessage("You don't have " + Misc.format(zi.getCost()) + " " +player.getItems().getItemName(zi.getCurrency()) +" to purchase this instance.");
+				player.getActionSender().sendMessage("You don't have " + Misc.format(zi.getCost()) + " " +player.getItems().getItemName(zi.getCurrency()) +" to purchase this instance.");
 				return;
 			}
 			player.getPA().movePlayer(zi.getLocX(), zi.getLocY(), player.playerId * 4);
 			player.getItems().deleteItem2(995, zi.getCost());
-			player.sendMessage("You have purchased this private instance zone for 1 kill only, good luck!");
+			player.getActionSender().sendMessage("You have purchased this private instance zone for 1 kill only, good luck!");
 		}
 		for (BossInstance bi : BossInstance.values()) {
 			Server.npcHandler.spawnNpc(player, bi.getNpcID(), player.absX + 4, player.absY, player.playerId * 4, 1, bi.getHP(), bi.maxHit(),

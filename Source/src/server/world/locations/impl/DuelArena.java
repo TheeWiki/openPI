@@ -7,52 +7,52 @@ public class DuelArena extends AbstractLocations
 {
 
 	@Override
-	public void sendFirstClickObject(Player c, int object) {
+	public void sendFirstClickObject(Player player, int object) {
 		switch(object)
 		{
 		case 3195:
-			c.sendMessage("To be added");
+			player.getActionSender().sendMessage("To be added");
 			break;
 		}
 	}
 
 	@Override
-	public void sendSecondClickObject(Player c, int object) {
+	public void sendSecondClickObject(Player player, int object) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendThirdClickObject(Player c, int object) {
+	public void sendThirdClickObject(Player player, int object) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void sendFirstClickNpc(Player c, int npc) {
+	public void sendFirstClickNpc(Player player, int npc) {
 		switch(npc)
 		{
 		case 963:
-			c.sendMessage("Statistic tracker soon");
+			player.getActionSender().sendMessage("Statistic tracker soon");
 			break;		
 		}
 	}
 
 	@Override
-	public void sendSecondClickNpc(Player c, int npc) {
+	public void sendSecondClickNpc(Player player, int npc) {
 		switch(npc)
 		{
 		case 961:
 		case 960:
 		case 959:
-			c.sendMessage("Healing soon");
+			player.getActionSender().sendMessage("Healing soon");
 			break;
 
 		}
 	}
 
 	@Override
-	public void sendThirdClickNpc(Player c, int npc) {
+	public void sendThirdClickNpc(Player player, int npc) {
 		// TODO Auto-generated method stub
 		
 	}

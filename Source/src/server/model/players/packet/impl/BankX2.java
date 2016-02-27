@@ -7,35 +7,35 @@ import server.model.players.packet.PacketType;
  **/
 public class BankX2 implements PacketType {
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
-		int Xamount = c.getInStream().readDWord();
+	public void processPacket(Player player, int packetType, int packetSize) {
+		int Xamount = player.getInStream().readDWord();
 		if (Xamount == 0)
 			Xamount = 1;
-		switch(c.xInterfaceId) {
+		switch(player.xInterfaceId) {
 			case 5064:
-			c.getItems().bankItem(c.playerItems[c.xRemoveSlot] , c.xRemoveSlot, Xamount);
+			player.getItems().bankItem(player.playerItems[player.xRemoveSlot] , player.xRemoveSlot, Xamount);
 			break;
 				
 			case 5382:
-			c.getItems().fromBank(c.bankItems[c.xRemoveSlot] , c.xRemoveSlot, Xamount);
+			player.getItems().fromBank(player.bankItems[player.xRemoveSlot] , player.xRemoveSlot, Xamount);
 			break;
 				
 			case 3322:
-			if(c.duelStatus <= 0) {
-            	c.getTradeAndDuel().tradeItem(c.xRemoveId, c.xRemoveSlot, Xamount);
+			if(player.duelStatus <= 0) {
+            	player.getTradeAndDuel().tradeItem(player.xRemoveId, player.xRemoveSlot, Xamount);
             } else {				
-				c.getTradeAndDuel().stakeItem(c.xRemoveId, c.xRemoveSlot, Xamount);
+				player.getTradeAndDuel().stakeItem(player.xRemoveId, player.xRemoveSlot, Xamount);
 			}  
 			break;
 				
 			case 3415: 
-			if(c.duelStatus <= 0) { 
-            	c.getTradeAndDuel().fromTrade(c.xRemoveId, c.xRemoveSlot, Xamount);
+			if(player.duelStatus <= 0) { 
+            	player.getTradeAndDuel().fromTrade(player.xRemoveId, player.xRemoveSlot, Xamount);
 			} 
 			break;
 				
 			case 6669:
-			c.getTradeAndDuel().fromDuel(c.xRemoveId, c.xRemoveSlot, Xamount);
+			player.getTradeAndDuel().fromDuel(player.xRemoveId, player.xRemoveSlot, Xamount);
 			break;			
 		}
 	}

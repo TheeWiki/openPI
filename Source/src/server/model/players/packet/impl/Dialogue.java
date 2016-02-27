@@ -6,15 +6,15 @@ import server.model.players.packet.PacketType;
 public class Dialogue implements PacketType {
 
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
-		if (c.getDialogue() != null) {
-			if (c.getDialogue().getNextDialogueId() > 0) {
-				c.getDialogue().sendDialogue(c,
-						c.getDialogue().getNextDialogueId());
+	public void processPacket(Player player, int packetType, int packetSize) {
+		if (player.getDialogue() != null) {
+			if (player.getDialogue().getNextDialogueId() > 0) {
+				player.getDialogue().sendDialogue(player,
+						player.getDialogue().getNextDialogueId());
 			} else {
-				c.getPA().removeAllWindows();
+				player.getPA().removeAllWindows();
 			}
 		}
-		c.getDH().sendDialogues(c.nextChat > 0 ? c.nextChat : 0, c.nextChat > 0 ? c.talkingNpc : -1);
+		player.getDH().sendDialogues(player.nextChat > 0 ? player.nextChat : 0, player.nextChat > 0 ? player.talkingNpc : -1);
 	}
 }

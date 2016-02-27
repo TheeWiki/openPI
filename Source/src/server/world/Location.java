@@ -128,11 +128,11 @@ public class Location {
 	 */
 	private boolean canTeleport(Player player) {
 		if (player.inWild() && player.wildLevel > Constants.NO_TELEPORT_WILD_LEVEL) {
-			player.sendMessage("You can't teleport above level "+ Constants.NO_TELEPORT_WILD_LEVEL + " in the wilderness.");
+			player.getActionSender().sendMessage("You can't teleport above level "+ Constants.NO_TELEPORT_WILD_LEVEL + " in the wilderness.");
 			return false;
 		}
 		if (System.currentTimeMillis() - player.teleBlockDelay < player.teleBlockLength) {
-			player.sendMessage("You are teleblocked and cannot teleport.");
+			player.getActionSender().sendMessage("You are teleblocked and cannot teleport.");
 			return false;
 		}
 		if (player.teleporting)

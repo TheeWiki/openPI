@@ -9,7 +9,7 @@ import server.model.players.packet.PacketType;
 public class SilentPacket implements PacketType {
 	
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
+	public void processPacket(Player player, int packetType, int packetSize) {
 //			System.out.println("Unknown Packed - [SIZE] - " + packetSize + " [TYPE]" + packetType);
 	}	
 }

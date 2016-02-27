@@ -52,7 +52,6 @@ public class PlayerHandler {
 	}
 
 	public static boolean isPlayerOn(String playerName) {
-		// synchronized (PlayerHandler.players) {
 		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
 			if (players[i] != null) {
 				if (players[i].playerName.equalsIgnoreCase(playerName)) {
@@ -61,11 +60,9 @@ public class PlayerHandler {
 			}
 		}
 		return false;
-		// }
 	}
 
 	public void process() {
-		// synchronized (lock) {
 		if (kickAllPlayers) {
 			for (int i = 1; i < Constants.MAX_PLAYERS; i++) {
 				if (players[i] != null) {
@@ -144,12 +141,10 @@ public class PlayerHandler {
 		}
 		if (updateRunning && (System.currentTimeMillis() - updateStartTime > (updateSeconds * 1000))) {
 			kickAllPlayers = true;
-			// }
 		}
 	}
 
 	public void updateNPC(Player plr, Stream str) {
-		// synchronized(plr) {
 		updateBlock.currentOffset = 0;
 
 		str.createFrameVarSizeWord(65);
@@ -194,13 +189,11 @@ public class PlayerHandler {
 			str.finishBitAccess();
 		}
 		str.endFrameVarSizeWord();
-		// }
 	}
 
 	private Stream updateBlock = new Stream(new byte[Constants.BUFFER_SIZE]);
 
 	public void updatePlayer(Player plr, Stream str) {
-		// synchronized(plr) {
 		updateBlock.currentOffset = 0;
 		if (updateRunning && !updateAnnounced) {
 			str.createFrame(114);
@@ -248,7 +241,6 @@ public class PlayerHandler {
 			str.finishBitAccess();
 
 		str.endFrameVarSizeWord();
-		// }
 	}
 
 	private void removePlayer(Player plr) {

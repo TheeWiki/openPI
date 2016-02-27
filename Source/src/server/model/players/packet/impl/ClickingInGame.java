@@ -10,7 +10,7 @@ import server.model.players.packet.PacketType;
 public class ClickingInGame implements PacketType {
 
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
+	public void processPacket(Player player, int packetType, int packetSize) {
 		
 	
 	}

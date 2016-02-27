@@ -6,8 +6,8 @@ import server.model.players.packet.PacketType;
 public class MusicPacket implements PacketType {
 
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
-		int id = c.getInStream().readDWord();
+	public void processPacket(Player player, int packetType, int packetSize) {
+		int id = player.getInStream().readDWord();
 		
 		switch(id)
 		{

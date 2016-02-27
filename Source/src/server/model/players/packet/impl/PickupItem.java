@@ -13,34 +13,34 @@ import server.model.players.packet.PacketType;
 public class PickupItem implements PacketType {
 
 	@Override
-	public void processPacket(final Player c, int packetType, int packetSize) {
-		c.walkingToItem = false;
-		c.pItemY = c.getInStream().readSignedWordBigEndian();
-		c.pItemId = c.getInStream().readUnsignedWord();
-		c.pItemX = c.getInStream().readSignedWordBigEndian();
-		if (Math.abs(c.getX() - c.pItemX) > 25 || Math.abs(c.getY() - c.pItemY) > 25) {
-			c.resetWalkingQueue();
+	public void processPacket(final Player player, int packetType, int packetSize) {
+		player.walkingToItem = false;
+		player.pItemY = player.getInStream().readSignedWordBigEndian();
+		player.pItemId = player.getInStream().readUnsignedWord();
+		player.pItemX = player.getInStream().readSignedWordBigEndian();
+		if (Math.abs(player.getX() - player.pItemX) > 25 || Math.abs(player.getY() - player.pItemY) > 25) {
+			player.resetWalkingQueue();
 			return;
 		}
-		c.getCombat().resetPlayerAttack();
-		if (c.getX() == c.pItemX && c.getY() == c.pItemY) {
-			Server.itemHandler.removeGroundItem(c, c.pItemId, c.pItemX, c.pItemY, true);
+		player.getCombat().resetPlayerAttack();
+		if (player.getX() == player.pItemX && player.getY() == player.pItemY) {
+			Server.itemHandler.removeGroundItem(player, player.pItemId, player.pItemX, player.pItemY, true);
 		} else {
-			c.walkingToItem = true;
-			CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
+			player.walkingToItem = true;
+			CycleEventHandler.getSingleton().addEvent(player, new CycleEvent() {
 				@Override
 				public void execute(CycleEventContainer container) {
-					if (!c.walkingToItem)
+					if (!player.walkingToItem)
 						container.stop();
-					if (c.getX() == c.pItemX && c.getY() == c.pItemY) {
-						Server.itemHandler.removeGroundItem(c, c.pItemId, c.pItemX, c.pItemY, true);
+					if (player.getX() == player.pItemX && player.getY() == player.pItemY) {
+						Server.itemHandler.removeGroundItem(player, player.pItemId, player.pItemX, player.pItemY, true);
 						container.stop();
 					}
 				}
 
 				@Override
 				public void stop() {
-					c.walkingToItem = false;
+					player.walkingToItem = false;
 				}
 			}, 1);
 		}

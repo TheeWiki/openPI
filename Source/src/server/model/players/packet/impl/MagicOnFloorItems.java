@@ -11,38 +11,38 @@ import server.model.players.skills.magic.Enchantment;
 public class MagicOnFloorItems implements PacketType {
 
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
-		int itemY = c.getInStream().readSignedWordBigEndian();
-		int itemId = c.getInStream().readUnsignedWord();
-		int itemX = c.getInStream().readSignedWordBigEndian();
+	public void processPacket(Player player, int packetType, int packetSize) {
+		int itemY = player.getInStream().readSignedWordBigEndian();
+		int itemId = player.getInStream().readUnsignedWord();
+		int itemX = player.getInStream().readSignedWordBigEndian();
 		@SuppressWarnings("unused")
-		int spellId = c.getInStream().readUnsignedWordA();
+		int spellId = player.getInStream().readUnsignedWordA();
 
 		if(!Server.itemHandler.itemExists(itemId, itemX, itemY)) {
-			c.stopMovement();
+			player.stopMovement();
 			return;
 		}
-		c.usingMagic = true;
-		if(!c.getCombat().checkMagicReqs(51)) {
-			c.stopMovement();
+		player.usingMagic = true;
+		if(!player.getCombat().checkMagicReqs(51)) {
+			player.stopMovement();
 			return;
 		}
 		
-		if(c.goodDistance(c.getX(), c.getY(), itemX, itemY, 12)) {
-			int offY = (c.getX() - itemX) * -1;
-			int offX = (c.getY() - itemY) * -1;
-			c.teleGrabX = itemX;
-			c.teleGrabY = itemY;
-			c.teleGrabItem = itemId;
-			c.turnPlayerTo(itemX, itemY);
-			c.teleGrabDelay = System.currentTimeMillis();
-			c.startAnimation(Enchantment.MAGIC_SPELLS[51][2]);
-			c.gfx100(Enchantment.MAGIC_SPELLS[51][3]);
-			c.getPA().createPlayersStillGfx(144, itemX, itemY, 0, 72);
-			c.getPA().createPlayersProjectile(c.getX(), c.getY(), offX, offY, 50, 70, Enchantment.MAGIC_SPELLS[51][4], 50, 10, 0, 50);
-			c.getPA().addSkillXP(Enchantment.MAGIC_SPELLS[51][7], 6);
-			c.getPA().refreshSkill(6);
-			c.stopMovement();
+		if(player.goodDistance(player.getX(), player.getY(), itemX, itemY, 12)) {
+			int offY = (player.getX() - itemX) * -1;
+			int offX = (player.getY() - itemY) * -1;
+			player.teleGrabX = itemX;
+			player.teleGrabY = itemY;
+			player.teleGrabItem = itemId;
+			player.turnPlayerTo(itemX, itemY);
+			player.teleGrabDelay = System.currentTimeMillis();
+			player.startAnimation(Enchantment.MAGIC_SPELLS[51][2]);
+			player.gfx100(Enchantment.MAGIC_SPELLS[51][3]);
+			player.getPA().createPlayersStillGfx(144, itemX, itemY, 0, 72);
+			player.getPA().createPlayersProjectile(player.getX(), player.getY(), offX, offY, 50, 70, Enchantment.MAGIC_SPELLS[51][4], 50, 10, 0, 50);
+			player.getPA().addSkillXP(Enchantment.MAGIC_SPELLS[51][7], 6);
+			player.getPA().refreshSkill(6);
+			player.stopMovement();
 		}
 	}
 

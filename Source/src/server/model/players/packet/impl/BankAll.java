@@ -11,60 +11,60 @@ import server.model.players.packet.PacketType;
 public class BankAll implements PacketType {
 
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
-	int removeSlot = c.getInStream().readUnsignedWordA();
-	int interfaceId = c.getInStream().readUnsignedWord();
-	int removeId = c.getInStream().readUnsignedWordA();
+	public void processPacket(Player player, int packetType, int packetSize) {
+	int removeSlot = player.getInStream().readUnsignedWordA();
+	int interfaceId = player.getInStream().readUnsignedWord();
+	int removeId = player.getInStream().readUnsignedWordA();
 	
 		switch(interfaceId){			
 			case 3900:
-			c.getShops().buyItem(removeId, removeSlot, 10);
+			player.getShops().buyItem(removeId, removeSlot, 10);
 			break;
 			
 			case 3823:
-			c.getShops().sellItem(removeId, removeSlot, 10);
+			player.getShops().sellItem(removeId, removeSlot, 10);
 			break;
 			
 			case 5064:
 			if (Item.itemStackable[removeId]) {
-				c.getItems().bankItem(c.playerItems[removeSlot] , removeSlot, c.playerItemsN[removeSlot]);
+				player.getItems().bankItem(player.playerItems[removeSlot] , removeSlot, player.playerItemsN[removeSlot]);
 			} else {
-				c.getItems().bankItem(c.playerItems[removeSlot] , removeSlot, c.getItems().itemAmount(c.playerItems[removeSlot]));
+				player.getItems().bankItem(player.playerItems[removeSlot] , removeSlot, player.getItems().itemAmount(player.playerItems[removeSlot]));
 			}
 			break;
 			
 			case 5382:
-			c.getItems().fromBank(c.bankItems[removeSlot] , removeSlot, c.bankItemsN[removeSlot]);
+			player.getItems().fromBank(player.bankItems[removeSlot] , removeSlot, player.bankItemsN[removeSlot]);
 			break;	
 			
 			case 3322:
-			if(c.duelStatus <= 0) { 
+			if(player.duelStatus <= 0) { 
 				if(Item.itemStackable[removeId]){
-					c.getTradeAndDuel().tradeItem(removeId, removeSlot, c.playerItemsN[removeSlot]);
+					player.getTradeAndDuel().tradeItem(removeId, removeSlot, player.playerItemsN[removeSlot]);
 		    	} else {
-					c.getTradeAndDuel().tradeItem(removeId, removeSlot, 28);  
+					player.getTradeAndDuel().tradeItem(removeId, removeSlot, 28);  
 				}
 			} else {
 				if(Item.itemStackable[removeId] || Item.itemIsNote[removeId]) {
-					c.getTradeAndDuel().stakeItem(removeId, removeSlot, c.playerItemsN[removeSlot]);
+					player.getTradeAndDuel().stakeItem(removeId, removeSlot, player.playerItemsN[removeSlot]);
 				} else {
-					c.getTradeAndDuel().stakeItem(removeId, removeSlot, 28);
+					player.getTradeAndDuel().stakeItem(removeId, removeSlot, 28);
 				}
 			}
 			break;
 			
 			case 3415: 
-			if(c.duelStatus <= 0) { 
+			if(player.duelStatus <= 0) { 
 				if(Item.itemStackable[removeId]) {
-					for (GameItem item : c.getTradeAndDuel().offeredItems) {
+					for (GameItem item : player.getTradeAndDuel().offeredItems) {
 						if(item.id == removeId) {
-							c.getTradeAndDuel().fromTrade(removeId, removeSlot, c.getTradeAndDuel().offeredItems.get(removeSlot).amount);
+							player.getTradeAndDuel().fromTrade(removeId, removeSlot, player.getTradeAndDuel().offeredItems.get(removeSlot).amount);
 						}
 					}
 				} else {
-					for (GameItem item : c.getTradeAndDuel().offeredItems) {
+					for (GameItem item : player.getTradeAndDuel().offeredItems) {
 						if(item.id == removeId) {
-							c.getTradeAndDuel().fromTrade(removeId, removeSlot, 28);
+							player.getTradeAndDuel().fromTrade(removeId, removeSlot, 28);
 						}
 					}
 				}
@@ -73,24 +73,24 @@ public class BankAll implements PacketType {
 			
 			case 7295:
 			if (Item.itemStackable[removeId]) {
-			c.getItems().bankItem(c.playerItems[removeSlot] , removeSlot, c.playerItemsN[removeSlot]);
-			c.getItems().resetItems(7423);
+			player.getItems().bankItem(player.playerItems[removeSlot] , removeSlot, player.playerItemsN[removeSlot]);
+			player.getItems().resetItems(7423);
 			} else {
-			c.getItems().bankItem(c.playerItems[removeSlot] , removeSlot, c.getItems().itemAmount(c.playerItems[removeSlot]));
-			c.getItems().resetItems(7423);
+			player.getItems().bankItem(player.playerItems[removeSlot] , removeSlot, player.getItems().itemAmount(player.playerItems[removeSlot]));
+			player.getItems().resetItems(7423);
 			}
 			break;
 			
 			case 6669:
 			if(Item.itemStackable[removeId] || Item.itemIsNote[removeId]) {
-				for (GameItem item : c.getTradeAndDuel().stakedItems) {
+				for (GameItem item : player.getTradeAndDuel().stakedItems) {
 					if(item.id == removeId) {
-						c.getTradeAndDuel().fromDuel(removeId, removeSlot, c.getTradeAndDuel().stakedItems.get(removeSlot).amount);
+						player.getTradeAndDuel().fromDuel(removeId, removeSlot, player.getTradeAndDuel().stakedItems.get(removeSlot).amount);
 					}
 				}
 						
 			} else {
-				c.getTradeAndDuel().fromDuel(removeId, removeSlot, 28);
+				player.getTradeAndDuel().fromDuel(removeId, removeSlot, 28);
 			}
 			break;
 

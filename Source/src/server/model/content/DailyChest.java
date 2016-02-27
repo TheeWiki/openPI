@@ -50,36 +50,36 @@ public class DailyChest {
 	 * 
 	 * TODO: tweak chance rates
 	 * 
-	 * @param c
+	 * @param player
 	 */
-	public static void checkChest(Player c) {
+	public static void checkChest(Player player) {
 		int chance = Misc.random(2);
-		if (System.currentTimeMillis() - c.foodDelay < DAY) {
-			c.sendMessage("Come back tomorrow to loot again.");
+		if (System.currentTimeMillis() - player.foodDelay < DAY) {
+			player.getActionSender().sendMessage("Come back tomorrow to loot again.");
 			return;
 		}
-		c.startAnimation(2247);
+		player.startAnimation(2247);
 		for (int regular = 0; regular < REGULAR.length; regular++) {
-			c.getItems().addItem(REGULAR[regular][0], REGULAR[regular][1]);
-			c.sendMessage("You search the chest and find.. " + c.getItems().getItemName(REGULAR[regular][0]));
+			player.getItems().addItem(REGULAR[regular][0], REGULAR[regular][1]);
+			player.getActionSender().sendMessage("You search the chest and find.. " + player.getItems().getItemName(REGULAR[regular][0]));
 		}
 		switch (chance) {
 		case 1:
 			for (int chance_low = 0; chance_low < LOW.length; chance_low++) {
-				c.getItems().addItem(LOW[chance_low][0], LOW[chance_low][1]);
-				c.sendMessage("You search the chest and find.. " + c.getItems().getItemName(LOW[chance_low][0]));
+				player.getItems().addItem(LOW[chance_low][0], LOW[chance_low][1]);
+				player.getActionSender().sendMessage("You search the chest and find.. " + player.getItems().getItemName(LOW[chance_low][0]));
 			}
 			break;
 		case 2:
 			for (int chance_medium = 0; chance_medium < MEDIUM.length; chance_medium++) {
-				c.getItems().addItem(MEDIUM[chance_medium][0], MEDIUM[chance_medium][1]);
-				c.sendMessage("You search the chest and find.. " + c.getItems().getItemName(MEDIUM[chance_medium][0]));
+				player.getItems().addItem(MEDIUM[chance_medium][0], MEDIUM[chance_medium][1]);
+				player.getActionSender().sendMessage("You search the chest and find.. " + player.getItems().getItemName(MEDIUM[chance_medium][0]));
 			}
 			break;
 		case 3:
 			for (int chance_high = 0; chance_high < HIGH.length; chance_high++) {
-				c.getItems().addItem(HIGH[chance_high][0], HIGH[chance_high][1]);
-				c.sendMessage("You search the chest and find.. " + c.getItems().getItemName(HIGH[chance_high][0]));
+				player.getItems().addItem(HIGH[chance_high][0], HIGH[chance_high][1]);
+				player.getActionSender().sendMessage("You search the chest and find.. " + player.getItems().getItemName(HIGH[chance_high][0]));
 			}
 			break;
 		}

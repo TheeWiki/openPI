@@ -64,23 +64,23 @@ public class WallSafes {
 	/**
 	 * Generates random rewards via Misc.random
 	 * 
-	 * @param c
+	 * @param player
 	 *            The player or Player
 	 */
-	public static void getRandomReward(Player c) {
+	public static void getRandomReward(Player player) {
 		int random = Misc.random(19);
 		if (random < 12) {
-			c.startAnimation(UNLOCKING_ANIM);
-			c.getPA().addSkillXP(XP * SkillIndex.THIEVING.getExpRatio(), SkillIndex.THIEVING.getSkillId());
+			player.startAnimation(UNLOCKING_ANIM);
+			player.getPA().addSkillXP(XP * SkillIndex.THIEVING.getExpRatio(), SkillIndex.THIEVING.getSkillId());
 			if (random < 4) {
 				int baseAmt = ((random % 10) > 1) ? 2500 : 1000;
 				int addAmt = ((random % 10) > 1) ? ((random % 10) * 2000) : (random * 1500);
-				c.getItems().addItem(COINS, baseAmt + addAmt + Misc.random(2500));
+				player.getItems().addItem(COINS, baseAmt + addAmt + Misc.random(2500));
 			} else
-				c.getItems().addItem(1609 + (random * 2), QUANTITY);
+				player.getItems().addItem(1609 + (random * 2), QUANTITY);
 		} else
-			appendHit(Misc.random(random - 11), c);
-		c.sendMessage(random < 12 ? SUCCESSFUL : UNSUCCESSFUL);
+			appendHit(Misc.random(random - 11), player);
+		player.getActionSender().sendMessage(random < 12 ? SUCCESSFUL : UNSUCCESSFUL);
 	}
 
 	/**
@@ -88,34 +88,34 @@ public class WallSafes {
 	 * 
 	 * @param damage
 	 *            The damage
-	 * @param c
+	 * @param player
 	 *            The player or Player
 	 */
-	public static void appendHit(int damage, Player c) {
-		PlayerHandler.players[c.playerId].setHitDiff(damage);
-		PlayerHandler.players[c.playerId].playerLevel[3] -= damage;
-		c.getPA().refreshSkill(3);
-		PlayerHandler.players[c.playerId].setHitUpdateRequired(true);
-		PlayerHandler.players[c.playerId].updateRequired = true;
+	public static void appendHit(int damage, Player player) {
+		PlayerHandler.players[player.playerId].setHitDiff(damage);
+		PlayerHandler.players[player.playerId].playerLevel[3] -= damage;
+		player.getPA().refreshSkill(3);
+		PlayerHandler.players[player.playerId].setHitUpdateRequired(true);
+		PlayerHandler.players[player.playerId].updateRequired = true;
 	}
 
 	/**
 	 * Checks the wall safe
 	 * 
-	 * @param c
+	 * @param player
 	 *            The player or Player
 	 * @param objectType
 	 *            Object ID
 	 */
-	public static void checkWallSafe(Player c) {
-		if (c.playerLevel[SkillIndex.THIEVING.getSkillId()] >= LEVEL_REQUIRED) {
-			if (System.currentTimeMillis() - c.lastThieve < 2500)
+	public static void checkWallSafe(Player player) {
+		if (player.playerLevel[SkillIndex.THIEVING.getSkillId()] >= LEVEL_REQUIRED) {
+			if (System.currentTimeMillis() - player.lastThieve < 2500)
 				return;
-			c.lastThieve = System.currentTimeMillis();
-			c.turnPlayerTo(c.objectX, c.objectY);
-			getRandomReward(c);
+			player.lastThieve = System.currentTimeMillis();
+			player.turnPlayerTo(player.objectX, player.objectY);
+			getRandomReward(player);
 		} else {
-			c.sendMessage(AT_LEAST);
+			player.getActionSender().sendMessage(AT_LEAST);
 		}
 	}
 

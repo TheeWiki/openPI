@@ -12,10 +12,10 @@ import server.util.Misc;
  */
 public class Sounds {
 
-	Player c;
+	Player player;
 
-	public Sounds(Player c) {
-		this.c = c;
+	public Sounds(Player player) {
+		this.player = player;
 	}
 
 	/**

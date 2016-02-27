@@ -6,22 +6,22 @@ public class AwardSkillcape {
 
 	/**
 	 * Skill cape awarding
-	 * @param c
+	 * @param player
 	 * @param arg
 	 */
-	public static void executeAward(Player c) {
+	public static void executeAward(Player player) {
 		for (SkillMasters sm : SkillMasters.values()) {
-			if (c.getItems().freeSlots() < 1 ) {
-				c.sendMessage("You don't have enough space");
+			if (player.getItems().freeSlots() < 1 ) {
+				player.getActionSender().sendMessage("You don't have enough space");
 				return;
 			}
-			if (c.playerLevel[SkillIndex.getSkills(c.getShops().get99Count())] < 99)
+			if (player.playerLevel[SkillIndex.getSkills(player.getShops().get99Count())] < 99)
 			{
-				c.sendMessage("You need to master all skills first..");
+				player.getActionSender().sendMessage("You need to master all skills first..");
 				return;
 			}
-			c.getDH().sendNpcChat1("Here's you Skillcape & Hood " + c.playerName + ".", sm.getNpcId(), sm.getName());
-			c.nextChat = 0;
+			player.getDH().sendNpcChat1("Here's you Skillcape & Hood " + player.playerName + ".", sm.getNpcId(), sm.getName());
+			player.nextChat = 0;
 		}
 	}
 }

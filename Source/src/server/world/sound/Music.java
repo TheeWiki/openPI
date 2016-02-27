@@ -34,49 +34,49 @@ public class Music {
        
         /**
          * 
-         * @param c
+         * @param player
          */
-        public static void playMusic(Player c) {
-                Music song = getMusicId(c);
-                if(c.auto == 0)
+        public static void playMusic(Player player) {
+                Music song = getMusicId(player);
+                if(player.auto == 0)
                 	return;
                 if (song == null) {
-                        c.outStream.createFrame(74);
-                        c.outStream.writeWordBigEndian(324);
-                        c.getPA().sendFrame126("Somewhere", 4439);
+                        player.outStream.createFrame(74);
+                        player.outStream.writeWordBigEndian(324);
+                        player.getPA().sendFrame126("Somewhere", 4439);
                         return;
                 }
-                c.outStream.createFrame(74);
-                c.outStream.writeWordBigEndian(song.music);
+                player.outStream.createFrame(74);
+                player.outStream.writeWordBigEndian(song.music);
                 for (int i = 0; i < songs.length; i++) {
                         if (unlocked[songs[i].array] == false && which == songs[i]) {
-                                c.sendMessage("@red@You have unlocked the song: "+songs[i].name);
+                                player.getActionSender().sendMessage("@red@You have unlocked the song: "+songs[i].name);
                                 unlocked[songs[i].array] = true;
-                                updateList(c, songs[i].tabId);
+                                updateList(player, songs[i].tabId);
                         }
                         if (which == songs[i])
-                        	c.getPA().sendFrame126(songs[i].name, 4439);
+                        	player.getPA().sendFrame126(songs[i].name, 4439);
                 }
         }
         
         /**
          * 
-         * @param c
+         * @param player
          * @param id
          */
-        public static void updateList(Player c, int id) {
-               c.getPA().sendColor(id, 0 << 10 | 255 << 5 | 0);
+        public static void updateList(Player player, int id) {
+               player.getPA().sendColor(id, 0 << 10 | 255 << 5 | 0);
         }
          
         public static Music which;
         
         /**
          * 
-         * @param c
+         * @param player
          * @return
          */
-        private static Music getMusicId(Player c) {
-                int x = c.absX, y = c.absY;
+        private static Music getMusicId(Player player) {
+                int x = player.absX, y = player.absY;
                 for (int i = 0; i < songs.length; i++) {
                         if (x >= songs[i].swX && x <= songs[i].neX && y >= songs[i].swY && y <= songs[i].neY) {
                                 which = songs[i];

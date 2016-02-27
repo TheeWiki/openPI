@@ -6,8 +6,8 @@ import server.model.players.packet.PacketType;
 public class ChangeRegion implements PacketType {
 
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
-		c.getPA().removeObjects();
+	public void processPacket(Player player, int packetType, int packetSize) {
+		player.getPA().removeObjects();
 		//Server.objectManager.loadObjects(c);
 	}
 

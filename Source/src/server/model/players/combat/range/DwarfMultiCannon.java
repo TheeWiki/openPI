@@ -26,17 +26,19 @@ public class DwarfMultiCannon {
      */
     ;
     private Direction s = Direction.SOUTH_EAST;
+    
     private Player player;
     public DwarfMultiCannon(Player Player) {
         this.player = Player;
     }
+    
     private static final int CANNON_BASE = 7, CANNON_STAND = 8, CANNON_BARRELS = 9, CANNON = 6;
     private static final int CANNONBALL = 2, CANNON_BASE_ID = 6, CANNON_STAND_ID = 8, CANNON_BARRELS_ID = 10, CANNON_FURNACE_ID = 12;
 
     public void setUpCannon() {
     	if (!canSetUpCannon() && player.playerLevel[SkillIndex.RANGE.getSkillId()] < 60)
     	{
-    		player.sendMessage("You don't have a Range level of 60 to set the cannon up");
+    		player.getActionSender().sendMessage("You don't have a Range level of 60 to set the cannon up");
     		return;
     	}
 //        if (!canSetUpCannon())
@@ -46,7 +48,7 @@ public class DwarfMultiCannon {
             public void execute(EventContainer setup) {
                 if (!canSetUpCannon())
                     setup.stop();
-                player.sendMessage("@blu@You begin to assemble the cannon..");
+                player.getActionSender().sendMessage("@blu@You begin to assemble the cannon..");
                 switch (time) {
                 case 4: 
                     if (!player.getItems().playerHasItem(CANNON_BASE_ID))
@@ -135,7 +137,7 @@ public class DwarfMultiCannon {
             }
         }
         if (cannon == null) {
-            player.sendMessage("This is not your cannon!");
+            player.getActionSender().sendMessage("This is not your cannon!");
             return;
         }
         if (player.cannonIsShooting) {
@@ -143,14 +145,14 @@ public class DwarfMultiCannon {
                 int amountOfCannonBalls = player.getItems().getItemAmount(CANNONBALL) > 30 ? 30 : player.getItems().getItemAmount(CANNONBALL);
                 player.cannonBalls += amountOfCannonBalls;
             } else {
-                player.sendMessage("Your cannon is already firing!");
+                player.getActionSender().sendMessage("Your cannon is already firing!");
                 return;
             }
         }
         if (player.cannonBalls < 1) {
             int amountOfCannonBalls = player.getItems().getItemAmount(CANNONBALL) > 30 ? 30 : player.getItems().getItemAmount(CANNONBALL);
             if (amountOfCannonBalls < 1) {
-                player.sendMessage("You need ammo to shoot this cannon!");
+                player.getActionSender().sendMessage("You need ammo to shoot this cannon!");
                 return;
             }
             player.cannonBalls = amountOfCannonBalls;
@@ -168,7 +170,7 @@ public class DwarfMultiCannon {
                    
                     player.cannonIsShooting = false;
                     fire.stop();
-                    player.sendMessage("Your cannon has run out of ammo!");
+                    player.getActionSender().sendMessage("Your cannon has run out of ammo!");
                 } else {
                     //player.rotation++;
                    // rotateCannon(cannon);
@@ -187,7 +189,7 @@ public class DwarfMultiCannon {
             }
         }
         if (cannon == null) {
-            player.sendMessage("This is not your cannon!");
+            player.getActionSender().sendMessage("This is not your cannon!");
             return;
         }
         player.startAnimation(827);
@@ -200,7 +202,7 @@ public class DwarfMultiCannon {
                 player.getItems().addItem(CANNON_BASE_ID, 1);
             else {
 //                player.getItems().addItemToBank(CANNON_BASE_ID, 1);
-                player.sendMessage("You did not have enough inventory space, so this cannon part was banked.");
+                player.getActionSender().sendMessage("You did not have enough inventory space, so this cannon part was banked.");
             }
             player.setUpBase = false;
         }
@@ -209,7 +211,7 @@ public class DwarfMultiCannon {
                 player.getItems().addItem(CANNON_STAND_ID, 1);
             else {
 //                player.getItems().addItemToBank(CANNON_STAND_ID, 1);
-                player.sendMessage("You did not have enough inventory space, so this cannon part was banked.");
+                player.getActionSender().sendMessage("You did not have enough inventory space, so this cannon part was banked.");
             }
             player.setUpStand = false;
         }
@@ -218,7 +220,7 @@ public class DwarfMultiCannon {
                 player.getItems().addItem(CANNON_BARRELS_ID, 1);
             else {
 //                player.getItems().addItemToBank(CANNON_BARRELS_ID, 1);
-                player.sendMessage("You did not have enough inventory space, so this cannon part was banked.");
+                player.getActionSender().sendMessage("You did not have enough inventory space, so this cannon part was banked.");
             }
             player.setUpBarrels = false;
         }
@@ -227,7 +229,7 @@ public class DwarfMultiCannon {
                 player.getItems().addItem(CANNON_FURNACE_ID, 1);
             else {
 //                player.getItems().addItemToBank(CANNON_FURNACE_ID, 1);
-                player.sendMessage("You did not have enough inventory space, so this cannon part was banked.");
+                player.getActionSender().sendMessage("You did not have enough inventory space, so this cannon part was banked.");
             }
             player.setUpFurnace = false;
         }
@@ -236,7 +238,7 @@ public class DwarfMultiCannon {
                 player.getItems().addItem(CANNONBALL, player.cannonBalls);
             else {
 //                player.getItems().addItemToBank(CANNONBALL, player.cannonBalls);
-                player.sendMessage("You did not have enough inventory space, so your cannonballs have been banked.");
+                player.getActionSender().sendMessage("You did not have enough inventory space, so your cannonballs have been banked.");
             }
             player.cannonBalls = 0;
         }
@@ -263,7 +265,7 @@ public class DwarfMultiCannon {
                 } else if (!b) {
                    
                     container.stop();
-                     player.sendMessage("Your cannon has ran out of balls!");
+                     player.getActionSender().sendMessage("Your cannon has ran out of balls!");
                 }
             }
 
@@ -380,11 +382,11 @@ public class DwarfMultiCannon {
 
     private final boolean inGoodArea() {
         /*if (ClanWars.inSafeFFA) {
-			player.sendMessage("You are not allowed to set up a cannon in clan wars!");
+			player.getActionSender().sendMessage("You are not allowed to set up a cannon in clan wars!");
 			return false;
 		}
 		if (BountyHunter.inBH(player)) {
-			player.sendMessage("You are not allowed to set up a cannon in bounty hunter!");
+			player.getActionSender().sendMessage("You are not allowed to set up a cannon in bounty hunter!");
 			return false;
 		}*/
         return true;

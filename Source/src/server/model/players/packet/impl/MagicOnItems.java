@@ -10,16 +10,16 @@ import server.model.players.packet.PacketType;
 public class MagicOnItems implements PacketType {
 
 	@Override
-	public void processPacket(Player c, int packetType, int packetSize) {
-		int slot = c.getInStream().readSignedWord();
-		int itemId = c.getInStream().readSignedWordA();
+	public void processPacket(Player player, int packetType, int packetSize) {
+		int slot = player.getInStream().readSignedWord();
+		int itemId = player.getInStream().readSignedWordA();
 		@SuppressWarnings("unused")
-		int junk = c.getInStream().readSignedWord();
-		int spellId = c.getInStream().readSignedWordA();
+		int junk = player.getInStream().readSignedWord();
+		int spellId = player.getInStream().readSignedWordA();
 		
-		c.usingMagic = true;
-		c.getPA().magicOnItems(slot, itemId, spellId);
-		c.usingMagic = false;
+		player.usingMagic = true;
+		player.getPA().magicOnItems(slot, itemId, spellId);
+		player.usingMagic = false;
 
 	}
 
