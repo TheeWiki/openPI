@@ -6,15 +6,15 @@ import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.frame.FrameDecoder;
 
-import server.model.players.Client;
+import server.model.players.packet.Size;
 import server.net.Packet;
 import server.net.Packet.Type;
 import server.util.ISAACCipher;
 
 public class RS2Decoder extends FrameDecoder {
-	
+
 	private final ISAACCipher cipher;
-	
+
 	private int opcode = -1;
 	private int size = -1;
 
@@ -28,7 +28,7 @@ public class RS2Decoder extends FrameDecoder {
 			if (buffer.readableBytes() >= 1) {
 				opcode = buffer.readByte() & 0xFF;
 				opcode = (opcode - cipher.getNextValue()) & 0xFF;
-				size = Client.PACKET_SIZES[opcode];
+				size = Size.PACKET_SIZES[opcode];
 			} else {
 				return null;
 			}
@@ -54,5 +54,4 @@ public class RS2Decoder extends FrameDecoder {
 		}
 		return null;
 	}
-
 }

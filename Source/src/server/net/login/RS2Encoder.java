@@ -12,5 +12,4 @@ public class RS2Encoder extends OneToOneEncoder {
 	protected Object encode(ChannelHandlerContext ctx, Channel channel, Object object) throws Exception {
 		return ((Packet)object).getPayload();
 	}
-
 }

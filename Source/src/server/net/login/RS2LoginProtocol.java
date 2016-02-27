@@ -90,8 +90,8 @@ public class RS2LoginProtocol extends FrameDecoder {
 			final long serverHalf = buffer.readLong();
 			final int[] isaacSeed = { (int) (clientHalf >> 32), (int) clientHalf, (int) (serverHalf >> 32), (int) serverHalf };
 			final ISAACCipher inCipher = new ISAACCipher(isaacSeed);
-			for (int i = 0; i < isaacSeed.length; i++)
-				isaacSeed[i] += 50;
+			for (int seed = 0; seed < isaacSeed.length; seed++)
+				isaacSeed[seed] += 50;
 			final ISAACCipher outCipher = new ISAACCipher(isaacSeed);
 			final int version = buffer.readInt();
 			final String name = Misc.formatPlayerName(Misc.getRS2String(buffer));
@@ -110,70 +110,75 @@ public class RS2LoginProtocol extends FrameDecoder {
 		if (name.length() > 12) {
 			returnCode = 8;
 		}
-		Client cl = new Client(channel, -1);
-		cl.playerName = name;
-		cl.playerName2 = cl.playerName;
-		cl.playerPass = pass;
-		cl.outStream.packetEncryption = outCipher;
-		cl.saveCharacter = false;
-		cl.isActive = true;
-		if (Connection.isNamedBanned(cl.playerName)) {
+		Client requester = new Client(channel, -1);
+		requester.playerName = name;
+		requester.playerName2 = requester.playerName;
+		requester.playerPass = pass;
+		requester.outStream.packetEncryption = outCipher;
+		requester.saveCharacter = false;
+		requester.isActive = true;
+		
+		if (Connection.isNamedBanned(requester.playerName)) {
+			System.out.println(requester.playerName + " is a banned account!");
 			returnCode = 4;
 		}
 		if (PlayerHandler.isPlayerOn(name)) {
+			System.out.println(name + " is online already");
 			returnCode = 5;
 		}
 		if (PlayerHandler.getPlayerCount() >= Constants.MAX_PLAYERS) {
+			System.out.println("Player count exceeds accepted limit!");
 			returnCode = 7;
 		}
 		if (Server.UpdateServer) {
+			System.out.println("Server updating (?)");
 			returnCode = 14;
 		}
 		if (returnCode == 2) {
-			int load = PlayerSave.loadGame(cl, cl.playerName, cl.playerPass);
+			int load = PlayerSave.loadGame(requester, requester.playerName, requester.playerPass);
 			if (load == 0)
-				cl.addStarter = true;
+				requester.addStarter = true;
 			if (load == 3) {
 				returnCode = 3;
-				cl.saveFile = false;
+				requester.saveFile = false;
 			} else {
-				for (int i = 0; i < cl.playerEquipment.length; i++) {
-					if (cl.playerEquipment[i] == 0) {
-						cl.playerEquipment[i] = -1;
-						cl.playerEquipmentN[i] = 0;
+				for (int i = 0; i < requester.playerEquipment.length; i++) {
+					if (requester.playerEquipment[i] == 0) {
+						requester.playerEquipment[i] = -1;
+						requester.playerEquipmentN[i] = 0;
 					}
 				}
-				if (!Server.playerHandler.newPlayerClient(cl)) {
+				if (!Server.playerHandler.newPlayerClient(requester)) {
 					returnCode = 7;
-					cl.saveFile = false;
+					requester.saveFile = false;
 				} else {
-					cl.saveFile = true;
+					requester.saveFile = true;
 				}
 			}
 		}
 		if(returnCode == 2) {
-			cl.saveCharacter = true;
-			cl.packetType = -1;
-			cl.packetSize = 0;
-			final PacketBuilder bldr = new PacketBuilder();
-			bldr.put((byte) 2);
-			if (cl.playerRights == 3) {
-				bldr.put((byte) 2);
+			requester.saveCharacter = true;
+			requester.packetType = -1;
+			requester.packetSize = 0;
+			final PacketBuilder builder = new PacketBuilder();
+			builder.put((byte) 2);
+			if (requester.playerRights == 3) {
+				builder.put((byte) 2);
 			} else {
-				bldr.put((byte) cl.playerRights);
+				builder.put((byte) requester.playerRights);
 			}
-			bldr.put((byte) 0);
-			channel.write(bldr.toPacket());
+			builder.put((byte) 0);
+			channel.write(builder.toPacket());
 		} else {
-			System.out.println("returncode:" + returnCode);
+			System.out.println("returncode: " + returnCode);
 			sendReturnCode(channel, returnCode);
 			return null;
 		}
-		synchronized (PlayerHandler.lock) {
-			cl.initialize();
-			cl.initialized = true;
-		}
-		return cl;
+//		synchronized (PlayerHandler.lock) {
+			requester.initialize();
+			requester.initialized = true;
+//		}
+		return requester;
 	}
 
 	public static void sendReturnCode(final Channel channel, final int code) {
@@ -184,5 +189,4 @@ public class RS2LoginProtocol extends FrameDecoder {
 			}
 		});
 	}
-
 }
