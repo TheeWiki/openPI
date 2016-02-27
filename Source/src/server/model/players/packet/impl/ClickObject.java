@@ -26,7 +26,7 @@ public class ClickObject implements PacketType {
 			c.objectY = c.getInStream().readUnsignedWordA();
 			c.objectDistance = 1;
 			if(c.goodDistance(c.getX(), c.getY(), c.objectX, c.objectY, 1)) {
-				if (Doors.getSingleton().handleDoor(c.objectId, c.objectX, c.objectY, c.heightLevel)) {
+				if (Doors.getSingleton().handleDoor(c.objectId, c.objectX, c.objectY, c.heightLevel)) { 
 				}
 			}
 			
@@ -207,6 +207,9 @@ public class ClickObject implements PacketType {
 				case 1306: //yew
 				c.objectDistance = 3;
 				break;
+				case 2513:
+					c.getRG().fireAtTarget();
+					break;
 				default:
 				c.objectDistance = 1;
 				c.objectXOffset = 0;
@@ -214,14 +217,14 @@ public class ClickObject implements PacketType {
 				break;		
 			}
 			if(c.goodDistance(c.objectX+c.objectXOffset, c.objectY+c.objectYOffset, c.getX(), c.getY(), c.objectDistance)) {
-				c.getActions().firstClickObject(c.objectId, c.objectX, c.objectY);
+				c.getActions().firstClickObject(c, c.objectId, c.objectX, c.objectY);
 			} else {
 				c.clickObjectType = 1;
 				CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
 					@Override
 					public void execute(CycleEventContainer container) {
 						if(c.clickObjectType == 1 && c.goodDistance(c.objectX + c.objectXOffset, c.objectY + c.objectYOffset, c.getX(), c.getY(), c.objectDistance)) {
-							c.getActions().firstClickObject(c.objectId, c.objectX, c.objectY);
+							c.getActions().firstClickObject(c, c.objectId, c.objectX, c.objectY);
 							container.stop();
 						}
 						if(c.clickObjectType > 1 || c.clickObjectType == 0)
@@ -261,14 +264,14 @@ public class ClickObject implements PacketType {
 				
 			}
 			if(c.goodDistance(c.objectX+c.objectXOffset, c.objectY+c.objectYOffset, c.getX(), c.getY(), c.objectDistance)) { 
-				c.getActions().secondClickObject(c.objectId, c.objectX, c.objectY);
+				c.getActions().secondClickObject(c, c.objectId, c.objectX, c.objectY);
 			} else {
 				c.clickObjectType = 2;
 				CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
 					@Override
 					public void execute(CycleEventContainer container) {
 						if(c.clickObjectType == 2 && c.goodDistance(c.objectX + c.objectXOffset, c.objectY + c.objectYOffset, c.getX(), c.getY(), c.objectDistance)) {
-							c.getActions().secondClickObject(c.objectId, c.objectX, c.objectY);
+							c.getActions().secondClickObject(c, c.objectId, c.objectX, c.objectY);
 							container.stop();
 						}
 						if(c.clickObjectType < 2 || c.clickObjectType > 2)
@@ -299,14 +302,14 @@ public class ClickObject implements PacketType {
 				break;		
 			}
 			if(c.goodDistance(c.objectX+c.objectXOffset, c.objectY+c.objectYOffset, c.getX(), c.getY(), c.objectDistance)) { 
-				c.getActions().secondClickObject(c.objectId, c.objectX, c.objectY);
+				c.getActions().secondClickObject(c, c.objectId, c.objectX, c.objectY);
 			} else {
 				c.clickObjectType = 3;
 				CycleEventHandler.getSingleton().addEvent(c, new CycleEvent() {
 					@Override
 					public void execute(CycleEventContainer container) {
 						if(c.clickObjectType == 3 && c.goodDistance(c.objectX + c.objectXOffset, c.objectY + c.objectYOffset, c.getX(), c.getY(), c.objectDistance)) {
-							c.getActions().thirdClickObject(c.objectId, c.objectX, c.objectY);
+							c.getActions().thirdClickObject(c, c.objectId, c.objectX, c.objectY);
 							container.stop();
 						}
 						if(c.clickObjectType < 3)
