@@ -1,6 +1,7 @@
 package server.model.players.skills.herblore;
 
 import server.model.players.Client;
+import server.util.Misc;
 
 /**
  * @author Sanity
@@ -69,5 +70,5 @@ public class PotionMixing {
 			}
 		}
 	}
-
+	public int lol = Misc.random(55);
 }

@@ -1,5 +1,6 @@
 package server.model.players.skills.herblore;
 
+import server.model.minigames.duel_arena.Rules;
 import server.model.players.Client;
 
 /**
@@ -15,7 +16,7 @@ public class Potions {
 	}
 
 	public void handlePotion(int itemId, int slot) {
-		if (c.duelRule[5]) {
+		if (c.duelRule[Rules.DRINK_RULE.getRule()]) {
 			c.sendMessage("You may not drink potions in this duel.");
 			return;
 		}
@@ -239,7 +240,7 @@ public class Potions {
 	}
 
 	public void doTheBrew(int itemId, int replaceItem, int slot) {
-		if (c.duelRule[6]) {
+		if (c.duelRule[Rules.EAT_RULE.getRule()]) {
 			c.sendMessage("You may not eat in this duel.");
 			return;
 		}
