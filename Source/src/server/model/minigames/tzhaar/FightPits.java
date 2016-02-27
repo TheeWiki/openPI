@@ -1,4 +1,4 @@
-package server.model.minigames;
+package server.model.minigames.tzhaar;
 
 import server.Server;
 import server.model.players.Client;
@@ -59,9 +59,9 @@ public class FightPits {
 			if (Server.playerHandler.players[j] != null) {
 				Client c = (Client) Server.playerHandler.players[j];
 				if (c.getPA().inPitsWait()) {
-					c.getPA().sendFrame126("Next Game Begins In : " + ((gameStartTimer * 3) + (gameTime * 3)) + " seconds.", 6570);
+					c.getPA().sendFrame126("     Next Game Begins In : " + ((gameStartTimer * 3) + (gameTime * 3)) + " seconds.", 6570);
 					c.getPA().sendFrame126("Champion: " + pitsChampion, 6572);
-					c.getPA().sendFrame126("", 6664); 
+					c.getPA().sendFrame126("Current waiting players: " + getWaitAmount() , 6664); 
 					c.getPA().walkableInterface(6673);
 				}	
 			}	
@@ -71,18 +71,22 @@ public class FightPits {
 	@SuppressWarnings("static-access")
 	public void startGame() {
 		if (getWaitAmount() < 2) {
-			gameStartTimer = GAME_START_TIMER/2;
-			//System.out.println("Unable to start fight pits game due to lack of players.");
+			//lack of players
 			return;
 		}	
-		for (int j = 0; j < Server.playerHandler.players.length; j++) {
-			if (Server.playerHandler.players[j] != null )  {
-					Client c = (Client)Server.playerHandler.players[j];
-					if (c.getPA().inPitsWait())
-						addToPitsGame(j);
+		for (int player = 0; player < Server.playerHandler.players.length; player++) {
+			if (Server.playerHandler.players[player] != null )  {
+					Client c = (Client)Server.playerHandler.players[player];
+//					Server.npcHandler.spawnNpc(c,2743,2391,5186,0,0,200,0,0,100, true, false);
+//					Server.npcHandler.spawnNpc(c,2743,2385,5145,0,0,200,0,0,100, true, false);
+//					Server.npcHandler.spawnNpc(c,2743,2409,5155,0,0,200,0,0,100, true, false);
+//					
+//					Server.npcHandler.spawnNpc(c,2741,2392,5137,0,0,200,0,0,100, true, false);
+//					Server.npcHandler.spawnNpc(c,2741,2403,5140,0,0,200,0,0,100, true, false);
+				if (c.getPA().inPitsWait())
+					addToPitsGame(player);
 			}	
 		}
-		System.out.println("Fight Pits game started.");
 		gameStartTimer = GAME_START_TIMER + GAME_TIMER;
 		gameTime = GAME_TIMER;
 	}
@@ -135,7 +139,6 @@ public class FightPits {
 		pitsSlot = 0;
 		gameStartTimer = GAME_START_TIMER;
 		gameTime = -1;
-		System.out.println("Fight Pits game ended.");
 	}
 	
 	private int pitsSlot = 0;
