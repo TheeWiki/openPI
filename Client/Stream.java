@@ -32,7 +32,18 @@ public final class Stream extends NodeSub {
 		buffer = abyte0;
 			currentOffset = 0;
 	}
-
+	public String readNewString() {
+		int i = currentOffset;
+		while (buffer[currentOffset++] != 0)
+			;
+		return new String(buffer, i, currentOffset - i - 1);
+	}
+	final int v(int i) {
+		currentOffset += 3;
+		return (0xff & buffer[currentOffset - 3] << 16)
+				+ (0xff & buffer[currentOffset - 2] << 8)
+				+ (0xff & buffer[currentOffset - 1]);
+	}
 	public void createFrame(int i) {
 		//System.out.println("Frame: " + i);
 		buffer[currentOffset++] = (byte)(i + encryption.getNextKey());
