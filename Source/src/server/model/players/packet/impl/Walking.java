@@ -1,6 +1,7 @@
 package server.model.players.packet.impl;
 
 import server.Server;
+import server.model.minigames.duel_arena.Rules;
 import server.model.players.Client;
 import server.model.players.packet.PacketType;
 
@@ -27,7 +28,7 @@ public class Walking implements PacketType {
 				c.clickObjectType = 0;
 		}		
 		c.getPA().removeAllWindows();
-		if(c.duelRule[1] && c.duelStatus == 5) {
+		if(c.duelRule[Rules.WALKING_RULE.getRule()] && c.duelStatus == 5) {
 			if(Server.playerHandler.players[c.duelingWith] != null) { 
 				if(!c.goodDistance(c.getX(), c.getY(), Server.playerHandler.players[c.duelingWith].getX(), Server.playerHandler.players[c.duelingWith].getY(), 1) || c.attackTimer == 0) {
 					c.sendMessage("Walking has been disabled in this duel!");
