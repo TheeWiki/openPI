@@ -28,7 +28,10 @@ public final class Player extends Entity {
 				model_3.anIntArrayArray1657 = null;
 				if(spotAnim.anInt410 != 128 || spotAnim.anInt411 != 128)
 					model_3.method478(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
-				model_3.method479(64 + spotAnim.anInt413, 850 + spotAnim.anInt414, -30, -50, -30, true);
+				if (ToggleOptions.HD_CHARACTERS.isToggled())
+					model_2.method479(74 + spotAnim.anInt413, 1550 + spotAnim.anInt414, -50, -110, -50, true);
+				else	
+					model_2.method479(64 + spotAnim.anInt413, 850 + spotAnim.anInt414, -30, -50, -30, true);
 				Model aclass30_sub2_sub4_sub6_1s[] = {
 						model, model_3
 				};
@@ -37,9 +40,9 @@ public final class Player extends Entity {
 		}
 		if(aModel_1714 != null)
 		{
-			if(client.loopCycle >= anInt1708)
+			if(Client.loopCycle >= anInt1708)
 				aModel_1714 = null;
-			if(client.loopCycle >= anInt1707 && client.loopCycle < anInt1708)
+			if(Client.loopCycle >= anInt1707 && Client.loopCycle < anInt1708)
 			{
 				Model model_1 = aModel_1714;
 				model_1.method475(anInt1711 - super.x, anInt1712 - anInt1709, anInt1713 - super.y);
@@ -116,7 +119,7 @@ public final class Player extends Entity {
 		for(int l = 0; l < 5; l++)
 		{
 			int j1 = stream.readUnsignedByte();
-			if(j1 < 0 || j1 >= client.anIntArrayArray1003[l].length)
+			if(j1 < 0 || j1 >= Client.anIntArrayArray1003[l].length)
 				j1 = 0;
 			anIntArray1700[l] = j1;
 		}
@@ -259,12 +262,20 @@ public final class Player extends Entity {
 			for(int j3 = 0; j3 < 5; j3++)
 				if(anIntArray1700[j3] != 0)
 				{
-					model_1.method476(client.anIntArrayArray1003[j3][0], client.anIntArrayArray1003[j3][anIntArray1700[j3]]);
+					model_1.method476(Client.anIntArrayArray1003[j3][0], Client.anIntArrayArray1003[j3][anIntArray1700[j3]]);
 					if(j3 == 1)
-						model_1.method476(client.anIntArray1204[0], client.anIntArray1204[anIntArray1700[j3]]);
+						model_1.method476(Client.anIntArray1204[0], Client.anIntArray1204[anIntArray1700[j3]]);
 				}
 
 			model_1.method469();
+			System.setProperty("sun.java2d.d3d", "true");
+			System.setProperty("sun.java2d.d3dtexbpp", "32");
+			System.setProperty("sun.java2d.ddforcevram", "true");
+			System.setProperty("sun.java2d.translaccel", "true");
+			System.setProperty("sun.java2d.pmoffscreen", "true");
+			System.setProperty("sun.java2d.opengl", "true");
+			model_1.method479(86, 895, -90, -462, -90, true);
+		} else {
 			model_1.method479(64, 850, -30, -50, -30, true);
 			mruNodes.removeFromCache(model_1, l);
 			aLong1697 = l;
@@ -331,9 +342,9 @@ public final class Player extends Entity {
 		for(int j1 = 0; j1 < 5; j1++)
 			if(anIntArray1700[j1] != 0)
 			{
-				model.method476(client.anIntArrayArray1003[j1][0], client.anIntArrayArray1003[j1][anIntArray1700[j1]]);
+				model.method476(Client.anIntArrayArray1003[j1][0], Client.anIntArrayArray1003[j1][anIntArray1700[j1]]);
 				if(j1 == 1)
-					model.method476(client.anIntArray1204[0], client.anIntArray1204[anIntArray1700[j1]]);
+					model.method476(Client.anIntArray1204[0], Client.anIntArray1204[anIntArray1700[j1]]);
 			}
 
 		return model;
