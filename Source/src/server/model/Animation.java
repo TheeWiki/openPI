@@ -47,7 +47,7 @@ public class Animation {
 	 * @param delay
 	 *            The delay.
 	 */
-	private Animation(int id, int delay) {
+	public Animation(int id, int delay) {
 		this.id = id;
 		this.delay = delay;
 	}
@@ -107,8 +107,7 @@ public class Animation {
 		ANGER_1(Animation.create(614)), // - Angry
 		ANGER_2(Animation.create(615)), // - Angry
 		ANGER_3(Animation.create(616)), // - Angry
-		ANGER_4(Animation.create(617)) // - Angry
-		;
+		ANGER_4(Animation.create(617)); // - Angry
 
 		/**
 		 * A map of facial animations.
@@ -150,5 +149,5 @@ public class Animation {
 		}
 
 	}
-	
+
 }
