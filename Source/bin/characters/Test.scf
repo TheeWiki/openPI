@@ -4,8 +4,8 @@ character-password = 12345
 
 [CHARACTER]
 character-height = 0
-character-posx = 2611
-character-posy = 3091
+character-posx = 2604
+character-posy = 3087
 character-rights = 0
 crystal-bow-shots = 0
 skull-timer = -1
@@ -34,7 +34,7 @@ void = 0	0	0	0	0
 
 [EQUIPMENT]
 character-equip = 0	-1	1	
-character-equip = 1	-1	0	
+character-equip = 1	-1	1	
 character-equip = 2	-1	1	
 character-equip = 3	-1	0	
 character-equip = 4	-1	1	

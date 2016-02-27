@@ -1,9 +1,9 @@
 from server.util import Plugin
 
-def bonues(c):
+def bonues(player):
 
 # Writes the item bonuses
 
-		c.getItems().resetBonus()
-		c.getItems().getBonus()
-		c.getItems().writeBonus()
+		player.getItems().resetBonus()
+		player.getItems().getBonus()
+		player.getItems().writeBonus()

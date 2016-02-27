@@ -1,5 +1,5 @@
 from server.util import Plugin
 
 # Handles the click item of the Dwarf multi cannon
-def itemClick_6(c, itemId, itemSlot):
-		c.getCannon().setUpCannon();
+def itemClick_6(player, itemId, itemSlot):
+		player.getCannon().setUpCannon();
