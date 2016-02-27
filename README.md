@@ -15,6 +15,7 @@ Overview of what this repository contains
 | openPI Server     | Java        |
 | openPI Launcher     | Visual Basic        |
 | openPI Client Updater     | Java        |
+| Server Plugins     | Python        |
 
 Library dependancies used
 
