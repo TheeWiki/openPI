@@ -2,12 +2,15 @@ package server.util;
 
 import server.Constants;
 
+/**
+ * TODO: Debug and Identify {@link #Stream()} functions
+ * @author Dennis
+ *
+ */
 public class Stream {
 
     
-	public Stream() {
-            
-	}
+	public Stream() { }
 
 	public Stream(byte abyte0[]) {
 		buffer = abyte0;
@@ -21,7 +24,6 @@ public class Stream {
 	public byte readSignedByteC() {
 		return (byte) (-buffer[currentOffset++]);
 	}
-
 	public byte readSignedByteS() {
 		return (byte) (128 - buffer[currentOffset++]);
 	}
