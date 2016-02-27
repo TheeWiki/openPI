@@ -764,7 +764,7 @@ final class WorldController {
 	    }
 	    Class43 class43 = class30_sub3.aClass43_1311;
 	    if(class43 != null) {
-	        if (Constants.HD_MINIMAP && class43.anInt716 != 12345678) {
+	        if (ToggleOptions.HD_MINIMAP.isToggled() && class43.anInt716 != 12345678) {
 	        	if (class43.anInt722 == 0) {
 	                return;
 	            }
