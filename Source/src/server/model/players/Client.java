@@ -1,36 +1,33 @@
 package server.model.players;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.Future;
 
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 
 import server.Constants;
 import server.Server;
-import server.event.CycleEvent;
-import server.event.CycleEventContainer;
 import server.event.CycleEventHandler;
-import server.model.EmoteHandler;
-import server.model.content.AccountStatistics;
+import server.model.EntityType;
+import server.model.content.Membership;
+import server.model.dialogues.DialogueHandler;
+import server.model.dialogues.NpcDialogue;
 import server.model.items.ItemAssistant;
-import server.model.npcs.NPC;
+import server.model.minigames.castle_wars.CastleWars;
 import server.model.players.combat.CombatAssistant;
-import server.model.players.combat.PlayerKilling;
+import server.model.players.combat.range.CannonCoords;
+import server.model.players.combat.range.DwarfMultiCannon;
 import server.model.players.packet.PacketHandler;
-import server.model.players.skills.cooking.Food;
-import server.model.players.skills.herblore.PotionMixing;
-import server.model.players.skills.herblore.Potions;
-import server.model.players.skills.prayer.BuryBones;
-import server.model.players.skills.prayer.Draining;
+import server.model.players.skills.guilds.RangersGuild;
 import server.model.shops.ShopAssistant;
 import server.net.Packet;
 import server.net.Packet.Type;
 import server.net.login.SideBars;
 import server.util.Misc;
+import server.util.Plugin;
 import server.util.Stream;
+import server.world.sound.Sounds;
 
 public class Client extends Player {
 
@@ -42,82 +39,47 @@ public class Client extends Player {
 	private TradeAndDuel tradeAndDuel = new TradeAndDuel(this);
 	private PlayerAssistant playerAssistant = new PlayerAssistant(this);
 	private CombatAssistant combatAssistant = new CombatAssistant(this);
-	private ActionHandler actionHandler = new ActionHandler(this);
-	private PlayerKilling playerKilling = new PlayerKilling(this);
+	private ActionHandler actionHandler = new ActionHandler();
 	private DialogueHandler dialogueHandler = new DialogueHandler(this);
 	private Queue<Packet> queuedPackets = new LinkedList<Packet>();
-	private Potions potions = new Potions(this);
-	private PotionMixing potionMixing = new PotionMixing(this);
-	public int lowMemoryVersion = 0;
-	public int timeOutCounter = 0;
-	public int returnCode = 2;
-	private Future<?> currentTask;
-	public int currentRegion = 0;
 
 	public Client(Channel s, int _playerId) {
 		super(_playerId);
 		this.session = s;
-		synchronized (this) {
-			outStream = new Stream(new byte[Constants.BUFFER_SIZE]);
-			outStream.currentOffset = 0;
+		outStream = new Stream(new byte[Constants.BUFFER_SIZE]);
+		outStream.currentOffset = 0;
 
-			inStream = new Stream(new byte[Constants.BUFFER_SIZE]);
-			inStream.currentOffset = 0;
-			buffer = new byte[Constants.BUFFER_SIZE];
-		}
+		inStream = new Stream(new byte[Constants.BUFFER_SIZE]);
+		inStream.currentOffset = 0;
+		buffer = new byte[Constants.BUFFER_SIZE];
 	}
 
-	/**
-	 * Shakes the player's screen. Parameters 1, 0, 0, 0 to reset.
-	 * 
-	 * @param verticleAmount
-	 *            How far the up and down shaking goes (1-4).
-	 * @param verticleSpeed
-	 *            How fast the up and down shaking is.
-	 * @param horizontalAmount
-	 *            How far the left-right tilting goes.
-	 * @param horizontalSpeed
-	 *            How fast the right-left tiling goes..
-	 */
-	public void shakeScreen(int verticleAmount, int verticleSpeed, int horizontalAmount, int horizontalSpeed) {
-		outStream.createFrame(35); // Creates frame 35.
-		outStream.writeByte(verticleAmount);
-		outStream.writeByte(verticleSpeed);
-		outStream.writeByte(horizontalAmount);
-		outStream.writeByte(horizontalSpeed);
+	public DwarfMultiCannon cannon = new DwarfMultiCannon(this);
+
+	public DwarfMultiCannon getCannon() {
+		return cannon;
 	}
 
-	/*
-	 * Resets the shaking of the player's screen.
-	 */
-	public void resetShaking() {
-		shakeScreen(1, 0, 0, 0);
+	public boolean shooting;
+
+	private final CannonCoords cannonCoords = new CannonCoords(this);
+
+	public CannonCoords getCannonCoords() {
+		return cannonCoords;
+	}
+
+	private Membership members = new Membership();
+
+	public Membership membership() {
+		return members;
 	}
 
 	public boolean updateItems = false;
-
-	private HashMap<String, Object> attributes = new HashMap<String, Object>();
-
-	public void setAttribute(String key, Object value) {
-		attributes.put(key, value);
-	}
-
-	@SuppressWarnings("unchecked")
-	public <T> T getAttribute(String key) {
-		return (T) attributes.get(key);
-	}
-
-	@SuppressWarnings("unchecked")
-	public <T> T getAttribute(String key, T fail) {
-		T t = (T) attributes.get(key);
-		if (t != null) {
-			return t;
-		}
-		return fail;
-	}
 	
-	public void removeAttribute(String key) {
-		attributes.remove(key);
+	private Attributes attributes = new Attributes();
+	public Attributes getAttributes()
+	{
+		return attributes;
 	}
 
 	public void flushOutStream() {
@@ -132,54 +94,20 @@ public class Client extends Player {
 
 	}
 
-	public void sendClan(String name, String message, String clan, int rights) {
-		outStream.createFrameVarSizeWord(217);
-		outStream.writeString(name);
-		outStream.writeString(message);
-		outStream.writeString(clan);
-		outStream.writeWord(rights);
-		outStream.endFrameVarSize();
-	}
-
-	public static final int PACKET_SIZES[] = { 0, 0, 0, 1, -1, 0, 0, 0, 0, 0, // 0
-			0, 0, 0, 0, 8, 0, 6, 2, 2, 0, // 10
-			0, 2, 0, 6, 0, 12, 0, 0, 0, 0, // 20
-			0, 0, 0, 0, 0, 8, 4, 0, 0, 2, // 30
-			2, 6, 0, 6, 0, -1, 0, 0, 0, 0, // 40
-			0, 0, 0, 12, 0, 0, 0, 8, 8, 12, // 50
-			8, 8, 0, 0, 0, 0, 0, 0, 0, 0, // 60
-			6, 0, 2, 2, 8, 6, 0, -1, 0, 6, // 70
-			0, 0, 0, 0, 0, 1, 4, 6, 0, 0, // 80
-			0, 0, 0, 0, 0, 3, 0, 0, -1, 0, // 90
-			0, 13, 0, -1, 0, 0, 0, 0, 0, 0, // 100
-			0, 0, 0, 0, 0, 0, 0, 6, 0, 0, // 110
-			1, 0, 6, 0, 0, 0, -1, 0, 2, 6, // 120
-			0, 4, 6, 8, 0, 6, 0, 0, 0, 2, // 130
-			0, 0, 0, 0, 0, 6, 0, 0, 0, 0, // 140
-			0, 0, 1, 2, 0, 2, 6, 0, 0, 0, // 150
-			0, 0, 0, 0, -1, -1, 0, 0, 0, 0, // 160
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 170
-			0, 8, 0, 3, 0, 2, 0, 0, 8, 1, // 180
-			0, 0, 12, 0, 0, 0, 0, 0, 0, 0, // 190
-			2, 0, 0, 0, 0, 0, 0, 0, 4, 0, // 200
-			4, 0, 0, 0, 7, 8, 0, 0, 10, 0, // 210
-			0, 0, 0, 0, 0, 0, -1, 0, 6, 0, // 220
-			1, 0, 0, 0, 6, 0, 6, 8, 1, 0, // 230
-			0, 4, 0, 0, 0, 0, -1, 0, -1, 4, // 240
-			0, 0, 6, 6, 0, 0, 0 // 250
-	};
-
 	public void destruct() {
 		if (session == null)
 			return;
 		Server.panel.removeEntity(playerName);
-		// PlayerSaving.getSingleton().requestSave(playerId);
-		getPA().removeFromCW();
-		if (inPits)
+		if (CastleWars.isInCwWait(this)) {
+			CastleWars.leaveWaitingRoom(this);
+		}
+		if (CastleWars.isInCw(this)) {
+			CastleWars.removePlayerFromCw(this);
+		}
+		if (inPits) {
 			Server.fightPits.removePlayerFromPits(playerId);
-		if (clanId >= 0)
-			Server.clanChat.leaveClan(playerId, clanId);
-		Misc.println("[DEREGISTERED]: " + playerName + "");
+		}
+		Misc.println("[DESERIALIZED]: " + playerName);
 		CycleEventHandler.getSingleton().stopEvents(this);
 		disconnected = true;
 		session.close();
@@ -192,7 +120,6 @@ public class Client extends Player {
 	}
 
 	public void sendMessage(String s) {
-		// synchronized (this) {
 		if (getOutStream() != null) {
 			outStream.createFrameVarSize(253);
 			outStream.writeString(s);
@@ -202,7 +129,6 @@ public class Client extends Player {
 	}
 
 	public void setSidebarInterface(int menuId, int form) {
-		// synchronized (this) {
 		if (getOutStream() != null) {
 			outStream.createFrame(71);
 			outStream.writeWord(form);
@@ -213,89 +139,84 @@ public class Client extends Player {
 
 	@SuppressWarnings("static-access")
 	public void initialize() {
-		Server.panel.addEntity(playerName);
 		outStream.createFrame(249);
 		outStream.writeByteA(1); // 1 for members, zero for free
 		outStream.writeWordBigEndianA(playerId);
-		for (int j = 0; j < Server.playerHandler.players.length; j++) {
-			if (j == playerId)
+		for (int player = 0; player < Server.playerHandler.players.length; player++) {
+			if (player == playerId)
 				continue;
-			if (Server.playerHandler.players[j] != null) {
-				if (Server.playerHandler.players[j].playerName.equalsIgnoreCase(playerName))
+			if (Server.playerHandler.players[player] != null) {
+				if (Server.playerHandler.players[player].playerName.equalsIgnoreCase(playerName))
 					disconnected = true;
 			}
 		}
-		for (int i = 0; i < 25; i++) {
-			getPA().setSkillLevel(i, playerLevel[i], playerXP[i]);
-			getPA().refreshSkill(i);
+		for (int skill = 0; skill < 21; skill++) {
+			getPA().setSkillLevel(skill, playerLevel[skill], playerXP[skill]);
+			getPA().refreshSkill(skill);
 		}
-		for (int p = 0; p < PRAYER.length; p++) { // reset prayer glows
-			prayerActive[p] = false;
-			getPA().sendFrame36(PRAYER_GLOW[p], 0);
+//		IntStream.range(0, 25).forEach(skill -> //lambda expression
+//		{
+//			getPA().setSkillLevel(skill, playerLevel[skill], playerXP[skill]);
+//			getPA().refreshSkill(skill);
+//		});
+		for (int prayerId = 0; prayerId < PRAYER.length; prayerId++) {
+			prayerActive[prayerId] = false;
+			getPA().sendFrame36(PRAYER_GLOW[prayerId], 0);
 		}
-		getPA().handleWeaponStyle();
-		getPA().handleLoginText();
-		accountFlagged = getPA().checkForFlags();
-		// getPA().sendFrame36(43, fightMode-1);
+
+		isRunning2 = !isRunning2;
+		int off = isRunning2 == false ? 0 : 1;
+		getPA().sendFrame36(173, off);
+
+		runEnergyTime = System.currentTimeMillis();
+		getPA().sendFrame126(runEnergy + "%", 149);
+		getPA().sendFrame126("10m kg", 184);
+		getPA().sendFrame126("QP: " + questPoints, 3985);
+		
+		// getPA().sendFrame36(43, fightMode-1); // ??
+		getPA().sendFrame36(172, autoRet == 1 ? 0 : 1);
+		getPA().sendFrame36(166, 3); //brightness
 		getPA().sendFrame36(108, 0);// resets autocast button
-		getPA().sendFrame36(172, 1);
 		getPA().sendFrame107(); // reset screen
 		getPA().setChatOptions(0, 0, 0); // reset private messaging options
-		
-		for (int i = 0; i < 13; i++) {
-			final SideBars sidebars = SideBars.getOrdinal(i);
-			setSidebarInterface(sidebars.getSideBar(), sidebars.getInterfaceId());
+
+		for (SideBars sb : SideBars.values()) {
+			setSidebarInterface(sb.getSideBar(), sb.getInterfaceId());
 		}
-		
-		correctCoordinates();
-		sendMessage("Welcome to " + Constants.SERVER_NAME);
 		getPA().showOption(4, 0, "Trade With", 3);
 		getPA().showOption(5, 0, "Follow", 4);
-		getItems().resetItems(3214);
-		getItems().sendWeapon(playerEquipment[playerWeapon], getItems().getItemName(playerEquipment[playerWeapon]));
-		getItems().resetBonus();
-		getItems().getBonus();
-		getItems().writeBonus();
-		getItems().setEquipment(playerEquipment[playerHat], 1, playerHat);
-		getItems().setEquipment(playerEquipment[playerCape], 1, playerCape);
-		getItems().setEquipment(playerEquipment[playerAmulet], 1, playerAmulet);
-		getItems().setEquipment(playerEquipment[playerArrows], playerEquipmentN[playerArrows], playerArrows);
-		getItems().setEquipment(playerEquipment[playerChest], 1, playerChest);
-		getItems().setEquipment(playerEquipment[playerShield], 1, playerShield);
-		getItems().setEquipment(playerEquipment[playerLegs], 1, playerLegs);
-		getItems().setEquipment(playerEquipment[playerHands], 1, playerHands);
-		getItems().setEquipment(playerEquipment[playerFeet], 1, playerFeet);
-		getItems().setEquipment(playerEquipment[playerRing], 1, playerRing);
-		getItems().setEquipment(playerEquipment[playerWeapon], playerEquipmentN[playerWeapon], playerWeapon);
-		getItems().sendWeapon(getEquipment()[playerWeapon], getItems().getItemName(getEquipment()[playerWeapon]));
-		getPA().logIntoPM();
-		getItems().addSpecialBar(playerEquipment[playerWeapon]);
-		saveTimer = Constants.SAVE_TIMER;
-		saveCharacter = true;
-		Misc.println("[REGISTERED]: " + playerName + "");
-		handler.updatePlayer(this, outStream);
-		handler.updateNPC(this, outStream);
-		flushOutStream();
-		getPA().clearClanChat();
-		getPA().resetFollow();
-		if (addStarter)
-			getPA().addStarter();
-		if (autoRet == 1)
-			getPA().sendFrame36(172, 1);
-		else
-			getPA().sendFrame36(172, 0);
+		getItems().resetItems(3214); // inventory updating
+
+		// this string is used in the Quest tab, as well as Equipment tab
+		// getPA().sendFrame126("@cya@Quest Name?", 1677);
+		Misc.println("[SERIALIZED]: " + playerName);
+		setSidebarInterface(SideBars.REGULAR_MAGIC_TAB.getSideBar(), playerMagicBook == 0 ? SideBars.REGULAR_MAGIC_TAB.getInterfaceId() : SideBars.ANCIENT_MAGIC_TAB.getInterfaceId());
+		if (addStarter) {
+			Starter.newPlayer(this);
+		}
+		Plugin.execute("login", this);
+		Plugin.execute("bonues", this);
+		Plugin.execute("logintext", this);
+		Plugin.execute("musictab", this);
+		Plugin.execute("panelupdate", this);
+		Plugin.execute("resetfollowers", this);
+		Plugin.execute("weaponstyles", this);
+		Plugin.execute("pmaccess", this);
+		
+		update();
 	}
 
 	public void update() {
-		// synchronized (this) {
 		handler.updatePlayer(this, outStream);
 		handler.updateNPC(this, outStream);
 		flushOutStream();
-
 	}
+	private RangersGuild rangersGuild = new RangersGuild(this);
 
+	public RangersGuild getRG() {
+		return rangersGuild;
+	}
 	public void logout() {
-		// synchronized (this) {
 		if (System.currentTimeMillis() - logoutDelay > 10000) {
 			outStream.createFrame(109);
 			CycleEventHandler.getSingleton().stopEvents(this);
@@ -303,7 +224,17 @@ public class Client extends Player {
 		} else {
 			sendMessage("You must wait a few seconds from being out of combat to logout.");
 		}
+	}
 
+	int points;
+
+	public void addPoints(int amt) {
+		if (points + amt < 25000) {
+			points += amt;
+		} else {
+			points = 25000;
+		}
+		sendMessage("You receive " + amt + " points and now have a total of " + points + " openPI points.");
 	}
 
 	public int packetSize = 0, packetType = -1;
@@ -311,25 +242,28 @@ public class Client extends Player {
 	@SuppressWarnings("static-access")
 	public void process() {
 
-		if (this.updateItems)
-			this.getItems().resetItems(3214);
+	
 		if (System.currentTimeMillis() - specDelay > Constants.INCREASE_SPECIAL_AMOUNT) {
 			specDelay = System.currentTimeMillis();
 			if (specAmount < 10) {
 				specAmount += .5;
 				if (specAmount > 10)
 					specAmount = 10;
-				getItems().addSpecialBar(playerEquipment[playerWeapon]);
+				getItems().addSpecialBar(playerEquipment[EquipmentListener.WEAPON_SLOT.getSlot()]);
 			}
 		}
-
-		if (followId > 0) {
+		if ((runEnergy < 100 && ((!isRunning && !isRunning2) || !isMoving))
+				&& System.currentTimeMillis() - runEnergyTime > Constants.RUN_ENERGY_GAIN) {
+			runEnergyTime = System.currentTimeMillis();
+			runEnergy++;
+			getPA().sendFrame126(runEnergy + "%", 149);
+		}
+		if (followId > EntityType.PLAYER.getEntityValue()) {
 			getPA().followPlayer();
-		} else if (followId2 > 0) {
+		} else if (followId2 > EntityType.NPC.getEntityValue()) {
 			getPA().followNpc();
 		}
-		Draining.handlePrayerDrain(this);
-		
+
 		if (System.currentTimeMillis() - singleCombatDelay > 3300) {
 			underAttackBy = 0;
 		}
@@ -369,7 +303,10 @@ public class Client extends Player {
 				getPA().sendFrame126("@yel@Level: " + wildLevel, 199);
 			}
 			getPA().showOption(3, 0, "Attack", 1);
-		} else if (inDuelArena()) {
+		} else {
+			getPA().sendFrame126(" ", 199);
+		}
+		if (inDuelArena()) {
 			getPA().walkableInterface(201);
 			if (duelStatus == 5) {
 				getPA().showOption(3, 0, "Attack", 1);
@@ -382,14 +319,14 @@ public class Client extends Player {
 			getPA().walkableInterface(4535);
 		} else if (inCwGame || inPits) {
 			getPA().showOption(3, 0, "Attack", 1);
-		} else if (getPA().inPitsWait()) {
-			getPA().showOption(3, 0, "Null", 1);
-		} else if (!inCwWait) {
-			getPA().sendFrame99(0);
+		}
+		if (CastleWars.isInCw(this) || inPits) {
+			getPA().showOption(3, 0, "Attack", 1);
+		} else if (!inDuelArena() && !CastleWars.isInCw(this) && !CastleWars.isInCwWait(this) && !inWild() && !getPA().inPitsWait() && !inBarrows()) {
 			getPA().walkableInterface(-1);
+			getPA().sendFrame99(0);
 			getPA().showOption(3, 0, "Null", 1);
 		}
-
 		if (!hasMultiSign && inMulti()) {
 			hasMultiSign = true;
 			getPA().multiWay(1);
@@ -504,29 +441,28 @@ public class Client extends Player {
 				}
 			}
 		}
+		Plugin.execute("process", this);
+	}
+	private static Sounds sounds = new Sounds(null);
+	
+	public Sounds getSound()
+	{
+		return sounds;
 	}
 
-	public void setCurrentTask(Future<?> task) {
-		currentTask = task;
-	}
-
-	public Future<?> getCurrentTask() {
-		return currentTask;
-	}
-
-	public synchronized Stream getInStream() {
+	public Stream getInStream() {
 		return inStream;
 	}
 
-	public synchronized int getPacketType() {
+	public int getPacketType() {
 		return packetType;
 	}
 
-	public synchronized int getPacketSize() {
+	public int getPacketSize() {
 		return packetSize;
 	}
 
-	public synchronized Stream getOutStream() {
+	public Stream getOutStream() {
 		return outStream;
 	}
 
@@ -558,115 +494,28 @@ public class Client extends Player {
 		return actionHandler;
 	}
 
-	public PlayerKilling getKill() {
-		return playerKilling;
-	}
-
 	public Channel getSession() {
 		return session;
-	}
-
-	public Potions getPotions() {
-		return potions;
-	}
-
-	public PotionMixing getPotMixing() {
-		return potionMixing;
-	}
-	private BuryBones buryBones = new BuryBones(this);
-
-	public BuryBones getBones() {
-		return buryBones;
-	}
-
-	private boolean isBusy = false;
-	private boolean isBusyHP = false;
-	public boolean isBusyFollow = false;
-
-	public boolean checkBusy() {
-		/*
-		 * if (getCombat().isFighting()) { return true; }
-		 */
-		if (isBusy) {
-			// actionAssistant.sendMessage("You are too busy to do that.");
-		}
-		return isBusy;
-	}
-
-	public boolean checkBusyHP() {
-		return isBusyHP;
-	}
-
-	public boolean checkBusyFollow() {
-		return isBusyFollow;
-	}
-
-	public void setBusy(boolean isBusy) {
-		this.isBusy = isBusy;
-	}
-
-	public boolean isBusy() {
-		return isBusy;
-	}
-
-	public void setBusyFollow(boolean isBusyFollow) {
-		this.isBusyFollow = isBusyFollow;
-	}
-
-	public void setBusyHP(boolean isBusyHP) {
-		this.isBusyHP = isBusyHP;
-	}
-
-	public boolean isBusyHP() {
-		return isBusyHP;
-	}
-
-	public boolean isBusyFollow() {
-		return isBusyFollow;
-	}
-
-	private boolean canWalk = true;
-
-	public boolean canWalk() {
-		return canWalk;
-	}
-
-	private EmoteHandler emoteHandler = new EmoteHandler(this);
-
-	public EmoteHandler getEmoteHandler() {
-		return emoteHandler;
-	}
-
-	public void setCanWalk(boolean canWalk) {
-		this.canWalk = canWalk;
 	}
 
 	public PlayerAssistant getPlayerAssistant() {
 		return playerAssistant;
 	}
-	public AccountStatistics killloger = new AccountStatistics();
-	public AccountStatistics getAccountStatistics()
-	{
-		return killloger;
-	}
-	/**
-	 * End of Skill Constructors
-	 */
-
-	public void queueMessage(Packet arg1) {
+	
+	public void queueMessage(Packet packet) {
 		synchronized (queuedPackets) {
-			queuedPackets.add(arg1);
+			queuedPackets.add(packet);
 		}
 	}
 
 	public boolean processQueuedPackets() {
 		synchronized (queuedPackets) {
-			Packet p = null;
-			while ((p = queuedPackets.poll()) != null) {
+			Packet packet = null;
+			while ((packet = queuedPackets.poll()) != null) {
 				inStream.currentOffset = 0;
-				packetType = p.getOpcode();
-				packetSize = p.getLength();
-				inStream.buffer = p.getPayload().array();
+				packetType = packet.getOpcode();
+				packetSize = packet.getLength();
+				inStream.buffer = packet.getPayload().array();
 				if (packetType > 0) {
 					PacketHandler.processPacket(this, packetType, packetSize);
 				}
@@ -674,7 +523,7 @@ public class Client extends Player {
 		}
 		return true;
 	}
-	
+
 	public Client getClient(String name) {
 		name = name.toLowerCase();
 		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
@@ -700,38 +549,13 @@ public class Client extends Player {
 		return validClient(getClient(id));
 	}
 
-	public boolean validClient(String name) {
-		return validClient(getClient(name));
-	}
-
 	public boolean validClient(Client client) {
 		return (client != null && !client.disconnected);
 	}
-
-	public boolean validNpc(int index) {
-		if (index < 0 || index >= Constants.MAX_NPCS) {
-			return false;
-		}
-		NPC n = getNpc(index);
-		if (n != null) {
-			return true;
-		}
-		return false;
+	private NpcDialogue dialogue = null;
+	public NpcDialogue getDialogue() {
+		return dialogue;
 	}
-
-	@SuppressWarnings("static-access")
-	public NPC getNpc(int index) {
-		return ((NPC) Server.npcHandler.npcs[index]);
-	}
-
-	public void yell(String s) {
-		for (int i = 0; i < Constants.MAX_PLAYERS; i++) {
-			if (validClient(i)) {
-				getClient(i).sendMessage(s);
-			}
-		}
-	}
-
 	public void puzzleBarrow(Client c) {
 		getPA().sendFrame246(4545, 250, 6833);
 		getPA().sendFrame126("1.", 4553);
@@ -746,44 +570,9 @@ public class Client extends Player {
 		getPA().sendFrame246(4552, 250, 6830);
 		getPA().showInterface(4543);
 	}
-
-	public void correctCoordinates() {
-		if (inPcGame()) {
-			getPA().movePlayer(2657, 2639, 0);
-		}
-		if (inFightCaves()) {
-			getPA().movePlayer(absX, absY, playerId * 4);
-			sendMessage("Your wave will start in 10 seconds.");
-			CycleEventHandler.getSingleton().addEvent(this, new CycleEvent() {
-				@SuppressWarnings("static-access")
-				@Override
-				public void execute(CycleEventContainer container) {
-					Server.fightCaves.spawnNextWave((Client) Server.playerHandler.players[playerId]);
-					container.stop();
-				}
-
-				@Override
-				public void stop() {
-
-				}
-			}, 20);
-
-		}
-
-	}
-
-	public void setIsSkilling(boolean isSkilling) {
-		this.isSkilling = isSkilling;
-	}
-
-	public boolean getIsSkilling() {
-		return isSkilling;
-	}
-
-	private boolean isSkilling;
-
-	public int duelWins = 0, duelLoses = 0, teleHome = 0, specsUsed = 0, foodEaten = 0, potsDrank = 0, emotesPerformed = 0, timesVoted = 0, votesClaimed = 0,
-			timesMuted = 0, timesBanned = 0, prayersAcivated = 0, mbOpened = 0, itemsUpgraded = 0, kills = 0, deaths = 0;
-	public int altarPrayed;
-	
+	public int nextChat = 0;
+	public boolean zombieSpawned;
+	public boolean treeSpawned;
+	public boolean golemSpawned;
+	public boolean trollSpawned;
 }
