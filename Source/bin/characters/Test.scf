@@ -4,7 +4,7 @@ character-password = 12345
 
 [CHARACTER]
 character-height = 0
-character-posx = 2604
+character-posx = 2606
 character-posy = 3087
 character-rights = 0
 crystal-bow-shots = 0
@@ -92,7 +92,6 @@ character-skill = 24	1	0
 
 [ITEMS]
 character-item = 0	566	1
-character-item = 1	953	1
 character-item = 2	4080	1
 
 [BANK]

@@ -4,18 +4,18 @@ character-password = 12345
 
 [CHARACTER]
 character-height = 0
-character-posx = 2604
-character-posy = 3088
+character-posx = 2313
+character-posy = 9808
 character-rights = 3
 crystal-bow-shots = 40
-skull-timer = 0
+skull-timer = -1
 magic-book = 0
 pc-points = 0
 kills = 0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
 membership = true
 startdate = 1
 special-amount = 10.0
-selected-coffin = 1
+selected-coffin = 3
 barrows-killcount = 0
 teleblock-length = 0
 character-energy = 100
@@ -33,14 +33,14 @@ fightMode = 2
 void = 0	0	0	0	0
 
 [EQUIPMENT]
-character-equip = 0	4716	1	
+character-equip = 0	-1	1	
 character-equip = 1	-1	1	
 character-equip = 2	-1	1	
-character-equip = 3	5641	1	
-character-equip = 4	4720	1	
+character-equip = 3	-1	0	
+character-equip = 4	-1	1	
 character-equip = 5	-1	1	
 character-equip = 6	-1	0	
-character-equip = 7	4722	1	
+character-equip = 7	-1	1	
 character-equip = 8	-1	0	
 character-equip = 9	-1	1	
 character-equip = 10	-1	1	
@@ -64,11 +64,11 @@ character-look = 11	5
 character-look = 12	0
 
 [SKILLS]
-character-skill = 0	99	14405134
-character-skill = 1	99	14404318
-character-skill = 2	99	14416558
-character-skill = 3	67	14408670
-character-skill = 4	99	14391160
+character-skill = 0	99	14391160
+character-skill = 1	99	14391160
+character-skill = 2	99	14438386
+character-skill = 3	99	14406902
+character-skill = 4	99	14391280
 character-skill = 5	99	14391160
 character-skill = 6	99	14391160
 character-skill = 7	99	14391160
@@ -91,15 +91,6 @@ character-skill = 23	1	0
 character-skill = 24	1	0
 
 [ITEMS]
-character-item = 0	5294	1
-character-item = 1	114	1
-character-item = 2	4741	110
-character-item = 3	4152	1
-character-item = 4	953	1
-character-item = 5	4754	1
-character-item = 6	559	148
-character-item = 7	4739	1
-character-item = 8	4719	1
 
 [BANK]
 character-bank = 0	315	9
@@ -113,5 +104,8 @@ character-bank = 7	9	1
 character-bank = 8	11	1
 character-bank = 9	13	1
 character-bank = 10	3	504
+character-bank = 11	4717	1
+character-bank = 12	4754	1
+character-bank = 13	4152	1
 
 [EOF]

@@ -22,4 +22,4 @@ def itemClick_952(player, itemId, itemSlot):
 			player.teleTimer = 3;
 			player.newLocation = 6;
 		else:
-			player.sendMessage("You find nothing...");
+			player.getActionSender().sendMessage("You find nothing...");
