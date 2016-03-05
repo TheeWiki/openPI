@@ -1,6 +1,5 @@
 from server.util import Plugin
 from server.model.players.skills.herblore import Cleaning
-from server.model.players.skills.prayer import BuryBones
 from server.model.players.skills.cooking import Food
 
 def click(player, itemId, itemSlot):

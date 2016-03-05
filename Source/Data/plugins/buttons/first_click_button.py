@@ -57,4 +57,35 @@ def clickButton_70092(player):
 	player.getCombat().activatePrayer(24)
 def clickButton_70094(player):
 	player.getCombat().activatePrayer(25)
-	
+
+# Brightness level 1
+def clickButton_74201(player):
+			player.getActionSender().sendConfig(505, 1)
+			player.getActionSender().sendConfig(506, 0)
+			player.getActionSender().sendConfig(507, 0)
+			player.getActionSender().sendConfig(508, 0)
+			player.getActionSender().sendConfig(166, 1)
+			
+# Brightness level 2
+def clickButton_74203(player):
+			player.getActionSender().sendConfig(505, 0);
+			player.getActionSender().sendConfig(506, 1);
+			player.getActionSender().sendConfig(507, 0);
+			player.getActionSender().sendConfig(508, 0);
+			player.getActionSender().sendConfig(166, 2);
+
+# Brightness level 3
+def clickButton_74204(player):
+			player.getActionSender().sendConfig(505, 0);
+			player.getActionSender().sendConfig(506, 0);
+			player.getActionSender().sendConfig(507, 1);
+			player.getActionSender().sendConfig(508, 0);
+			player.getActionSender().sendConfig(166, 3);
+			
+# Brightness level 4
+def clickButton_74205(player):
+			player.getActionSender().sendConfig(505, 0);
+			player.getActionSender().sendConfig(506, 0);
+			player.getActionSender().sendConfig(507, 0);
+			player.getActionSender().sendConfig(508, 1);
+			player.getActionSender().sendConfig(166, 4);
